@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="kmln_graph_header_item_text_active">#000000</color>
+    <color name="kmln_graph_header_item_text_normal">#888888</color>
+
+    <color name="kmln_graph_header_item_bkg_active">#61DFD8</color>
+
+    <color name="kmln_graph_label_bkg">#e6e7e8</color>
+
+    <color name="kmln_graph_color_active">#61DFD8</color>
+    <color name="kmln_graph_color_grey">#999999</color>
+    <color name="kmln_graph_color_black">#000000</color>
+    <color name="kmln_graph_color_white">#FFFFFF</color>
+    <color name="kmln_graph_color_orange">#ff5c55</color>
+    <color name="kmln_graph_color_disabled">#d1d3d4</color>
+</resources>

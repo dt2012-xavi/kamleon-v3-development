@@ -1,0 +1,35 @@
+<resources>
+    <dimen name="kmln_graph_header_item_text_size">12sp</dimen>
+
+    <dimen name="kmln_graph_footer_streak_title_text_size">18sp</dimen>
+    <dimen name="kmln_graph_footer_streak_value1_text_size">24sp</dimen>
+    <dimen name="kmln_graph_footer_streak_value2_text_size">20sp</dimen>
+
+    <dimen name="kmln_graph_header_average_title_text_size">15sp</dimen>
+    <dimen name="kmln_graph_header_average_value_text_size">25sp</dimen>
+    <dimen name="kmln_graph_header_average_percent_text_size">19sp</dimen>
+    <dimen name="kmln_graph_header_average_datetime_text_size">14sp</dimen>
+
+    <dimen name="kmln_graph_label_average_title_text_size">13sp</dimen>
+    <dimen name="kmln_graph_label_average_value_text_size">23sp</dimen>
+    <dimen name="kmln_graph_label_average_percent_text_size">16sp</dimen>
+    <dimen name="kmln_graph_label_average_datetime_text_size">12sp</dimen>
+
+
+    <dimen name="kmln_graph_view_padding_top">8dp</dimen>
+    <dimen name="kmln_graph_view_padding_bottom">8dp</dimen>
+    <dimen name="kmln_graph_header_padding_v">8dp</dimen>
+
+    <dimen name="kmln_graph_header_item_height">30dp</dimen>
+    <dimen name="kmln_graph_header_item_corner_radius">15dp</dimen>
+    <dimen name="kmln_graph_header_item_padding_h">8dp</dimen>
+    <dimen name="kmln_graph_header_item_margin_h">12dp</dimen>
+
+    <dimen name="kmln_graph_footer_padding_h">12dp</dimen>
+    <dimen name="kmln_graph_footer_padding_v">12dp</dimen>
+    <dimen name="kmln_graph_footer_content_height">52dp</dimen>
+    <dimen name="kmln_graph_footer_content_corner_radius">8dp</dimen>
+    <dimen name="kmln_graph_footer_content_padding_h">12dp</dimen>
+
+
+</resources>

@@ -1,0 +1,126 @@
+package com.example.graphviewdemo.customview.views
+
+import android.content.Context
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.example.graphviewdemo.R
+import com.example.graphviewdemo.customview.data.KamleonGraphBarDrawData
+import com.example.graphviewdemo.customview.data.KamleonGraphDataType
+import com.example.graphviewdemo.customview.data.KamleonGraphViewMode
+import com.example.graphviewdemo.customview.exts.formatDate
+import java.util.Date
+
+class KmlnHeaderView(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
+
+    interface KmlnHeaderViewListener {
+        fun onHeaderViewModeChanged(mode: KamleonGraphViewMode)
+    }
+    private var headerListener: KmlnHeaderViewListener? = null
+
+    private var mode: KamleonGraphViewMode = KamleonGraphViewMode.Daily
+
+    private var view : View = LayoutInflater.from(context).inflate(R.layout.layout_kmln_header, this, true)
+
+    private var tvValueAvg: TextView? = null
+    private var tvValueUnit: TextView? = null
+    private var tvTimstamp: TextView? = null
+
+    private var layoutDaily: RelativeLayout =
+        view.findViewById(R.id.kmlnHeaderItemDaily) as RelativeLayout
+    private var tvDaily: TextView =
+        view.findViewById(R.id.kmlnHeaderItemDailyTextView) as TextView
+
+    private var layoutWeekly: RelativeLayout =
+        view.findViewById(R.id.kmlnHeaderItemWeekly) as RelativeLayout
+    private var tvWeekly: TextView =
+        view.findViewById(R.id.kmlnHeaderItemWeeklyTextView) as TextView
+
+    private var layoutMonthly: RelativeLayout =
+        view.findViewById(R.id.kmlnHeaderItemMonthly) as RelativeLayout
+    private var tvMonthly: TextView =
+        view.findViewById(R.id.kmlnHeaderItemMonthlyTextView) as TextView
+
+    private var layoutYearly: RelativeLayout =
+        view.findViewById(R.id.kmlnHeaderItemYearly) as RelativeLayout
+    private var tvYearly: TextView =
+        view.findViewById(R.id.kmlnHeaderItemYearlyTextView) as TextView
+
+    init {
+        tvValueAvg =  view.findViewById(R.id.textViewAvgValue) as TextView
+        tvValueUnit =  view.findViewById(R.id.textViewAvgUnit) as TextView
+        tvTimstamp =  view.findViewById(R.id.textViewAvgTimestamp) as TextView
+
+        updateViewModeUI(mode)
+    }
+
+    fun setListener(listener: KmlnHeaderViewListener) {
+        headerListener = listener
+    }
+
+    fun setData(data: KamleonGraphBarDrawData) {
+        if (data.values.isEmpty()) {
+            return
+        }
+
+        val avgValue = data.values.sumOf { it.y } / data.values.size
+        var strAvg = ""
+        val strAvgUnit = data.type.getUnit()
+        when (data.type) {
+            KamleonGraphDataType.hydration -> {
+                strAvg = String.format("%d", avgValue.toInt())
+            }
+
+            KamleonGraphDataType.electrolytes -> {
+                strAvg = String.format("%.1f", avgValue)
+            }
+
+            KamleonGraphDataType.volume -> {
+                strAvg = String.format("%d", avgValue.toInt())
+            }
+        }
+        val strDateRange = when(data.mode) {
+            KamleonGraphViewMode.Daily -> data.date.formatDate("MMM, dd, yyyy")
+            KamleonGraphViewMode.Weekly -> data.startDate().formatDate("MMM, dd, yyyy") + " - " + data.endDate().formatDate("MMM, dd, yyyy")
+            KamleonGraphViewMode.Monthly -> data.date.formatDate("MMM, yyyy")
+            KamleonGraphViewMode.Yearly -> data.date.formatDate("yyyy")
+        }
+
+        setVisualData(strAvg, strAvgUnit, strDateRange)
+    }
+
+    private fun setVisualData(avgValue: String, avgUnit: String, dateRange: String) {
+        tvValueAvg?.text = avgValue
+        tvValueUnit?.text = avgUnit
+        tvTimstamp?.text = dateRange
+    }
+
+    private fun viewModeSelected(newMode: KamleonGraphViewMode) {
+        mode = newMode
+        headerListener?.onHeaderViewModeChanged(newMode)
+        updateViewModeUI(newMode)
+    }
+
+    private fun updateViewModeUI(activeMode: KamleonGraphViewMode) {
+        val arrViewModeLayouts = arrayOf(layoutDaily, layoutWeekly, layoutMonthly, layoutYearly)
+        val arrViewModeTvs = arrayOf(tvDaily, tvWeekly, tvMonthly, tvYearly)
+        for ((index, element) in arrViewModeLayouts.withIndex()) {
+            if (activeMode == KamleonGraphViewMode.viewMode(index)) {
+                arrViewModeTvs[index].setTextColor(context.getColor(R.color.kmln_graph_header_item_text_active))
+                element.background = context.getDrawable(R.drawable.kmln_bg_graph_header_item)
+                element.setOnClickListener(null)
+            } else {
+                arrViewModeTvs[index].setTextColor(context.getColor(R.color.kmln_graph_header_item_text_normal))
+                element.background = null
+                element.setOnClickListener {
+                    viewModeSelected(KamleonGraphViewMode.viewMode(index))
+                }
+            }
+        }
+    }
+}

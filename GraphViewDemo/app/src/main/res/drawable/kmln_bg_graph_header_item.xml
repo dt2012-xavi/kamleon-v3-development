@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/kmln_graph_header_item_bkg_active"/>
+    <corners android:radius="@dimen/kmln_graph_header_item_corner_radius"/>
+</shape>

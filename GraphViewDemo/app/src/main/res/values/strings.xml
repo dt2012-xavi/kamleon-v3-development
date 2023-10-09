@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">GraphViewDemo</string>
+
+    <string name="kmln_graph_header_item_daily">Daily</string>
+    <string name="kmln_graph_header_item_weekly">Weekly</string>
+    <string name="kmln_graph_header_item_monthly">Monthly</string>
+    <string name="kmln_graph_header_item_yearly">Yearly</string>
+
+    <string name="kmln_graph_header_average">AVERAGE</string>
+
+    <string name="kmln_graph_footer_streak">Streak</string>
+
+    <string name="kmln_graph_label_optimum">Optimum</string>
+    <string name="kmln_graph_label_minimum">Minimum</string>
+    <string name="kmln_graph_label_maximum">Maximum</string>
+</resources>
