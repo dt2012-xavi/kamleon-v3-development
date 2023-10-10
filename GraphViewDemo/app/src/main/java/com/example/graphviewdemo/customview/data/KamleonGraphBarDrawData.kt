@@ -3,6 +3,9 @@ package com.example.graphviewdemo.customview.data
 import android.graphics.Point
 import android.util.MonthDisplayHelper
 import android.util.Size
+import com.example.graphviewdemo.customview.exts.addDays
+import com.example.graphviewdemo.customview.exts.addMonths
+import com.example.graphviewdemo.customview.exts.addYears
 import com.example.graphviewdemo.customview.exts.beginningOfDay
 import com.example.graphviewdemo.customview.exts.beginningOfMonth
 import com.example.graphviewdemo.customview.exts.beginningOfWeek
@@ -71,18 +74,18 @@ class KamleonGraphBarDrawData(
         fun calcStartDateFrom(viewMode: KamleonGraphViewMode, date: Date) : Date {
           return when (viewMode) {
             KamleonGraphViewMode.Daily -> date.beginningOfDay
-            KamleonGraphViewMode.Weekly -> date.beginningOfWeek()
-            KamleonGraphViewMode.Monthly -> date.beginningOfMonth
-            KamleonGraphViewMode.Yearly -> date.beginningOfYear
+            KamleonGraphViewMode.Weekly -> date.addDays(-6)
+            KamleonGraphViewMode.Monthly -> date.addDays(-30)
+            KamleonGraphViewMode.Yearly -> date.addYears(-1)
             }
         }
 
         fun calcEndDateFrom(viewMode: KamleonGraphViewMode, date: Date) : Date {
             return when (viewMode) {
                 KamleonGraphViewMode.Daily -> date.endOfDay
-                KamleonGraphViewMode.Weekly -> date.endOfWeek()
-                KamleonGraphViewMode.Monthly -> date.endOfMonth()
-                KamleonGraphViewMode.Yearly -> date.endOfYear()
+                KamleonGraphViewMode.Weekly -> date.endOfDay
+                KamleonGraphViewMode.Monthly -> date.endOfDay
+                KamleonGraphViewMode.Yearly -> date.endOfDay
             }
         }
     }

@@ -15,15 +15,17 @@
     <dimen name="kmln_graph_label_average_percent_text_size">16sp</dimen>
     <dimen name="kmln_graph_label_average_datetime_text_size">12sp</dimen>
 
+    <dimen name="shadow_round_rect_bottom_padding">4dp</dimen>
+    <dimen name="shadow_round_rect_height">34dp</dimen>
 
     <dimen name="kmln_graph_view_padding_top">8dp</dimen>
     <dimen name="kmln_graph_view_padding_bottom">8dp</dimen>
     <dimen name="kmln_graph_header_padding_v">8dp</dimen>
 
     <dimen name="kmln_graph_header_item_height">30dp</dimen>
-    <dimen name="kmln_graph_header_item_corner_radius">15dp</dimen>
-    <dimen name="kmln_graph_header_item_padding_h">8dp</dimen>
-    <dimen name="kmln_graph_header_item_margin_h">12dp</dimen>
+    <dimen name="kmln_graph_header_item_corner_radius">17dp</dimen>
+    <dimen name="kmln_graph_header_item_padding_h">12dp</dimen>
+    <dimen name="kmln_graph_header_item_margin_h">8dp</dimen>
 
     <dimen name="kmln_graph_footer_padding_h">12dp</dimen>
     <dimen name="kmln_graph_footer_padding_v">12dp</dimen>

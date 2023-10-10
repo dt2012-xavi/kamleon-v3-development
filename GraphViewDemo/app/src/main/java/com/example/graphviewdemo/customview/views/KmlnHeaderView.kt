@@ -31,32 +31,61 @@ class KmlnHeaderView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
     private var tvValueUnit: TextView? = null
     private var tvTimstamp: TextView? = null
 
-    private var layoutDaily: RelativeLayout =
-        view.findViewById(R.id.kmlnHeaderItemDaily) as RelativeLayout
-    private var tvDaily: TextView =
-        view.findViewById(R.id.kmlnHeaderItemDailyTextView) as TextView
+    var optionViewDaily = view.findViewById(R.id.kmlnHeaderItemDaily) as KmlnOptionView
+    var optionViewWeekly = view.findViewById(R.id.kmlnHeaderItemWeekly) as KmlnOptionView
+    var optionViewMonthly = view.findViewById(R.id.kmlnHeaderItemMonthly) as KmlnOptionView
+    var optionViewYearly = view.findViewById(R.id.kmlnHeaderItemYearly) as KmlnOptionView
 
-    private var layoutWeekly: RelativeLayout =
-        view.findViewById(R.id.kmlnHeaderItemWeekly) as RelativeLayout
-    private var tvWeekly: TextView =
-        view.findViewById(R.id.kmlnHeaderItemWeeklyTextView) as TextView
-
-    private var layoutMonthly: RelativeLayout =
-        view.findViewById(R.id.kmlnHeaderItemMonthly) as RelativeLayout
-    private var tvMonthly: TextView =
-        view.findViewById(R.id.kmlnHeaderItemMonthlyTextView) as TextView
-
-    private var layoutYearly: RelativeLayout =
-        view.findViewById(R.id.kmlnHeaderItemYearly) as RelativeLayout
-    private var tvYearly: TextView =
-        view.findViewById(R.id.kmlnHeaderItemYearlyTextView) as TextView
+//    private var layoutDaily: RelativeLayout =
+//        view.findViewById(R.id.kmlnHeaderItemDaily) as RelativeLayout
+//    private var tvDaily: TextView =
+//        view.findViewById(R.id.kmlnHeaderItemDailyTextView) as TextView
+//
+//    private var layoutWeekly: RelativeLayout =
+//        view.findViewById(R.id.kmlnHeaderItemWeekly) as RelativeLayout
+//    private var tvWeekly: TextView =
+//        view.findViewById(R.id.kmlnHeaderItemWeeklyTextView) as TextView
+//
+//    private var layoutMonthly: RelativeLayout =
+//        view.findViewById(R.id.kmlnHeaderItemMonthly) as RelativeLayout
+//    private var tvMonthly: TextView =
+//        view.findViewById(R.id.kmlnHeaderItemMonthlyTextView) as TextView
+//
+//    private var layoutYearly: RelativeLayout =
+//        view.findViewById(R.id.kmlnHeaderItemYearly) as RelativeLayout
+//    private var tvYearly: TextView =
+//        view.findViewById(R.id.kmlnHeaderItemYearlyTextView) as TextView
 
     init {
         tvValueAvg =  view.findViewById(R.id.textViewAvgValue) as TextView
         tvValueUnit =  view.findViewById(R.id.textViewAvgUnit) as TextView
         tvTimstamp =  view.findViewById(R.id.textViewAvgTimestamp) as TextView
 
+        initModeViews()
         updateViewModeUI(mode)
+    }
+
+
+    private fun initModeViews() {
+        val arrOptionViews = modeOptionViews()
+        for ((index, element) in arrOptionViews.withIndex()) {
+            element.setOptionText(KamleonGraphViewMode.viewMode(index).displayName())
+            element.setSelection(mode == KamleonGraphViewMode.viewMode(index))
+            element.listener = object : KmlnOptionView.KmlnOptionViewListener {
+                override fun onOptionSelected(optionView: KmlnOptionView) {
+                    val arrOptionViews = modeOptionViews()
+                    arrOptionViews.indexOf(optionView)?.let {
+                        if (it >= 0) {
+                            viewModeSelected(KamleonGraphViewMode.viewMode(it))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun modeOptionViews() : Array<KmlnOptionView> {
+        return arrayOf(optionViewDaily, optionViewWeekly, optionViewMonthly, optionViewYearly)
     }
 
     fun setListener(listener: KmlnHeaderViewListener) {
@@ -68,7 +97,8 @@ class KmlnHeaderView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
             return
         }
 
-        val avgValue = data.values.sumOf { it.y } / data.values.size
+        val nonZeroVals = data.values.filter { it.y > 0 }
+        val avgValue = nonZeroVals.sumOf { it.y } / nonZeroVals.size
         var strAvg = ""
         val strAvgUnit = data.type.getUnit()
         when (data.type) {
@@ -107,20 +137,10 @@ class KmlnHeaderView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
     }
 
     private fun updateViewModeUI(activeMode: KamleonGraphViewMode) {
-        val arrViewModeLayouts = arrayOf(layoutDaily, layoutWeekly, layoutMonthly, layoutYearly)
-        val arrViewModeTvs = arrayOf(tvDaily, tvWeekly, tvMonthly, tvYearly)
-        for ((index, element) in arrViewModeLayouts.withIndex()) {
-            if (activeMode == KamleonGraphViewMode.viewMode(index)) {
-                arrViewModeTvs[index].setTextColor(context.getColor(R.color.kmln_graph_header_item_text_active))
-                element.background = context.getDrawable(R.drawable.kmln_bg_graph_header_item)
-                element.setOnClickListener(null)
-            } else {
-                arrViewModeTvs[index].setTextColor(context.getColor(R.color.kmln_graph_header_item_text_normal))
-                element.background = null
-                element.setOnClickListener {
-                    viewModeSelected(KamleonGraphViewMode.viewMode(index))
-                }
-            }
+        val arrModeOptions = modeOptionViews()
+
+        for ((index, element) in arrModeOptions.withIndex()) {
+            element.setSelection(activeMode == KamleonGraphViewMode.viewMode(index))
         }
     }
 }

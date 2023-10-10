@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.RectF
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.util.Log
 import android.util.SizeF
@@ -19,6 +20,7 @@ import com.example.graphviewdemo.customview.data.KamleonGraphBarDrawData
 import com.example.graphviewdemo.customview.data.KamleonGraphDataType
 import com.example.graphviewdemo.customview.data.KamleonGraphViewMode
 import com.example.graphviewdemo.customview.exts.addDays
+import com.example.graphviewdemo.customview.exts.addMonths
 import com.example.graphviewdemo.customview.exts.formatDate
 import kotlin.math.min
 
@@ -36,7 +38,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
 
     private val xAxisLabelPaint = Paint().apply {
         color = context.getColor(R.color.kmln_graph_color_black)
-        textSize = 34f
+        textSize = 32f
         strokeWidth = 1f
     }
 
@@ -53,7 +55,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
 
     private val streakLinePaint = Paint().apply {
         color = context.getColor(R.color.kmln_graph_color_active)
-        strokeWidth = 1f
+        strokeWidth = 2f
     }
 
     private val graphBarItemGreyPaint = Paint().apply {
@@ -67,6 +69,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
 
     private val minMaxLabelPaint = Paint().apply {
         color = context.getColor(R.color.kmln_graph_color_black)
+        typeface = Typeface.DEFAULT_BOLD
         textSize = 28f
         strokeWidth = 1f
     }
@@ -165,20 +168,21 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
     }
 
     fun getBarLabel(index: Int) : String {
+        val startDate = dataSource.startDate()
         when (dataSource.mode) {
             KamleonGraphViewMode.Daily -> {
                 return "$index:00 h"
             }
             KamleonGraphViewMode.Monthly -> {
-                return dataSource.date.addDays(index).formatDate("MMM dd, yyyy")
+                return dataSource.startDate().addDays(index).formatDate("MMM dd, yyyy")
             }
             KamleonGraphViewMode.Weekly -> {
                 val dayNames = arrayOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-                return dayNames[index]
+                return dayNames[startDate.addDays(index).day]
             }
             KamleonGraphViewMode.Yearly -> {
                 val monthNames = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
-                return monthNames[index]
+                return monthNames[startDate.addMonths(index).month]
             }
         }
     }

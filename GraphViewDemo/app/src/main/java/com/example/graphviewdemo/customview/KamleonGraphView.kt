@@ -91,6 +91,7 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
     fun setGraphViewMode(mode: KamleonGraphViewMode) {
         if (viewMode == mode) { return }
         viewMode = mode
+        labelView.visibility = INVISIBLE
 
         refreshGraphView()
     }
@@ -98,6 +99,7 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
     fun setGraphDataType(type: KamleonGraphDataType) {
         if (dataType == type) { return }
         dataType = type
+        labelView.visibility = INVISIBLE
 
         refreshGraphView()
     }
@@ -219,7 +221,7 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
                                         date,
                                         xyValues,
                                         xyRange,
-                                        viewMode.xLabelStrings(xStepCount),
+                                        viewMode.xLabelStrings(startDate, xStepCount),
                                         yLabelAry,
                                         dataType,
                                         viewMode
@@ -230,7 +232,7 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
         return when (viewMode) {
             KamleonGraphViewMode.Daily -> 24
             KamleonGraphViewMode.Weekly -> 7
-            KamleonGraphViewMode.Monthly -> date.endOfMonth().date
+            KamleonGraphViewMode.Monthly -> 31
             KamleonGraphViewMode.Yearly -> 12
         }
     }
@@ -244,16 +246,16 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
                 rangeUpper = startDate.beginningOfDay.addHours(xStep + 1).time - 1L
             }
             KamleonGraphViewMode.Weekly -> {
-                rangeLower = startDate.addDays(xStep).time
-                rangeUpper = startDate.addDays(xStep).endOfDay.time
+                rangeLower = startDate.beginningOfDay.addDays(xStep).time
+                rangeUpper = startDate.beginningOfDay.addDays(xStep).endOfDay.time
             }
             KamleonGraphViewMode.Monthly -> {
-                rangeLower = startDate.beginningOfMonth.addDays(xStep).time
-                rangeUpper = startDate.beginningOfMonth.addDays(xStep).endOfDay.time
+                rangeLower = startDate.beginningOfDay.addDays(xStep).time
+                rangeUpper = startDate.beginningOfDay.addDays(xStep).endOfDay.time
             }
             KamleonGraphViewMode.Yearly -> {
-                rangeLower = startDate.addMonths(xStep).beginningOfMonth.time
-                rangeUpper = startDate.addMonths(xStep).endOfMonth().time
+                rangeLower = startDate.beginningOfDay.addMonths(xStep).beginningOfMonth.time
+                rangeUpper = startDate.beginningOfDay.addMonths(xStep).endOfMonth().time
             }
         }
 

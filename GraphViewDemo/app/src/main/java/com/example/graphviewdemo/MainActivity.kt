@@ -3,6 +3,8 @@ package com.example.graphviewdemo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.graphviewdemo.customview.KamleonGraphView
@@ -21,18 +23,29 @@ import com.example.graphviewdemo.customview.exts.endOfWeek
 import com.example.graphviewdemo.customview.exts.formatDate
 import com.example.graphviewdemo.customview.exts.getWeekDay
 import com.example.graphviewdemo.customview.exts.toDate
+import com.example.graphviewdemo.customview.views.KmlnOptionView
 import java.util.Date
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
     var graphView: KamleonGraphView? = null
 
-    var typeLayout1: RelativeLayout? = null
-    var typeText1: TextView? = null
-    var typeLayout2: RelativeLayout? = null
-    var typeText2: TextView? = null
-    var typeLayout3: RelativeLayout? = null
-    var typeText3: TextView? = null
+    var optionView1: KmlnOptionView? = null
+    var optionView2: KmlnOptionView? = null
+    var optionView3: KmlnOptionView? = null
+
+    private val graphTypes = arrayOf(KamleonGraphDataType.hydration, KamleonGraphDataType.electrolytes, KamleonGraphDataType.volume)
+
+    private val optListener = object : KmlnOptionView.KmlnOptionViewListener {
+        override fun onOptionSelected(optionView: KmlnOptionView) {
+            val arrOptionViews = arrayOf(optionView1, optionView2, optionView3)
+            arrOptionViews.indexOf(optionView)?.let {
+                if (it >= 0 && it < graphTypes.size) {
+                    updateGraphType(graphTypes[it])
+                }
+            }
+        }
+    }
 
     var activeType: KamleonGraphDataType = KamleonGraphDataType.hydration
 
@@ -44,49 +57,44 @@ class MainActivity : AppCompatActivity() {
 
         graphView = findViewById(R.id.graphView)
 
-        val date = KamleonUtils.dateFrom(2023, 10, 8)
-        val yearData = yearDataSourceOf(date) // dailyDataSourceOf
+//        val date = KamleonUtils.dateFrom(2023, 10, 8)
+        val yearData = yearDataSourceOf(Date())
         graphView?.setData(yearData)
     }
 
     private fun initGraphTypeViews() {
-        typeLayout1 = findViewById(R.id.idLayoutGraphType1)
-        typeText1 = findViewById(R.id.idGraphTypeText1)
-        typeLayout2 = findViewById(R.id.idLayoutGraphType2)
-        typeText2 = findViewById(R.id.idGraphTypeText2)
-        typeLayout3 = findViewById(R.id.idLayoutGraphType3)
-        typeText3 = findViewById(R.id.idGraphTypeText3)
+        optionView1 = findViewById(R.id.optionType1)
+        optionView2 = findViewById(R.id.optionType2)
+        optionView3 = findViewById(R.id.optionType3)
+
+        optionView1?.setOptionText(KamleonGraphDataType.hydration.identifier)
+        optionView2?.setOptionText(KamleonGraphDataType.electrolytes.identifier)
+        optionView3?.setOptionText(KamleonGraphDataType.volume.identifier)
+
+        optionView1?.listener = optListener
+        optionView2?.listener = optListener
+        optionView3?.listener = optListener
 
         updateGraphType(activeType)
     }
 
     private fun updateGraphType(type: KamleonGraphDataType) {
-        val arrViewModeLayouts = arrayOf(typeLayout1, typeLayout2, typeLayout3)
-        val arrViewModeTvs = arrayOf(typeText1, typeText2, typeText3)
-        val graphTypes = arrayOf(KamleonGraphDataType.hydration, KamleonGraphDataType.electrolytes, KamleonGraphDataType.volume)
-
-        for ((index, element) in arrViewModeLayouts.withIndex()) {
-            if (type == graphTypes[index]) {
-                arrViewModeTvs[index]?.setTextColor(getColor(R.color.kmln_graph_header_item_text_active))
-                element?.background = getDrawable(R.drawable.kmln_bg_graph_header_item)
-                element?.setOnClickListener(null)
-            } else {
-                arrViewModeTvs[index]?.setTextColor(getColor(R.color.kmln_graph_header_item_text_normal))
-                element?.background = null
-                element?.setOnClickListener {
-                    activeType = graphTypes[index]
-                    updateGraphType(graphTypes[index])
-                }
-            }
+        val arrOptionViews = arrayOf(optionView1, optionView2, optionView3)
+        for ((index, element) in arrOptionViews.withIndex()) {
+            element?.setSelection(type == graphTypes[index])
         }
 
-        graphView?.setGraphDataType(activeType)
+        graphView?.setGraphDataType(type)
     }
 
     private fun dailyDataSourceOf(date: Date) : ArrayList<KamleonGraphBarItemData> {
         var dataSource = ArrayList<KamleonGraphBarItemData>()
         val startDate = date.beginningOfDay
+
+        val curDateTime = Date().time
         for (i in 0..23 step 1) {
+            if (startDate.addHours(i).time > curDateTime) { break }
+
             var data : Double = (i + date.month + date.date + Random.nextInt(0, 15)).toDouble()
             if (date.month % 3 == 0) {
                 data = (i + date.month * Random.nextInt(1, 3) + date.date * Random.nextInt(1, 3)).toDouble()

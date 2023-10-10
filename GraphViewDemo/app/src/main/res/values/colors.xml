@@ -16,4 +16,10 @@
     <color name="kmln_graph_color_white">#FFFFFF</color>
     <color name="kmln_graph_color_orange">#ff5c55</color>
     <color name="kmln_graph_color_disabled">#d1d3d4</color>
+
+    <color name="kmln_greenShadow0">#9961DFD8</color>
+    <color name="kmln_greenShadow1">#5561DFD8</color>
+    <color name="kmln_greenShadow2">#2461DFD8</color>
+    <color name="kmln_greenShadow3">#1261DFD8</color>
+    <color name="kmln_greenShadow4">#0861DFD8</color>
 </resources>

@@ -14,76 +14,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
             android:orientation="horizontal">
-            <RelativeLayout
+            <com.example.graphviewdemo.customview.views.KmlnOptionView
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:id="@+id/idLayoutGraphType1"
-                android:clickable="true"
-                android:paddingHorizontal="@dimen/kmln_graph_header_item_padding_h"
-                android:layout_marginHorizontal="@dimen/kmln_graph_header_item_margin_h"
-                android:elevation="5dp"
-                android:background="@drawable/kmln_bg_graph_header_item">
-
-                <TextView
-                    android:id="@+id/idGraphTypeText1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="HYDRATION"
-                    android:textColor="@color/kmln_graph_header_item_text_active"
-                    android:textSize="@dimen/kmln_graph_header_item_text_size" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:layout_height="wrap_content"
+                android:id="@+id/optionType1"/>
+            <com.example.graphviewdemo.customview.views.KmlnOptionView
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:id="@+id/idLayoutGraphType2"
-                android:clickable="true"
-                android:paddingHorizontal="@dimen/kmln_graph_header_item_padding_h"
-                android:layout_marginHorizontal="@dimen/kmln_graph_header_item_margin_h"
-                android:elevation="5dp"
-                android:background="@drawable/kmln_bg_graph_header_item">
-
-                <TextView
-                    android:id="@+id/idGraphTypeText2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="ELECTROLYTES"
-                    android:textColor="@color/kmln_graph_header_item_text_active"
-                    android:textSize="@dimen/kmln_graph_header_item_text_size" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:layout_height="wrap_content"
+                android:id="@+id/optionType2"/>
+            <com.example.graphviewdemo.customview.views.KmlnOptionView
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:id="@+id/idLayoutGraphType3"
-                android:clickable="true"
-                android:paddingHorizontal="@dimen/kmln_graph_header_item_padding_h"
-                android:layout_marginHorizontal="@dimen/kmln_graph_header_item_margin_h"
-                android:elevation="5dp"
-                android:background="@drawable/kmln_bg_graph_header_item">
-
-                <TextView
-                    android:id="@+id/idGraphTypeText3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="VOLUME"
-                    android:textColor="@color/kmln_graph_header_item_text_active"
-                    android:textSize="@dimen/kmln_graph_header_item_text_size" />
-
-            </RelativeLayout>
-
-
+                android:layout_height="wrap_content"
+                android:id="@+id/optionType3"/>
         </LinearLayout>
 
     </RelativeLayout>

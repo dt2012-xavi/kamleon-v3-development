@@ -10,84 +10,26 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal">
-        <RelativeLayout
+        <com.example.graphviewdemo.customview.views.KmlnOptionView
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/kmln_graph_header_item_height"
-            android:id="@+id/kmlnHeaderItemDaily"
-            android:clickable="true"
-            android:paddingHorizontal="@dimen/kmln_graph_header_item_padding_h"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/kmln_graph_header_item_margin_h"
-            android:elevation="5dp"
-            android:background="@drawable/kmln_bg_graph_header_item">
-
-            <TextView
-                android:id="@+id/kmlnHeaderItemDailyTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/kmln_graph_header_item_daily"
-                android:textColor="@color/kmln_graph_header_item_text_active"
-                android:textSize="@dimen/kmln_graph_header_item_text_size" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
+            android:id="@+id/kmlnHeaderItemDaily"/>
+        <com.example.graphviewdemo.customview.views.KmlnOptionView
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/kmln_graph_header_item_height"
-            android:id="@+id/kmlnHeaderItemWeekly"
-            android:paddingHorizontal="@dimen/kmln_graph_header_item_padding_h"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/kmln_graph_header_item_margin_h"
-            android:background="@null">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/kmlnHeaderItemWeeklyTextView"
-                android:layout_centerInParent="true"
-                android:textSize="@dimen/kmln_graph_header_item_text_size"
-                android:textColor="@color/kmln_graph_header_item_text_normal"
-                android:text="@string/kmln_graph_header_item_weekly"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
+            android:id="@+id/kmlnHeaderItemWeekly"/>
+        <com.example.graphviewdemo.customview.views.KmlnOptionView
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/kmln_graph_header_item_height"
-            android:id="@+id/kmlnHeaderItemMonthly"
-            android:paddingHorizontal="@dimen/kmln_graph_header_item_padding_h"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/kmln_graph_header_item_margin_h"
-            android:background="@null">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/kmlnHeaderItemMonthlyTextView"
-                android:layout_centerInParent="true"
-                android:textSize="@dimen/kmln_graph_header_item_text_size"
-                android:textColor="@color/kmln_graph_header_item_text_normal"
-                android:text="@string/kmln_graph_header_item_monthly"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
+            android:id="@+id/kmlnHeaderItemMonthly"/>
+        <com.example.graphviewdemo.customview.views.KmlnOptionView
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/kmln_graph_header_item_height"
-            android:id="@+id/kmlnHeaderItemYearly"
-            android:paddingHorizontal="@dimen/kmln_graph_header_item_padding_h"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/kmln_graph_header_item_margin_h"
-            android:background="@null">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/kmlnHeaderItemYearlyTextView"
-                android:layout_centerInParent="true"
-                android:textSize="@dimen/kmln_graph_header_item_text_size"
-                android:textColor="@color/kmln_graph_header_item_text_normal"
-                android:text="@string/kmln_graph_header_item_yearly"/>
-
-        </RelativeLayout>
-
+            android:id="@+id/kmlnHeaderItemYearly"/>
     </LinearLayout>
 
     <LinearLayout
