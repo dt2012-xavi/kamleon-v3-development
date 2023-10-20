@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="KamleonInputBoxStyle">
+        <attr name="placeholder" format="string" />
+        <attr name="secureInput" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="SettingMenuItemViewStyle">
+        <attr name="settingTypeLabel" format="string" />
+        <attr name="settingTypeValue" format="string" />
+        <attr name="settingRightArrow" format="boolean" />
+        <attr name="settingRightSwitch" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="AnalyticListItemViewStyle">
+        <attr name="typeText" format="string" />
+        <attr name="titleText" format="string" />
+        <attr name="descText" format="string" />
+        <attr name="type" format="integer" />
+    </declare-styleable>
+</resources>

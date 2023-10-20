@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!-- Drop Shadow Stack -->
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="0dp" />
+
+            <solid android:color="@color/kmln_greenShadow4" />
+
+            <corners android:radius="@dimen/kmln_graph_header_item_corner_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="0dp" />
+
+            <solid android:color="@color/kmln_greenShadow3" />
+
+            <corners android:radius="@dimen/kmln_graph_header_item_corner_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="0dp" />
+
+            <solid android:color="@color/kmln_greenShadow2" />
+
+            <corners android:radius="@dimen/kmln_graph_header_item_corner_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="0dp" />
+
+            <solid android:color="@color/kmln_greenShadow1" />
+
+            <corners android:radius="@dimen/kmln_graph_header_item_corner_radius" />
+        </shape>
+    </item>
+
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="0dp" />
+
+            <solid android:color="@color/kmln_greenShadow0" />
+
+            <corners android:radius="@dimen/kmln_graph_header_item_corner_radius" />
+        </shape>
+    </item>
+
+    <item>
+        <shape
+            android:shape="rectangle">
+            <solid android:color="@color/kmln_graph_color_active"/>
+            <corners android:radius="@dimen/kmln_graph_header_item_corner_radius"/>
+        </shape>
+    </item>
+
+</layer-list>

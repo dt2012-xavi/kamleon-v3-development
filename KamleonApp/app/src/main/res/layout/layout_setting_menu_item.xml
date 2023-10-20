@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/setting_item_padding_h"
+    android:layout_gravity="center"
+    android:gravity="center">
+    <!--    android:background="?attr/selectableItemBackground"-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="4dp"
+        android:id="@+id/tvLabel"
+        android:textSize="@dimen/ts_14"
+        style="@style/CircularBoldFont"
+        android:text="NAME"
+        android:textColor="@color/kamleon_secondary_grey_70"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAlignment="textEnd"
+        android:paddingHorizontal="4dp"
+        android:id="@+id/tvValue"
+        android:textSize="@dimen/ts_14"
+        style="@style/CircularRegularFont"
+        android:text="value"
+        android:textColor="@color/kamleon_secondary_grey_70"/>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/settingItemSwitch"
+        android:layout_marginTop="-3dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:track="@drawable/switch_track"
+        android:thumb="@drawable/switch_thumb" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/settingItemRightArrow"
+        android:paddingStart="16dp"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:src="@drawable/icn_setting_chevron"
+        tools:ignore="UseAppTint" />
+
+</LinearLayout>

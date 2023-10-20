@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="316dp"
+    android:layout_height="160dp"
+    android:paddingHorizontal="4dp"
+    android:paddingVertical="4dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:background="@drawable/bg_tip_list_item">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/CircularRegularFont"
+                android:layout_marginTop="8dp"
+                android:textColor="#808285"
+                android:text="Tip"
+                android:textSize="@dimen/ts_14"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvName"
+                style="@style/CircularMediumFont"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/kamleon_dark_grey"
+                android:text="@string/tab_home"
+                android:textSize="@dimen/ts_14"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvDesc"
+                style="@style/CircularRegularFont"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/kamleon_secondary_grey_70"
+                android:text="@string/tab_home"
+                android:textSize="@dimen/ts_14"/>
+        </LinearLayout>
+        <ImageView
+            android:layout_width="11dp"
+            android:layout_height="11dp"
+            android:src="@drawable/icn_tip_blue_badge"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="4dp"
+            android:scaleType="fitCenter"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+</FrameLayout>

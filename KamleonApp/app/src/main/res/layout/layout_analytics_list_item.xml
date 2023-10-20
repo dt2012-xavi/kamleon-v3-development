@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_setting_option_layout"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="28dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/CircularRegularFont"
+                android:textColor="#808285"
+                android:id="@+id/tvType"
+                android:text="11111"
+                android:textSize="@dimen/ts_14"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                style="@style/CircularBoldFont"
+                android:id="@+id/tvTitle"
+                android:textColor="@color/kamleon_dark_grey"
+                android:text="11111"
+                android:textSize="@dimen/ts_20"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:id="@+id/tvDesc"
+                style="@style/CircularRegularFont"
+                android:textColor="@color/kamleon_secondary_grey_50"
+                android:text="Your last urine hydration is on the recommended level."
+                android:textSize="@dimen/ts_14"/>
+        </LinearLayout>
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/ivRight"
+            android:src="@drawable/img_ana_chart1"
+            android:scaleType="fitCenter"/>
+
+    </LinearLayout>
+
+</LinearLayout>

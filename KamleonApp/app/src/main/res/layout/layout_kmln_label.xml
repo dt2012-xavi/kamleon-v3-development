@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/kmln_bg_label_view"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/kmln_graph_header_average"
+            android:textColor="@color/kmln_graph_color_grey"
+            android:textSize="@dimen/kmln_graph_label_average_title_text_size"
+            android:textStyle="bold"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewAvgValue"
+                android:text="45"
+                android:textColor="@color/kmln_graph_color_black"
+                android:textSize="@dimen/kmln_graph_label_average_value_text_size"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="%"
+                android:id="@+id/textViewAvgUnit"
+                android:textColor="@color/kmln_graph_color_black"
+                android:textSize="@dimen/kmln_graph_label_average_percent_text_size"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jul 12, 2023"
+            android:id="@+id/textViewAvgTimestamp"
+            android:textColor="@color/kmln_graph_color_grey"
+            android:textSize="@dimen/kmln_graph_label_average_datetime_text_size"/>
+
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_width="2dp"
+            android:layout_height="8dp"
+            android:id="@+id/labelIndicator"
+            android:layout_centerHorizontal="true"
+            android:background="@color/kmln_graph_header_item_text_normal" />
+    </RelativeLayout>
+
+</LinearLayout>

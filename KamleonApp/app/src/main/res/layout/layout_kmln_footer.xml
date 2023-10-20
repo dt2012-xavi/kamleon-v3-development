@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/kmln_graph_footer_padding_h"
+    android:paddingVertical="@dimen/kmln_graph_footer_padding_v"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/kmln_graph_footer_content_height"
+        android:id="@+id/layoutContainer"
+        android:background="@drawable/bg_graph_streak"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/kmln_graph_footer_content_padding_h">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ivIconStreak"
+            android:src="@drawable/icn_streak_on"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/tvLabelStreak"
+            android:paddingHorizontal="12dp"
+            android:text="@string/kmln_graph_footer_streak"
+            android:textSize="@dimen/kmln_graph_footer_streak_title_text_size"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="8"
+            android:id="@+id/tvStreakValue1"
+            android:textColor="@color/kmln_graph_color_active"
+            android:textStyle="bold"
+            android:textSize="@dimen/kmln_graph_footer_streak_value1_text_size"/>/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/20"
+            android:id="@+id/tvStreakValue2"
+            android:textColor="@color/kmln_graph_color_active"
+            android:textSize="@dimen/kmln_graph_footer_streak_value2_text_size"/>
+
+    </LinearLayout>
+
+</LinearLayout>

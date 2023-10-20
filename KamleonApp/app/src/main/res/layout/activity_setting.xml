@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color_activity"
+    tools:context=".activities.SettingActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="24dp"
+        android:id="@+id/layoutHeader"
+        android:paddingHorizontal="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icn_setting_noti_badge"
+            android:id="@+id/btnSettingNoti"
+            android:background="@color/transparent"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icn_setting_close"
+            android:id="@+id/btnSettingClose"
+            android:background="@color/transparent"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutHeader"
+        app:layout_constraintVertical_bias="1.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingVertical="20dp">
+
+            <RelativeLayout
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/image_profile" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="12dp"
+                    android:src="@drawable/icn_button_camera" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="68dp"
+                    android:paddingVertical="0dp"
+                    android:paddingHorizontal="0dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/bg_setting_option_layout"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="110dp"
+                        android:layout_height="68dp"
+                        android:id="@+id/optionViewAcc"
+                        android:background="@drawable/bg_setting_option_layout"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="100dp"
+                            android:layout_height="@dimen/setting_option_view_height"
+                            android:layout_marginBottom="6dp"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/icn_setting_user" />
+
+                            <TextView
+                                style="@style/CircularBoldFont"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="4dp"
+                                android:text="@string/setting_option_account"
+                                android:textColor="@color/kamleon_dark_grey"
+                                android:textSize="@dimen/ts_12" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="120dp"
+                        android:layout_height="68dp"
+                        android:clickable="true"
+                        android:layout_marginStart="-20dp"
+                        android:id="@+id/optionViewPref"
+                        android:background="@drawable/bg_setting_option_layout"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="100dp"
+                            android:layout_height="@dimen/setting_option_view_height"
+                            android:layout_marginBottom="6dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/icn_setting_pref" />
+
+                            <TextView
+                                style="@style/CircularBoldFont"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="4dp"
+                                android:text="@string/setting_option_pref"
+                                android:textColor="@color/kamleon_dark_grey"
+                                android:textSize="@dimen/ts_12" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="80dp"
+                    android:layout_height="68dp"
+                    android:id="@+id/optionViewLogout"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/setting_option_view_height"
+                        android:layout_marginBottom="6dp"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/icn_setting_logout" />
+
+                        <TextView
+                            style="@style/CircularBoldFont"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/setting_option_logout"
+                            android:textColor="@color/kamleon_dark_grey"
+                            android:textSize="@dimen/ts_12" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layoutAccount"
+                android:paddingHorizontal="@dimen/setting_category_padding"
+                android:layout_marginTop="32dp"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/CircularMediumFont"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/kamleon_dark_grey"
+                    android:text="@string/setting_label_acc_data"
+                    android:textSize="@dimen/ts_14"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_setting_list_shadow"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/setting_item_padding_h"
+                        android:layout_gravity="center"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="4dp"
+                            android:textSize="@dimen/ts_14"
+                            style="@style/CircularBoldFont"
+                            android:text="@string/setting_label_name"
+                            android:textColor="@color/kamleon_secondary_grey_70"/>
+                        <EditText
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:textAlignment="textEnd"
+                            android:paddingHorizontal="4dp"
+                            android:id="@+id/etAccName"
+                            android:textSize="@dimen/ts_14"
+                            style="@style/CircularRegularFont"
+                            android:text="name"
+                            android:textColor="@color/kamleon_secondary_grey_70"/>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
+                        android:background="@color/kamleon_secondary_grey_40" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/setting_item_padding_h"
+                        android:layout_gravity="center"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="4dp"
+                            android:textSize="@dimen/ts_14"
+                            style="@style/CircularBoldFont"
+                            android:text="@string/setting_label_surname"
+                            android:textColor="@color/kamleon_secondary_grey_70"/>
+                        <EditText
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:textAlignment="textEnd"
+                            android:paddingHorizontal="4dp"
+                            android:id="@+id/etAccSurName"
+                            android:textSize="@dimen/ts_14"
+                            style="@style/CircularRegularFont"
+                            android:text="sur_name"
+                            android:textColor="@color/kamleon_secondary_grey_70"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_setting_list_shadow"
+                    android:orientation="vertical">
+
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingTypeLabel="@string/setting_label_email"
+                        android:id="@+id/accMenuItemEmail"
+                        app:settingTypeValue="maria.garcia@gmail.com"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_setting_list_shadow"
+                    android:orientation="vertical">
+
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:id="@+id/accMenuItemPwd"
+                        app:settingTypeLabel="@string/setting_label_password"
+                        app:settingTypeValue="********"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"/>
+                </LinearLayout>
+
+                <TextView
+                    style="@style/CircularBoldFont"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:paddingHorizontal="8dp"
+                    android:text="@string/setting_desc_acc1"
+                    android:textColor="@color/kamleon_secondary_grey_50"
+                    android:textSize="@dimen/ts_12" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_setting_list_shadow"
+                    android:orientation="vertical">
+
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingTypeLabel="@string/setting_label_pin"
+                        android:id="@+id/accMenuItemPin"
+                        app:settingTypeValue="********"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"/>
+                </LinearLayout>
+
+                <TextView
+                    style="@style/CircularBoldFont"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:paddingHorizontal="8dp"
+                    android:text="@string/setting_desc_acc2"
+                    android:textColor="@color/kamleon_secondary_grey_50"
+                    android:textSize="@dimen/ts_12" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/CircularMediumFont"
+                    android:layout_marginTop="36dp"
+                    android:textColor="@color/kamleon_dark_grey"
+                    android:text="@string/setting_label_acc_info"
+                    android:textSize="@dimen/ts_14"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_setting_list_shadow"
+                    android:orientation="vertical">
+
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingTypeLabel="@string/setting_label_help"
+                        app:settingTypeValue=""
+                        android:id="@+id/accMenuItemHelp"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding"
+                    android:layout_marginTop="8dp"
+                    android:paddingTop="12dp"
+                    android:background="@drawable/bg_setting_list_shadow"
+                    android:orientation="vertical">
+
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingTypeLabel="@string/setting_label_tos"
+                        app:settingTypeValue=""
+                        android:id="@+id/accMenuItemTOS"
+                        app:settingRightArrow="false"
+                        app:settingRightSwitch="false"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
+                        android:background="@color/kamleon_secondary_grey_40" />
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingTypeLabel="@string/setting_label_dsp"
+                        app:settingTypeValue=""
+                        android:id="@+id/accMenuItemDSP"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
+                        android:background="@color/kamleon_secondary_grey_40" />
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingTypeLabel="@string/setting_label_pp"
+                        android:id="@+id/accMenuItemPP"
+                        app:settingTypeValue=""
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"/>
+                </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/kamleon_secondary_grey_50"
+                    style="@style/CircularRegularFont"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding"
+                    android:layout_marginTop="8dp"
+                    android:textSize="@dimen/ts_12"
+                    android:text="Version: 1.1"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/CircularMediumFont"
+                    android:layout_marginTop="24dp"
+                    android:textColor="@color/kamleon_secondary_grey_60"
+                    android:text="@string/setting_label_acc_info"
+                    android:textSize="@dimen/ts_14"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding"
+                    android:layout_marginTop="8dp"
+                    android:paddingTop="12dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/kamleon_secondary_grey_60"
+                            style="@style/CircularBoldFont"
+                            android:layout_alignParentStart="true"
+                            android:text="@string/setting_label_org"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/kamleon_secondary_grey_60"
+                            style="@style/CircularRegularFont"
+                            android:layout_alignParentEnd="true"
+                            android:text="Dir"/>
+                    </RelativeLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
+                        android:layout_marginVertical="8dp"
+                        android:background="@color/kamleon_secondary_grey_40" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/kamleon_secondary_grey_60"
+                            style="@style/CircularBoldFont"
+                            android:layout_alignParentStart="true"
+                            android:text="@string/setting_label_center"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/kamleon_secondary_grey_60"
+                            style="@style/CircularRegularFont"
+                            android:layout_alignParentEnd="true"
+                            android:text="CC"/>
+                    </RelativeLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
+                        android:layout_marginVertical="8dp"
+                        android:background="@color/kamleon_secondary_grey_40" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/kamleon_secondary_grey_60"
+                            style="@style/CircularBoldFont"
+                            android:layout_alignParentStart="true"
+                            android:text="@string/setting_label_team"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/kamleon_secondary_grey_60"
+                            style="@style/CircularRegularFont"
+                            android:layout_alignParentEnd="true"
+                            android:text="Cycling"/>
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layoutPreference"
+                android:visibility="visible"
+                android:paddingHorizontal="@dimen/setting_category_padding"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/CircularMediumFont"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/kamleon_dark_grey"
+                    android:text="@string/setting_label_user_data"
+                    android:textSize="@dimen/ts_14"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_setting_list_shadow"
+                    android:orientation="vertical">
+
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:id="@+id/prefMenuItemWeight"
+                        app:settingTypeLabel="@string/setting_label_user_weight"
+                        app:settingTypeValue="170.2 cm"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
+                        android:background="@color/kamleon_secondary_grey_40" />
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:id="@+id/prefMenuItemHeight"
+                        app:settingTypeLabel="@string/setting_label_user_height"
+                        app:settingTypeValue="60.3 kg"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
+                        android:background="@color/kamleon_secondary_grey_40" />
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:id="@+id/prefMenuItemGender"
+                        app:settingTypeLabel="@string/setting_label_user_gender"
+                        app:settingTypeValue="Female"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
+                        android:background="@color/kamleon_secondary_grey_40" />
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:id="@+id/prefMenuItemBirth"
+                        app:settingTypeLabel="@string/setting_label_user_birthdate"
+                        app:settingTypeValue="21 april 1955 (68)"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"/>
+                </LinearLayout>
+
+                <TextView
+                    style="@style/CircularBoldFont"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:paddingHorizontal="8dp"
+                    android:text="@string/setting_desc_pref1"
+                    android:textColor="@color/kamleon_secondary_grey_50"
+                    android:textSize="@dimen/ts_12" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/CircularMediumFont"
+                    android:layout_marginTop="24dp"
+                    android:textColor="@color/kamleon_dark_grey"
+                    android:text="@string/setting_label_noti"
+                    android:textSize="@dimen/ts_14"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_setting_list_shadow"
+                    android:orientation="vertical">
+
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingTypeLabel="@string/setting_label_analytics"
+                        app:settingTypeValue="name"
+                        app:settingRightArrow="false"
+                        app:settingRightSwitch="true"/>
+
+                </LinearLayout>
+
+                <TextView
+                    style="@style/CircularBoldFont"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:paddingHorizontal="8dp"
+                    android:text="@string/setting_desc_pref2"
+                    android:textColor="@color/kamleon_secondary_grey_50"
+                    android:textSize="@dimen/ts_12" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/CircularMediumFont"
+                    android:layout_marginTop="28dp"
+                    android:textColor="@color/kamleon_dark_grey"
+                    android:text="@string/setting_label_location"
+                    android:textSize="@dimen/ts_14"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_setting_list_shadow"
+                    android:orientation="vertical">
+
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingTypeLabel="@string/setting_label_awuta"
+                        app:settingTypeValue=""
+                        app:settingRightArrow="false"
+                        app:settingRightSwitch="true"/>
+
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingTypeLabel="@string/setting_label_allow_once"
+                        app:settingTypeValue=""
+                        app:settingRightArrow="false"
+                        app:settingRightSwitch="true"/>
+
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingTypeLabel="@string/setting_label_not_allow"
+                        app:settingTypeValue=""
+                        app:settingRightArrow="false"
+                        app:settingRightSwitch="true"/>
+                </LinearLayout>
+
+                <TextView
+                    style="@style/CircularBoldFont"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:paddingHorizontal="8dp"
+                    android:text="@string/setting_desc_pref3"
+                    android:textColor="@color/kamleon_secondary_grey_50"
+                    android:textSize="@dimen/ts_12" />
+
+            </LinearLayout>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/round_blue_button_height"
+                android:background="@drawable/bg_btn_round_blue"
+                android:paddingVertical="0dp"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="22dp"
+                android:textAllCaps="false"
+                android:id="@+id/btnSave"
+                android:text="@string/setting_button_save"
+                android:textAppearance="@style/RoundBlueButtonTextStyle"
+                android:textColor="@drawable/color_text_button_blue_round"
+                android:enabled="true"/>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

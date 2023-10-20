@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="10dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <com.kamleonapp.views.chart.views.KmlnOptionView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/kmln_graph_header_item_margin_h"
+            android:id="@+id/kmlnHeaderItemDaily"/>
+        <com.kamleonapp.views.chart.views.KmlnOptionView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/kmln_graph_header_item_margin_h"
+            android:id="@+id/kmlnHeaderItemWeekly"/>
+        <com.kamleonapp.views.chart.views.KmlnOptionView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/kmln_graph_header_item_margin_h"
+            android:id="@+id/kmlnHeaderItemMonthly"/>
+        <com.kamleonapp.views.chart.views.KmlnOptionView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/kmln_graph_header_item_margin_h"
+            android:id="@+id/kmlnHeaderItemYearly"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="26dp"
+        android:paddingTop="12dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/kmln_graph_header_average"
+            android:textColor="@color/kmln_graph_color_grey"
+            android:textSize="@dimen/kmln_graph_header_average_title_text_size"
+            android:textStyle="bold"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewAvgValue"
+                android:text="45"
+                android:textColor="@color/kmln_graph_color_black"
+                android:textSize="@dimen/kmln_graph_header_average_value_text_size"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="%"
+                android:id="@+id/textViewAvgUnit"
+                android:textColor="@color/kmln_graph_color_black"
+                android:textSize="@dimen/kmln_graph_header_average_percent_text_size"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jul 12, 2023"
+            android:id="@+id/textViewAvgTimestamp"
+            android:textColor="@color/kmln_graph_color_grey"
+            android:textSize="@dimen/kmln_graph_header_average_datetime_text_size"/>
+    </LinearLayout>
+</LinearLayout>

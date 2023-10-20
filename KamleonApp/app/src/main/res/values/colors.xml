@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="whitePressed">#16000000</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="kmln_graph_header_item_text_active">#000000</color>
+    <color name="kmln_graph_header_item_text_normal">#888888</color>
+
+    <color name="kmln_graph_header_item_bkg_active">#61DFD8</color>
+
+    <color name="kmln_graph_label_bkg">#e6e7e8</color>
+
+    <color name="kmln_graph_color_active">#61DFD8</color>
+    <color name="kmln_graph_color_grey">#999999</color>
+    <color name="kmln_graph_color_black">#000000</color>
+    <color name="kmln_graph_color_white">#FFFFFF</color>
+    <color name="kmln_graph_color_orange">#ff5c55</color>
+    <color name="kmln_graph_color_disabled">#d1d3d4</color>
+
+    <color name="kmln_greenShadow0">#9961DFD8</color>
+    <color name="kmln_greenShadow1">#5561DFD8</color>
+    <color name="kmln_greenShadow2">#2461DFD8</color>
+    <color name="kmln_greenShadow3">#1261DFD8</color>
+    <color name="kmln_greenShadow4">#0861DFD8</color>
+
+    <color name="kamleon_blue">#FF2FD5CB</color>
+
+    <color name="kamleon_blue_pressed">#882FD5CB</color>
+
+    <color name="kamleon_dark_grey">#FF221E1E</color>
+    <color name="kamleon_dark_grey_50">#88221E1E</color>
+
+    <color name="kamleon_secondary_grey_70">#FF414042</color>
+    <color name="kamleon_secondary_grey_60">#FF808285</color>
+    <color name="kamleon_secondary_grey_50">#FFA7A9AC</color>
+    <color name="kamleon_secondary_grey_40">#FFD1D3D4</color>
+
+    <color name="shadow_black_0">#01000000</color>
+    <color name="shadow_black_1">#02000000</color>
+    <color name="shadow_black_2">#04000000</color>
+    <color name="shadow_black_3">#06000000</color>
+    <color name="shadow_black_4">#08000000</color>
+    <color name="shadow_black_5">#10000000</color>
+
+    <color name="text_color_category">#424141</color>
+
+    <color name="color_fa">#FFFAFAFA</color>
+    <color name="color_fa_40">#66FAFAFA</color>
+
+    <color name="bg_color_activity">#66FAFAFA</color>
+</resources>

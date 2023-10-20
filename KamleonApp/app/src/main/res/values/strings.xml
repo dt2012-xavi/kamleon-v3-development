@@ -1,0 +1,156 @@
+<resources>
+    <string name="app_name">KamleonApp</string>
+
+    <!-- Login -->
+    <string name="login_title">Sign in with email</string>
+    <string name="login_desc">Enter your details to continue. If\nyou’ve forgotten, we’ll help you out.</string>
+    <string name="login_btn_signin">Sign in</string>
+
+    <string name="placeholder_first_name">First Name</string>
+    <string name="placeholder_last_name">Last Name</string>
+    <string name="placeholder_email">Email</string>
+    <string name="placeholder_password">Password</string>
+    <string name="login_forgot_pwd"><u>Forgot password?</u></string>
+    <string name="login_not_have_account">Don’t you have an account yet?</string>
+    <string name="login_signup"><u>Sign Up</u></string>
+
+    <!-- SignUp -->
+    <string name="signup_title">Register</string>
+    <string name="signup_desc">Enter your details to have access\nto you analytics </string>
+    <string name="signup_btn_create_account">Create account</string>
+    <string name="signup_have_account">Do you already have an account?</string>
+    <string name="signup_login"><u>Log in</u></string>
+
+    <!-- Forgot Pwd -->
+    <string name="forgotpwd_title">Trouble logging in?</string>
+    <string name="forgotpwd_desc">Enter your email and we’ll send you a link to get back into your account.</string>
+    <string name="forgotpwd_send">Send login link</string>
+    <string name="forgotpwd_can_not_reset">Can\’t reset your password?</string>
+    <string name="forgotpwd_create_new">Create new account</string>
+    <string name="forgotpwd_or">OR</string>
+
+    <!-- Privacy -->
+    <string name="privacy_title">Privacity</string>
+    <string name="privacy_item1">I accept the processing of my personal health data in order to facilitate the functionalities of the Kamleon application. Get more information in the privacy policy.</string>
+    <string name="privacy_item2">I accept the privacy policy and the terms of use.</string>
+    <string name="privacy_item3">I authorize Kamleon to use my personal data (excluding health data) to send me offers of products or services through the Kamleon application or via email.*</string>
+    <string name="privacy_note">*You can revoke your consent at any time by sending a message to <u>hello@kamleon.com</u></string>
+    <string name="privacy_button_next">Next</string>
+    <string name="privacy_word_terms">terms of use</string>
+    <string name="privacy_word_privacy">privacy policy</string>
+
+    <!-- Onboarding -->
+    <string name="onboard_button_next">Next</string>
+    <string name="onboard_bottom_text">You can change it later in the App settings</string>
+    <string name="onboard_noti_title">Stay updated with your latest sample</string>
+    <string name="onboard_noti_sub1">Activate your notifications</string>
+    <string name="onboard_noti_sub2">Activate notifications to ensure you\'re always up to date.</string>
+    <string name="onboard_location_title">Tailor hydration to weather conditions</string>
+    <string name="onboard_location_sub1">Activate your location</string>
+    <string name="onboard_location_sub2">Enable Kamleon to use location data for personalized services, while considering privacy implications.</string>
+    <string name="onboard_birthday_title">Birth date</string>
+    <string name="onboard_height_title">Indicate your height</string>
+    <string name="onboard_weight_title">Indicate your weight</string>
+    <string name="onboard_gender_title">Indicate your gender</string>
+
+    <string-array name="onboard_gender_values">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Transgender</item>
+    </string-array>
+
+    <!-- Setting -->
+    <string name="setting_button_save">SAVE</string>
+    <string name="setting_option_account">ACCOUNT</string>
+    <string name="setting_option_pref">PREFERENCES</string>
+    <string name="setting_option_logout">LOG OUT</string>
+
+    <string name="setting_label_acc_data">ACCOUNT DATA</string>
+    <string name="setting_label_surname">SURNAME</string>
+    <string name="setting_label_name">NAME</string>
+    <string name="setting_label_email">E-MAIL</string>
+    <string name="setting_label_password">PASSWORD</string>
+    <string name="setting_label_pin">PIN</string>
+    <string name="setting_label_info">INFORMATION</string>
+    <string name="setting_label_help">HELP</string>
+    <string name="setting_label_tos">TERMS OF SERVICE</string>
+    <string name="setting_label_dsp">DATA SECURITY PROTECTION</string>
+    <string name="setting_label_pp">PRIVACY POLICY</string>
+
+    <string name="setting_desc_acc1">The password is the personalized combination of characters that you enter to access the website and the app securely. </string>
+    <string name="setting_desc_acc2">The PIN is the personalized code that you enter on the screen before starting your experience.</string>
+
+    <string name="setting_label_acc_info">ACCOUNT INFORMATION</string>
+    <string name="setting_label_org">ORGANIZATION</string>
+    <string name="setting_label_center">CENTER</string>
+    <string name="setting_label_team">TEAM</string>
+
+    <string name="setting_label_user_data">USER DATA</string>
+    <string name="setting_label_user_gender">GENDER</string>
+    <string name="setting_label_user_weight">WEIGHT</string>
+    <string name="setting_label_user_height">HEIGHT</string>
+    <string name="setting_label_user_birthdate">BIRTH DATE</string>
+
+    <string name="setting_label_noti">NOTIFICATIONS</string>
+    <string name="setting_label_analytics">ANALYTICS</string>
+    <string name="setting_label_location">LOCATION</string>
+    <string name="setting_label_awuta">ALLOW WHILE USING THE APP</string>
+    <string name="setting_label_allow_once">ALLOW ONCE</string>
+    <string name="setting_label_not_allow">DON\'T ALLOW</string>
+
+    <string name="setting_desc_pref1">The user data is essential to deliver personalized and precise metric results and recommendations.</string>
+    <string name="setting_desc_pref2">You will receive Kamleon notifcation with the score you have had after every urinal use.</string>
+    <string name="setting_desc_pref3">Enable Kamleon to use location data for personalized services, while considering privacy implications.</string>
+
+    <string name="email_email">E-MAIL</string>
+    <string name="email_new">NEW E-MAIL</string>
+    <string name="email_confirm">CONFIRM E-MAIL</string>
+
+    <string name="pin_pin">PIN</string>
+    <string name="pin_new">NEW PIN</string>
+    <string name="pin_confirm">CONFIRM PIN</string>
+
+    <string name="pin_desc">The PIN is the personalized code that you enter on the screen before starting your experience.\n\n<b>Set Up Your PIN:</b>\n1. Enter a six digits numeric code of your choice.\n2. Confirm and start your secure journey!</string>
+
+    <string name="pwd_pwd">PASSWORD</string>
+    <string name="pwd_new">NEW PASSWORD</string>
+    <string name="pwd_confirm">CONFIRM PASSWORD</string>
+
+    <string name="pwd_desc">The password is the personalized combination of characters that you enter to access the website securely.\n\n<b>Set Up Your Password:</b>\n1. Choose a strong password: Use a combination of letters, numbers, and symbols and ensure it\'s unique and not easily guessable.\n2. Confirm and start your secure journey!</string>
+
+    <string name="delete_title">Desactivate or delate your account</string>
+    <string name="delete_desactivate">DESACTIVATE</string>
+    <string name="delete_delete">DELETE</string>
+    <string name="delete_desactivate_desc">Desactivating can be temporary. Your profile, your name and your data will not be available.</string>
+    <string name="delete_delete_desc">Deleting your account will permanently remove all your profile data.</string>
+
+    <string name="button_cancel">CANCEL</string>
+
+    <string name="dialog_logout_msg">Are you sure you want to log out of your account?</string>
+    <string name="dialog_logout_y">Log Out</string>
+    <string name="dialog_logout_n">Cancel</string>
+    <string name="dialog_desactive_msg">Are you sure you want to desactivate your account?</string>
+    <string name="dialog_desactive_y">Desactivate</string>
+    <string name="dialog_desactive_n">Cancel</string>
+
+    <string name="tab_home">HOMEPAGE</string>
+    <string name="tab_analytic">ANALYTICS</string>
+    <string name="tab_qr">USER QR</string>
+
+    <string name="add_metric">Add metric</string>
+    <string name="scan_now">SCAN NOW!</string>
+
+    <!-- Chart-->
+    <string name="kmln_graph_header_item_daily">Daily</string>
+    <string name="kmln_graph_header_item_weekly">Weekly</string>
+    <string name="kmln_graph_header_item_monthly">Monthly</string>
+    <string name="kmln_graph_header_item_yearly">Yearly</string>
+
+    <string name="kmln_graph_header_average">AVERAGE</string>
+
+    <string name="kmln_graph_footer_streak">Streak</string>
+
+    <string name="kmln_graph_label_optimum">Optimum</string>
+    <string name="kmln_graph_label_minimum">Minimum</string>
+    <string name="kmln_graph_label_maximum">Maximum</string>
+</resources>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!-- Drop Shadow Stack -->
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="0dp" />
+
+            <solid android:color="@color/shadow_black_0" />
+
+            <corners
+                android:bottomLeftRadius="@dimen/setting_option_view_radius"
+                android:bottomRightRadius="@dimen/setting_option_view_radius"/>
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="0dp" />
+
+            <solid android:color="@color/shadow_black_1" />
+
+            <corners
+                android:bottomLeftRadius="@dimen/setting_option_view_radius"
+                android:bottomRightRadius="@dimen/setting_option_view_radius"/>
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="0dp" />
+
+            <solid android:color="@color/shadow_black_2" />
+
+            <corners
+                android:bottomLeftRadius="@dimen/setting_option_view_radius"
+                android:bottomRightRadius="@dimen/setting_option_view_radius"/>
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="0dp" />
+
+            <solid android:color="@color/shadow_black_3" />
+
+            <corners
+                android:bottomLeftRadius="@dimen/setting_option_view_radius"
+                android:bottomRightRadius="@dimen/setting_option_view_radius"/>
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="0dp" />
+
+            <solid android:color="@color/shadow_black_4" />
+
+            <corners
+                android:bottomLeftRadius="@dimen/setting_option_view_radius"
+                android:bottomRightRadius="@dimen/setting_option_view_radius"/>
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="0dp" />
+
+            <solid android:color="@color/shadow_black_5" />
+
+            <corners
+                android:bottomLeftRadius="@dimen/setting_option_view_radius"
+                android:bottomRightRadius="@dimen/setting_option_view_radius"/>
+        </shape>
+    </item>
+
+    <!-- Background -->
+    <item>
+        <shape>
+            <solid android:color="@color/white" />
+
+            <corners
+                android:bottomLeftRadius="@dimen/setting_option_view_radius"
+                android:bottomRightRadius="@dimen/setting_option_view_radius"/>
+        </shape>
+    </item>
+
+</layer-list>
