@@ -10,7 +10,7 @@
                 android:right="1dp"
                 android:top="0dp" />
 
-            <solid android:color="@color/kmln_greenShadow4" />
+            <solid android:color="@color/shadow_black_0" />
 
             <corners android:radius="@dimen/kmln_graph_header_item_corner_radius" />
         </shape>
@@ -23,7 +23,7 @@
                 android:right="1dp"
                 android:top="0dp" />
 
-            <solid android:color="@color/kmln_greenShadow3" />
+            <solid android:color="@color/shadow_black_1" />
 
             <corners android:radius="@dimen/kmln_graph_header_item_corner_radius" />
         </shape>
@@ -36,7 +36,7 @@
                 android:right="1dp"
                 android:top="0dp" />
 
-            <solid android:color="@color/kmln_greenShadow2" />
+            <solid android:color="@color/shadow_black_2" />
 
             <corners android:radius="@dimen/kmln_graph_header_item_corner_radius" />
         </shape>
@@ -49,7 +49,20 @@
                 android:right="1dp"
                 android:top="0dp" />
 
-            <solid android:color="@color/kmln_greenShadow1" />
+            <solid android:color="@color/shadow_black_3" />
+
+            <corners android:radius="@dimen/kmln_graph_header_item_corner_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="0dp" />
+
+            <solid android:color="@color/shadow_black_4" />
 
             <corners android:radius="@dimen/kmln_graph_header_item_corner_radius" />
         </shape>
@@ -63,7 +76,7 @@
                 android:right="1dp"
                 android:top="0dp" />
 
-            <solid android:color="@color/kmln_greenShadow0" />
+            <solid android:color="@color/shadow_black_5" />
 
             <corners android:radius="@dimen/kmln_graph_header_item_corner_radius" />
         </shape>

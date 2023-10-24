@@ -48,6 +48,11 @@ class PrivacyActivity : BaseActivity<ActivityPrivacyBinding>() {
     }
 
     override fun initEvent() {
+        binding.btnNavBack.setOnClickListener { finish() }
+        binding.btnAcceptAll.setOnClickListener {
+            acceptState = arrayOf(true, true, true)
+            updatePrivacyItemViews()
+        }
         binding.btnNext.setOnClickListener {
             startActivity(Intent(this, OnboardingActivity::class.java))
             finish()
@@ -103,7 +108,7 @@ class PrivacyActivity : BaseActivity<ActivityPrivacyBinding>() {
         for (index in 0 until privacyItemLayouts().size) {
             privacyItemIcons()[index].setImageResource(if (acceptState[index]) R.drawable.icn_circular_check else R.drawable.icn_circular_uncheck)
         }
-
+        binding.btnAcceptAll.visibility = if (acceptState.contains(false)) View.VISIBLE else View.INVISIBLE
         binding.btnNext.isEnabled = (acceptState[0] && acceptState[1] && acceptState[2])
     }
 }

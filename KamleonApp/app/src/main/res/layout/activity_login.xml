@@ -12,6 +12,7 @@
         android:layout_height="@dimen/nav_back_button_size"
         android:src="@drawable/icn_nav_back"
         android:id="@+id/btnNavBack"
+        android:visibility="gone"
         android:background="@color/transparent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

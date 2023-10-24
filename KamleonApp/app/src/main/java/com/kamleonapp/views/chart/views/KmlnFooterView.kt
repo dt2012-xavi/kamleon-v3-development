@@ -65,7 +65,7 @@ class KmlnFooterView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
             tvValue2.setTextColor(context.getColor(R.color.kmln_graph_color_white))
             tvLabelStreak.setTextColor(context.getColor(R.color.kmln_graph_color_white))
         } else {
-            containerView.background = null
+            containerView.background = context.getDrawable(R.drawable.kmln_bg_streak_view_off)
             tvValue1.setTextColor(context.getColor(R.color.kmln_graph_color_active))
             tvValue2.setTextColor(context.getColor(R.color.kmln_graph_color_active))
             tvLabelStreak.setTextColor(context.getColor(R.color.kmln_graph_color_grey))

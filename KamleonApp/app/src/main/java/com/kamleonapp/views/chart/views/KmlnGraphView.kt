@@ -78,6 +78,8 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
     private val yAxisLines: Int = 7
     private val xLabelHeight: Int = 40
 
+    private val xAxisMarginStart: Int = 16
+
     private var isStreak = false
 
     override fun onDraw(canvas: Canvas) {
@@ -126,7 +128,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
         val barWidth = graphBarItemWidth(hStep)
 
         val barItemData = dataSource.values[vIndex]
-        val rtL = (hStep * vIndex) + (hStep - barWidth) / 2.0
+        val rtL = (xAxisMarginStart + hStep * vIndex) + (hStep - barWidth) / 2.0
         val rtR = rtL + barWidth
         val rtB = canvasRt.height - xLabelHeight
         val rtT = rtB - calcVStep(canvasRt) * barItemData.y
@@ -147,7 +149,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
         val hStep = calcHStep(canvasRt)
         val barWidth = graphBarItemWidth(hStep)
 
-        val rtL = (hStep * vIndex) + (hStep - barWidth) / 2.0
+        val rtL = (xAxisMarginStart + hStep * vIndex) + (hStep - barWidth) / 2.0
         val rtR = rtL + barWidth
 
         val bottomYPos = canvasRt.height - xLabelHeight
@@ -171,7 +173,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
         val startDate = dataSource.startDate()
         when (dataSource.mode) {
             KamleonGraphViewMode.Daily -> {
-                return "$index:00 h"
+                return "${index + 1}:00 h"
             }
             KamleonGraphViewMode.Monthly -> {
                 return dataSource.startDate().addDays(index).formatDate("MMM dd, yyyy")
@@ -188,7 +190,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
     }
 
     private fun calcHStep(canvasRt: SizeF) : Double {
-        return (canvasRt.width / (yAxisLines + 1) * yAxisLines) / (dataSource.xyRange.x + 0.3)
+        return ((canvasRt.width - xAxisMarginStart) / (yAxisLines + 1) * yAxisLines) / (dataSource.xyRange.x + 0.3)
     }
 
     private fun calcVStep(canvasRt: SizeF) : Double {
@@ -282,7 +284,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
         if (xLabelCount > 0) {
             val hStep = calcHStep(canvasSize)
             for (xLabelIndex in dataSource.xLabels.indices) {
-                val xPos: Float = (hStep * dataSource.xLabels[xLabelIndex].dataVal).toFloat()
+                val xPos: Float = (xAxisMarginStart + hStep * dataSource.xLabels[xLabelIndex].dataVal).toFloat()
                 val xLabelDrawWidth = calcTextWidth(dataSource.xLabels[xLabelIndex].label, xAxisLabelPaint)
                 canvas.drawText(dataSource.xLabels[xLabelIndex].label,
                     (xPos + hStep / 2.0f - xLabelDrawWidth / 2.0f).toFloat(), canvas.height.toFloat(), xAxisLabelPaint)

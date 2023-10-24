@@ -71,7 +71,7 @@ class OnboardingActivity : BaseActivity<ActivityOnboardingBinding>() {
 
         binding.btnNavBack.setOnClickListener {
             if (state.step == 0) {
-
+                finish()
             } else {
                 state = OnBoardingStep.values()[state.step - 1]
             }

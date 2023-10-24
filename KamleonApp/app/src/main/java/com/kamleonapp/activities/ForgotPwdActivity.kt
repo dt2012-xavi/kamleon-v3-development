@@ -1,5 +1,6 @@
 package com.kamleonapp.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -34,6 +35,13 @@ class ForgotPwdActivity : BaseActivity<ActivityForgotPwdBinding>() {
 
     override fun initEvent() {
         binding.btnClose.setOnClickListener {
+            finish()
+        }
+
+        binding.tvCreateNewAcc.setOnClickListener {
+            val to = Intent(this, RegisterActivity::class.java)
+            to.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(to)
             finish()
         }
     }

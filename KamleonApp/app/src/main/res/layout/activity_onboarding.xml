@@ -51,6 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/round_blue_button_height"
             android:id="@+id/btnNext"
+            android:paddingVertical="0dp"
             android:background="@drawable/bg_btn_round_blue"
             android:textAppearance="@style/RoundBlueButtonTextStyle"
             android:textAllCaps="false"

@@ -39,6 +39,8 @@
     <string name="privacy_word_terms">terms of use</string>
     <string name="privacy_word_privacy">privacy policy</string>
 
+    <string name="privacy_button_accept_all">Accept All</string>
+
     <!-- Onboarding -->
     <string name="onboard_button_next">Next</string>
     <string name="onboard_bottom_text">You can change it later in the App settings</string>

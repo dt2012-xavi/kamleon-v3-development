@@ -28,7 +28,7 @@
 
     <dimen name="nav_back_button_size">48dp</dimen>
     <dimen name="nav_back_button_top">16dp</dimen>
-    <dimen name="nav_back_button_left">20dp</dimen>
+    <dimen name="nav_back_button_left">16dp</dimen>
 
     <dimen name="input_text_box_height">34dp</dimen>
     <dimen name="input_text_box_corner_radius">17dp</dimen>
@@ -59,7 +59,7 @@
 
     <dimen name="kmln_graph_footer_streak_title_text_size">18sp</dimen>
     <dimen name="kmln_graph_footer_streak_value1_text_size">24sp</dimen>
-    <dimen name="kmln_graph_footer_streak_value2_text_size">20sp</dimen>
+    <dimen name="kmln_graph_footer_streak_value2_text_size">12sp</dimen>
 
     <dimen name="kmln_graph_header_average_title_text_size">15sp</dimen>
     <dimen name="kmln_graph_header_average_value_text_size">25sp</dimen>
