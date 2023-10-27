@@ -7,10 +7,16 @@ import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import com.kamleonapp.base.BaseActivity
 import com.kamleonapp.databinding.ActivityLoginBinding
+import com.kamleonapp.fragments.BottomFragmentDismissListener
+import com.kamleonapp.fragments.ScanIntroFragment
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>() {
     override fun setBinding(): ActivityLoginBinding = ActivityLoginBinding.inflate(layoutInflater)
+    private val onDismissScanIntro = object : BottomFragmentDismissListener {
+        override fun onDismissFragment() {
 
+        }
+    }
     override fun initView() {
         binding.btnSignIn.isEnabled = true
 

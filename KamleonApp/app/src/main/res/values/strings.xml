@@ -142,6 +142,8 @@
     <string name="add_metric">Add metric</string>
     <string name="scan_now">SCAN NOW!</string>
 
+    <string name="qr_intro_text">Use your smartphone to scan the QR code on the screen of the urinal</string>
+
     <!-- Chart-->
     <string name="kmln_graph_header_item_daily">Daily</string>
     <string name="kmln_graph_header_item_weekly">Weekly</string>
@@ -155,4 +157,6 @@
     <string name="kmln_graph_label_optimum">Optimum</string>
     <string name="kmln_graph_label_minimum">Minimum</string>
     <string name="kmln_graph_label_maximum">Maximum</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

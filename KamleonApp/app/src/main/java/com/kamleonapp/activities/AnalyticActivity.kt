@@ -5,10 +5,18 @@ import android.view.View
 import com.kamleonapp.R
 import com.kamleonapp.base.BaseActivity
 import com.kamleonapp.databinding.ActivityAnalyticBinding
+import com.kamleonapp.fragments.BottomFragmentDismissListener
+import com.kamleonapp.fragments.ScanIntroFragment
 
 
 class AnalyticActivity : BaseActivity<ActivityAnalyticBinding>() {
     override fun setBinding(): ActivityAnalyticBinding = ActivityAnalyticBinding.inflate(layoutInflater)
+
+    private val onDismissScanIntro = object : BottomFragmentDismissListener {
+        override fun onDismissFragment() {
+            selectTab(2)
+        }
+    }
 
     override fun initView() {
         binding.layoutTabAnalytic.setOnClickListener {
@@ -18,7 +26,7 @@ class AnalyticActivity : BaseActivity<ActivityAnalyticBinding>() {
             selectTab(0)
         }
         binding.layoutTabQr.setOnClickListener {
-            selectTab(2)
+            showQRIntroFragment()
         }
 
         selectTab(1)
@@ -67,5 +75,10 @@ class AnalyticActivity : BaseActivity<ActivityAnalyticBinding>() {
 
             binding.layoutContentQR.visibility = View.VISIBLE
         }
+    }
+
+    private fun showQRIntroFragment() {
+        val qrFragment = ScanIntroFragment.newInstance(onDismissScanIntro)
+        qrFragment.show(supportFragmentManager, "QR")
     }
 }
