@@ -12,11 +12,7 @@ import com.kamleonapp.fragments.ScanIntroFragment
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>() {
     override fun setBinding(): ActivityLoginBinding = ActivityLoginBinding.inflate(layoutInflater)
-    private val onDismissScanIntro = object : BottomFragmentDismissListener {
-        override fun onDismissFragment() {
 
-        }
-    }
     override fun initView() {
         binding.btnSignIn.isEnabled = true
 
@@ -41,6 +37,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
     override fun initEvent() {
         binding.btnSignIn.setOnClickListener {
+//            startActivity(Intent(this, SettingActivity::class.java))
             startActivity(Intent(this, PrivacyActivity::class.java))
         }
 

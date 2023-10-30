@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="28dp"
+        android:paddingHorizontal="16dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_modal_dialog">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/CircularBoldFont"
+            android:id="@+id/tvDialogDesc"
+            android:clickable="true"
+            android:paddingHorizontal="32dp"
+            android:textSize="@dimen/ts_20"
+            android:text="@string/msg_profile_ready"
+            android:textAlignment="center"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
+</FrameLayout>

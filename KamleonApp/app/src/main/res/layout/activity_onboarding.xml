@@ -152,6 +152,7 @@
             android:visibility="gone"
             android:paddingHorizontal="18dp"
             android:id="@+id/layoutBirthday"
+            android:paddingBottom="80dp"
             android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
@@ -167,12 +168,17 @@
                 android:layout_height="0dp"
                 android:layout_weight="1">
 
-                <DatePicker
+                <com.ozcanalasalvar.datepicker.view.datepicker.DatePicker
                     android:id="@+id/datePicker"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:datePickerMode="calendar"/>
+                    android:layout_marginTop="10dp"
+                    android:background="@color/transparent"
+                    app:darkModeEnabled="false"
+                    app:textSize="24"
+                    app:textBold="true"
+                    />
             </RelativeLayout>
 
         </LinearLayout>
@@ -182,6 +188,7 @@
             android:visibility="gone"
             android:paddingHorizontal="18dp"
             android:id="@+id/layoutHeight"
+            android:paddingBottom="80dp"
             android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
@@ -193,14 +200,23 @@
                 android:textColor="@color/kamleon_dark_grey"
                 android:text="@string/onboard_height_title"/>
 
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:layout_width="220dp"
-                android:layout_height="wrap_content"
-                style="@style/onboardSpinnerItemStyle"
-                android:layout_gravity="center"
-                android:layout_marginTop="40dp"
-                android:textAlignment="center"
-                android:id="@+id/spinnerHeight"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <com.ozcanalasalvar.datepicker.view.datapicker.DataPicker
+                    android:id="@+id/heightPicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/transparent"
+                    app:darkModeEnabled="false"
+                    app:textSize="28"
+                    app:textBold="true"
+                    />
+            </RelativeLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -208,6 +224,7 @@
             android:visibility="gone"
             android:paddingHorizontal="18dp"
             android:id="@+id/layoutWeight"
+            android:paddingBottom="80dp"
             android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
@@ -218,14 +235,23 @@
                 android:textSize="@dimen/ts_30"
                 android:textColor="@color/kamleon_dark_grey"
                 android:text="@string/onboard_weight_title"/>
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:layout_width="220dp"
-                android:layout_height="wrap_content"
-                style="@style/onboardSpinnerItemStyle"
-                android:layout_gravity="center"
-                android:textAlignment="center"
-                android:layout_marginTop="40dp"
-                android:id="@+id/spinnerWeight"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <com.ozcanalasalvar.datepicker.view.datapicker.DataPicker
+                    android:id="@+id/weightPicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/transparent"
+                    app:darkModeEnabled="false"
+                    app:textSize="28"
+                    app:textBold="true"
+                    />
+            </RelativeLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -233,6 +259,7 @@
             android:visibility="gone"
             android:paddingHorizontal="18dp"
             android:id="@+id/layoutGender"
+            android:paddingBottom="80dp"
             android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
@@ -244,14 +271,23 @@
                 android:textColor="@color/kamleon_dark_grey"
                 android:text="@string/onboard_gender_title"/>
 
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:layout_width="220dp"
-                android:layout_height="wrap_content"
-                style="@style/onboardSpinnerItemStyle"
-                android:layout_gravity="center"
-                android:textAlignment="center"
-                android:layout_marginTop="40dp"
-                android:id="@+id/spinnerGender"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <com.ozcanalasalvar.datepicker.view.datapicker.DataPicker
+                    android:id="@+id/genderPicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/transparent"
+                    app:darkModeEnabled="false"
+                    app:textSize="28"
+                    app:textBold="true"
+                    />
+            </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

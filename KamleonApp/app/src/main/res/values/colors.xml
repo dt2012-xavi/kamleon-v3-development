@@ -58,6 +58,9 @@
 
     <color name="color_fa">#FFFAFAFA</color>
     <color name="color_fa_40">#66FAFAFA</color>
+    <color name="color_red">#FC664E</color>
+
+    <color name="color_secondary">#808285</color>
 
     <color name="bg_color_activity">#66FAFAFA</color>
 </resources>

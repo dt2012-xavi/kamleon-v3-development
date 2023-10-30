@@ -1,0 +1,152 @@
+package com.ozcanalasalvar.datepicker.compose.datapicker
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.google.android.material.timepicker.TimeFormat
+import com.ozcanalasalvar.datepicker.compose.component.SelectorView
+import com.ozcanalasalvar.datepicker.model.Time
+import com.ozcanalasalvar.datepicker.ui.theme.PickerTheme
+import com.ozcanalasalvar.datepicker.ui.theme.colorDarkPrimary
+import com.ozcanalasalvar.datepicker.ui.theme.colorDarkTextPrimary
+import com.ozcanalasalvar.datepicker.ui.theme.colorLightPrimary
+import com.ozcanalasalvar.datepicker.ui.theme.colorLightTextPrimary
+import com.ozcanalasalvar.datepicker.ui.theme.darkPallet
+import com.ozcanalasalvar.datepicker.ui.theme.lightPallet
+import com.ozcanalasalvar.datepicker.utils.DateUtils
+import com.ozcanalasalvar.wheelview.WheelView
+import com.ozcanalasalvar.wheelview.SelectorOptions
+
+
+@Composable
+fun WheelDataPicker(
+    offset: Int = 4,
+    selectorEffectEnabled: Boolean = true,
+    valueUnit: String = "",
+    startValue: String = "",
+    values: List<String> = arrayListOf("value1", "value2"),
+    textSize: Int = 16,
+    textBold: Boolean = false,
+    onValueChanged: (String, String?) -> Unit = { _, _ -> },
+    darkModeEnabled: Boolean = true,
+    valueWidth: Int = 350
+) {
+
+    var selectedValue by remember { mutableStateOf("") }
+
+    val fontSize = maxOf(13, minOf(29, textSize))
+
+    LaunchedEffect(selectedValue) {
+        onValueChanged(selectedValue, valueUnit)
+    }
+
+    Box(
+        modifier = Modifier
+            .wrapContentSize()
+            .height(IntrinsicSize.Max)
+            .background(if (darkModeEnabled) colorDarkPrimary else colorLightPrimary),
+        contentAlignment = Alignment.Center
+    ) {
+
+        val height=( fontSize + 10) .dp
+
+
+        Row(
+            modifier = Modifier
+                .nestedScroll(rememberNestedScrollInteropConnection())
+                .wrapContentSize()
+                .padding(start = 20.dp, end = 20.dp)
+                .align(Alignment.Center)
+        ) {
+
+
+            WheelView(//modifier = Modifier.weight(3f)
+                modifier = Modifier.width(valueWidth.dp),
+                itemSize = DpSize(valueWidth.dp, height),
+                selection = 0,
+                itemCount = values.size,
+                rowOffset = offset,
+                isEndless = false,
+                selectorOption = SelectorOptions().copy(selectEffectEnabled = selectorEffectEnabled, enabled = false),
+                onFocusItem = {
+                    selectedValue = values[it]
+                },
+                content = {
+                    Text(
+                        text = if (values.isNotEmpty()) values[it] else "",
+//                        textAlign = if (valueUnit.isEmpty()) TextAlign.Center else TextAlign.End,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.width(valueWidth.dp),
+                        fontSize = fontSize.sp,
+                        fontWeight = if (textBold) FontWeight.Bold else FontWeight.Normal,
+                        color = if (darkModeEnabled) colorDarkTextPrimary else colorLightTextPrimary
+                    )
+                })
+
+            if (valueUnit.isNotEmpty()) {
+                WheelView(modifier = Modifier.width(50.dp),
+                    itemSize = DpSize(50.dp, height),
+                    selection = 0,
+                    itemCount = 1,
+                    rowOffset = offset,
+                    isEndless = false,
+                    selectorOption = SelectorOptions().copy(
+                        selectEffectEnabled = selectorEffectEnabled,
+                        enabled = false
+                    ),
+                    onFocusItem = {
+
+                    },
+                    content = {
+                        Text(
+                            text = valueUnit,
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier.width(50.dp),
+                            fontSize = 16.sp,
+                            color = if (darkModeEnabled) colorDarkTextPrimary else colorLightTextPrimary
+                        )
+                    })
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = if (darkModeEnabled) darkPallet else lightPallet
+                    )
+                ),
+        ) {}
+
+        SelectorView(darkModeEnabled= darkModeEnabled, offset = offset)
+
+    }
+}

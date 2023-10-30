@@ -11,6 +11,12 @@ import androidx.appcompat.app.AlertDialog
 import com.kamleonapp.R
 import com.kamleonapp.base.BaseActivity
 import com.kamleonapp.databinding.ActivitySettingBinding
+import com.kamleonapp.fragments.BottomFragmentDismissListener
+import com.kamleonapp.fragments.DataPickerFragment
+import com.kamleonapp.fragments.DatePickerFragment
+import com.kamleonapp.fragments.ImagePickFragment
+import com.kamleonapp.fragments.NotificationFragment
+import com.kamleonapp.fragments.ScanIntroFragment
 import com.kamleonapp.views.SettingMenuItemView
 
 
@@ -18,6 +24,34 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
     SettingMenuItemView.SettingMenuItemViewListener {
     override fun setBinding(): ActivitySettingBinding = ActivitySettingBinding.inflate(layoutInflater)
     private var isSettingAccount: Boolean = true
+    private val onDismissPickImage = object : BottomFragmentDismissListener {
+        override fun onDismissFragment() {
+
+        }
+    }
+    private val onDismissDatePicker = object : BottomFragmentDismissListener {
+        override fun onDismissFragment() {
+
+        }
+    }
+
+    private val onDismissGenderPicker = object : BottomFragmentDismissListener {
+        override fun onDismissFragment() {
+
+        }
+    }
+
+    private val onDismissWeightPicker = object : BottomFragmentDismissListener {
+        override fun onDismissFragment() {
+
+        }
+    }
+
+    private val onDismissHeightPicker = object : BottomFragmentDismissListener {
+        override fun onDismissFragment() {
+
+        }
+    }
 
     override fun initView() {
         updateOptionViewUI()
@@ -64,7 +98,21 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         }
 
         binding.btnSave.setOnClickListener {
+            showReadyDialog()
+        }
 
+        binding.profileLayout.setOnClickListener {
+            val pickFragment = ImagePickFragment.newInstance(onDismissPickImage)
+            pickFragment.show(supportFragmentManager, "ImagePick")
+        }
+
+        binding.btnSettingNoti.setOnClickListener {
+            val notiFragment = NotificationFragment.newInstance(onDismissPickImage)
+            notiFragment.show(supportFragmentManager, "Notifications")
+        }
+
+        binding.btnSettingClose.setOnClickListener {
+            finish()
         }
     }
 
@@ -105,6 +153,21 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
 
         dialogView.findViewById<TextView>(R.id.tvBtnN).setText(R.string.dialog_logout_n)
         dialogView.findViewById<TextView>(R.id.tvBtnN).setOnClickListener {
+            logoutDialog.dismiss()
+        }
+    }
+
+    private fun showReadyDialog() {
+        val dialog: AlertDialog.Builder = AlertDialog.Builder(this)
+        val inflater = this.layoutInflater
+        val dialogView: View = inflater.inflate(R.layout.layout_dialog_profile_ready, null)
+
+        dialog.setView(dialogView)
+        dialog.setCancelable(false)
+        val logoutDialog = dialog.show()
+        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        dialogView.findViewById<TextView>(R.id.tvDialogDesc).setOnClickListener {
             logoutDialog.dismiss()
         }
     }
@@ -150,13 +213,33 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         } else if (menuView == binding.accMenuItemPP) {
             openWebBrowser("https://privacy_policy.com")
         } else if (menuView == binding.prefMenuItemWeight) {
-
+            showWeightPicker()
         } else if (menuView == binding.prefMenuItemHeight) {
-
+            showHeightPicker()
         } else if (menuView == binding.prefMenuItemGender) {
-
+            showGenderPicker()
         } else if (menuView == binding.prefMenuItemBirth) {
-
+            showDatePicker()
         }
+    }
+
+    private fun showDatePicker() {
+        val qrFragment = DatePickerFragment.newInstance(onDismissDatePicker)
+        qrFragment.show(supportFragmentManager, "DatePicker")
+    }
+
+    private fun showHeightPicker() {
+        val dataFragment = DataPickerFragment.newInstance(onDismissHeightPicker, "height")
+        dataFragment.show(supportFragmentManager, "HeightPicker")
+    }
+
+    private fun showWeightPicker() {
+        val dataFragment = DataPickerFragment.newInstance(onDismissWeightPicker, "weight")
+        dataFragment.show(supportFragmentManager, "WeightPicker")
+    }
+
+    private fun showGenderPicker() {
+        val dataFragment = DataPickerFragment.newInstance(onDismissGenderPicker, "gender")
+        dataFragment.show(supportFragmentManager, "GenderPicker")
     }
 }

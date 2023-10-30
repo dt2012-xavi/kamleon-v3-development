@@ -18,4 +18,11 @@
         <attr name="descText" format="string" />
         <attr name="type" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="NotificationListItemViewStyle">
+        <attr name="notiType" format="string" />
+        <attr name="notiDate" format="string" />
+        <attr name="notiDesc" format="string" />
+        <attr name="notiAction" format="string" />
+    </declare-styleable>
 </resources>

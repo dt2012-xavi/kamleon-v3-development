@@ -23,7 +23,8 @@ class AnalyticActivity : BaseActivity<ActivityAnalyticBinding>() {
             selectTab(1)
         }
         binding.layoutTabHome.setOnClickListener {
-            selectTab(0)
+//            selectTab(0)
+            startActivity(Intent(this, SettingActivity::class.java))
         }
         binding.layoutTabQr.setOnClickListener {
             showQRIntroFragment()
@@ -44,6 +45,11 @@ class AnalyticActivity : BaseActivity<ActivityAnalyticBinding>() {
         binding.listItemVolume.isClickable = true
         binding.listItemVolume.setOnClickListener {
             openGraphView(2)
+        }
+
+        binding.btnNavProfile.isClickable = true
+        binding.btnNavProfile.setOnClickListener {
+            startActivity(Intent(this, SettingActivity::class.java))
         }
     }
 

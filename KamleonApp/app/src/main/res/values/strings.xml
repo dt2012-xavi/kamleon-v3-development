@@ -157,6 +157,18 @@
     <string name="kmln_graph_label_optimum">Optimum</string>
     <string name="kmln_graph_label_minimum">Minimum</string>
     <string name="kmln_graph_label_maximum">Maximum</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="image_pick_gallery">Choose from library</string>
+    <string name="image_pick_camera">Take photo</string>
+    <string name="image_pick_remove">Remove current picture</string>
+
+    <string name="notifications">Notifications</string>
+    <string name="noti_invite_req">Invitation Request</string>
+    <string name="noti_role_change">Role Change</string>
+    <string name="noti_confirm">Confirm</string>
+    <string name="noti_deny">Deny</string>
+    <string name="noti_temp_desc1">DIR Diagonal has added you to the spinning team.</string>
+    <string name="noti_temp_desc2">Kamleon has assigned you the role of administrator of DIR Diagonal.</string>
+
+    <string name="msg_profile_ready">Now you are a member of the Spinning Team in Dir Diagonal!</string>
 </resources>

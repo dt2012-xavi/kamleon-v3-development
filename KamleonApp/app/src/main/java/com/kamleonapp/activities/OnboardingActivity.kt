@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatSpinner
 import com.kamleonapp.R
 import com.kamleonapp.base.BaseActivity
 import com.kamleonapp.databinding.ActivityOnboardingBinding
+import com.ozcanalasalvar.datepicker.view.datapicker.DataPicker
 
 class OnboardingActivity : BaseActivity<ActivityOnboardingBinding>() {
     public enum class OnBoardingStep(val step: Int) {
@@ -39,20 +40,26 @@ class OnboardingActivity : BaseActivity<ActivityOnboardingBinding>() {
         return layouts[step.step]
     }
 
-    private fun spinnerViewFor(step: OnBoardingStep): AppCompatSpinner {
+    private fun spinnerViewFor(step: OnBoardingStep): DataPicker {
         if (step == OnBoardingStep.Height) {
-            return binding.spinnerHeight
+            return binding.heightPicker
         } else if (step == OnBoardingStep.Weight) {
-            return binding.spinnerWeight
+            return binding.weightPicker
         } else if (step == OnBoardingStep.Gender) {
-            return binding.spinnerGender
+            return binding.genderPicker
         }
 
-        return binding.spinnerHeight
+        return binding.heightPicker
     }
 
     override fun initView() {
         binding.progressStep.max = OnBoardingStep.values().size
+        binding.weightPicker.setValueUnit("kg")
+        binding.weightPicker.setValueWidth(80)
+
+        binding.heightPicker.setValueUnit("cm")
+        binding.heightPicker.setValueWidth(80)
+
         updateUI()
 
         setupSpinners()
@@ -89,15 +96,15 @@ class OnboardingActivity : BaseActivity<ActivityOnboardingBinding>() {
         binding.tvBottomDesc.visibility = if (state.step < 2) View.VISIBLE else View.INVISIBLE
     }
 
-    private fun spinnerDataSource(step: OnBoardingStep) : List<String> {
+    private fun spinnerDataSource(step: OnBoardingStep) : ArrayList<String> {
         val  aryRet = ArrayList<String>()
         if (step == OnBoardingStep.Height) {
             for (height in 150 .. 190) {
-                aryRet.add("$height cm")
+                aryRet.add("$height")
             }
         } else if (step == OnBoardingStep.Weight) {
             for (weight in 40 .. 120) {
-                aryRet.add("$weight kg")
+                aryRet.add("$weight")
             }
         } else if (step == OnBoardingStep.Gender) {
             val arrRes = resources.getStringArray(R.array.onboard_gender_values)
@@ -110,16 +117,10 @@ class OnboardingActivity : BaseActivity<ActivityOnboardingBinding>() {
     private fun setupSpinners() {
         for (onboardState in OnBoardingStep.values()) {
             if (onboardState.step <= 2) { continue }
-            val spinner = spinnerViewFor(onboardState)
+            val picker = spinnerViewFor(onboardState)
 
             Log.e("SPINNER", "Datasource size = " + spinnerDataSource(onboardState).size)
-            var aa = ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerDataSource(onboardState))
-            aa?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-            spinner?.adapter = aa
-//        spinner?.onItemSelectedListener = this
-//            spinner?.textAlignment = Te
-            spinner?.gravity = Gravity.CENTER
+            picker?.setValues(spinnerDataSource(onboardState))
         }
     }
 }

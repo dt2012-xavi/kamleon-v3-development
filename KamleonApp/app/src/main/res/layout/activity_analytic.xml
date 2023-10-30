@@ -29,7 +29,7 @@
             android:layout_width="@dimen/nav_back_button_size"
             android:layout_height="@dimen/nav_back_button_size"
             android:src="@drawable/img_circle_profile"
-            android:id="@+id/btnNavBack"
+            android:id="@+id/btnNavProfile"
             android:background="@color/transparent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
