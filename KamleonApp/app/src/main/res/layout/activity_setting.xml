@@ -199,7 +199,7 @@
                 android:id="@+id/layoutAccount"
                 android:paddingHorizontal="@dimen/setting_category_padding"
                 android:layout_marginTop="32dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:orientation="vertical">
 
                 <TextView
@@ -216,7 +216,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -291,7 +291,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <com.kamleonapp.views.SettingMenuItemView
@@ -309,7 +309,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <com.kamleonapp.views.SettingMenuItemView
@@ -337,7 +337,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <com.kamleonapp.views.SettingMenuItemView
@@ -364,6 +364,82 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/CircularMediumFont"
+                    android:layout_marginTop="28dp"
+                    android:textColor="@color/kamleon_dark_grey"
+                    android:text="@string/setting_label_user_data"
+                    android:textSize="@dimen/ts_14"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_pref_container_shadow"
+                    android:orientation="vertical">
+
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:id="@+id/prefMenuItemWeight"
+                        app:settingTypeLabel="@string/setting_label_user_weight"
+                        app:settingTypeValue="45.0kg"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
+                        android:background="@color/kamleon_secondary_grey_40" />
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:id="@+id/prefMenuItemHeight"
+                        app:settingTypeLabel="@string/setting_label_user_height"
+                        app:settingTypeValue="160.0 cm"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
+                        android:background="@color/kamleon_secondary_grey_40" />
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:id="@+id/prefMenuItemGender"
+                        app:settingTypeLabel="@string/setting_label_user_gender"
+                        app:settingTypeValue="Female"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
+                        android:background="@color/kamleon_secondary_grey_40" />
+                    <com.kamleonapp.views.SettingMenuItemView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:id="@+id/prefMenuItemBirth"
+                        app:settingTypeLabel="@string/setting_label_user_birthdate"
+                        app:settingTypeValue="21 april 1955 (68)"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"/>
+                </LinearLayout>
+
+                <TextView
+                    style="@style/CircularBoldFont"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:paddingHorizontal="8dp"
+                    android:text="@string/setting_desc_pref1"
+                    android:textColor="@color/kamleon_secondary_grey_50"
+                    android:textSize="@dimen/ts_12" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/CircularMediumFont"
                     android:layout_marginTop="36dp"
                     android:textColor="@color/kamleon_dark_grey"
                     android:text="@string/setting_label_acc_info"
@@ -373,7 +449,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <com.kamleonapp.views.SettingMenuItemView
@@ -392,7 +468,7 @@
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
                     android:paddingTop="12dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <com.kamleonapp.views.SettingMenuItemView
@@ -536,7 +612,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/layoutPreference"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:paddingHorizontal="@dimen/setting_category_padding"
                 android:layout_marginTop="12dp"
                 android:orientation="vertical">
@@ -547,82 +623,6 @@
                     style="@style/CircularMediumFont"
                     android:layout_marginTop="8dp"
                     android:textColor="@color/kamleon_dark_grey"
-                    android:text="@string/setting_label_user_data"
-                    android:textSize="@dimen/ts_14"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="@dimen/setting_category_content_padding"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
-                    android:orientation="vertical">
-
-                    <com.kamleonapp.views.SettingMenuItemView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
-                        android:id="@+id/prefMenuItemWeight"
-                        app:settingTypeLabel="@string/setting_label_user_weight"
-                        app:settingTypeValue="45.0kg"
-                        app:settingRightArrow="true"
-                        app:settingRightSwitch="false"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
-                        android:background="@color/kamleon_secondary_grey_40" />
-                    <com.kamleonapp.views.SettingMenuItemView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
-                        android:id="@+id/prefMenuItemHeight"
-                        app:settingTypeLabel="@string/setting_label_user_height"
-                        app:settingTypeValue="160.0 cm"
-                        app:settingRightArrow="true"
-                        app:settingRightSwitch="false"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
-                        android:background="@color/kamleon_secondary_grey_40" />
-                    <com.kamleonapp.views.SettingMenuItemView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
-                        android:id="@+id/prefMenuItemGender"
-                        app:settingTypeLabel="@string/setting_label_user_gender"
-                        app:settingTypeValue="Female"
-                        app:settingRightArrow="true"
-                        app:settingRightSwitch="false"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
-                        android:background="@color/kamleon_secondary_grey_40" />
-                    <com.kamleonapp.views.SettingMenuItemView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
-                        android:id="@+id/prefMenuItemBirth"
-                        app:settingTypeLabel="@string/setting_label_user_birthdate"
-                        app:settingTypeValue="21 april 1955 (68)"
-                        app:settingRightArrow="true"
-                        app:settingRightSwitch="false"/>
-                </LinearLayout>
-
-                <TextView
-                    style="@style/CircularBoldFont"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:paddingHorizontal="8dp"
-                    android:text="@string/setting_desc_pref1"
-                    android:textColor="@color/kamleon_secondary_grey_50"
-                    android:textSize="@dimen/ts_12" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/CircularMediumFont"
-                    android:layout_marginTop="24dp"
-                    android:textColor="@color/kamleon_dark_grey"
                     android:text="@string/setting_label_noti"
                     android:textSize="@dimen/ts_14"/>
 
@@ -631,7 +631,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <com.kamleonapp.views.SettingMenuItemView
@@ -668,7 +668,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <com.kamleonapp.views.SettingMenuItemView
