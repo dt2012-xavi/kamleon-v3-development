@@ -638,7 +638,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
                         app:settingTypeLabel="@string/setting_label_analytics"
-                        app:settingTypeValue="name"
+                        app:settingTypeValue=""
                         app:settingRightArrow="false"
                         app:settingRightSwitch="true"/>
 
