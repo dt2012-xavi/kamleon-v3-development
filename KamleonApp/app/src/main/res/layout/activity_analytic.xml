@@ -25,16 +25,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageButton
-            android:layout_width="@dimen/nav_back_button_size"
-            android:layout_height="@dimen/nav_back_button_size"
-            android:src="@drawable/img_circle_profile"
-            android:id="@+id/btnNavProfile"
-            android:background="@color/transparent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="@dimen/nav_back_button_left"
-            android:layout_marginTop="@dimen/nav_back_button_top"/>
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -105,7 +96,16 @@
             </LinearLayout>
 
         </ScrollView>
-
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_circle_profile"
+            android:id="@+id/btnNavProfile"
+            android:background="@color/transparent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/nav_back_button_left"
+            android:layout_marginTop="@dimen/nav_back_button_top"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
