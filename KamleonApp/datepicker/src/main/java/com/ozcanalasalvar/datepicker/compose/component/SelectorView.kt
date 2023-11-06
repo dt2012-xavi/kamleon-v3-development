@@ -4,12 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.ozcanalasalvar.datepicker.ui.theme.PickerTheme
 import com.ozcanalasalvar.datepicker.ui.theme.colorDarkOnBackground
@@ -51,7 +53,6 @@ fun SelectorView(modifier: Modifier = Modifier, darkModeEnabled: Boolean, offset
                     .background(if (darkModeEnabled) colorDarkTextPrimary else colorLightTextPrimary)
                     .fillMaxWidth()
             )
-
         }
 
 

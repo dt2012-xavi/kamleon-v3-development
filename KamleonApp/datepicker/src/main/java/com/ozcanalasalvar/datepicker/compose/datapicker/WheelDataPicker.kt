@@ -41,6 +41,7 @@ import com.ozcanalasalvar.datepicker.ui.theme.colorLightTextPrimary
 import com.ozcanalasalvar.datepicker.ui.theme.darkPallet
 import com.ozcanalasalvar.datepicker.ui.theme.lightPallet
 import com.ozcanalasalvar.datepicker.utils.DateUtils
+import com.ozcanalasalvar.datepicker.utils.withYear
 import com.ozcanalasalvar.wheelview.WheelView
 import com.ozcanalasalvar.wheelview.SelectorOptions
 
@@ -51,6 +52,7 @@ fun WheelDataPicker(
     selectorEffectEnabled: Boolean = true,
     valueUnit: String = "",
     startValue: String = "",
+    showDecimal: Boolean = false,
     values: List<String> = arrayListOf("value1", "value2"),
     textSize: Int = 16,
     textBold: Boolean = false,
@@ -60,6 +62,11 @@ fun WheelDataPicker(
 ) {
 
     var selectedValue by remember { mutableStateOf("") }
+    val decimalValues = mutableListOf<Int>().apply {
+        for (decimalValue in IntRange(0, 9)) {
+            add(decimalValue)
+        }
+    }
 
     val fontSize = maxOf(13, minOf(29, textSize))
 
@@ -109,6 +116,55 @@ fun WheelDataPicker(
                         color = if (darkModeEnabled) colorDarkTextPrimary else colorLightTextPrimary
                     )
                 })
+            if (showDecimal) {
+                WheelView(modifier = Modifier.width(10.dp),
+                    itemSize = DpSize(10.dp, height),
+                    selection = 0,
+                    itemCount = 1,
+                    rowOffset = offset,
+                    isEndless = false,
+                    selectorOption = SelectorOptions().copy(
+                        selectEffectEnabled = false,
+                        enabled = false
+                    ),
+                    onFocusItem = {
+
+                    },
+                    content = {
+                        Text(
+                            text = ".",
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.width(10.dp),
+                            fontSize = fontSize.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (darkModeEnabled) colorDarkTextPrimary else colorLightTextPrimary
+                        )
+                    })
+
+                WheelView(modifier = Modifier.width(30.dp),
+                    itemSize = DpSize(30.dp, height),
+                    selection = decimalValues.indexOf(0),
+                    itemCount = decimalValues.size,
+                    rowOffset = offset,
+                    isEndless = false,
+                    selectorOption = SelectorOptions().copy(
+                        selectEffectEnabled = selectorEffectEnabled,
+                        enabled = false
+                    ),
+                    onFocusItem = {
+//                    selectedValue = selectedValue.withDecimal(decimalValues[it])
+                    },
+                    content = {
+                        Text(
+                            text = decimalValues[it].toString(),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.width(30.dp),
+                            fontSize = fontSize.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (darkModeEnabled) colorDarkTextPrimary else colorLightTextPrimary
+                        )
+                    })
+            }
 
             if (valueUnit.isNotEmpty()) {
                 WheelView(modifier = Modifier.width(50.dp),

@@ -70,17 +70,19 @@ class DataPickerFragment : BottomSheetDialogFragment() {
         val pickerView = v.findViewById<DataPicker>(R.id.dataPicker)
         val  aryRet = ArrayList<String>()
         if (dataType == "height") {
-            for (height in 150 .. 190) {
+            for (height in 160 .. 190) {
                 aryRet.add("$height")
             }
             pickerView.setValueUnit("cm")
-            pickerView.setValueWidth(75)
+            pickerView.setValueWidth(70)
+            pickerView.setShowDecimal(true)
         } else if (dataType == "weight") {
-            for (weight in 40 .. 120) {
+            for (weight in 45 .. 120) {
                 aryRet.add("$weight")
             }
             pickerView.setValueUnit("kg")
-            pickerView.setValueWidth(75)
+            pickerView.setValueWidth(50)
+            pickerView.setShowDecimal(true)
         } else if (dataType == "gender") {
             val arrRes = resources.getStringArray(R.array.onboard_gender_values)
             aryRet.addAll(arrRes)

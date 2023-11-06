@@ -563,7 +563,7 @@
                         android:layout_height="@dimen/setting_menu_item_height"
                         android:id="@+id/prefMenuItemWeight"
                         app:settingTypeLabel="@string/setting_label_user_weight"
-                        app:settingTypeValue="170.2 cm"
+                        app:settingTypeValue="45.0kg"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"/>
                     <View
@@ -576,7 +576,7 @@
                         android:layout_height="@dimen/setting_menu_item_height"
                         android:id="@+id/prefMenuItemHeight"
                         app:settingTypeLabel="@string/setting_label_user_height"
-                        app:settingTypeValue="60.3 kg"
+                        app:settingTypeValue="160.0 cm"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"/>
                     <View

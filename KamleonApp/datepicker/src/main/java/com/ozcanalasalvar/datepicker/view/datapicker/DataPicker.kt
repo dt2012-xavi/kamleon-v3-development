@@ -25,6 +25,7 @@ class DataPicker : LinearLayout {
     private var values = arrayListOf("value1", "value2")
     private var valueUnit = ""
     private var valueWidth = 250
+    private var showDecimal = false
 
     constructor(context: Context) : super(context) {
         init(context, null, 0)
@@ -97,6 +98,7 @@ class DataPicker : LinearLayout {
         pickerView?.valueUnit = valueUnit
         pickerView?.values = values
         pickerView?.valueWidth = valueWidth
+        pickerView?.showDecimal = showDecimal
 
         pickerView?.setDataChangeListener(dataChangeListener)
         pickerView?.background = ColorDrawable(0x00FF00)
@@ -153,6 +155,11 @@ class DataPicker : LinearLayout {
 
     fun setValueWidth(width: Int) {
         valueWidth = width
+        setAttributes()
+    }
+
+    fun setShowDecimal(show: Boolean) {
+        showDecimal = show
         setAttributes()
     }
 }

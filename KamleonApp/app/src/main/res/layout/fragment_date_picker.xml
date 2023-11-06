@@ -28,6 +28,7 @@
             android:layout_marginTop="24dp"
             android:background="@color/kamleon_dark_grey"
             app:darkModeEnabled="true"
+            app:offset="2"
             app:textSize="18"
             app:textBold="true"
             />

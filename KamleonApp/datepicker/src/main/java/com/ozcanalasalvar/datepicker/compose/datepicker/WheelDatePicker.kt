@@ -89,7 +89,7 @@ fun WheelDatePicker(
         contentAlignment = Alignment.Center
     ) {
 
-        val height = (fontSize + 11).dp
+        val height = (fontSize + 14).dp
 
 
         Row(

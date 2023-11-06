@@ -12,9 +12,9 @@ import com.kamleonapp.fragments.ScanIntroFragment
 class AnalyticActivity : BaseActivity<ActivityAnalyticBinding>() {
     override fun setBinding(): ActivityAnalyticBinding = ActivityAnalyticBinding.inflate(layoutInflater)
 
+
     private val onDismissScanIntro = object : BottomFragmentDismissListener {
         override fun onDismissFragment() {
-            selectTab(2)
         }
     }
 
@@ -27,7 +27,19 @@ class AnalyticActivity : BaseActivity<ActivityAnalyticBinding>() {
             startActivity(Intent(this, SettingActivity::class.java))
         }
         binding.layoutTabQr.setOnClickListener {
-            showQRIntroFragment()
+            selectTab(2)
+            val thread: Thread = object : Thread() {
+                override fun run() {
+                    try {
+                        sleep(400)
+                    } catch (e: InterruptedException) {
+                    }
+                    runOnUiThread {
+                        showQRIntroFragment()
+                    }
+                }
+            }
+            thread.start()
         }
 
         selectTab(1)

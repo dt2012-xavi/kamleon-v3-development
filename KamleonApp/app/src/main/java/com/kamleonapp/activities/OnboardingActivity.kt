@@ -55,10 +55,12 @@ class OnboardingActivity : BaseActivity<ActivityOnboardingBinding>() {
     override fun initView() {
         binding.progressStep.max = OnBoardingStep.values().size
         binding.weightPicker.setValueUnit("kg")
-        binding.weightPicker.setValueWidth(80)
+        binding.weightPicker.setValueWidth(50)
+        binding.weightPicker.setShowDecimal(true)
 
         binding.heightPicker.setValueUnit("cm")
-        binding.heightPicker.setValueWidth(80)
+        binding.heightPicker.setValueWidth(74)
+        binding.heightPicker.setShowDecimal(true)
 
         updateUI()
 
@@ -99,11 +101,11 @@ class OnboardingActivity : BaseActivity<ActivityOnboardingBinding>() {
     private fun spinnerDataSource(step: OnBoardingStep) : ArrayList<String> {
         val  aryRet = ArrayList<String>()
         if (step == OnBoardingStep.Height) {
-            for (height in 150 .. 190) {
+            for (height in 160 .. 190) {
                 aryRet.add("$height")
             }
         } else if (step == OnBoardingStep.Weight) {
-            for (weight in 40 .. 120) {
+            for (weight in 45 .. 120) {
                 aryRet.add("$weight")
             }
         } else if (step == OnBoardingStep.Gender) {

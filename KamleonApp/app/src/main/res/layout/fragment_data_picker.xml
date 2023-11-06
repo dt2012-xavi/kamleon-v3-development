@@ -45,6 +45,7 @@
             android:layout_marginTop="24dp"
             android:background="@color/kamleon_dark_grey"
             app:darkModeEnabled="true"
+            app:offset="1"
             app:textSize="20"
             app:textBold="true"
             />

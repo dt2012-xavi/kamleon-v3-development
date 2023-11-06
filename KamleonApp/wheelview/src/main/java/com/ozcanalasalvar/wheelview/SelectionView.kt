@@ -1,5 +1,6 @@
 package com.ozcanalasalvar.wheelview
 
+import android.graphics.Color
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,11 +20,13 @@ fun SelectionView(
 ) {
     Column(
         modifier = modifier.fillMaxSize()
+            .background(androidx.compose.ui.graphics.Color.Red)
     ) {
 
         Box(
             modifier = Modifier
                 .weight(rowOffset.toFloat())
+
                 .fillMaxWidth(),
         )
 
@@ -31,6 +34,7 @@ fun SelectionView(
         Column(
             modifier = Modifier
                 .weight(1.13f)
+                .background(androidx.compose.ui.graphics.Color.Red)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {

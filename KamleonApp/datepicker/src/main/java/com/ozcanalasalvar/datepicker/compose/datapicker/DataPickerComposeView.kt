@@ -30,6 +30,7 @@ class DataPickerComposeView @JvmOverloads constructor(
 
     private val valuesSourceState = mutableStateOf(arrayListOf("value1", "value2"))
     private val valueWidthState = mutableStateOf(250)
+    private val showDecimalState = mutableStateOf(false)
 
     var offset: Int
         get() = offsetState.value
@@ -84,6 +85,11 @@ class DataPickerComposeView @JvmOverloads constructor(
             valueWidthState.value = value
         }
 
+    var showDecimal: Boolean
+        get() = showDecimalState.value
+        set(value) {
+            showDecimalState.value = value
+        }
 
     private var dataChangeListener: DataPicker.DataChangeListener? = null
     fun setDataChangeListener(dataSelectListener: DataPicker.DataChangeListener?) {
@@ -102,6 +108,7 @@ class DataPickerComposeView @JvmOverloads constructor(
             selectorEffectEnabled = selectorEffectEnabledState.value,
             valueUnit = valueUnit,
             startValue = "",
+            showDecimal = showDecimal,
             values = values,
             textSize = textSizeState.value,
             textBold = textBoldState.value,

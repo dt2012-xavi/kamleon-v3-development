@@ -103,7 +103,6 @@ fun InfiniteWheelViewImpl(
             userScrollEnabled = userScrollEnabled,
         ) {
 
-
             items(if (isEndless) Int.MAX_VALUE else count) {
                 val rotateDegree = calculateIndexRotation(focusedIndex.value, it, rowOffset)
                 Box(

@@ -176,6 +176,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@color/transparent"
                     app:darkModeEnabled="false"
+                    app:offset="1"
                     app:textSize="24"
                     app:textBold="true"
                     />
@@ -213,6 +214,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@color/transparent"
                     app:darkModeEnabled="false"
+                    app:offset="1"
                     app:textSize="28"
                     app:textBold="true"
                     />
@@ -248,6 +250,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@color/transparent"
                     app:darkModeEnabled="false"
+                    app:offset="1"
                     app:textSize="28"
                     app:textBold="true"
                     />
@@ -284,6 +287,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@color/transparent"
                     app:darkModeEnabled="false"
+                    app:offset="1"
                     app:textSize="28"
                     app:textBold="true"
                     />
