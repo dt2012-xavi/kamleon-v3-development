@@ -10,7 +10,7 @@
                 android:right="1dp"
                 android:top="1dp" />
 
-            <solid android:color="@color/shadow_black_0" />
+            <solid android:color="@color/shadow_setting_0" />
 
             <corners android:radius="@dimen/setting_option_list_radius" />
         </shape>
@@ -23,7 +23,7 @@
                 android:right="1dp"
                 android:top="1dp" />
 
-            <solid android:color="@color/shadow_black_1" />
+            <solid android:color="@color/shadow_setting_1" />
 
             <corners android:radius="@dimen/setting_option_list_radius" />
         </shape>
@@ -34,9 +34,48 @@
                 android:bottom="1dp"
                 android:left="1dp"
                 android:right="1dp"
-                android:top="1dp" />
+                android:top="0dp" />
 
-            <solid android:color="@color/shadow_black_2" />
+            <solid android:color="@color/shadow_setting_2" />
+
+            <corners android:radius="@dimen/setting_option_list_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="0dp" />
+
+            <solid android:color="@color/shadow_setting_3" />
+
+            <corners android:radius="@dimen/setting_option_list_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="0dp" />
+
+            <solid android:color="@color/shadow_setting_4" />
+
+            <corners android:radius="@dimen/setting_option_list_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="0dp" />
+
+            <solid android:color="@color/shadow_setting_5" />
 
             <corners android:radius="@dimen/setting_option_list_radius" />
         </shape>
