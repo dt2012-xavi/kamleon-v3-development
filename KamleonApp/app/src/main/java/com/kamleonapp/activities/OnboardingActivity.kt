@@ -13,6 +13,10 @@ import com.kamleonapp.R
 import com.kamleonapp.base.BaseActivity
 import com.kamleonapp.databinding.ActivityOnboardingBinding
 import com.ozcanalasalvar.datepicker.view.datapicker.DataPicker
+import com.ozcanalasalvar.datepicker.view.datepicker.DatePicker
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.Date
 
 class OnboardingActivity : BaseActivity<ActivityOnboardingBinding>() {
     public enum class OnBoardingStep(val step: Int) {
@@ -124,5 +128,34 @@ class OnboardingActivity : BaseActivity<ActivityOnboardingBinding>() {
             Log.e("SPINNER", "Datasource size = " + spinnerDataSource(onboardState).size)
             picker?.setValues(spinnerDataSource(onboardState))
         }
+
+        val df = SimpleDateFormat("yyyy-MM-dd")
+        binding.datePicker.setDate(df.parse("2018-12-12").time)
+        binding.datePicker.setDateChangeListener(object : DatePicker.DateChangeListener {
+            override fun onDateChanged(date: Long, day: Int, month: Int, year: Int) {
+                Log.e("DatePicker", "newDate $year-$month-$day")
+            }
+        })
+        binding.heightPicker.setValue("171.2")
+        binding.heightPicker.setDataChangeListener(object : DataPicker.DataChangeListener {
+            override fun onDataChanged(strValue: String, unitValue: String?) {
+                Log.e("DatePicker", "newHeight $strValue-$unitValue")
+            }
+        })
+
+        binding.weightPicker.setValue("54.5")
+        binding.weightPicker.setDataChangeListener(object : DataPicker.DataChangeListener {
+            override fun onDataChanged(strValue: String, unitValue: String?) {
+                Log.e("DatePicker", "newWeight $strValue-$unitValue")
+            }
+        })
+
+        binding.genderPicker.setValue(spinnerDataSource(OnBoardingStep.Gender)[1])
+        binding.genderPicker.setDataChangeListener(object : DataPicker.DataChangeListener {
+            override fun onDataChanged(strValue: String, unitValue: String?) {
+                Log.e("DatePicker", "newGender $strValue-$unitValue")
+            }
+        })
+
     }
 }

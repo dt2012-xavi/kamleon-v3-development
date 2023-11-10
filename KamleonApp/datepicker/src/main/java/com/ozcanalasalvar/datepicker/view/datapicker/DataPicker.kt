@@ -94,7 +94,7 @@ class DataPicker : LinearLayout {
         pickerView?.textSize = textSize
         pickerView?.textBold = textBold
         pickerView?.darkModeEnabled = darkModeEnabled
-
+        pickerView?.startValue = selectedValue
         pickerView?.valueUnit = valueUnit
         pickerView?.values = values
         pickerView?.valueWidth = valueWidth
@@ -134,13 +134,9 @@ class DataPicker : LinearLayout {
         setAttributes()
     }
 
-
-    @Deprecated("Unused method")
-    fun setHour(hour: Int) {
-    }
-
-    @Deprecated("Unused method")
-    fun setMinute(minute: Int) {
+    fun setValue(value: String) {
+        selectedValue = value
+        setAttributes()
     }
 
     fun setValues(ary: ArrayList<String>) {

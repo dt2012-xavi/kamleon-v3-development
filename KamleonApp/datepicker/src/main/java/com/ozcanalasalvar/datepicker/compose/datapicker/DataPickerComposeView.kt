@@ -67,7 +67,7 @@ class DataPickerComposeView @JvmOverloads constructor(
             valueUnitState.value = value
         }
 
-    var selectedValue: String
+    var startValue: String
         get() = selectedValueState.value
         set(value) {
             selectedValueState.value = value
@@ -107,7 +107,7 @@ class DataPickerComposeView @JvmOverloads constructor(
             offset = offsetState.value,
             selectorEffectEnabled = selectorEffectEnabledState.value,
             valueUnit = valueUnit,
-            startValue = "",
+            startValue = startValue,
             showDecimal = showDecimal,
             values = values,
             textSize = textSizeState.value,

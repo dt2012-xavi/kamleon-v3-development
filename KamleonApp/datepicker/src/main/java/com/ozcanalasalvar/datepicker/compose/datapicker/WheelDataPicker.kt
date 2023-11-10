@@ -60,8 +60,8 @@ fun WheelDataPicker(
     darkModeEnabled: Boolean = true,
     valueWidth: Int = 350
 ) {
-
-    var selectedValue by remember { mutableStateOf("") }
+    var selectedValue by remember { mutableStateOf(startValue.split(".")[0]) }
+    var selectedDecimal by remember { mutableStateOf(if (startValue.contains(".")) startValue.split(".")[1] else "" ) }
     val decimalValues = mutableListOf<Int>().apply {
         for (decimalValue in IntRange(0, 9)) {
             add(decimalValue)
@@ -70,8 +70,12 @@ fun WheelDataPicker(
 
     val fontSize = maxOf(13, minOf(29, textSize))
 
-    LaunchedEffect(selectedValue) {
-        onValueChanged(selectedValue, valueUnit)
+    LaunchedEffect(selectedValue, selectedDecimal) {
+        if (showDecimal) {
+            onValueChanged("$selectedValue.$selectedDecimal", valueUnit)
+        } else {
+            onValueChanged(selectedValue, valueUnit)
+        }
     }
 
     Box(
@@ -97,7 +101,7 @@ fun WheelDataPicker(
             WheelView(//modifier = Modifier.weight(3f)
                 modifier = Modifier.width(valueWidth.dp),
                 itemSize = DpSize(valueWidth.dp, height),
-                selection = 0,
+                selection = maxOf(0, values.indexOf(selectedValue)),
                 itemCount = values.size,
                 rowOffset = offset,
                 isEndless = false,
@@ -143,7 +147,7 @@ fun WheelDataPicker(
 
                 WheelView(modifier = Modifier.width(30.dp),
                     itemSize = DpSize(30.dp, height),
-                    selection = decimalValues.indexOf(0),
+                    selection = decimalValues.indexOf(if (selectedDecimal.isEmpty()) 0 else selectedDecimal.toInt()),
                     itemCount = decimalValues.size,
                     rowOffset = offset,
                     isEndless = false,
@@ -152,7 +156,7 @@ fun WheelDataPicker(
                         enabled = false
                     ),
                     onFocusItem = {
-//                    selectedValue = selectedValue.withDecimal(decimalValues[it])
+                        selectedDecimal = it.toString()
                     },
                     content = {
                         Text(
