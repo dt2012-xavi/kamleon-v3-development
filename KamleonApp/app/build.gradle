@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace 'com.dynatech2012.kamleonuserapp'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.dynatech2012.kamleonuserapp"
         minSdk 26
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -65,4 +65,7 @@ dependencies {
     // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+
+    // Coil images download
+    implementation("io.coil-kt:coil:2.5.0")
 }

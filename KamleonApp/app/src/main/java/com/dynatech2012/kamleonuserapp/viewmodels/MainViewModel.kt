@@ -45,7 +45,7 @@ class MainViewModel @Inject constructor(
             val userResult = firestoreRepo.getUserData()
             if (userResult.isSuccess && userResult.getOrNull() != null)
                 _userData.postValue(userResult.getOrNull())
-            Log.d(SettingFragment.TAG, "user data changed got user")
+            Log.d(TAG, "user data changed got user ${userResult.getOrNull()}")
         }
     }
 

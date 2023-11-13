@@ -61,6 +61,7 @@
                 android:layout_gravity="center">
 
                 <ImageView
+                    android:id="@+id/imageProfile"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="fitCenter"
@@ -216,7 +217,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -291,7 +292,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
@@ -309,7 +310,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
@@ -337,7 +338,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
@@ -364,7 +365,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/CircularMediumFont"
-                    android:layout_marginTop="36dp"
+                    android:layout_marginTop="28dp"
                     android:textColor="@color/kamleon_dark_grey"
                     android:text="@string/setting_label_user_data"
                     android:textSize="@dimen/ts_14"/>
@@ -374,7 +375,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
@@ -436,7 +437,6 @@
                     android:textColor="@color/kamleon_secondary_grey_50"
                     android:textSize="@dimen/ts_12" />
 
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -450,7 +450,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
@@ -469,7 +469,7 @@
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
                     android:paddingTop="12dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
@@ -613,9 +613,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/layoutPreference"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:paddingHorizontal="@dimen/setting_category_padding"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="12dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -632,7 +632,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
@@ -669,7 +669,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_setting_list_shadow"
+                    android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView

@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import coil.load
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.InitActivity
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
@@ -289,6 +290,9 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         val age = Period.between(localDate, LocalDate.now()).years
         val stringDate = "$formattedDate ($age)"
         binding.prefMenuItemBirth.setValue(stringDate)
+        binding.imageProfile.load(/*userData.imageUrl*/"https://en.wikipedia.org/wiki/Monkey_selfie_copyright_dispute#/media/File:Macaca_nigra_self-portrait_large.jpg") {
+            placeholder(R.drawable.image_profile)
+        }
     }
 
     private fun onUserDataUpdated(updated: Boolean) {
