@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
+import android.util.Log
 import android.widget.LinearLayout
 import androidx.compose.ui.graphics.Color
 import com.google.android.material.timepicker.TimeFormat
@@ -12,7 +13,7 @@ import com.ozcanalasalvar.library.R
 import com.ozcanalasalvar.datepicker.model.Time
 import com.ozcanalasalvar.datepicker.utils.DateUtils
 
-class DataPicker : LinearLayout {
+class DataPicker : LinearLayout, DataChangeListener {
 
     private var context: Context? = null
     private var pickerView: DataPickerComposeView? = null
@@ -82,7 +83,7 @@ class DataPicker : LinearLayout {
             attrs = attrs,
             defStyle = defStyleAttr,
         )
-
+        setDataChangeListener(this)
         setAttributes()
         this.addView(pickerView)
     }
@@ -94,6 +95,7 @@ class DataPicker : LinearLayout {
         pickerView?.textSize = textSize
         pickerView?.textBold = textBold
         pickerView?.darkModeEnabled = darkModeEnabled
+        pickerView?.startValue = selectedValue
 
         pickerView?.valueUnit = valueUnit
         pickerView?.values = values
@@ -105,9 +107,7 @@ class DataPicker : LinearLayout {
         background = ColorDrawable(0xFF0000)
     }
 
-    interface DataChangeListener {
-        fun onDataChanged(strValue: String, unitValue: String?)
-    }
+
 
     private var dataChangeListener: DataChangeListener? = null
     fun setDataChangeListener(dataSelectListener: DataChangeListener) {
@@ -162,4 +162,23 @@ class DataPicker : LinearLayout {
         showDecimal = show
         setAttributes()
     }
+
+    fun setValue(value: String) {
+        selectedValue = value
+        setAttributes()
+    }
+
+    fun getSelectedValue(): String?
+    {
+        return selectedValue
+    }
+
+    override fun onDataChanged (strValue: String, unitValue: String?)
+    {
+        selectedValue = strValue
+    }
+}
+
+interface DataChangeListener {
+    fun onDataChanged(strValue: String, unitValue: String?)
 }

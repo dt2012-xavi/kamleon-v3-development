@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name="com.dynatech2012.kamleonuserapp.application.MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,31 +17,34 @@
             android:name=".activities.AnalyticActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.EmailActivity"
+            android:name="com.dynatech2012.kamleonuserapp.activities.EmailActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.PwdActivity"
+            android:name="com.dynatech2012.kamleonuserapp.activities.PwdActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.PinActivity"
+            android:name="com.dynatech2012.kamleonuserapp.activities.PinActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.DeleteActivity"
+            android:name="com.dynatech2012.kamleonuserapp.activities.DeleteActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.SettingActivity"
+            android:name="com.dynatech2012.kamleonuserapp.activities.SettingActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ForgotPwdActivity"
+            android:name="com.dynatech2012.kamleonuserapp.activities.ForgotPwdActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.OnboardingActivity"
+            android:name="com.dynatech2012.kamleonuserapp.activities.OnboardingActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.PrivacyActivity"
+            android:name="com.dynatech2012.kamleonuserapp.activities.PrivacyActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.LoginActivity"
+            android:name="com.dynatech2012.kamleonuserapp.activities.LoginActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activities.InitActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,10 +53,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.GraphicsActivity"
             android:exported="false" />
     </application>
 

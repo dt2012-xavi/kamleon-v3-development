@@ -146,4 +146,8 @@ class DatePicker : LinearLayout {
         private const val MAX_TEXT_SIZE = 28
         private const val MAX_OFFSET = 3
     }
+
+    fun getDateSelected(): Date {
+        return date
+    }
 }

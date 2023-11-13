@@ -10,22 +10,22 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal">
-        <com.kamleonapp.views.chart.views.KmlnOptionView
+        <com.dynatech2012.kamleonuserapp.views.chart.views.KmlnOptionView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/kmln_graph_header_item_margin_h"
             android:id="@+id/kmlnHeaderItemDaily"/>
-        <com.kamleonapp.views.chart.views.KmlnOptionView
+        <com.dynatech2012.kamleonuserapp.views.chart.views.KmlnOptionView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/kmln_graph_header_item_margin_h"
             android:id="@+id/kmlnHeaderItemWeekly"/>
-        <com.kamleonapp.views.chart.views.KmlnOptionView
+        <com.dynatech2012.kamleonuserapp.views.chart.views.KmlnOptionView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/kmln_graph_header_item_margin_h"
             android:id="@+id/kmlnHeaderItemMonthly"/>
-        <com.kamleonapp.views.chart.views.KmlnOptionView
+        <com.dynatech2012.kamleonuserapp.views.chart.views.KmlnOptionView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/kmln_graph_header_item_margin_h"

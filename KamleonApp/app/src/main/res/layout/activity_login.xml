@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color_activity"
-    tools:context=".activities.LoginActivity">
+    tools:context=".fragments.LoginFragment">
 
     <ImageButton
         android:layout_width="@dimen/nav_back_button_size"
@@ -62,13 +62,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginScreenHeaderLayout">
 
-        <com.kamleonapp.views.KamleonInputBox
+        <com.dynatech2012.kamleonuserapp.views.KamleonInputBox
             android:layout_width="match_parent"
             android:layout_height="@dimen/input_text_box_height"
             android:id="@+id/inputBoxEmail"
             app:placeholder="@string/placeholder_email"/>
 
-        <com.kamleonapp.views.KamleonInputBox
+        <com.dynatech2012.kamleonuserapp.views.KamleonInputBox
             android:layout_width="match_parent"
             android:layout_height="@dimen/input_text_box_height"
             android:id="@+id/inputBoxPwd"

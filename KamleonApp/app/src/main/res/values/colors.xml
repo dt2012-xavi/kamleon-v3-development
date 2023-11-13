@@ -47,6 +47,13 @@
     <color name="shadow_black_4">#08000000</color>
     <color name="shadow_black_5">#10000000</color>
 
+    <color name="shadow_setting_0">#01000000</color>
+    <color name="shadow_setting_1">#02000000</color>
+    <color name="shadow_setting_2">#03000000</color>
+    <color name="shadow_setting_3">#04000000</color>
+    <color name="shadow_setting_4">#05000000</color>
+    <color name="shadow_setting_5">#06000000</color>
+
     <color name="calendar_mode_shadow_0">#01000000</color>
     <color name="calendar_mode_shadow_1">#02000000</color>
     <color name="calendar_mode_shadow_2">#04000000</color>

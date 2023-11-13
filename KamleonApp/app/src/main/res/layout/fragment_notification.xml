@@ -200,28 +200,28 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.kamleonapp.views.NotificationListItemView
+            <com.dynatech2012.kamleonuserapp.views.NotificationListItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:notiType="@string/noti_role_change"
                 app:notiDate="Wednesday 19:46"
                 app:notiDesc="@string/noti_temp_desc1"
                 app:notiAction="Confirmed"/>
-            <com.kamleonapp.views.NotificationListItemView
+            <com.dynatech2012.kamleonuserapp.views.NotificationListItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:notiType="@string/noti_role_change"
                 app:notiDate="Thursday 19:46"
                 app:notiDesc="@string/noti_temp_desc1"
                 app:notiAction="Denied"/>
-            <com.kamleonapp.views.NotificationListItemView
+            <com.dynatech2012.kamleonuserapp.views.NotificationListItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:notiType="@string/noti_invite_req"
                 app:notiDate="Friday 19:46"
                 app:notiDesc="@string/noti_temp_desc2"
                 app:notiAction="Denied"/>
-            <com.kamleonapp.views.NotificationListItemView
+            <com.dynatech2012.kamleonuserapp.views.NotificationListItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:notiType="@string/noti_invite_req"

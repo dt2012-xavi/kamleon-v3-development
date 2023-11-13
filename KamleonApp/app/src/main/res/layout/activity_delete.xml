@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.DeleteActivity">
+    tools:context=".fragments.DeleteFragment">
 
     <ImageButton
         android:layout_width="@dimen/nav_back_button_size"
@@ -47,7 +47,7 @@
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="2dp"
                 android:background="@drawable/bg_setting_list_shadow">
-                <com.kamleonapp.views.SettingMenuItemView
+                <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/setting_menu_item_height"
                     android:id="@+id/prefMenuItemDesactive"
@@ -74,7 +74,7 @@
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="2dp"
                 android:background="@drawable/bg_setting_list_shadow">
-                <com.kamleonapp.views.SettingMenuItemView
+                <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/setting_menu_item_height"
                     android:id="@+id/prefMenuItemDelete"

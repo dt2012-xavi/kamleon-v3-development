@@ -1,11 +1,11 @@
 package com.ozcanalasalvar.datepicker.compose.datapicker
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -20,28 +20,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.android.material.timepicker.TimeFormat
 import com.ozcanalasalvar.datepicker.compose.component.SelectorView
-import com.ozcanalasalvar.datepicker.model.Time
-import com.ozcanalasalvar.datepicker.ui.theme.PickerTheme
 import com.ozcanalasalvar.datepicker.ui.theme.colorDarkPrimary
 import com.ozcanalasalvar.datepicker.ui.theme.colorDarkTextPrimary
 import com.ozcanalasalvar.datepicker.ui.theme.colorLightPrimary
 import com.ozcanalasalvar.datepicker.ui.theme.colorLightTextPrimary
 import com.ozcanalasalvar.datepicker.ui.theme.darkPallet
 import com.ozcanalasalvar.datepicker.ui.theme.lightPallet
-import com.ozcanalasalvar.datepicker.utils.DateUtils
-import com.ozcanalasalvar.datepicker.utils.withYear
 import com.ozcanalasalvar.wheelview.WheelView
 import com.ozcanalasalvar.wheelview.SelectorOptions
 
@@ -61,7 +53,8 @@ fun WheelDataPicker(
     valueWidth: Int = 350
 ) {
 
-    var selectedValue by remember { mutableStateOf("") }
+    var selectedValue by remember { mutableStateOf(startValue.split(".")[0]) }
+    var selectedDecimal by remember { mutableStateOf(if (startValue.contains(".")) startValue.split(".")[1] else "" ) }
     val decimalValues = mutableListOf<Int>().apply {
         for (decimalValue in IntRange(0, 9)) {
             add(decimalValue)
@@ -70,8 +63,12 @@ fun WheelDataPicker(
 
     val fontSize = maxOf(13, minOf(29, textSize))
 
-    LaunchedEffect(selectedValue) {
-        onValueChanged(selectedValue, valueUnit)
+    LaunchedEffect(selectedValue, selectedDecimal) {
+        if (showDecimal) {
+            onValueChanged("$selectedValue.$selectedDecimal", valueUnit)
+        } else {
+            onValueChanged(selectedValue, valueUnit)
+        }
     }
 
     Box(
@@ -97,7 +94,7 @@ fun WheelDataPicker(
             WheelView(//modifier = Modifier.weight(3f)
                 modifier = Modifier.width(valueWidth.dp),
                 itemSize = DpSize(valueWidth.dp, height),
-                selection = 0,
+                selection = maxOf(0, values.indexOf(selectedValue)),
                 itemCount = values.size,
                 rowOffset = offset,
                 isEndless = false,
@@ -143,7 +140,7 @@ fun WheelDataPicker(
 
                 WheelView(modifier = Modifier.width(30.dp),
                     itemSize = DpSize(30.dp, height),
-                    selection = decimalValues.indexOf(0),
+                    selection = decimalValues.indexOf(if (selectedDecimal.isEmpty()) 0 else selectedDecimal.toInt()),
                     itemCount = decimalValues.size,
                     rowOffset = offset,
                     isEndless = false,
@@ -153,6 +150,7 @@ fun WheelDataPicker(
                     ),
                     onFocusItem = {
 //                    selectedValue = selectedValue.withDecimal(decimalValues[it])
+                        selectedDecimal = decimalValues[it].toString()
                     },
                     content = {
                         Text(

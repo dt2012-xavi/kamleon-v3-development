@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color_activity"
-    tools:context=".activities.RegisterActivity">
+    tools:context=".fragments.RegisterFragment">
     <ImageButton
         android:layout_width="@dimen/nav_back_button_size"
         android:layout_height="@dimen/nav_back_button_size"
@@ -60,27 +60,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signupScreenHeaderLayout">
 
-        <com.kamleonapp.views.KamleonInputBox
+        <com.dynatech2012.kamleonuserapp.views.KamleonInputBox
             android:layout_width="match_parent"
             android:layout_height="@dimen/input_text_box_height"
             android:id="@+id/inputBoxFName"
             app:placeholder="@string/placeholder_first_name"/>
 
-        <com.kamleonapp.views.KamleonInputBox
+        <com.dynatech2012.kamleonuserapp.views.KamleonInputBox
             android:layout_width="match_parent"
             android:layout_height="@dimen/input_text_box_height"
             android:id="@+id/inputBoxLName"
             android:layout_marginTop="12dp"
             app:placeholder="@string/placeholder_last_name"/>
 
-        <com.kamleonapp.views.KamleonInputBox
+        <com.dynatech2012.kamleonuserapp.views.KamleonInputBox
             android:layout_width="match_parent"
             android:layout_height="@dimen/input_text_box_height"
             android:id="@+id/inputBoxEmail"
             android:layout_marginTop="12dp"
             app:placeholder="@string/placeholder_email"/>
 
-        <com.kamleonapp.views.KamleonInputBox
+        <com.dynatech2012.kamleonuserapp.views.KamleonInputBox
             android:layout_width="match_parent"
             android:layout_height="@dimen/input_text_box_height"
             android:id="@+id/inputBoxPwd"

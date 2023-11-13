@@ -1,18 +1,14 @@
 package com.ozcanalasalvar.datepicker.compose.datapicker
 
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
+import android.os.Debug
 import android.util.AttributeSet
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import com.google.android.material.timepicker.TimeFormat
-import com.ozcanalasalvar.datepicker.model.Time
-import com.ozcanalasalvar.datepicker.view.datapicker.DataPicker
-import com.ozcanalasalvar.datepicker.view.timepicker.TimePicker
+import com.ozcanalasalvar.datepicker.view.datapicker.DataChangeListener
 
 class DataPickerComposeView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
@@ -27,6 +23,7 @@ class DataPickerComposeView @JvmOverloads constructor(
     private val darkModeEnabledState = mutableStateOf(true)
     private val valueUnitState = mutableStateOf("")
     private val selectedValueState = mutableStateOf("")
+    private val startValueState = mutableStateOf("")
 
     private val valuesSourceState = mutableStateOf(arrayListOf("value1", "value2"))
     private val valueWidthState = mutableStateOf(250)
@@ -67,7 +64,7 @@ class DataPickerComposeView @JvmOverloads constructor(
             valueUnitState.value = value
         }
 
-    var selectedValue: String
+    var startValue: String
         get() = selectedValueState.value
         set(value) {
             selectedValueState.value = value
@@ -91,8 +88,8 @@ class DataPickerComposeView @JvmOverloads constructor(
             showDecimalState.value = value
         }
 
-    private var dataChangeListener: DataPicker.DataChangeListener? = null
-    fun setDataChangeListener(dataSelectListener: DataPicker.DataChangeListener?) {
+    private var dataChangeListener: DataChangeListener? = null
+    fun setDataChangeListener(dataSelectListener: DataChangeListener?) {
         dataChangeListener = dataSelectListener
     }
 
@@ -107,7 +104,7 @@ class DataPickerComposeView @JvmOverloads constructor(
             offset = offsetState.value,
             selectorEffectEnabled = selectorEffectEnabledState.value,
             valueUnit = valueUnit,
-            startValue = "",
+            startValue = startValue,
             showDecimal = showDecimal,
             values = values,
             textSize = textSizeState.value,

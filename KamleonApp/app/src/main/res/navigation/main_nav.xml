@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/analyticFragment">
+
+    <fragment
+        android:id="@+id/analyticFragment"
+        android:name="com.dynatech2012.kamleonuserapp.fragments.AnalyticFragment"
+        android:label="activity_analytic"
+        tools:layout="@layout/activity_analytic" >
+        <action
+            android:id="@+id/action_analyticFragment_to_graphicsFragment"
+            app:destination="@id/graphicsFragment" />
+        <action
+            android:id="@+id/action_analyticFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/graphicsFragment"
+        android:name="com.dynatech2012.kamleonuserapp.fragments.GraphicsFragment"
+        android:label="activity_graphics"
+        tools:layout="@layout/activity_graphics" >
+        <action
+            android:id="@+id/action_graphicsFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_graphicsFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/emailFragment"
+        android:name="com.dynatech2012.kamleonuserapp.fragments.EmailFragment"
+        android:label="activity_email"
+        tools:layout="@layout/activity_email" >
+        <action
+            android:id="@+id/action_emailFragment_to_onboardingFragment"
+            app:destination="@id/onboardingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/deleteFragment"
+        android:name="com.dynatech2012.kamleonuserapp.fragments.DeleteFragment"
+        android:label="activity_delete"
+        tools:layout="@layout/activity_delete" />
+    <fragment
+        android:id="@+id/pinFragment"
+        android:name="com.dynatech2012.kamleonuserapp.fragments.PinFragment"
+        android:label="activity_pin"
+        tools:layout="@layout/activity_pin" >
+        <action
+            android:id="@+id/action_pinFragment_to_privacyFragment"
+            app:destination="@id/privacyFragment" />
+        <action
+            android:id="@+id/action_pinFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pwdFragment"
+        android:name="com.dynatech2012.kamleonuserapp.fragments.PwdFragment"
+        android:label="activity_pwd"
+        tools:layout="@layout/activity_pwd" >
+        <action
+            android:id="@+id/action_pwdFragment_to_privacyFragment"
+            app:destination="@id/privacyFragment" />
+        <action
+            android:id="@+id/action_pwdFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.dynatech2012.kamleonuserapp.fragments.SettingFragment"
+        android:label="activity_setting"
+        tools:layout="@layout/activity_setting" >
+        <action
+            android:id="@+id/action_settingFragment_to_emailFragment"
+            app:destination="@id/emailFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_pinFragment"
+            app:destination="@id/pinFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_pwdFragment"
+            app:destination="@id/pwdFragment" />
+    </fragment>
+
+    </navigation>

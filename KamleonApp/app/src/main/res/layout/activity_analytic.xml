@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".activities.AnalyticActivity">
+    tools:context=".fragments.AnalyticFragment">
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -42,7 +42,7 @@
                 android:paddingTop="20dp"
                 android:paddingBottom="120dp"
                 android:orientation="vertical">
-                    <com.kamleonapp.views.AnalyticListItemView
+                    <com.dynatech2012.kamleonuserapp.views.AnalyticListItemView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/listItemHydration"
@@ -50,7 +50,7 @@
                         app:typeText="Hydration"
                         app:titleText="Well Hydrated "
                         app:descText="Your last urine hydration is on the recommended level." />
-                    <com.kamleonapp.views.AnalyticListItemView
+                    <com.dynatech2012.kamleonuserapp.views.AnalyticListItemView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/listItemElectrolyte"
@@ -58,7 +58,7 @@
                         app:typeText="Electrolytes"
                         app:titleText="Balanced"
                         app:descText="Your electrolyte levels are within the optimal range." />
-                    <com.kamleonapp.views.AnalyticListItemView
+                    <com.dynatech2012.kamleonuserapp.views.AnalyticListItemView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/listItemVolume"

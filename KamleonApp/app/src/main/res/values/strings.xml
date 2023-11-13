@@ -56,9 +56,10 @@
     <string name="onboard_gender_title">Indicate your gender</string>
 
     <string-array name="onboard_gender_values">
-        <item>Male</item>
-        <item>Female</item>
-        <item>Transgender</item>
+        <item>male</item>
+        <item>female</item>
+        <item>other</item>
+        <item>none</item>
     </string-array>
 
     <!-- Setting -->

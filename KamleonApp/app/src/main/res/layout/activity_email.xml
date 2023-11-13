@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color_activity"
-    tools:context=".activities.EmailActivity">
+    tools:context=".fragments.EmailFragment">
 
     <ImageButton
         android:layout_width="@dimen/nav_back_button_size"
