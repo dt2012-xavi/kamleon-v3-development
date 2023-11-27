@@ -64,7 +64,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:id="@+id/rcvList"/>
+        android:id="@+id/rcvListNew"/>
 
     <androidx.compose.ui.platform.ComposeView
         android:layout_width="0dp"
@@ -81,8 +81,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutHeader"
-        app:layout_constraintBottom_toTopOf="@+id/rcvList"
-        android:id="@+id/graphView"/>
+        app:layout_constraintBottom_toTopOf="@+id/rcvListNew"
+        android:id="@+id/graphViewNew"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

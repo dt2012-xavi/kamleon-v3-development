@@ -55,20 +55,20 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         val layoutManager = LinearLayoutManager(requireContext())
         layoutManager.orientation = RecyclerView.HORIZONTAL
         adapter = TipListAdapter(tipsAry)
-        binding.rcvList.adapter = adapter
+        binding.rcvListNew.adapter = adapter
 //        binding.rcvList.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 //        binding.rcvList.registerOnPageChangeCallback(onPageChangeCallback)
-        binding.rcvList.layoutManager = layoutManager
+        binding.rcvListNew.layoutManager = layoutManager
         val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(binding.rcvList)
+        snapHelper.attachToRecyclerView(binding.rcvListNew)
 
-        binding.rcvList.addItemDecoration(CirclePagerIndicatorDecoration())
+        binding.rcvListNew.addItemDecoration(CirclePagerIndicatorDecoration())
 
         val yearData = yearDataSourceOf(Date())
-        binding.graphView.setData(yearData)
+        binding.graphViewNew.setData(yearData)
 
         val typeFromIntent = viewModel.graphicType
-        binding.graphView.setGraphDataType(graphTypes[typeFromIntent])
+        binding.graphViewNew.setGraphDataType(graphTypes[typeFromIntent])
 
         binding.tvNavTitle.text = graphTypes[typeFromIntent].identifier
 
@@ -107,18 +107,18 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
     private fun onGetMeasures(measures: ArrayList<MeasureData>) {
         Log.d(TAG, "got measures count: ${measures.size}")
         // Update the graph
-        binding.graphView.setMeasuresDataSource(measures)
+        binding.graphViewNew.setMeasuresDataSource(measures)
     }
 
     private fun onGetAverageMonthlyMeasures(averageMonthlyMeasureData: ArrayList<AverageMonthlyMeasureData>) {
         Log.d(TAG, "got average monthly measures count: ${averageMonthlyMeasureData.size}")
-        binding.graphView.setMonthlyDataSource(averageMonthlyMeasureData)
+        binding.graphViewNew.setMonthlyDataSource(averageMonthlyMeasureData)
     }
 
     private fun onGetAverageDailyMeasures(averageDailyMeasureData: ArrayList<AverageDailyMeasureData>) {
         Log.d(TAG, "got average daily measures count: ${averageDailyMeasureData.size}")
         // Update the graph
-        binding.graphView.setDailyDataSource(averageDailyMeasureData)
+        binding.graphViewNew.setDailyDataSource(averageDailyMeasureData)
     }
 
     private fun dailyDataSourceOf(date: Date) : ArrayList<KamleonGraphBarItemData> {

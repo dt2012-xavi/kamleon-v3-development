@@ -46,20 +46,20 @@ class GraphicsActivity : BaseActivity<ActivityGraphicsBinding>() {
         val layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = RecyclerView.HORIZONTAL
         adapter = TipListAdapter(tipsAry)
-        binding.rcvList.adapter = adapter
+        binding.rcvListNew.adapter = adapter
 //        binding.rcvList.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 //        binding.rcvList.registerOnPageChangeCallback(onPageChangeCallback)
-        binding.rcvList.layoutManager = layoutManager
+        binding.rcvListNew.layoutManager = layoutManager
         val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(binding.rcvList)
+        snapHelper.attachToRecyclerView(binding.rcvListNew)
 
-        binding.rcvList.addItemDecoration(CirclePagerIndicatorDecoration())
+        binding.rcvListNew.addItemDecoration(CirclePagerIndicatorDecoration())
 
         val yearData = yearDataSourceOf(Date())
         //binding.graphView.setData(yearData)
 
         val typeFromIntent = intent.getIntExtra(EXTRA_KEY_TYPE, 0)
-        binding.graphView.setGraphDataType(graphTypes[typeFromIntent])
+        binding.graphViewNew.setGraphDataType(graphTypes[typeFromIntent])
 
         binding.tvNavTitle.text = graphTypes[typeFromIntent].identifier
     }
