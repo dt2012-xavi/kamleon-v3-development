@@ -35,7 +35,6 @@
             android:scaleType="centerCrop"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:shapeAppearanceOverlay="@style/roundedCorners"
             android:layout_marginStart="@dimen/nav_back_button_left"
             android:layout_marginTop="@dimen/nav_back_button_top"/>
         <TextView

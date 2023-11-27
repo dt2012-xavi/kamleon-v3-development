@@ -42,6 +42,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
                             true
                         }
                         else {
+                            Log.d(TAG, "already logged")
                             startActivity(Intent(applicationContext, MainActivity::class.java))
                             false
                         }

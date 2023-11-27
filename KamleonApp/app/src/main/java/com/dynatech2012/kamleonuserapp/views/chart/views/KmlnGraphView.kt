@@ -279,7 +279,6 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
 
         val canvasSize = SizeF(canvas.width.toFloat(), canvas.height.toFloat())
         val xLabelCount = dataSource.xLabels.size
-        Log.d("LLL", "xLabelCount = $xLabelCount")
         if (xLabelCount > 0) {
             val hStep = calcHStep(canvasSize)
             for (xLabelIndex in dataSource.xLabels.indices) {

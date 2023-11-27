@@ -97,9 +97,11 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         }
     }
     private fun initObservers() {
+        /*
         viewModel.measures.observe(this, this::onGetMeasures)
         viewModel.averageMonthlyMeasures.observe(this, this::onGetAverageMonthlyMeasures)
         viewModel.averageDailyMeasures.observe(this, this::onGetAverageDailyMeasures)
+        */
     }
 
     private fun onGetMeasures(measures: ArrayList<MeasureData>) {
@@ -120,27 +122,6 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
     }
 
     private fun dailyDataSourceOf(date: Date) : ArrayList<KamleonGraphBarItemData> {
-        val dailyDataFromVM = viewModel.dailyLoaded
-        val dataSource = ArrayList<KamleonGraphBarItemData>()
-        val startDate = date.beginningOfDay
-
-        val curDateTime = Date().time
-        for (i in 0..23 step 1) {
-            if (startDate.addHours(i).time > curDateTime) { break }
-            // get data from dailyDataFromVM by day and add it to dataSource
-            ///dailyDataFromVM.find {  }
-
-
-
-
-            var data : Double = (i + date.month + date.date + Random.nextInt(0, 15)).toDouble()
-        }
-
-        return dataSource
-    }
-
-
-    private fun dailyRandomDataSourceOf(date: Date) : ArrayList<KamleonGraphBarItemData> {
         val dataSource = ArrayList<KamleonGraphBarItemData>()
         val startDate = date.beginningOfDay
 
@@ -168,7 +149,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
 
         for (i in 0..date.endOfMonth.day()) {
             Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-            val dayDataSource = dailyRandomDataSourceOf(startDate.addDays(i))
+            val dayDataSource = dailyDataSourceOf(startDate.addDays(i))
             dataSource.addAll(dayDataSource)
         }
         return dataSource
