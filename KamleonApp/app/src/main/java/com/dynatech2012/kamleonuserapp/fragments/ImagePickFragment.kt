@@ -2,37 +2,61 @@ package com.dynatech2012.kamleonuserapp.fragments
 
 import android.app.Dialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResult
+import coil.load
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.constants.Constants
+import com.dynatech2012.kamleonuserapp.databinding.FragmentImagePickBinding
+import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 
 class ImagePickFragment : BottomSheetDialogFragment() {
 
     var dismissListener: BottomFragmentDismissListener? = null
+    private val viewModel: MainViewModel by activityViewModels()
+    lateinit var binding: FragmentImagePickBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val v = inflater.inflate(R.layout.fragment_image_pick, container, false)
-
+        binding = FragmentImagePickBinding.bind(v)
         v.findViewById<LinearLayout>(R.id.layoutLibrary).setOnClickListener {
-            dismiss()
+            activity?.supportFragmentManager?.setFragmentResult(Constants.pickImage, Bundle().apply {
+                putBoolean(Constants.pickImageBundle, true)
+            })
+
         }
         v.findViewById<LinearLayout>(R.id.layoutCamera).setOnClickListener {
-            dismiss()
+            activity?.supportFragmentManager?.setFragmentResult(Constants.takeImage, Bundle().apply {
+                putBoolean(Constants.takeImageBundle, true)
+            })
         }
         v.findViewById<LinearLayout>(R.id.layoutRemove).setOnClickListener {
-            dismiss()
+            viewModel.removeUserImage()
         }
+        viewModel.userData.value?.imageUrl?.let {
+            if (it.isNotBlank())
+                binding.imageProfile.load(it) {
+                    placeholder(R.drawable.image_profile)
+                }
+        }
+        viewModel.userImage.observe(viewLifecycleOwner, this::onProfileImagePrevUriChanged)
+        viewModel.userImage.observe(viewLifecycleOwner, this::onProfileImageUriChanged)
         return v
     }
 
@@ -57,11 +81,22 @@ class ImagePickFragment : BottomSheetDialogFragment() {
         dismissListener?.onDismissFragment()
     }
 
+    private fun onProfileImagePrevUriChanged(uri: Uri?) {
+        Log.d(TAG, "Got image profile changed")
+        binding.imageProfile.setImageURI(uri)
+    }
+    private fun onProfileImageUriChanged(uri: Uri?) {
+        Log.d(TAG, "Got image profile update")
+        dismiss()
+    }
+
     companion object {
         @JvmStatic
         fun newInstance(listener: BottomFragmentDismissListener) =
             ImagePickFragment().apply {
                 dismissListener = listener
             }
+
+        val TAG: String = ImagePickFragment::class.java.simpleName
     }
 }

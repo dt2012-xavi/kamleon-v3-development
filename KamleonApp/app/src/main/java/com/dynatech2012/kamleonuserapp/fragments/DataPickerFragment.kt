@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.ozcanalasalvar.datepicker.view.datapicker.DataPicker
 
@@ -87,9 +88,19 @@ class DataPickerFragment : BottomSheetDialogFragment() {
             pickerView.setShowDecimal(true)
             dataValue?.let { pickerView.setValue(it) }
         } else if (dataType == "gender") {
-            val arrRes = resources.getStringArray(R.array.onboard_gender_values)
+            val arrRes = Gender.values().map { it.raw }
             aryRet.addAll(arrRes)
-            dataValue?.let { pickerView.setValue(it) }
+            dataValue?.let {
+                val gender = when (it) {
+                    "male" -> Gender.male
+                    "female" -> Gender.female
+                    "other" -> Gender.other
+                    "none" -> Gender.none
+                    else -> Gender.none
+                }
+                val pickerValue = gender.raw
+                pickerView.setValue(pickerValue)
+            }
         }
 
         pickerView.setValues(aryRet)
@@ -116,7 +127,8 @@ class DataPickerFragment : BottomSheetDialogFragment() {
             }
             "gender" -> {
                 pickerV.getSelectedValue()?.let { newGender ->
-                    viewModel.changeGender(newGender)
+                    val gender = Gender.fromRaw(newGender)
+                    viewModel.changeGender(gender.toString())
                 }
             }
         }

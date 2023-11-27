@@ -56,10 +56,10 @@
     <string name="onboard_gender_title">Indicate your gender</string>
 
     <string-array name="onboard_gender_values">
-        <item>male</item>
-        <item>female</item>
-        <item>other</item>
-        <item>none</item>
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+        <item>Prefer not to say</item>
     </string-array>
 
     <!-- Setting -->
@@ -172,4 +172,43 @@
     <string name="noti_temp_desc2">Kamleon has assigned you the role of administrator of DIR Diagonal.</string>
 
     <string name="msg_profile_ready">Now you are a member of the Spinning Team in Dir Diagonal!</string>
+
+
+
+    <string name="error_login">Error login</string>
+    <string name="percentage">%</string>
+
+    <!--HomeScreen-->
+    <string name="home_item1_type">Tip</string>
+    <string name="home_item1_title">Healthy Diet</string>
+    <string name="home_item1_description">The full spectrum of diet healthiness relies significantly on the inclusion of the water we ingest.</string>
+    <string name="home_item2_type">Tip</string>
+    <string name="home_item2_title">Healthy Diet</string>
+    <string name="home_item2_description">The full spectrum of diet healthiness relies significantly on the inclusion of the water we ingest.</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="severely_dehydrated">Severely Dehydrated</string>
+    <string name="dehydrated">Dehydrated</string>
+    <string name="hydrated">Hydrated</string>
+    <string name="very_hydrated">Very Well Hydrated</string>
+
+    <string name="hydratation_above">Your last urine hydration is on the recommended level.</string>
+    <string name="hydratation_under">Your last urine hydration is under the recommended level.</string>
+
+    <string name="elec_hypo">Hypotonic</string>
+    <string name="elec_normal">Balanced</string>
+    <string name="elec_hyper">Hypertronic</string>
+
+    <string name="elec_under">Your electrolyte levels are under the optimal range.</string>
+    <string name="elec_optimal">Your electrolyte levels are within the optimal range.</string>
+    <string name="elec_above">Your electrolyte levels are above the optimal range.</string>
+
+    <string name="volume_low">Low volume</string>
+    <string name="volume_medium">Average</string>
+    <string name="volume_high">High volume</string>
+
+    <string name="volume_insuff">Your sample has insufficient volume to be analyzed. The analysis might be invalid.</string>
+    <string name="volume_good">Your sample has good volume to be analyzed.</string>
+    <string name="last_sample_message_default">"last sample"</string>
+    <string name="last_sample_message">"last sample %1$s"</string>
 </resources>

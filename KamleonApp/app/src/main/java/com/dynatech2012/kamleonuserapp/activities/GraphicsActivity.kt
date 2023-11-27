@@ -56,7 +56,7 @@ class GraphicsActivity : BaseActivity<ActivityGraphicsBinding>() {
         binding.rcvList.addItemDecoration(CirclePagerIndicatorDecoration())
 
         val yearData = yearDataSourceOf(Date())
-        binding.graphView.setData(yearData)
+        //binding.graphView.setData(yearData)
 
         val typeFromIntent = intent.getIntExtra(EXTRA_KEY_TYPE, 0)
         binding.graphView.setGraphDataType(graphTypes[typeFromIntent])

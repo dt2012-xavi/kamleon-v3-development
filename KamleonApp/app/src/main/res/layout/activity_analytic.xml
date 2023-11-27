@@ -42,7 +42,8 @@
                 android:paddingTop="20dp"
                 android:paddingBottom="120dp"
                 android:orientation="vertical">
-                    <com.dynatech2012.kamleonuserapp.views.AnalyticListItemView
+
+                    <!--<com.dynatech2012.kamleonuserapp.views.AnalyticListItemView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/listItemHydration"
@@ -66,7 +67,22 @@
                         app:typeText="Volume"
                         app:titleText="Excellent"
                         app:descText="Your sample has good volume to be analyzed." />
-
+-->
+                <com.dynatech2012.kamleonuserapp.views.cards.CardViewAnalyticsItemComposeView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cv_analytic_hydration"
+                    app:analyticsType="hydration"/>
+                <com.dynatech2012.kamleonuserapp.views.cards.CardViewAnalyticsItemComposeView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cv_analytic_electrol"
+                    app:analyticsType="electrolytes"/>
+                <com.dynatech2012.kamleonuserapp.views.cards.CardViewAnalyticsItemComposeView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cv_analytic_volume"
+                    app:analyticsType="volume"/>
                 <RelativeLayout
                     android:layout_width="180dp"
                     android:layout_height="140dp"
@@ -96,14 +112,16 @@
             </LinearLayout>
 
         </ScrollView>
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/img_circle_profile"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            app:srcCompat="@drawable/img_circle_profile"
             android:id="@+id/btnNavProfile"
             android:background="@color/transparent"
+            android:scaleType="centerCrop"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:shapeAppearanceOverlay="@style/roundedCorners"
             android:layout_marginEnd="@dimen/nav_back_button_left"
             android:layout_marginTop="@dimen/nav_back_button_top"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

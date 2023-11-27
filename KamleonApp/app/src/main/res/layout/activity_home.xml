@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".fragments.HomeFragment">
+    <ImageView
+        android:id="@+id/homeBg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/bg_very_hydrated"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/layoutContentHome"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/im_home_kamleon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/kamleon"
+            android:background="@color/transparent"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:shapeAppearanceOverlay="@style/roundedCorners"
+            android:layout_marginStart="@dimen/nav_back_button_left"
+            android:layout_marginTop="@dimen/nav_back_button_top"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/im_home_kamleon"
+            app:layout_constraintStart_toStartOf="parent"
+            android:paddingHorizontal="28dp"
+            android:layout_marginTop="@dimen/nav_back_button_top"
+            android:id="@+id/tv_home_last_sample"
+            android:textAllCaps="true"
+            android:text="@string/last_sample_message_default"
+            tools:text="last sample 2 november 2023"
+            android:textStyle="bold"
+            android:textSize="@dimen/ts_14" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/tv_home_last_sample"
+            app:layout_constraintStart_toStartOf="parent"
+            android:paddingHorizontal="28dp"
+            android:layout_marginTop="2dp"
+            android:id="@+id/tv_home_message"
+            tools:text="Hydrated"
+            android:textColor="@color/white"
+            android:textSize="@dimen/ts_32" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="200dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnNavProfile"
+            app:layout_constraintBottom_toBottomOf="parent" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/lastMeasure"
+                android:text="0"
+                tools:text="0"
+                android:textSize="72sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:text="@string/percentage"
+                android:textSize="36sp"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </LinearLayout>
+
+        <!--<ImageView
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            android:src="@drawable/shape_ring"
+            android:layout_marginBottom="200dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnNavProfile"
+            app:layout_constraintBottom_toBottomOf="parent" />-->
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/homeProgressBar"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            app:trackThickness="8dp"
+            app:trackCornerRadius="4dp"
+            app:indicatorSize="240dp"
+            android:layout_marginBottom="200dp"
+            android:indeterminate="false"
+            android:progress="0"
+            tools:progress="60"
+            app:indicatorColor="@color/white"
+            app:trackColor="@color/white40"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnNavProfile"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            app:srcCompat="@drawable/img_circle_profile"
+            android:id="@+id/btnNavProfile"
+            android:background="@color/transparent"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:shapeAppearanceOverlay="@style/roundedCorners"
+            android:layout_marginEnd="@dimen/nav_back_button_left"
+            android:layout_marginTop="@dimen/nav_back_button_top"/>
+
+<!--
+       <com.dynatech2012.kamleonuserapp.views.AnalyticListItemView
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="110dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/listItemTip"
+            app:type="0"
+            app:typeText="Tip"
+            app:titleText="Healthy diet"
+            app:descText="The full spectrum of diet healthiness relies significantly on the inclusion of the water we ingest." />-->
+<!--        <androidx.viewpager2.widget.ViewPager2
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/viewPager"
+            android:layout_marginBottom="110dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/homeProgressBar" />-->
+        <androidx.compose.ui.platform.ComposeView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/cv_home"
+            android:layout_marginBottom="110dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/homeProgressBar" />
+        <!--<androidx.recyclerview.widget.RecyclerView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:id="@+id/rv_home"
+            android:layout_marginBottom="110dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/homeProgressBar" />-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/layoutContentQR"
+        android:background="@color/transparent"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="190dp"
+            android:src="@drawable/img_camera_rect"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="@dimen/round_blue_button_height"
+            android:background="@drawable/bg_modal_btn_n"
+            android:paddingVertical="0dp"
+            android:textAllCaps="false"
+            android:id="@+id/btnSignIn"
+            android:text="@string/scan_now"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginBottom="130dp"
+            android:textAppearance="@style/RoundBlueButtonTextStyle"
+            android:textColor="@drawable/color_text_button"
+            android:enabled="false"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="93dp"
+        android:id="@+id/tabContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginHorizontal="24dp"
+        android:paddingVertical="0dp"
+        android:paddingHorizontal="0dp"
+        android:weightSum="3"
+        android:background="@drawable/bg_tab"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:id="@+id/layoutTabHome"
+            android:background="@drawable/bg_tab_button_shadow"
+            android:clickable="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tab_content_height"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/tab_icon_size"
+                    android:layout_height="@dimen/tab_icon_size"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/icn_tab_home"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/CircularMediumFont"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/kamleon_dark_grey"
+                    android:text="@string/tab_home"
+                    android:textSize="@dimen/ts_12"/>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:id="@+id/layoutTabAnalytic"
+            android:clickable="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tab_content_height"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/tab_icon_size"
+                    android:layout_height="@dimen/tab_icon_size"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/icn_tab_analytic"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/CircularMediumFont"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/black"
+                    android:text="@string/tab_analytic"
+                    android:textSize="@dimen/ts_12"/>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:id="@+id/layoutTabQr"
+            android:clickable="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tab_content_height"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/tab_icon_size"
+                    android:layout_height="@dimen/tab_icon_size"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/icn_tab_qr"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/CircularMediumFont"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/black"
+                    android:text="@string/tab_qr"
+                    android:textSize="@dimen/ts_12"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

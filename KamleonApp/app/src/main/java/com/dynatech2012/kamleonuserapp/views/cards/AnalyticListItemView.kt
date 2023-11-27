@@ -1,4 +1,4 @@
-package com.dynatech2012.kamleonuserapp.views
+package com.dynatech2012.kamleonuserapp.views.cards
 
 import android.content.Context
 import android.util.AttributeSet

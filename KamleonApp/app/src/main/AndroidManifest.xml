@@ -1,51 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools" >
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!--
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        />
+    <permission
+        android:name="com.dynatech2012.kamleonuserapp.fileprovider.READ"
+        android:label="Read permission"/>
+    -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="com.dynatech2012.kamleonuserapp.fileprovider.READ" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name="com.dynatech2012.kamleonuserapp.application.MyApplication"
+        android:name=".application.MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.KamleonApp"
-        tools:targetApi="31">
+
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
+
+        tools:targetApi="31" >
+        <!-- hardwareAccelerated & largeHeap to avoid out of memory -->
+        <activity
+            android:name=".activities.MainActivity"
+            android:exported="false"
+            android:label="@string/title_activity_main"
+            android:theme="@style/Theme.KamleonApp" />
         <activity
             android:name=".activities.AnalyticActivity"
             android:exported="false" />
         <activity
-            android:name="com.dynatech2012.kamleonuserapp.activities.EmailActivity"
+            android:name=".activities.EmailActivity"
             android:exported="false" />
         <activity
-            android:name="com.dynatech2012.kamleonuserapp.activities.PwdActivity"
+            android:name=".activities.PwdActivity"
             android:exported="false" />
         <activity
-            android:name="com.dynatech2012.kamleonuserapp.activities.PinActivity"
+            android:name=".activities.PinActivity"
             android:exported="false" />
         <activity
-            android:name="com.dynatech2012.kamleonuserapp.activities.DeleteActivity"
+            android:name=".activities.DeleteActivity"
             android:exported="false" />
         <activity
-            android:name="com.dynatech2012.kamleonuserapp.activities.SettingActivity"
+            android:name=".activities.SettingActivity"
             android:exported="false" />
         <activity
-            android:name="com.dynatech2012.kamleonuserapp.activities.ForgotPwdActivity"
+            android:name=".activities.ForgotPwdActivity"
             android:exported="false" />
         <activity
-            android:name="com.dynatech2012.kamleonuserapp.activities.OnboardingActivity"
+            android:name=".activities.OnboardingActivity"
             android:exported="false" />
         <activity
-            android:name="com.dynatech2012.kamleonuserapp.activities.PrivacyActivity"
+            android:name=".activities.PrivacyActivity"
             android:exported="false" />
         <activity
-            android:name="com.dynatech2012.kamleonuserapp.activities.LoginActivity"
+            android:name=".activities.LoginActivity"
             android:exported="true" />
         <activity
             android:name=".activities.InitActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -55,6 +83,23 @@
         <activity
             android:name=".activities.GraphicsActivity"
             android:exported="false" />
+        <!--
+<service
+            android:name="MyNavigationService"
+            android:foregroundServiceType="location" >
+        </service>
+        -->
+        <provider
+            android:name=".base.MyFileProvider"
+            android:authorities="com.dynatech2012.kamleonuserapp.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" >
+            </meta-data>
+            <!-- android:authorities="${applicationId}.fileprovider" -->
+        </provider>
     </application>
 
 </manifest>

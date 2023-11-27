@@ -25,4 +25,12 @@
         <attr name="notiDesc" format="string" />
         <attr name="notiAction" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="AnalyticsComposeItemViewStyle">
+        <attr name="analyticsType" format="enum" >
+            <enum name="hydration" value="0"/>
+            <enum name="electrolytes" value="1"/>
+            <enum name="volume" value="2"/>
+        </attr>
+    </declare-styleable>
 </resources>

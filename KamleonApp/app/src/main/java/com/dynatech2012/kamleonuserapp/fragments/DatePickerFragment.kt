@@ -14,10 +14,8 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.dynatech2012.kamleonuserapp.R
-import com.dynatech2012.kamleonuserapp.repositories.FirestoreRepository
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.ozcanalasalvar.datepicker.view.datepicker.DatePicker
-import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.GregorianCalendar
 

@@ -3,6 +3,7 @@ package com.dynatech2012.kamleonuserapp.fragments
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -60,6 +61,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     }
 
     override fun initView() {
+        Log.d(TAG, "init view")
         updateOptionViewUI()
 
         binding.etAccName.imeOptions = EditorInfo.IME_ACTION_DONE
@@ -113,7 +115,9 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
         binding.profileLayout.setOnClickListener {
             val pickFragment = ImagePickFragment.newInstance(onDismissPickImage)
-            pickFragment.show(parentFragmentManager, "ImagePick")
+            Log.d(TAG, "show pick image fragment")
+            childFragmentManager.beginTransaction().add(pickFragment, "ImagePick").commit()
+            //pickFragment.show(parentFragmentManager, "ImagePick")
         }
 
         binding.btnSettingNoti.setOnClickListener {
@@ -122,7 +126,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
 
         binding.btnSettingClose.setOnClickListener {
-            activity?.finish()
+            findNavController().navigateUp()
+            //activity?.finish()
         }
     }
 
@@ -158,9 +163,10 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         dialogView.findViewById<TextView>(R.id.tvDialogDesc).setText(R.string.dialog_logout_msg)
         dialogView.findViewById<TextView>(R.id.tvBtnY).setText(R.string.dialog_logout_y)
         dialogView.findViewById<TextView>(R.id.tvBtnY).setOnClickListener {
-            viewModel.logOut()
-            //logoutDialog.dismiss()
-            activity?.startActivity(Intent(requireContext(), InitActivity::class.java))
+            viewModel.logout()
+            logoutDialog.dismiss()
+            //activity?.startActivity(Intent(requireContext(), InitActivity::class.java))
+            activity?.finish()
         }
 
         dialogView.findViewById<TextView>(R.id.tvBtnN).setText(R.string.dialog_logout_n)
@@ -273,6 +279,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     private fun initObservers() {
         viewModel.userData.observe(this, this::onUserDataChanged)
         viewModel.userUpdated.observe(this, this::onUserDataUpdated)
+        viewModel.userImage.observe(this, this::onProfileImageUriChanged)
     }
 
     private fun onUserDataChanged(userData: CustomUser) {
@@ -290,9 +297,10 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         val age = Period.between(localDate, LocalDate.now()).years
         val stringDate = "$formattedDate ($age)"
         binding.prefMenuItemBirth.setValue(stringDate)
-        binding.imageProfile.load(/*userData.imageUrl*/"https://en.wikipedia.org/wiki/Monkey_selfie_copyright_dispute#/media/File:Macaca_nigra_self-portrait_large.jpg") {
-            placeholder(R.drawable.image_profile)
-        }
+        if (userData.imageUrl.isNotBlank())
+            binding.imageProfile.load(userData.imageUrl) {
+                placeholder(R.drawable.image_profile)
+            }
     }
 
     private fun onUserDataUpdated(updated: Boolean) {
@@ -302,6 +310,17 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             showReadyDialog()
         }
     }
+
+    private fun onProfileImageUriChanged(uri: Uri?) {
+        Log.d(TAG, "Got image profile")
+        binding.imageProfile.setImageURI(uri)
+        /*
+        binding.imageProfile.load(userData.imageUrl) {
+            placeholder(R.drawable.image_profile)
+        }
+        */
+    }
+
 
     private fun updateUserData()
     {

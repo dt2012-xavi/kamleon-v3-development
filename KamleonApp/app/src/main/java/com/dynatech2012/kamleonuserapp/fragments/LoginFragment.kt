@@ -8,6 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.AnalyticActivity
+import com.dynatech2012.kamleonuserapp.activities.MainActivity
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.ActivityLoginBinding
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
@@ -56,8 +57,8 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
     }
 
     private fun startActivity(state: Int) {
-        if (state == 3)
-            startActivity(Intent(requireContext(), AnalyticActivity::class.java))
+        if (state == 4)
+            startActivity(Intent(requireContext(), MainActivity::class.java))
     }
 
     private fun updateButtonState() {

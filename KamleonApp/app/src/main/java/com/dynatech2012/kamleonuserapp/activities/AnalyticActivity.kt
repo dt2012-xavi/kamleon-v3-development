@@ -48,6 +48,7 @@ class AnalyticActivity : BaseActivity<ActivityAnalyticBinding>() {
     }
 
     override fun initEvent() {
+        /*
         binding.listItemHydration.isClickable = true
         binding.listItemHydration.setOnClickListener {
             openGraphView(0)
@@ -60,6 +61,7 @@ class AnalyticActivity : BaseActivity<ActivityAnalyticBinding>() {
         binding.listItemVolume.setOnClickListener {
             openGraphView(2)
         }
+        */
 
         binding.btnNavProfile.isClickable = true
         binding.btnNavProfile.setOnClickListener {

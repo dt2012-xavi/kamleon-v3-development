@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.views.chart.data
 
+import android.util.Log
 import com.dynatech2012.kamleonuserapp.views.chart.exts.addDays
 import com.dynatech2012.kamleonuserapp.views.chart.exts.addMonths
 import java.util.Date
@@ -30,6 +31,7 @@ enum class KamleonGraphViewMode(val identifier: String) {
                 aryRet.add(KamleonGraphAxisLabelItem(step.toDouble(), (startDate.addDays(step).date).toString()))
             }
         } else if (this == Weekly) {
+            Log.d("LLL", "Weekly..")
             val dayNames = arrayOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
             for (step in dayNames.indices) {
                 aryRet.add(KamleonGraphAxisLabelItem(step.toDouble(), dayNames[startDate.addDays(step).day]))

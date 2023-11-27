@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dynatech2012.kamleonuserapp.models.Gender
-import com.dynatech2012.kamleonuserapp.repositories.AuthRepository
-import com.dynatech2012.kamleonuserapp.repositories.FirestoreRepository
+import com.dynatech2012.kamleonuserapp.repositories.UserRepository
+import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,8 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepo: AuthRepository,
-    private val firestoreRepo: FirestoreRepository
+    private val authRepo: UserRepository,
+    private val firestoreRepo: FirestoreDataSource
 ): ViewModel() {
 
     var isReady = false
@@ -37,44 +37,45 @@ class AuthViewModel @Inject constructor(
 
     fun signup() {
         Log.d(TAG, "Sign up state ${uiState.value}")
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch(Dispatchers.IO) {
             if (email != null && pass != null && fName != null && lName != null) {
                 val authResult = authRepo.signup(email!!, pass!!)
-                if (authResult.isSuccess && authResult.getOrNull() != null)
+                if (authResult.isSuccess && authResult.dataValue != null)
                     _uiState.postValue(1)
                 val registerResult = firestoreRepo.createUserStep1(email!!, fName!!, lName!!)
-                if (registerResult.isSuccess && registerResult.getOrNull() != null)
+                if (registerResult.isSuccess && registerResult.dataValue != null)
                     _uiState.postValue(2)
             }
         }
     }
 
+    fun locationPermisionGranted() {
+        _uiState.postValue(3)
+    }
+
     fun finishSignup() {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch(Dispatchers.IO) {
             val registerResult = firestoreRepo.createUserStep2(birthday, height, weight, gender)
-            if (registerResult.isSuccess && registerResult.getOrNull() != null)
-                _uiState.postValue(3)
-        }
-    }
-
-    fun login(email: String, pass: String) {
-        viewModelScope.launch(Dispatchers.Main) {
-            val authResult = authRepo.login(email, pass)
-            if (authResult.isSuccess && authResult.getOrNull() != null)
-                _uiState.postValue(3)
-        }
-    }
-
-    fun getUserData(email: String, pass: String) {
-        viewModelScope.launch(Dispatchers.Main) {
-            val userResult = firestoreRepo.getUserData()
-            if (userResult.isSuccess && userResult.getOrNull() != null)
+            if (registerResult.isSuccess && registerResult.dataValue != null)
                 _uiState.postValue(4)
         }
     }
 
+    fun login(email: String, pass: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val authResult = authRepo.login(email, pass)
+            if (authResult.isSuccess && authResult.dataValue != null)
+                _uiState.postValue(4)
+        }
+    }
+
+    fun resetLogged() {
+        alreadyLogged = false
+        isReady = false
+    }
+
     fun checkLogin() {
-        alreadyLogged = authRepo.checkLogged()
+        alreadyLogged = authRepo.checkLogged
         isReady = true
     }
 

@@ -1,9 +1,7 @@
 package com.ozcanalasalvar.datepicker.compose.datapicker
 
 import android.content.Context
-import android.os.Debug
 import android.util.AttributeSet
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.AbstractComposeView
@@ -15,7 +13,7 @@ class DataPickerComposeView @JvmOverloads constructor(
 ) : AbstractComposeView(context, attrs, defStyle) {
 
 
-    private val offsetState = mutableStateOf(1)
+    private val offsetState = mutableStateOf(0)
 
     private val selectorEffectEnabledState = mutableStateOf(true)
     private val textSizeState = mutableStateOf(17)

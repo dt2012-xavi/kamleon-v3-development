@@ -5,6 +5,7 @@ import java.security.MessageDigest
 import java.util.Date
 
 data class CustomUser(
+    val userID: String = "",
     val email: String = "",
     val name: String = "",
     val lastName: String = "",
@@ -29,9 +30,24 @@ data class CustomUser(
     var token: String? = null
     )
 
-enum class Gender
+enum class Gender (val raw: String)
 {
-    male, female, other, none
+    male("Male"),
+    female("Female"),
+    other("Other"),
+    none("Prefer not to say");
+
+    companion object {
+        fun fromRaw(raw: String?): Gender {
+            return when (raw) {
+                "Male" -> male
+                "Female" -> female
+                "Other" -> other
+                "Prefer not to say" -> none
+                else -> none
+            }
+        }
+    }
 }
 
 enum class UserStatus

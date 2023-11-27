@@ -1,16 +1,24 @@
 package com.dynatech2012.kamleonuserapp.activities
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.dynatech2012.kamleonuserapp.base.BaseActivity
+import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityInitBinding
 import com.dynatech2012.kamleonuserapp.databinding.ActivityLoginBinding
+import com.dynatech2012.kamleonuserapp.fragments.SettingFragment
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,6 +29,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val content: View = findViewById(android.R.id.content)
+        //viewModel.resetLogged()
         viewModel.checkLogin()
         content.viewTreeObserver.addOnPreDrawListener(
             object : ViewTreeObserver.OnPreDrawListener {
@@ -33,7 +42,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
                             true
                         }
                         else {
-                            startActivity(Intent(applicationContext, AnalyticActivity::class.java))
+                            startActivity(Intent(applicationContext, MainActivity::class.java))
                             false
                         }
                     } else {
@@ -44,13 +53,62 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             }
         )
     }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                Log.i("Permission: ", "Granted")
+                viewModel.locationPermisionGranted()
+            } else {
+                Log.i("Permission: ", "Denied")
+            }
+        }
+
+    private fun checkLocationPermission() {
+        when {
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                viewModel.locationPermisionGranted()
+                return
+            }
+
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) -> {
+                requestPermissionLauncher.launch(
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) }
+
+            else -> {
+                requestPermissionLauncher.launch(
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            }
+        }
+    }
     override fun setBinding(): ActivityInitBinding = ActivityInitBinding.inflate(layoutInflater)
 
     override fun initView() {
-
+        supportFragmentManager
+            .setFragmentResultListener(Constants.grantLocation, this) { _, bundle ->
+                Log.d(TAG, "result from activity location")
+                val result = bundle.getBoolean(Constants.grantLocationBundle)
+                if (result) {
+                    checkLocationPermission()
+                }
+            }
     }
 
     override fun initEvent() {
 
+    }
+
+    companion object {
+        val TAG: String = InitActivity::class.java.simpleName
     }
 }

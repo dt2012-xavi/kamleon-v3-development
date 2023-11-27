@@ -176,6 +176,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
             }
             KamleonGraphViewMode.Weekly -> {
                 val dayNames = arrayOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+                Log.d("LLL", "dayNames: ${dayNames.size}")
                 return dayNames[startDate.addDays(index).day]
             }
             KamleonGraphViewMode.Yearly -> {
@@ -275,8 +276,10 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
     }
 
     private fun renderAxisLabels(canvas: Canvas) {
+
         val canvasSize = SizeF(canvas.width.toFloat(), canvas.height.toFloat())
         val xLabelCount = dataSource.xLabels.size
+        Log.d("LLL", "xLabelCount = $xLabelCount")
         if (xLabelCount > 0) {
             val hStep = calcHStep(canvasSize)
             for (xLabelIndex in dataSource.xLabels.indices) {

@@ -113,3 +113,20 @@ fun Date.addMinutes(minutes: Int): Date{
 fun Date.addSeconds(seconds: Int): Date{
     return add(Calendar.SECOND, seconds)
 }
+
+fun Date.year(): Int {
+    return Calendar.getInstance().apply {
+        time = this@year
+    }.get(Calendar.YEAR)
+}
+fun Date.month(): Int {
+    return Calendar.getInstance().apply {
+        time = this@month
+    }.get(Calendar.MONTH)
+}
+
+fun Date.day(): Int {
+    return Calendar.getInstance().apply {
+        time = this@day
+    }.get(Calendar.DAY_OF_MONTH)
+}

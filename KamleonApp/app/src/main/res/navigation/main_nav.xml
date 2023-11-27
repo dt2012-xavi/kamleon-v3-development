@@ -3,13 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav"
-    app:startDestination="@id/analyticFragment">
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.dynatech2012.kamleonuserapp.fragments.HomeFragment"
+        android:label="activity_home"
+        tools:layout="@layout/activity_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_analyticFragment"
+            app:destination="@id/analyticFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/analyticFragment"
         android:name="com.dynatech2012.kamleonuserapp.fragments.AnalyticFragment"
         android:label="activity_analytic"
         tools:layout="@layout/activity_analytic" >
+        <action
+            android:id="@+id/action_analyticFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
         <action
             android:id="@+id/action_analyticFragment_to_graphicsFragment"
             app:destination="@id/graphicsFragment" />

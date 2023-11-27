@@ -1,19 +1,20 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
-import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.AnalyticActivity
+import com.dynatech2012.kamleonuserapp.activities.MainActivity
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
+import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityOnboardingBinding
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import com.ozcanalasalvar.datepicker.view.datapicker.DataPicker
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDate
 import java.util.GregorianCalendar
 
 @AndroidEntryPoint
@@ -78,6 +79,11 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
     override fun initEvent() {
         binding.btnNext.setOnClickListener {
             when (state) {
+                OnBoardingStep.Location -> {
+                    activity?.supportFragmentManager?.setFragmentResult(Constants.grantLocation, Bundle().apply {
+                        putBoolean(Constants.grantLocationBundle, true)
+                    })
+                }
                 OnBoardingStep.BirthDate -> {
                     val dateSelected = binding.datePicker.getDateSelected()
                     //val localDate = LocalDate.of(dateSelected.year, dateSelected.month, dateSelected.day)
@@ -98,22 +104,13 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
                 }
                 OnBoardingStep.Gender -> {
                     Log.d(TAG, "picker gender: ${binding.genderPicker.getSelectedValue()}")
-                    when (binding.genderPicker.getSelectedValue()) {
-                        "male" -> viewModel.gender = Gender.male
-                        "female" -> viewModel.gender = Gender.female
-                        "other" -> viewModel.gender = Gender.other
-                        "none" -> viewModel.gender = Gender.none
-                    }
+                    val genderPicked = binding.genderPicker.getSelectedValue()
+                    val gender = Gender.fromRaw(genderPicked)
+                    viewModel.gender = gender
                 }
                 else -> {}
             }
-            if (state.step == OnBoardingStep.values().size - 1) {
-                viewModel.finishSignup()
-            } else {
-                state = OnBoardingStep.values()[state.step + 1]
-            }
-
-            updateUI()
+            checkIfGoNextStep()
         }
 
         binding.btnNavBack.setOnClickListener {
@@ -125,6 +122,20 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
 
             updateUI()
         }
+    }
+
+    private fun checkIfGoNextStep() {
+        if (state.step == OnBoardingStep.values().size - 1) {
+            viewModel.finishSignup()
+        } else if (state.step == OnBoardingStep.Location.step){
+            // Do nothing
+        } else {
+            goNextStep()
+        }
+        updateUI()
+    }
+    private fun goNextStep() {
+        state = OnBoardingStep.values()[state.step + 1]
     }
 
     private fun updateUI() {
@@ -150,7 +161,7 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
                 }
             }
             OnBoardingStep.Gender -> {
-                val arrRes = resources.getStringArray(R.array.onboard_gender_values)
+                val arrRes = Gender.values().map { it.raw }
                 aryRet.addAll(arrRes)
             }
             else -> {}
@@ -170,13 +181,16 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
     }
 
     private fun initObservers() {
-        viewModel.uiState.observe(this, this::startActivity)
+        viewModel.uiState.observe(this, this::onStateReceived)
     }
 
-    private fun startActivity(state: Int) {
-        Log.d(TAG, "Callback finish register")
-        if (state == 3)
-            startActivity(Intent(requireContext(), AnalyticActivity::class.java))
+    private fun onStateReceived(state: Int) {
+        Log.d(TAG, "Callback new state received: $state")
+        when (state) {
+            3 -> { goNextStep(); updateUI() }
+            4 -> startActivity(Intent(requireContext(), MainActivity::class.java))
+            else -> {}
+        }
     }
 
     companion object {

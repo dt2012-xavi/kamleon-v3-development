@@ -4,6 +4,11 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="whiteEE">#EEFFFFFF</color>
+    <color name="white40">#66FFFFFF</color>
+    <color name="white30">#4DFFFFFF</color>
+    <color name="white05">#0DFFFFFF</color>
+
+    <color name="kmln_graph_color_orange_semitransp">#90FF5C55</color>
 
     <color name="whitePressed">#16000000</color>
     <color name="transparent">#00000000</color>
@@ -70,4 +75,12 @@
     <color name="color_secondary">#808285</color>
 
     <color name="bg_color_activity">#66FAFAFA</color>
+    <color name="gradient_1">#F44336</color>
+    <color name="gradient_2">#FF6822</color>
+    <color name="gradient_3">#FFC107</color>
+    <color name="gradient_4">#8BC34A</color>
+    <color name="gradient_5">#00CDD4</color>
+
+    // Previews
+
 </resources>

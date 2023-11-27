@@ -20,12 +20,10 @@ import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.Period
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 @AndroidEntryPoint
 class SettingActivity : BaseActivity<ActivitySettingBinding>(),
@@ -161,7 +159,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>(),
         dialogView.findViewById<TextView>(R.id.tvDialogDesc).setText(R.string.dialog_logout_msg)
         dialogView.findViewById<TextView>(R.id.tvBtnY).setText(R.string.dialog_logout_y)
         dialogView.findViewById<TextView>(R.id.tvBtnY).setOnClickListener {
-            viewModel.logOut()
+            viewModel.logout()
             //logoutDialog.dismiss()
             startActivity(Intent(this, InitActivity::class.java))
         }

@@ -54,18 +54,20 @@
             android:paddingVertical="20dp">
 
             <RelativeLayout
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
                 android:id="@+id/profileLayout"
                 android:clickable="true"
+                android:layout_margin="10dp"
                 android:layout_gravity="center">
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/imageProfile"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/image_profile" />
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/roundedCorners"
+                    app:srcCompat="@drawable/image_profile" />
 
                 <ImageView
                     android:layout_width="wrap_content"

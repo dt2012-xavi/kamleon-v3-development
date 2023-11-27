@@ -56,7 +56,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
     private fun startActivity(state: Int) {
         if (state == 3)
-            startActivity(Intent(this, AnalyticActivity::class.java))
+            startActivity(Intent(this, InitActivity::class.java))
     }
 
     private fun updateButtonState() {
