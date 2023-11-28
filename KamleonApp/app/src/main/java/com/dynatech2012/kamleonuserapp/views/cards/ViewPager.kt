@@ -142,22 +142,31 @@ fun CardViewHomeItemHome(page: Int) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(true)
     val scope = rememberCoroutineScope()
+    val tips = listOf(
+        Tip(
+            stringResource(R.string.home_item1_type),
+            clickable = false,
+            locked = false,
+            title = stringResource(R.string.home_item1_title),
+            description = stringResource(R.string.home_item1_description)
+        ),
+        Tip(
+            stringResource(R.string.home_item1_type),
+            clickable = true,
+            locked = true,
+            title = stringResource(R.string.home_item1_title),
+            description = stringResource(R.string.home_item1_description)
+        )
+    )
+    val tip = tips[page]
     when (page) {
         0 -> {
             CardViewHomeItem(
-                tip = Tip(
-                    stringResource(R.string.home_item1_type),
-                    clickable = false,
-                    locked = false,
-                    title = stringResource(R.string.home_item1_title),
-                    description = stringResource(R.string.home_item1_description)
-                ),
+                tip = tip,
                 modifier = Modifier,
                 showBottomSheet = showBottomSheet,
                 sheetState = sheetState,
-                onClick = {
-                    showBottomSheet = true
-                },
+                onClick = { },
                 onDismiss = {
                     scope.launch {
                         sheetState.hide()
@@ -172,13 +181,7 @@ fun CardViewHomeItemHome(page: Int) {
         }
         1 -> {
             CardViewHomeItem(
-                tip = Tip(
-                    stringResource(R.string.home_item1_type),
-                    clickable = true,
-                    locked = true,
-                    title = stringResource(R.string.home_item1_title),
-                    description = stringResource(R.string.home_item1_description)
-                ),
+                tip = tip,
                 modifier = Modifier,
                 showBottomSheet = showBottomSheet,
                 sheetState = sheetState,
@@ -221,16 +224,27 @@ fun CardViewHomeItemHydration(page: Int) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(true)
     val scope = rememberCoroutineScope()
+    val tips = listOf(
+        Tip(
+            stringResource(R.string.home_item1_type),
+            clickable = true,
+            locked = false,
+            title = stringResource(R.string.home_item1_title),
+            description = stringResource(R.string.home_item1_description)
+        ),
+        Tip(
+            stringResource(R.string.home_item1_type),
+            clickable = true,
+            locked = true,
+            title = stringResource(R.string.home_item1_title),
+            description = stringResource(R.string.home_item1_description)
+        )
+    )
+    val tip = tips[page]
     when (page) {
         0 -> {
             CardViewHomeItem(
-                tip = Tip(
-                    stringResource(R.string.home_item1_type),
-                    clickable = true,
-                    locked = false,
-                    title = stringResource(R.string.home_item1_title),
-                    description = stringResource(R.string.home_item1_description)
-                ),
+                tip = tip,
                 modifier = Modifier,
                 showBottomSheet = showBottomSheet,
                 sheetState = sheetState,
@@ -251,6 +265,7 @@ fun CardViewHomeItemHydration(page: Int) {
                 CardDetailView(
                     modifier = Modifier
                         .fillMaxSize(),
+                    tip = tip,
                     onClick = {
                         scope.launch {
                             sheetState.hide()
@@ -266,13 +281,7 @@ fun CardViewHomeItemHydration(page: Int) {
         }
         1 -> {
             CardViewHomeItem(
-                tip = Tip(
-                    stringResource(R.string.home_item1_type),
-                    clickable = true,
-                    locked = true,
-                    title = stringResource(R.string.home_item1_title),
-                    description = stringResource(R.string.home_item1_description)
-                ),
+                tip = tip,
                 modifier = Modifier,
                 showBottomSheet = showBottomSheet,
                 sheetState = sheetState,
@@ -315,16 +324,27 @@ fun CardViewHomeItemElect(page: Int) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(true)
     val scope = rememberCoroutineScope()
+    val tips = listOf(
+        Tip(
+            stringResource(R.string.home_item1_type),
+            clickable = true,
+            locked = false,
+            title = stringResource(R.string.home_item1_title),
+            description = stringResource(R.string.home_item1_description)
+        ),
+        Tip(
+            stringResource(R.string.home_item1_type),
+            clickable = true,
+            locked = true,
+            title = stringResource(R.string.home_item1_title),
+            description = stringResource(R.string.home_item1_description)
+        )
+    )
+    val tip = tips[page]
     when (page) {
         0 -> {
             CardViewHomeItem(
-                tip = Tip(
-                    stringResource(R.string.home_item1_type),
-                    clickable = true,
-                    locked = false,
-                    title = stringResource(R.string.home_item1_title),
-                    description = stringResource(R.string.home_item1_description)
-                ),
+                tip = tip,
                 modifier = Modifier,
                 showBottomSheet = showBottomSheet,
                 sheetState = sheetState,
@@ -342,18 +362,26 @@ fun CardViewHomeItemElect(page: Int) {
                         }
                 }
             ) {
-
+                CardDetailView(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    tip = tip,
+                    onClick = {
+                        scope.launch {
+                            sheetState.hide()
+                        }
+                            .invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    showBottomSheet = false
+                                }
+                            }
+                    }
+                )
             }
         }
         1 -> {
             CardViewHomeItem(
-                tip = Tip(
-                    stringResource(R.string.home_item1_type),
-                    clickable = true,
-                    locked = true,
-                    title = stringResource(R.string.home_item1_title),
-                    description = stringResource(R.string.home_item1_description)
-                ),
+                tip = tip,
                 modifier = Modifier,
                 showBottomSheet = showBottomSheet,
                 sheetState = sheetState,
@@ -383,16 +411,27 @@ fun CardViewHomeItemVol(page: Int) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(true)
     val scope = rememberCoroutineScope()
+    val tips = listOf(
+        Tip(
+            stringResource(R.string.home_item1_type),
+            clickable = true,
+            locked = false,
+            title = stringResource(R.string.home_item1_title),
+            description = stringResource(R.string.home_item1_description)
+        ),
+        Tip(
+            stringResource(R.string.home_item1_type),
+            clickable = true,
+            locked = true,
+            title = stringResource(R.string.home_item1_title),
+            description = stringResource(R.string.home_item1_description)
+        )
+    )
+    val tip = tips[page]
     when (page) {
         0 -> {
             CardViewHomeItem(
-                tip = Tip(
-                    stringResource(R.string.home_item1_type),
-                    clickable = true,
-                    locked = false,
-                    title = stringResource(R.string.home_item1_title),
-                    description = stringResource(R.string.home_item1_description)
-                ),
+                tip = tip,
                 modifier = Modifier,
                 showBottomSheet = showBottomSheet,
                 sheetState = sheetState,
@@ -408,21 +447,28 @@ fun CardViewHomeItemVol(page: Int) {
                                 showBottomSheet = false
                             }
                         }
-
                 }
             ) {
-
+                CardDetailView(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    tip = tip,
+                    onClick = {
+                        scope.launch {
+                            sheetState.hide()
+                        }
+                            .invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    showBottomSheet = false
+                                }
+                            }
+                    }
+                )
             }
         }
         1 -> {
             CardViewHomeItem(
-                tip = Tip(
-                    stringResource(R.string.home_item1_type),
-                    clickable = true,
-                    locked = true,
-                    title = stringResource(R.string.home_item1_title),
-                    description = stringResource(R.string.home_item1_description)
-                ),
+                tip = tip,
                 modifier = Modifier,
                 showBottomSheet = showBottomSheet,
                 sheetState = sheetState,
@@ -440,7 +486,20 @@ fun CardViewHomeItemVol(page: Int) {
                         }
                 }
             ) {
-
+                PremiumView(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    onClick = {
+                        scope.launch {
+                            sheetState.hide()
+                        }
+                            .invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    showBottomSheet = false
+                                }
+                            }
+                    }
+                )
             }
         }
     }

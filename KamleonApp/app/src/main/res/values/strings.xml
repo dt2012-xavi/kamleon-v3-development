@@ -212,4 +212,32 @@
     <string name="last_sample_message_default">"last sample"</string>
     <string name="last_sample_message">"last sample %1$s"</string>
     <string name="subscribe_to_unlock">Subscribe to unlock this personalized content.</string>
+    <string name="premium_button">Subscribe</string>
+
+
+    <!-- Premium screen -->
+    <string name="premium_card_message">Subscribe to unlock this personalized content.</string>
+    <string name="premium_landpage_backsoon">We will get back to you soon</string>
+    <string name="premium_landpage_button">Start free trial</string>
+    <string name="premium_landpage_requestsent">Request sent</string>
+    <string name="premium_landpage_subtitle">Try Kamleon Premium for 30 days at no charge.</string>
+    <string name="premium_landpage_subtitle1">Monitor hydration by tagging moments.</string>
+    <string name="premium_landpage_subtitle2">Recommendations tailored to your physical activity.</string>
+    <string name="premium_landpage_subtitle3">Adjust recommendations to climate dynamics.</string>
+    <string name="premium_landpage_subtitle4">Recommendations consider your dietary allergies.</string>
+    <string name="premium_landpage_subtitle5">Receive recommendations according to your goals.</string>
+    <string name="premium_landpage_subtitle6">Access to an endless recommendation engine.</string>
+    <string name="premium_landpage_title">Personalize your fuel!</string>
+    <string name="premium_landpage_title1">ACCURATE TRACK</string>
+    <string name="premium_landpage_title2">ACTIVITY ADAPTED</string>
+    <string name="premium_landpage_title3">WEATHER INTELLIGENT</string>
+    <string name="premium_landpage_title4">DRINK CHOICES</string>
+    <string name="premium_landpage_title5">500+ CUSTOM RECOMMENDATIONS</string>
+    <string name="premium_landpage_title6">100+ CUSTOM RECIPES</string>
+    <string name="premium_recommendation_modal_button">Subscribe</string>
+    <string name="premium_recommendation_modal_subtitle">Subscribe now to receive +500 custom recommendations based on your needs and lifestyle to keep your body balanced.</string>
+    <string name="premium_recommendation_modal_title">Would you like to continue reading recommendations?</string>
+    <string name="premium_alert_title">Request sent</string>
+    <string name="premium_alert_message">We will get back to you soon</string>
+    <string name="premium_alert_ok">Ok</string>
 </resources>
