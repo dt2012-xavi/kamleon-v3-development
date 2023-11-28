@@ -207,7 +207,7 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
         Log.d("Graph", "filteredDataSource2 size: ${filteredDataSource.size}")
         val xStepCount = graphViewXSteps(date)
 
-        val xyValues = ArrayList<KamleonGraphDataXY>()
+        var xyValues = ArrayList<KamleonGraphDataXY>()
         var maxYVal = 0.0
         for (i in 0 until xStepCount) {
             val graphBarItemTimeRange = graphViewXRange(startDate, endDate, i)

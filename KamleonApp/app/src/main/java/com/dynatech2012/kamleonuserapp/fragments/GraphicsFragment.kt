@@ -52,6 +52,20 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
     private val graphTypes = arrayOf(KamleonGraphDataType.hydration, KamleonGraphDataType.electrolytes, KamleonGraphDataType.volume)
 
     override fun initView() {
+        val yearData = yearDataSourceOf(Date())
+        binding.graphViewNew.setData(yearData)
+
+        val typeFromIntent = viewModel.graphicType
+        binding.graphViewNew.setGraphDataType(graphTypes[typeFromIntent])
+
+        binding.tvNavTitle.text = graphTypes[typeFromIntent].identifier
+
+        setupTips()
+        initObservers()
+    }
+
+    private fun setupTips() {
+        /*
         val layoutManager = LinearLayoutManager(requireContext())
         layoutManager.orientation = RecyclerView.HORIZONTAL
         adapter = TipListAdapter(tipsAry)
@@ -63,21 +77,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         snapHelper.attachToRecyclerView(binding.rcvListNew)
 
         binding.rcvListNew.addItemDecoration(CirclePagerIndicatorDecoration())
-
-        val yearData = yearDataSourceOf(Date())
-        binding.graphViewNew.setData(yearData)
-
-        val typeFromIntent = viewModel.graphicType
-        binding.graphViewNew.setGraphDataType(graphTypes[typeFromIntent])
-
-        binding.tvNavTitle.text = graphTypes[typeFromIntent].identifier
-
-        // TODO: uncomment when cards replaced
-        // setupTips()
-        initObservers()
-    }
-
-    private fun setupTips() {
+         */
         val tipType = when (viewModel.graphicType) {
             0 -> TipType.HYDRATION
             1 -> TipType.ELECTROLYTE
@@ -86,7 +86,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         }
         binding.cvGraphTips.setContent {
             ViewPager(tipType = tipType, modifier = Modifier) {
-                findNavController().navigate(R.id.action_homeFragment_to_analyticFragment)
+
             }
         }
     }

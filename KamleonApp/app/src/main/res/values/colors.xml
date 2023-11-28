@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="whiteEE">#EEFFFFFF</color>
+    <color name="white80">#CCFFFFFF</color>
     <color name="white40">#66FFFFFF</color>
     <color name="white30">#4DFFFFFF</color>
     <color name="white05">#0DFFFFFF</color>
@@ -80,6 +81,8 @@
     <color name="gradient_3">#FFC107</color>
     <color name="gradient_4">#8BC34A</color>
     <color name="gradient_5">#00CDD4</color>
+    <color name="premium_gradient_1">#FFFFFF</color>
+    <color name="premium_gradient_2">#4BD2C9</color>
 
     // Previews
 

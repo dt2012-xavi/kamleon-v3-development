@@ -1,29 +1,48 @@
 package com.dynatech2012.kamleonuserapp.views.cards
 
+import android.graphics.Insets
+import android.text.style.ForegroundColorSpan
+import android.view.View
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.LocalMinimumTouchTargetEnforcement
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
@@ -43,26 +62,40 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dynatech2012.kamleonuserapp.R
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardViewHomeItem(tip: Tip, modifier: Modifier, onClick: () -> Unit) {
+fun CardViewHomeItem(tip: Tip, modifier: Modifier, showBottomSheet: Boolean, sheetState: SheetState, onClick: () -> Unit, onDismiss: () -> Unit, sheetContent: @Composable () -> Unit) {
     val shape = RoundedCornerShape(12.dp)
+    val clickable = tip.clickable
+    val locked = tip.locked
+    val foregroundColor = colorResource(id = R.color.white80)
+    val lockString = stringResource(id = R.string.subscribe_to_unlock)
+
+    //val sheetState = rememberModalBottomSheetState(true)
+    val scope = rememberCoroutineScope()
+    //var showBottomSheet by remember { mutableStateOf(false) }
+
     ClippedShadowCard(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .clickable(enabled = clickable, onClick = { onClick() }),
         shape = shape,
         containerColor = colorResource(id = R.color.white40),
         elevation = 10.dp,
     )
     {
+        Box (){
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -118,11 +151,48 @@ fun CardViewHomeItem(tip: Tip, modifier: Modifier, onClick: () -> Unit) {
                     )
                 }
             }
+            if (locked) {
+                Row (
+                    modifier = Modifier
+                        .height(124.dp)
+                        .background(color = foregroundColor, shape = shape),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(24.dp),
+                        text = lockString,
+                        fontSize = dimensionResource(R.dimen.ts_16).value.sp,
+                        color = colorResource(id = R.color.kamleon_dark_grey),
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        maxLines = 3
+                    )
+                }
+            }
         }
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                modifier = Modifier
+                    .fillMaxSize(),
+                onDismissRequest = {
+                    //showBottomSheet = false
+                    onDismiss()
+                },
+                sheetState = sheetState,
+                shape = BottomSheetDefaults.ExpandedShape,
+                dragHandle = {},
+            ) {
+                // Sheet content
+                sheetContent()
+            }
+        }
+    }
 }
 
 data class Tip(
     val type: String,
+    val clickable: Boolean = true,
     val locked: Boolean = false,
     val title: String,
     val description: String,
@@ -178,19 +248,19 @@ fun ClippedShadowCard(
         shape = shape,
         modifier = modifier
     ) {
-        Card(
-            modifier = modifier,
-            shape = shape,
-            colors = CardDefaults.cardColors(
-                containerColor = containerColor,
-            ),
-            border = border,
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 0.dp
-            ),
-            content = content
-        )
-    }
+            Card(
+                modifier = modifier,
+                shape = shape,
+                colors = CardDefaults.cardColors(
+                    containerColor = containerColor,
+                    ),
+                border = border,
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 0.dp
+                ),
+                content = content
+            )
+        }
 }
 
 @Composable

@@ -211,4 +211,5 @@
     <string name="volume_good">Your sample has good volume to be analyzed.</string>
     <string name="last_sample_message_default">"last sample"</string>
     <string name="last_sample_message">"last sample %1$s"</string>
+    <string name="subscribe_to_unlock">Subscribe to unlock this personalized content.</string>
 </resources>

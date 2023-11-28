@@ -17,17 +17,30 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.fragments.HomeFragment
+import com.dynatech2012.kamleonuserapp.fragments.HomeItemFragment
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -38,14 +51,15 @@ fun ViewPager(tipType: TipType, modifier: Modifier, onClick: () -> Unit, ) {
     val TAG: String = "ViewPager"
     Column(
         modifier = modifier
-            .fillMaxSize()
+            //.wrapContentHeight()
+            //.fillMaxSize()
 
     ) {
 
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier
-                .weight(1f),
+            modifier = Modifier,
+                //.weight(1f),
                 //.fillMaxSize()
                 //.padding(40.dp)
             pageSpacing = 8.dp,
@@ -103,9 +117,9 @@ enum class TipType(val title: String) {
         get() {
             return when (this@TipType) {
                 HOME -> 2
-                HYDRATION -> 3
-                ELECTROLYTE -> 3
-                VOLUME -> 3
+                HYDRATION -> 2
+                ELECTROLYTE -> 2
+                VOLUME -> 2
         }
     }
 
@@ -122,64 +136,240 @@ enum class TipType(val title: String) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardViewHomeItemHome(page: Int) {
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(true)
+    val scope = rememberCoroutineScope()
     when (page) {
         0 -> {
             CardViewHomeItem(
-                tip = Tip("Title home 1", false, "Subtitle1", "Description1"),
-                modifier = Modifier
-            ) {
-
-            }
+                tip = Tip(
+                    stringResource(R.string.home_item1_type),
+                    clickable = false,
+                    locked = false,
+                    title = stringResource(R.string.home_item1_title),
+                    description = stringResource(R.string.home_item1_description)
+                ),
+                modifier = Modifier,
+                showBottomSheet = showBottomSheet,
+                sheetState = sheetState,
+                onClick = {
+                    showBottomSheet = true
+                },
+                onDismiss = {
+                    scope.launch {
+                        sheetState.hide()
+                    }
+                        .invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showBottomSheet = false
+                            }
+                        }
+                }
+                ) { }
         }
         1 -> {
             CardViewHomeItem(
-                tip = Tip("Title home 2", false, "Subtitle2", "Description2"),
-                modifier = Modifier
-            ) {
-
+                tip = Tip(
+                    stringResource(R.string.home_item1_type),
+                    clickable = true,
+                    locked = true,
+                    title = stringResource(R.string.home_item1_title),
+                    description = stringResource(R.string.home_item1_description)
+                ),
+                modifier = Modifier,
+                showBottomSheet = showBottomSheet,
+                sheetState = sheetState,
+                onClick = {
+                    showBottomSheet = true
+                },
+                onDismiss = {
+                    scope.launch {
+                        sheetState.hide()
+                    }
+                        .invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showBottomSheet = false
+                            }
+                        }
+                }
+            )
+            {
+                PremiumView(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    onClick = {
+                        scope.launch {
+                            sheetState.hide()
+                        }
+                            .invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    showBottomSheet = false
+                                }
+                            }
+                    }
+                )
             }
         }
     }
 }
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardViewHomeItemHydration(page: Int) {
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(true)
+    val scope = rememberCoroutineScope()
     when (page) {
         0 -> {
             CardViewHomeItem(
-                tip = Tip("Title hyd 1", false, "Subtitle1", "Description1"),
-                modifier = Modifier
-            ) {
-
+                tip = Tip(
+                    stringResource(R.string.home_item1_type),
+                    clickable = true,
+                    locked = false,
+                    title = stringResource(R.string.home_item1_title),
+                    description = stringResource(R.string.home_item1_description)
+                ),
+                modifier = Modifier,
+                showBottomSheet = showBottomSheet,
+                sheetState = sheetState,
+                onClick = {
+                    showBottomSheet = true
+                },
+                onDismiss = {
+                    scope.launch {
+                        sheetState.hide()
+                    }
+                        .invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showBottomSheet = false
+                            }
+                        }
+                }
+            ){
+                CardDetailView(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    onClick = {
+                        scope.launch {
+                            sheetState.hide()
+                        }
+                            .invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    showBottomSheet = false
+                                }
+                            }
+                    }
+                )
             }
         }
         1 -> {
             CardViewHomeItem(
-                tip = Tip("Title hyd 2", false, "Subtitle2", "Description2"),
-                modifier = Modifier
-            ) {
-
+                tip = Tip(
+                    stringResource(R.string.home_item1_type),
+                    clickable = true,
+                    locked = true,
+                    title = stringResource(R.string.home_item1_title),
+                    description = stringResource(R.string.home_item1_description)
+                ),
+                modifier = Modifier,
+                showBottomSheet = showBottomSheet,
+                sheetState = sheetState,
+                onClick = {
+                    showBottomSheet = true
+                },
+                onDismiss = {
+                    scope.launch {
+                        sheetState.hide()
+                    }
+                        .invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showBottomSheet = false
+                            }
+                        }
+                }
+            )
+            {
+                PremiumView(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    onClick = {
+                        scope.launch {
+                            sheetState.hide()
+                        }
+                            .invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    showBottomSheet = false
+                                }
+                            }
+                    }
+                )
             }
         }
     }
 }
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardViewHomeItemElect(page: Int) {
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(true)
+    val scope = rememberCoroutineScope()
     when (page) {
         0 -> {
             CardViewHomeItem(
-                tip = Tip("Title elec 1", false, "Subtitle1", "Description1"),
-                modifier = Modifier
+                tip = Tip(
+                    stringResource(R.string.home_item1_type),
+                    clickable = true,
+                    locked = false,
+                    title = stringResource(R.string.home_item1_title),
+                    description = stringResource(R.string.home_item1_description)
+                ),
+                modifier = Modifier,
+                showBottomSheet = showBottomSheet,
+                sheetState = sheetState,
+                onClick = {
+                    showBottomSheet = true
+                },
+                onDismiss = {
+                    scope.launch {
+                        sheetState.hide()
+                    }
+                        .invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showBottomSheet = false
+                            }
+                        }
+                }
             ) {
 
             }
         }
         1 -> {
             CardViewHomeItem(
-                tip = Tip("Title elec 2", false, "Subtitle2", "Description2"),
-                modifier = Modifier
+                tip = Tip(
+                    stringResource(R.string.home_item1_type),
+                    clickable = true,
+                    locked = true,
+                    title = stringResource(R.string.home_item1_title),
+                    description = stringResource(R.string.home_item1_description)
+                ),
+                modifier = Modifier,
+                showBottomSheet = showBottomSheet,
+                sheetState = sheetState,
+                onClick = {
+                    showBottomSheet = true
+                },
+                onDismiss = {
+                    scope.launch {
+                        sheetState.hide()
+                    }
+                        .invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showBottomSheet = false
+                            }
+                        }
+                }
             ) {
 
             }
@@ -187,21 +377,68 @@ fun CardViewHomeItemElect(page: Int) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardViewHomeItemVol(page: Int) {
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(true)
+    val scope = rememberCoroutineScope()
     when (page) {
         0 -> {
             CardViewHomeItem(
-                tip = Tip("Title vol 1", false, "Subtitle1", "Description1"),
-                modifier = Modifier
+                tip = Tip(
+                    stringResource(R.string.home_item1_type),
+                    clickable = true,
+                    locked = false,
+                    title = stringResource(R.string.home_item1_title),
+                    description = stringResource(R.string.home_item1_description)
+                ),
+                modifier = Modifier,
+                showBottomSheet = showBottomSheet,
+                sheetState = sheetState,
+                onClick = {
+                    showBottomSheet = true
+                },
+                onDismiss = {
+                    scope.launch {
+                        sheetState.hide()
+                    }
+                        .invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showBottomSheet = false
+                            }
+                        }
+
+                }
             ) {
 
             }
         }
         1 -> {
             CardViewHomeItem(
-                tip = Tip("Title vol 2", false, "Subtitle2", "Description2"),
-                modifier = Modifier
+                tip = Tip(
+                    stringResource(R.string.home_item1_type),
+                    clickable = true,
+                    locked = true,
+                    title = stringResource(R.string.home_item1_title),
+                    description = stringResource(R.string.home_item1_description)
+                ),
+                modifier = Modifier,
+                showBottomSheet = showBottomSheet,
+                sheetState = sheetState,
+                onClick = {
+                    showBottomSheet = true
+                },
+                onDismiss = {
+                    scope.launch {
+                        sheetState.hide()
+                    }
+                        .invokeOnCompletion {
+                            if (!sheetState.isVisible) {
+                                showBottomSheet = false
+                            }
+                        }
+                }
             ) {
 
             }

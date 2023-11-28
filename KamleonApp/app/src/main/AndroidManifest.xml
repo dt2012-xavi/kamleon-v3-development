@@ -42,36 +42,6 @@
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.KamleonApp" />
         <activity
-            android:name=".activities.AnalyticActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.EmailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.PwdActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.PinActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.DeleteActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.SettingActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.ForgotPwdActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.OnboardingActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.PrivacyActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.LoginActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.InitActivity"
             android:exported="true" >
             <intent-filter>
@@ -80,9 +50,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.GraphicsActivity"
-            android:exported="false" />
         <!--
 <service
             android:name="MyNavigationService"

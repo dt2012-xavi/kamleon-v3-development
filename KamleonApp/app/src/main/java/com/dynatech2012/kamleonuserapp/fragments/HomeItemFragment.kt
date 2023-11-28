@@ -5,6 +5,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
@@ -17,6 +20,7 @@ class HomeItemFragment : Fragment() {
     lateinit var binding: LayoutHomeListItemBinding
     var type: Int = -1
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,15 +35,41 @@ class HomeItemFragment : Fragment() {
             setContent {
                 when (type) {
                     0 -> {
-                        CardViewHomeItem(tip = Tip(getString(R.string.home_item1_type), false, getString(R.string.home_item1_title), getString(R.string.home_item1_description)),
-                            modifier = Modifier
+                        CardViewHomeItem(tip = Tip(getString(R.string.home_item1_type),
+                            clickable = true,
+                            locked = false,
+                            title = getString(R.string.home_item1_title),
+                            description = getString(R.string.home_item1_description)
+                        ),
+                            modifier = Modifier,
+                            true,
+                            sheetState = SheetState(true),
+                            onClick = {
+                                Log.d(TAG, "onClick: $type")
+                            },
+                            onDismiss = {
+                                Log.d(TAG, "onDismiss: $type")
+                            }
                         ) {
                             Log.d(TAG, "onClick: $type")
                         }
                     }
                     1 -> {
-                        CardViewHomeItem(tip = Tip(getString(R.string.home_item2_type), false, getString(R.string.home_item2_title), getString(R.string.home_item2_description)),
-                            modifier = Modifier
+                        CardViewHomeItem(tip = Tip(getString(R.string.home_item2_type),
+                            clickable = true,
+                            locked = false,
+                            title = getString(R.string.home_item2_title),
+                            description = getString(R.string.home_item2_description)
+                        ),
+                            modifier = Modifier,
+                            true,
+                            sheetState = SheetState(true),
+                            onClick = {
+                                Log.d(TAG, "onClick: $type")
+                            },
+                            onDismiss = {
+                                Log.d(TAG, "onDismiss: $type")
+                            }
                         ) {
 
                         }
