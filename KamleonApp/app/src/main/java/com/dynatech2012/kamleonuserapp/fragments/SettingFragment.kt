@@ -1,8 +1,8 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
 import android.view.View
@@ -13,7 +13,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.dynatech2012.kamleonuserapp.R
-import com.dynatech2012.kamleonuserapp.activities.InitActivity
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.ActivitySettingBinding
 import com.dynatech2012.kamleonuserapp.models.CustomUser
@@ -279,7 +278,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     private fun initObservers() {
         viewModel.userData.observe(this, this::onUserDataChanged)
         viewModel.userUpdated.observe(this, this::onUserDataUpdated)
-        viewModel.userImage.observe(this, this::onProfileImageUriChanged)
+        viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
     }
 
     private fun onUserDataChanged(userData: CustomUser) {
@@ -297,10 +296,6 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         val age = Period.between(localDate, LocalDate.now()).years
         val stringDate = "$formattedDate ($age)"
         binding.prefMenuItemBirth.setValue(stringDate)
-        if (userData.imageUrl.isNotBlank())
-            binding.imageProfile.load(userData.imageUrl) {
-                placeholder(R.drawable.image_profile)
-            }
     }
 
     private fun onUserDataUpdated(updated: Boolean) {
@@ -311,14 +306,12 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
     }
 
-    private fun onProfileImageUriChanged(uri: Uri?) {
-        Log.d(TAG, "Got image profile")
-        binding.imageProfile.setImageURI(uri)
-        /*
-        binding.imageProfile.load(userData.imageUrl) {
-            placeholder(R.drawable.image_profile)
+    private fun onUserImageChanged(drawable: Drawable?) {
+        Log.d(HomeFragment.TAG, "image changed")
+        drawable?.let {
+            binding.ivSettProfile.load(drawable)
+            return
         }
-        */
     }
 
 

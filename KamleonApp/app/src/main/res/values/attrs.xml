@@ -31,6 +31,7 @@
             <enum name="hydration" value="0"/>
             <enum name="electrolytes" value="1"/>
             <enum name="volume" value="2"/>
+            <enum name="empty" value="3"/>
         </attr>
     </declare-styleable>
 </resources>

@@ -2,19 +2,16 @@ package com.dynatech2012.kamleonuserapp.fragments
 
 import android.app.Dialog
 import android.content.DialogInterface
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResult
 import coil.load
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -55,8 +52,8 @@ class ImagePickFragment : BottomSheetDialogFragment() {
                     placeholder(R.drawable.image_profile)
                 }
         }
-        viewModel.userImage.observe(viewLifecycleOwner, this::onProfileImagePrevUriChanged)
-        viewModel.userImage.observe(viewLifecycleOwner, this::onProfileImageUriChanged)
+        viewModel.userImageUri.observe(viewLifecycleOwner, this::onProfileImagePrevUriChanged)
+        viewModel.userImageUri.observe(viewLifecycleOwner, this::onProfileImageUriChanged)
         return v
     }
 

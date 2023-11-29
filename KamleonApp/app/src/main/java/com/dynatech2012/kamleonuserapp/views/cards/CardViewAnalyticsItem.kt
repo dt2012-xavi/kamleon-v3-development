@@ -1,18 +1,22 @@
 package com.dynatech2012.kamleonuserapp.views.cards
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -24,10 +28,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter.Companion.tint
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dynatech2012.kamleonuserapp.R
@@ -36,67 +48,119 @@ import com.dynatech2012.kamleonuserapp.views.circular.VolumeProgressIndicator
 
 @Composable
 fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, descriptionStart: String, startValue: Int, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(12.dp)
+    val elevation = 10.dp
     val value by rememberSaveable { mutableIntStateOf(startValue) }
     val subtitle by rememberSaveable { mutableStateOf(subtitleStart) }
     val description by rememberSaveable { mutableStateOf(descriptionStart) }
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = colorResource(id = R.color.white),
+            containerColor = colorResource(id = R.color.color_fa),
         ),
         modifier = Modifier
             .padding(8.dp)
-            .fillMaxWidth()
-            .clickable { onClick() },
-        shape = RoundedCornerShape(10.dp),
+            .fillMaxWidth(if (analyticType == AnalyticType.EMPTY) 0.5f else 1f)
+            .clickable { onClick() }
+            .coloredShadow(
+                color = Color.Black,
+                alpha = 0.15f,
+                offsetX = 2.dp,
+                offsetY = 2.dp,
+                shadowRadius = 8.dp,
+                //blurRadius = 12.dp,
+                //spread = 0.dp,
+                borderRadius = 12.dp,
+            ),
+        shape = shape,
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 8.dp
+            defaultElevation = elevation
         ),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .height(120.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(end = 10.dp)
-                    .weight(1f),
+    )
 
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    modifier = Modifier.padding(bottom = 2.dp),
-                    text = analyticType.title,
-                    fontSize = dimensionResource(R.dimen.ts_14).value.sp,
-                    color = colorResource(id = R.color.kamleon_secondary_grey_50),
-                )
-                Text(
-                    modifier = Modifier.padding(bottom = 6.dp),
-                    text = subtitle,
-                    fontSize = dimensionResource(R.dimen.ts_20).value.sp,
-                    color = colorResource(id = R.color.kamleon_dark_grey),
-                    fontWeight = FontWeight.Bold)
-                Text(
-                    modifier = Modifier
-                    .padding(top = 4.dp),
-                    text = description,
-                    fontSize = dimensionResource(R.dimen.ts_14).value.sp,
-                    color = colorResource(id = R.color.kamleon_secondary_grey_40),
-                )
-            }
+    {
+        if (analyticType == AnalyticType.EMPTY) {
             Column(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .width(100.dp),
-                //verticalArrangement = Arrangement.SpaceEvenly
+                    .fillMaxSize()
+                    .height(130.dp)
+                    .padding(horizontal = 20.dp)
+                    .padding(vertical = 20.dp),
+                horizontalAlignment = Alignment.Start,
             ) {
-                when (analyticType) {
-                    AnalyticType.HYDRATION -> HydrationView(value)
-                    AnalyticType.ELECTROLYTE -> ElecView(value)
-                    AnalyticType.VOLUME -> VolumeView(value)
-                    else -> { }
+                Image(
+                    painter = painterResource(id = R.drawable.baseline_add_24),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(36.dp)
+                        //.clip(CircleShape)
+                        .coloredShadow(
+                            color = Color.Black,
+                            alpha = 0.15f,
+                            offsetX = 2.dp,
+                            offsetY = 2.dp,
+                            borderRadius = 18.dp,
+                            shadowRadius = 4.dp,
+                        )
+                        .background(colorResource(id = R.color.color_fa), CircleShape),
+                    colorFilter = tint(colorResource(id = R.color.kamleon_dark_grey))
+                )
+                Spacer(modifier = Modifier
+                    .weight(1f))
+                Text(
+                    text = "Add metric",
+                    fontSize = dimensionResource(R.dimen.ts_14).value.sp,
+                    color = colorResource(id = R.color.kamleon_dark_grey))
+            }
+        } else {
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(130.dp)
+                    .padding(8.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(end = 10.dp)
+                        .weight(1f),
+
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        modifier = Modifier.padding(bottom = 2.dp),
+                        text = analyticType.title,
+                        fontSize = dimensionResource(R.dimen.ts_14).value.sp,
+                        color = colorResource(id = R.color.kamleon_secondary_grey_50),
+                    )
+                    Text(
+                        modifier = Modifier.padding(bottom = 6.dp),
+                        text = subtitle,
+                        fontSize = dimensionResource(R.dimen.ts_20).value.sp,
+                        color = colorResource(id = R.color.kamleon_dark_grey),
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 4.dp),
+                        text = description,
+                        fontSize = dimensionResource(R.dimen.ts_14).value.sp,
+                        color = colorResource(id = R.color.kamleon_secondary_grey_40),
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(100.dp),
+                    //verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    when (analyticType) {
+                        AnalyticType.HYDRATION -> HydrationView(value)
+                        AnalyticType.ELECTROLYTE -> ElecView(value)
+                        AnalyticType.VOLUME -> VolumeView(value)
+                        //AnalyticType.EMPTY -> AnalyticsEmptyView()
+                        else -> {}
+                    }
                 }
             }
         }
@@ -106,13 +170,15 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
 enum class AnalyticType(val title: String) {
     HYDRATION("Hydration"),
     ELECTROLYTE("Electrolytes"),
-    VOLUME("Volume");
+    VOLUME("Volume"),
+    EMPTY("Empty");
     companion object {
         fun from(id: Int): AnalyticType {
             return when (id) {
                 0 -> HYDRATION
                 1 -> ELECTROLYTE
                 2 -> VOLUME
+                3 -> EMPTY
                 else -> HYDRATION
             }
         }
@@ -282,4 +348,91 @@ fun VolumeView(volume: Int) {
             }
         }
     }
+}
+
+
+@Composable
+fun AnalyticsEmptyView() {
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth(0.5f),
+    ) {
+
+        Row(
+            modifier = Modifier
+                .fillMaxHeight()
+                .aspectRatio(1f),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                    text = "+",
+                    fontSize = dimensionResource(R.dimen.ts_36).value.sp,
+                    color = colorResource(id = R.color.kamleon_dark_grey)
+                )
+            Text(
+                    text = "%",
+                    fontSize = dimensionResource(R.dimen.ts_20).value.sp,
+                    color = colorResource(id = R.color.kamleon_dark_grey)
+                )
+        }
+    }
+}
+
+
+fun Modifier.drawColoredShadow(
+    color: Color = Color.Black,
+    alpha: Float = 0.07f,
+    borderRadius: Dp = 0.dp,
+    offsetX: Dp = 0.dp,
+    offsetY: Dp = 0.dp,
+    blurRadius: Dp = 7.dp,
+    spread: Dp = 0.dp,
+    enabled: Boolean = true,
+) = if(enabled) {
+    this.drawBehind {
+        val transparentColor = color.copy(alpha = 0.0f).toArgb()
+        val shadowColor = color.copy(alpha = alpha).toArgb()
+        this.drawIntoCanvas {
+            val paint = Paint()
+            val frameworkPaint = paint.asFrameworkPaint()
+            frameworkPaint.color = transparentColor
+            frameworkPaint.setShadowLayer(
+                blurRadius.toPx(),
+                offsetX.toPx(),
+                offsetY.toPx(),
+                shadowColor
+            )
+            it.save()
+
+            if(spread.value > 0) {
+                fun calcSpreadScale(spread: Float, childSize: Float): Float {
+                    return 1f + ((spread / childSize) * 2f)
+                }
+
+                it.scale(
+                    calcSpreadScale(spread.toPx(), this.size.width),
+                    calcSpreadScale(spread.toPx(), this.size.height),
+                    /*
+                    this.center.x,
+                    this.center.y
+
+                     */
+                )
+            }
+
+            it.drawRoundRect(
+                0f,
+                0f,
+                this.size.width,
+                this.size.height,
+                borderRadius.toPx(),
+                borderRadius.toPx(),
+                paint
+            )
+            it.restore()
+        }
+    }
+} else {
+    this
 }

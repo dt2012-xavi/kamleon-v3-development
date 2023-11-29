@@ -181,58 +181,10 @@ fun CardDetailView(modifier: Modifier, tip: Tip, onClick: () -> Unit) {
             )
             {
                 // Sheet content
-                Column(
+                PremiumModalView(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .background(color = colorResource(id = R.color.color_fa))
-                        .padding(horizontal = 40.dp)
-                        .padding(top = 24.dp, bottom = 40.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Image(
-                        modifier = Modifier
-                            .size(48.dp),
-                        painter = painterResource(
-                            id = R.drawable.padlock
-                        ),
-                        contentDescription = "",
-                    )
-                    Text(
-                        modifier = Modifier
-                            .padding(bottom = 8.dp),
-                        text = stringResource(id = R.string.premium_recommendation_modal_title),
-                        fontSize = dimensionResource(R.dimen.ts_24).value.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = colorResource(id = R.color.kamleon_dark_grey)
-                    )
-                    Text(
-                        modifier = Modifier
-                            .padding(bottom = 14.dp),
-                        text = stringResource(id = R.string.premium_recommendation_modal_subtitle),
-                        fontSize = dimensionResource(R.dimen.ts_14).value.sp,
-                        color = colorResource(id = R.color.kamleon_dark_grey)
-                    )
-                    Button(
-                        onClick = {
-                            showBottomSheetPremium = true
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        shape = CircleShape,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(id = R.color.kamleon_blue),
-                            contentColor = colorResource(id = R.color.color_fa),
-                            disabledContainerColor = colorResource(id = R.color.kamleon_secondary_grey_40),
-                            disabledContentColor = colorResource(id = R.color.kamleon_secondary_grey_40),
-                        )
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .padding(12.dp),
-                            text = stringResource(id = R.string.premium_recommendation_modal_button)
-                        )
-                    }
+                    showBottomSheetPremium = true
                 }
             }
         }

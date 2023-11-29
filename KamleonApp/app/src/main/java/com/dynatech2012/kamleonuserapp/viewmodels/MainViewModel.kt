@@ -1,13 +1,15 @@
 package com.dynatech2012.kamleonuserapp.viewmodels
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.ImageLoader
+import coil.request.ImageRequest
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
@@ -20,16 +22,12 @@ import com.dynatech2012.kamleonuserapp.repositories.DatabaseDataSource
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.MeasuresRepository
 import com.dynatech2012.kamleonuserapp.repositories.RealtimeRepository
-import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import com.dynatech2012.kamleonuserapp.utils.SharedPrefUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.nio.channels.Channel
 import java.util.Date
 import javax.inject.Inject
 
@@ -62,8 +60,11 @@ class MainViewModel @Inject constructor(
     private val _userImagePrev = MutableLiveData<Uri?>()
     val userImagePrev: LiveData<Uri?> = _userImagePrev
 
-    private val _userImage = MutableLiveData<Uri?>()
-    val userImage: LiveData<Uri?> = _userImage
+    private val _userImageUri = MutableLiveData<Uri?>()
+    val userImageUri: LiveData<Uri?> = _userImageUri
+
+    private val _userImageDrawable = MutableLiveData<Drawable?>()
+    val userImageDrawable: LiveData<Drawable?> = _userImageDrawable
 
     private val _measures = MutableLiveData<ArrayList<MeasureData>>()
     val measures: LiveData<ArrayList<MeasureData>> = _measures
@@ -74,8 +75,20 @@ class MainViewModel @Inject constructor(
     fun getUserData() {
         viewModelScope.launch(Dispatchers.IO) {
             val userResult = firestoreRepo.getUserData()
-            if (userResult.isSuccess && userResult.dataValue != null)
-                _userData.postValue(userResult.dataValue)
+            if (userResult.isSuccess && userResult.dataValue != null) {
+                val user = userResult.dataValue!!
+                _userData.postValue(user)
+                val imageLoader = ImageLoader(appContext)
+                val request = ImageRequest.Builder(appContext)
+                    .data(user.imageUrl)
+                    .allowHardware(false)
+                    .target { drawable ->
+                        // Handle the result.
+                        _userImageDrawable.postValue(drawable)
+                    }
+                    .build()
+                val disposable = imageLoader.enqueue(request)
+            }
             Log.d(TAG, "user data changed got user ${userResult.dataValue}")
         }
     }
@@ -176,7 +189,7 @@ class MainViewModel @Inject constructor(
             _userImagePrev.postValue(uri)
             viewModelScope.launch(Dispatchers.IO) {
                 firestoreRepo.updateUserImage(it)
-                _userImage.postValue(uri)
+                _userImageUri.postValue(uri)
             }
         }
     }

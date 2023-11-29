@@ -77,9 +77,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun CardViewHomeItem(tip: Tip, modifier: Modifier, showBottomSheet: Boolean, sheetState: SheetState, onClick: () -> Unit, onDismiss: () -> Unit, sheetContent: @Composable () -> Unit) {
     val shape = RoundedCornerShape(12.dp)
+    val elevation = 10.dp
     val clickable = tip.clickable
     val locked = tip.locked
-    val foregroundColor = colorResource(id = R.color.white80)
+    val foregroundColor = colorResource(id = R.color.color_fa_80)
     val lockString = stringResource(id = R.string.subscribe_to_unlock)
 
     //val sheetState = rememberModalBottomSheetState(true)
@@ -91,8 +92,8 @@ fun CardViewHomeItem(tip: Tip, modifier: Modifier, showBottomSheet: Boolean, she
             .fillMaxWidth()
             .clickable(enabled = clickable, onClick = { onClick() }),
         shape = shape,
-        containerColor = colorResource(id = R.color.white40),
-        elevation = 10.dp,
+        containerColor = colorResource(id = R.color.color_fa_40),
+        elevation = elevation,
     )
     {
         Box (){

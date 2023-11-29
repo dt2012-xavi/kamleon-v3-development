@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
@@ -84,81 +85,42 @@ import com.dynatech2012.kamleonuserapp.views.md_theme_dark_onBackground
 import kotlinx.coroutines.launch
 
 @Composable
-fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
-    val openDialog = remember { mutableStateOf(false)  }
-    Column (
-        modifier = modifier
+fun PremiumModalView(modifier: Modifier, onClick: () -> Unit) {
+    Column(
+        modifier = Modifier
             .fillMaxWidth()
-            .background(
-                Brush.linearGradient(
-                    colors = listOf(
-                        colorResource(id = R.color.premium_gradient_1),
-                        colorResource(id = R.color.premium_gradient_1),
-                        colorResource(id = R.color.premium_gradient_2)
-                    ),
-                    start = Offset.Zero,
-                    end = Offset.Infinite,
-
-                    )
-            )
-            .padding(32.dp)
-    ){
-        Row {
-            Image(painter = painterResource(
-                id = R.drawable.kamleon),
-                contentDescription = "")
-            Spacer(modifier = Modifier
-                .weight(1f)
-            )
-            Image(
-                modifier = Modifier
-                    .padding(10.dp)
-                    .clickable { onClick() },
-                painter = painterResource(
-                id = R.drawable.close_24),
-                contentDescription = "")
-        }
+            .wrapContentHeight()
+            .background(color = colorResource(id = R.color.color_fa))
+            .padding(horizontal = 40.dp)
+            .padding(top = 24.dp, bottom = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(
+            modifier = Modifier
+                .size(48.dp),
+            painter = painterResource(
+                id = R.drawable.padlock
+            ),
+            contentDescription = "",
+        )
         Text(
             modifier = Modifier
-                .padding(top = 24.dp, bottom = 4.dp),
-            text = stringResource(id = R.string.premium_landpage_title),
+                .padding(bottom = 8.dp),
+            text = stringResource(id = R.string.premium_recommendation_modal_title),
             fontSize = dimensionResource(R.dimen.ts_24).value.sp,
             fontWeight = FontWeight.Bold,
-            color = colorResource(id = R.color.kamleon_dark_grey))
+            color = colorResource(id = R.color.kamleon_dark_grey)
+        )
         Text(
             modifier = Modifier
-                .padding(bottom = 30.dp),
-            text = stringResource(id = R.string.premium_landpage_subtitle),
+                .padding(bottom = 14.dp),
+            text = stringResource(id = R.string.premium_recommendation_modal_subtitle),
             fontSize = dimensionResource(R.dimen.ts_14).value.sp,
-            color = colorResource(id = R.color.kamleon_dark_grey))
-        PremiumListItemView(
-            title = stringResource(id = R.string.premium_landpage_title1),
-            subtitle = stringResource(id = R.string.premium_landpage_subtitle1)
+            color = colorResource(id = R.color.kamleon_dark_grey)
         )
-        PremiumListItemView(
-            title = stringResource(id = R.string.premium_landpage_title2),
-            subtitle = stringResource(id = R.string.premium_landpage_subtitle2)
-        )
-        PremiumListItemView(
-            title = stringResource(id = R.string.premium_landpage_title3),
-            subtitle = stringResource(id = R.string.premium_landpage_subtitle3)
-        )
-        PremiumListItemView(
-            title = stringResource(id = R.string.premium_landpage_title4),
-            subtitle = stringResource(id = R.string.premium_landpage_subtitle4)
-        )
-        PremiumListItemView(
-            title = stringResource(id = R.string.premium_landpage_title5),
-            subtitle = stringResource(id = R.string.premium_landpage_subtitle5)
-        )
-        PremiumListItemView(
-            title = stringResource(id = R.string.premium_landpage_title6),
-            subtitle = stringResource(id = R.string.premium_landpage_subtitle6)
-        )
-
         Button(
             onClick = {
-                openDialog.value = true
+                onClick()
             },
             modifier = Modifier
                 .fillMaxWidth(),
@@ -173,63 +135,8 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
             Text(
                 modifier = Modifier
                     .padding(12.dp),
-                text = stringResource(id = R.string.premium_landpage_button)
+                text = stringResource(id = R.string.premium_recommendation_modal_button)
             )
-        }
-        Spacer(modifier = Modifier
-            .weight(1f)
-        )
-
-
-        if (openDialog.value) {
-            AlertView(
-                dialogTitle = stringResource(id = R.string.premium_alert_title),
-                dialogText = stringResource(id = R.string.premium_alert_message),
-                onDismissRequest =
-                {
-                    openDialog.value = false
-                    onClick()
-                },
-                onConfirmation =
-                {
-                    openDialog.value = false
-                    onClick()
-                },
-                buttonText = stringResource(id = R.string.premium_alert_ok)
-            )
-        }
-    }
-}
-
-@Composable
-fun PremiumListItemView(title: String, subtitle: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            modifier = Modifier
-                .size(36.dp),
-            painter = painterResource(
-                id = R.drawable.baseline_check_24),
-            contentDescription = "",
-            colorFilter = ColorFilter.tint(color = colorResource(id = R.color.kamleon_blue))
-        )
-                    Spacer(modifier = Modifier
-            .width(10.dp)
-        )
-        Column {
-            Text(
-                text = title,
-                fontSize = dimensionResource(R.dimen.ts_14).value.sp,
-                fontWeight = FontWeight.Bold,
-                color = colorResource(id = R.color.kamleon_dark_grey))
-            Text(
-                text = subtitle,
-                fontSize = dimensionResource(R.dimen.ts_12).value.sp,
-                color = colorResource(id = R.color.kamleon_dark_grey))
         }
     }
 }

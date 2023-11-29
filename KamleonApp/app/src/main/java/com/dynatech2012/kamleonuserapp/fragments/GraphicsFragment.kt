@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.activityViewModels
@@ -7,6 +8,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.adapters.TipListAdapter
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
@@ -97,11 +99,10 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         }
     }
     private fun initObservers() {
-        /*
         viewModel.measures.observe(this, this::onGetMeasures)
         viewModel.averageMonthlyMeasures.observe(this, this::onGetAverageMonthlyMeasures)
         viewModel.averageDailyMeasures.observe(this, this::onGetAverageDailyMeasures)
-        */
+        viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
     }
 
     private fun onGetMeasures(measures: ArrayList<MeasureData>) {
@@ -119,6 +120,14 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         Log.d(TAG, "got average daily measures count: ${averageDailyMeasureData.size}")
         // Update the graph
         binding.graphViewNew.setDailyDataSource(averageDailyMeasureData)
+    }
+
+    private fun onUserImageChanged(drawable: Drawable?) {
+        Log.d(HomeFragment.TAG, "image changed")
+        drawable?.let {
+            binding.ivGraphProfile.load(drawable)
+            return
+        }
     }
 
     private fun dailyDataSourceOf(date: Date) : ArrayList<KamleonGraphBarItemData> {

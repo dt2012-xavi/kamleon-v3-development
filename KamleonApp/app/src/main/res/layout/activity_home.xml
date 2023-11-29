@@ -68,7 +68,7 @@
             android:layout_marginBottom="200dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnNavProfile"
+            app:layout_constraintTop_toBottomOf="@id/iv_home_profile"
             app:layout_constraintBottom_toBottomOf="parent" >
             <TextView
                 android:layout_width="wrap_content"
@@ -111,17 +111,15 @@
             app:trackColor="@color/white40"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnNavProfile"
+            app:layout_constraintTop_toBottomOf="@id/iv_home_profile"
             app:layout_constraintBottom_toBottomOf="parent" />
 
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="58dp"
             android:layout_height="58dp"
-            app:srcCompat="@drawable/img_circle_profile"
-            android:id="@+id/btnNavProfile"
-            android:background="@color/transparent"
-            android:scaleType="centerCrop"
+            android:src="@drawable/img_circle_profile"
+            android:id="@+id/iv_home_profile"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:shapeAppearanceOverlay="@style/roundedCorners"

@@ -1,6 +1,7 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import android.content.res.Resources.getSystem
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.core.content.ContextCompat.getDrawable
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import coil.ImageLoader
 import coil.load
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.adapters.HomeItemAdapter
@@ -70,14 +72,13 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
     }
 
     override fun initEvent() {
-        binding.btnNavProfile.isClickable = true
-        binding.btnNavProfile.setOnClickListener {
+        binding.ivHomeProfile.isClickable = true
+        binding.ivHomeProfile.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
         }
     }
     private fun initObservers() {
-        viewModel.userImage.observe(this, this::onProfileImageUriChanged)
-        viewModel.userData.observe(this, this::onUserDataChanged)
+        viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
         viewModel.lastMeasure.observe(this, this::onLastMeasureChanged)
     }
 
@@ -105,16 +106,12 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         }
     }
 
-    private fun onUserDataChanged(userData: CustomUser) {
-        if (userData.imageUrl.isNotBlank())
-            binding.btnNavProfile.load(userData.imageUrl) {
-                placeholder(R.drawable.image_profile)
-            }
-    }
-
-    private fun onProfileImageUriChanged(uri: Uri?) {
-        Log.d(SettingFragment.TAG, "Got image profile")
-        binding.btnNavProfile.setImageURI(uri)
+    private fun onUserImageChanged(drawable: Drawable?) {
+        Log.d(TAG, "image changed")
+        drawable?.let {
+            binding.ivHomeProfile.load(drawable)
+            return
+        }
     }
 
     private fun onLastMeasureChanged(measure: MeasureData) {

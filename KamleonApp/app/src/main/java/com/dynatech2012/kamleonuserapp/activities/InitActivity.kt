@@ -29,23 +29,23 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val content: View = findViewById(android.R.id.content)
-        //viewModel.resetLogged()
+        viewModel.resetLogged()
         viewModel.checkLogin()
         content.viewTreeObserver.addOnPreDrawListener(
             object : ViewTreeObserver.OnPreDrawListener {
                 override fun onPreDraw(): Boolean {
+                    Log.d(TAG, "readyy")
                     // Check if the initial data is ready.
                     return if (viewModel.isReady) {
                         // The content is ready; start drawing.
+                        content.viewTreeObserver.removeOnPreDrawListener(this)
                         if (!viewModel.alreadyLogged) {
-                            content.viewTreeObserver.removeOnPreDrawListener(this)
-                            true
-                        }
-                        else {
+                            Log.d(TAG, "not logged, keep in init activity")
+                        } else {
                             Log.d(TAG, "already logged")
                             startActivity(Intent(applicationContext, MainActivity::class.java))
-                            false
                         }
+                        true
                     } else {
                         // The content is not ready; suspend.
                         false

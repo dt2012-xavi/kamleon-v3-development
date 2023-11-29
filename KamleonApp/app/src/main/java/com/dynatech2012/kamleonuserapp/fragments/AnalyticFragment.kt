@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
 import android.view.View
@@ -71,8 +72,8 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
         }
         */
 
-        binding.btnNavProfile.isClickable = true
-        binding.btnNavProfile.setOnClickListener {
+        binding.ivAnalyticProfile.isClickable = true
+        binding.ivAnalyticProfile.setOnClickListener {
             findNavController().navigate(R.id.action_analyticFragment_to_settingFragment)
         }
     }
@@ -111,9 +112,16 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
     }
     private fun initObservers() {
         onLastMeasureChanged(viewModel.lastMeasure.value)
-        viewModel.userImage.observe(this, this::onProfileImageUriChanged)
-        viewModel.userData.observe(this, this::onUserDataChanged)
+        viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
         viewModel.lastMeasure.observe(this, this::onLastMeasureChanged)
+    }
+
+    private fun onUserImageChanged(drawable: Drawable?) {
+        Log.d(HomeFragment.TAG, "image changed")
+        drawable?.let {
+            binding.ivAnalyticProfile.load(drawable)
+            return
+        }
     }
 
     private fun onLastMeasureChanged(measureData: MeasureData?) {
@@ -163,19 +171,11 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
             else -> getString(R.string.volume_good)
         }
         cvVol.onClick = { openGraphView(2) }
+
+        val cvNew = binding.cvAnalyticEmpty
+        cvNew.onClick = { }
     }
 
-    private fun onUserDataChanged(userData: CustomUser) {
-        if (userData.imageUrl.isNotBlank())
-            binding.btnNavProfile.load(userData.imageUrl) {
-                placeholder(R.drawable.image_profile)
-            }
-    }
-
-    private fun onProfileImageUriChanged(uri: Uri?) {
-        Log.d(SettingFragment.TAG, "Got image profile")
-        binding.btnNavProfile.setImageURI(uri)
-    }
 
     private fun showQRIntroFragment() {
         val qrFragment = ScanIntroFragment.newInstance(onDismissScanIntro)
