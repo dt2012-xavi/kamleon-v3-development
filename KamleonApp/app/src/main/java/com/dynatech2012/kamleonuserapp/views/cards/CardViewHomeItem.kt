@@ -1,8 +1,5 @@
 package com.dynatech2012.kamleonuserapp.views.cards
 
-import android.graphics.Insets
-import android.text.style.ForegroundColorSpan
-import android.view.View
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,27 +17,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
-import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
-import androidx.compose.material3.LocalMinimumTouchTargetEnforcement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -71,15 +57,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dynatech2012.kamleonuserapp.R
-import kotlinx.coroutines.launch
+import com.dynatech2012.kamleonuserapp.models.Recommendation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardViewHomeItem(tip: Tip, modifier: Modifier, showBottomSheet: Boolean, sheetState: SheetState, onClick: () -> Unit, onDismiss: () -> Unit, sheetContent: @Composable () -> Unit) {
+fun CardViewHomeItem(recommendation: Recommendation, modifier: Modifier, showBottomSheet: Boolean, sheetState: SheetState, onClick: () -> Unit, onDismiss: () -> Unit, sheetContent: @Composable () -> Unit) {
     val shape = RoundedCornerShape(12.dp)
     val elevation = 10.dp
-    val clickable = tip.clickable
-    val locked = tip.locked
+    val clickable = recommendation.clickable
+    val locked = recommendation.blocked
     val foregroundColor = colorResource(id = R.color.color_fa_80)
     val lockString = stringResource(id = R.string.subscribe_to_unlock)
 
@@ -129,14 +115,16 @@ fun CardViewHomeItem(tip: Tip, modifier: Modifier, showBottomSheet: Boolean, she
 
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = tip.type,
-                        fontSize = dimensionResource(R.dimen.ts_14).value.sp,
-                        color = Color(0xFF808285)
-                    )
+                    if (recommendation.kind != null) {
+                        Text(
+                            text = recommendation.kind,
+                            fontSize = dimensionResource(R.dimen.ts_14).value.sp,
+                            color = colorResource(id = R.color.kamleon_secondary_grey_60)
+                        )
+                    }
                     Text(
                         modifier = Modifier.padding(bottom = 4.dp),
-                        text = tip.title,
+                        text = recommendation.titleShort,
                         fontSize = dimensionResource(R.dimen.ts_14).value.sp,
                         color = colorResource(id = R.color.kamleon_dark_grey),
                         fontWeight = FontWeight.Bold
@@ -144,7 +132,7 @@ fun CardViewHomeItem(tip: Tip, modifier: Modifier, showBottomSheet: Boolean, she
                     Text(
                         modifier = Modifier
                             .padding(top = 4.dp),
-                        text = tip.description,
+                        text = recommendation.text,
                         fontSize = dimensionResource(R.dimen.ts_14).value.sp,
                         color = colorResource(id = R.color.kamleon_dark_grey),
                         maxLines = 2,
@@ -191,14 +179,7 @@ fun CardViewHomeItem(tip: Tip, modifier: Modifier, showBottomSheet: Boolean, she
     }
 }
 
-data class Tip(
-    val type: String,
-    val clickable: Boolean = true,
-    val locked: Boolean = false,
-    val title: String,
-    val description: String,
-    val image: Int? = null
-)
+
 
 fun Modifier.coloredShadow(
     color: Color,

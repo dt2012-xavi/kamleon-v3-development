@@ -5,20 +5,15 @@ import android.util.Log
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.adapters.TipListAdapter
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.databinding.ActivityGraphicsBinding
+import com.dynatech2012.kamleonuserapp.models.RecommendationType
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
-import com.dynatech2012.kamleonuserapp.views.CirclePagerIndicatorDecoration
-import com.dynatech2012.kamleonuserapp.views.cards.TipType
 import com.dynatech2012.kamleonuserapp.views.cards.ViewPager
 import com.dynatech2012.kamleonuserapp.views.chart.data.KamleonGraphBarItemData
 import com.dynatech2012.kamleonuserapp.views.chart.data.KamleonGraphDataType
@@ -81,13 +76,13 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         binding.rcvListNew.addItemDecoration(CirclePagerIndicatorDecoration())
          */
         val tipType = when (viewModel.graphicType) {
-            0 -> TipType.HYDRATION
-            1 -> TipType.ELECTROLYTE
-            2 -> TipType.VOLUME
-            else -> TipType.HOME
+            0 -> RecommendationType.HYDRATION
+            1 -> RecommendationType.ELECTROLYTE
+            2 -> RecommendationType.VOLUME
+            else -> RecommendationType.HOME
         }
         binding.cvGraphTips.setContent {
-            ViewPager(tipType = tipType, modifier = Modifier) {
+            ViewPager(recommendationType = tipType, null, modifier = Modifier) {
 
             }
         }

@@ -7,8 +7,8 @@
     android:background="@color/white"
     tools:context=".fragments.GraphicsFragment">
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/bg_activity_gradient"
         app:layout_constraintStart_toStartOf="parent"
@@ -16,11 +16,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="58dp"
         android:id="@+id/layoutHeader"
-        android:layout_marginTop="20dp"
-        android:paddingHorizontal="20dp"
+        android:layout_marginTop="@dimen/nav_back_button_top"
+        android:layout_marginHorizontal="@dimen/nav_back_button_top"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -40,7 +40,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/tvNavTitle"
             android:layout_centerInParent="true"
-            android:layout_marginTop="8dp"
             android:text="HYDRATION"
             android:textColor="@color/kamleon_secondary_grey_50"
             android:textSize="@dimen/ts_16" />
@@ -54,7 +53,6 @@
             android:scaleType="centerCrop"
             app:shapeAppearanceOverlay="@style/roundedCorners"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
             android:layout_centerVertical="true"/>
 
     </RelativeLayout>

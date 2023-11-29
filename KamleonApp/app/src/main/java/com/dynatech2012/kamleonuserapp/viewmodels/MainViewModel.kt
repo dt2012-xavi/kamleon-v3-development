@@ -57,8 +57,7 @@ class MainViewModel @Inject constructor(
     private val _userUpdated = MutableLiveData<Boolean>()
     val userUpdated: LiveData<Boolean> = _userUpdated
 
-    private val _userImagePrev = MutableLiveData<Uri?>()
-    val userImagePrev: LiveData<Uri?> = _userImagePrev
+    private var userImagePrevUri: Uri? = null
 
     private val _userImageUri = MutableLiveData<Uri?>()
     val userImageUri: LiveData<Uri?> = _userImageUri
@@ -186,9 +185,12 @@ class MainViewModel @Inject constructor(
 
     fun setImageUri(uri: Uri?) {
         uri?.let {
-            _userImagePrev.postValue(uri)
+            userImagePrevUri = uri
             viewModelScope.launch(Dispatchers.IO) {
-                firestoreRepo.updateUserImage(it)
+                val response = firestoreRepo.updateUserImage(it)
+                if (response.isSuccess && response.dataValue != null) {
+                    getUserData()
+                }
                 _userImageUri.postValue(uri)
             }
         }
@@ -204,10 +206,15 @@ class MainViewModel @Inject constructor(
     fun getUserMeasures() {
         viewModelScope.launch(Dispatchers.IO) {
             Log.d(TAG, "will try to get measures from DB and from FS")
-            val responseDB = measuresRepository.getUserLastMeasure()//.collect { lastM ->
-            if (responseDB.isSuccess && responseDB.dataValue != null) {
-                Log.d(TAG, "got measures from DB size: ${responseDB.dataValue?.size}")
-                responseDB.dataValue?.let { measuresDB ->
+            val measuresLoaded = ArrayList<MeasureData>()
+            val dailyLoaded = ArrayList<AverageDailyMeasureData>()
+            val monthlyLoaded = ArrayList<AverageMonthlyMeasureData>()
+            val responseMeasuresDB = measuresRepository.getUserLastMeasureFromDB()//.collect { lastM ->
+            if (responseMeasuresDB.isSuccess && responseMeasuresDB.dataValue != null) {
+                Log.d(TAG, "got measures from DB size: ${responseMeasuresDB.dataValue?.size}")
+                responseMeasuresDB.dataValue?.let { measuresDB ->
+                    measuresLoaded.clear() // not necessary
+                    measuresLoaded.addAll(measuresDB)
                     _measures.postValue(measuresDB)
                     if (measuresDB.size > 0) {
                         Log.d(TAG, "got measures from DB not empty")
@@ -218,10 +225,11 @@ class MainViewModel @Inject constructor(
                     }
                 }
             }
-            val responseMeasures = measuresRepository.getUserMeasures(userRepository.uuid)//.collect { meas ->
-            if (responseMeasures.isSuccess && responseMeasures.dataValue != null) {
-                Log.d(TAG, "got measures from FS success size: ${responseMeasures.dataValue?.size}")
-                responseMeasures.dataValue?.let { measuresFB ->
+            val responseMeasuresFS = measuresRepository.getUserMeasuresFromFS(userRepository.uuid)//.collect { meas ->
+            if (responseMeasuresFS.isSuccess && responseMeasuresFS.dataValue != null) {
+                Log.d(TAG, "got measures from FS success size: ${responseMeasuresFS.dataValue?.size}")
+                responseMeasuresFS.dataValue?.let { measuresFB ->
+                    measuresLoaded.addAll(measuresFB)
                     _measures.postValue(measuresFB)
                     if (measuresFB.size > 0) {
                         Log.d(TAG, "got measures from FS not empty")
@@ -233,65 +241,70 @@ class MainViewModel @Inject constructor(
                     }
                 }
             }
-
-
-                        /*
-                        val responseMonthlyDB = databaseRepository.getAllAverageMonthlyMeasures()
-                        if (responseMonthlyDB.isSuccess && responseMonthlyDB.dataValue != null) {
-                            monthlyLoaded.addAll(0, responseMonthlyDB.dataValue!!)
-                            _averageMonthlyMeasures.postValue(monthlyLoaded)
-                        }
-                        val responseDailyDB = databaseRepository.getAllAverageDailyMeasures()
-                        if (responseDailyDB.isSuccess && responseDailyDB.dataValue != null) {
-                            dailyLoaded.addAll(0, responseDailyDB.dataValue!!)
-                            _averageDailyMeasures.postValue(dailyLoaded)
-                        }
-                        measuresRepository.getUserMonthlyAverages(userRepository.uuid, measures).collect { avMon ->
-                            if (avMon.isSuccess && avMon.dataValue != null) {
-                                Log.d(TAG, "got measures daily finally 2")
-                                avMon.dataValue?.let { monthlyMeasures ->
-                                    Log.d(TAG, "got measures daily finally 2 size ${monthlyMeasures.size}")
-                                    monthlyLoaded.addAll(monthlyMeasures)
-                                    _averageMonthlyMeasures.postValue(monthlyLoaded)
-                                }
-                            }
-                        }
-                        measuresRepository.getUserDailyAverages(userRepository.uuid, measures).collect { avDay ->
-                            if (avDay.isSuccess && avDay.dataValue != null) {
-                                Log.d(TAG, "got measures daily finally 2")
-                                avDay.dataValue?.let { dailyMeasures ->
-                                    Log.d(TAG, "got measures daily finally 2 size ${dailyMeasures.size}")
-                                    dailyLoaded.addAll(dailyMeasures)
-                                    _averageDailyMeasures.postValue(dailyLoaded)                                }
-                            }
-                        }
-                        */
-                        measuresRepository.getAllUserDailyAverages(userRepository.uuid)
-                            .collect { avDa ->
-                            if (avDa.isSuccess && avDa.dataValue != null) {
-                                Log.d(TAG, "got measures all daily finally 2")
-                                avDa.dataValue?.let { dailyMeasures ->
-                                    Log.d(
-                                        TAG,
-                                        "got measures all daily finally 2 size ${dailyMeasures.size}"
-                                    )
-                                    dailyLoaded.addAll(dailyMeasures)
-                                    _averageDailyMeasures.postValue(dailyLoaded)
-                                } } }
-                        measuresRepository.getAllUserMonthlyAverages(userRepository.uuid)
-                            .collect { avMon ->
-                            if (avMon.isSuccess && avMon.dataValue != null) {
-                                Log.d(TAG, "got measures all monthly finally 2")
-                                avMon.dataValue?.let { monthlyMeasures ->
-                                    Log.d(TAG, "got measures all monthly finally 2 size ${monthlyMeasures.size}")
-                                    monthlyLoaded.addAll(monthlyMeasures)
-                                    _averageMonthlyMeasures.postValue(monthlyLoaded)
-                                } } }
+            val responseDailyDB = measuresRepository.getDailyAveragesFromDB()
+            if (responseDailyDB.isSuccess && responseDailyDB.dataValue != null) {
+                Log.d(TAG, "got daily from DB size: ${responseDailyDB.dataValue?.size}")
+                responseDailyDB.dataValue?.let { dailyDB ->
+                    dailyLoaded.clear() // not necessary
+                    dailyLoaded.addAll(dailyDB)
+                    _averageDailyMeasures.postValue(dailyDB)
+                    if (dailyDB.size == 0) {
+                        Log.d(TAG, "got daily from DB EMPTY")
+                    }
+                }
+            }
+            val responseMonthlyDB = measuresRepository.getMonthlyAveragesFromDB()
+            if (responseMonthlyDB.isSuccess && responseMonthlyDB.dataValue != null) {
+                Log.d(TAG, "got monthly from DB size: ${responseMonthlyDB.dataValue?.size}")
+                responseMonthlyDB.dataValue?.let { monthlyDB ->
+                    monthlyLoaded.clear() // not necessary
+                    monthlyLoaded.addAll(monthlyDB)
+                    _averageMonthlyMeasures.postValue(monthlyDB)
+                    if (monthlyDB.size == 0) {
+                        Log.d(TAG, "got monthly from DB EMPTY")
+                    }
+                }
+            }
+            val avDay = measuresRepository.getUserDailyAverages(userRepository.uuid)
+            if (avDay.isSuccess && avDay.dataValue != null) {
+                Log.d(TAG, "got measures daily finally 2")
+                avDay.dataValue?.let { dailyMeasures ->
+                    Log.d(TAG, "got measures daily finally 2 size ${dailyMeasures.size}")
+                    dailyLoaded.addAll(dailyMeasures)
+                    _averageDailyMeasures.postValue(dailyLoaded)                                }
+            }
+            val avMon = measuresRepository.getUserMonthlyAverages(userRepository.uuid)
+            if (avMon.isSuccess && avMon.dataValue != null) {
+                Log.d(TAG, "got measures monthly finally 2")
+                avMon.dataValue?.let { monthlyMeasures ->
+                    Log.d(TAG, "got measures monthly finally 2 size ${monthlyMeasures.size}")
+                    monthlyLoaded.addAll(monthlyMeasures)
+                    _averageMonthlyMeasures.postValue(monthlyLoaded)
+                }
+            }
+        /*
+        // get all averages from FS
+            measuresRepository.getAllUserDailyAverages(userRepository.uuid)
+                .collect { avDa ->
+                    avDa.dataValue?.let { dailyMeasures ->
+                        Log.d(
+                            TAG,
+                            "got measures all daily finally 2 size ${dailyMeasures.size}"
+                        )
+                        dailyLoaded.addAll(dailyMeasures)
+                        _averageDailyMeasures.postValue(dailyLoaded)
+                    } }
+            measuresRepository.getAllUserMonthlyAverages(userRepository.uuid)
+                .collect { avMon ->
+                    avMon.dataValue?.let { monthlyMeasures ->
+                        Log.d(TAG, "got measures all monthly finally 2 size ${monthlyMeasures.size}")
+                        monthlyLoaded.addAll(monthlyMeasures)
+                        _averageMonthlyMeasures.postValue(monthlyLoaded)
+                    } }
+        */
         }
     }
 
-    val dailyLoaded = ArrayList<AverageDailyMeasureData>()
-    val monthlyLoaded = ArrayList<AverageMonthlyMeasureData>()
 
     private val _averageDailyMeasures =  MutableLiveData<ArrayList<AverageDailyMeasureData>>()
     val averageDailyMeasures: LiveData<ArrayList<AverageDailyMeasureData>> = _averageDailyMeasures

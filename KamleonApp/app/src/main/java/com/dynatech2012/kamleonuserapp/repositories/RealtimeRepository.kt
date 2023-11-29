@@ -11,9 +11,6 @@ import com.dynatech2012.kamleonuserapp.constants.RealtimeConstants.REALTIME_FOLD
 import com.dynatech2012.kamleonuserapp.constants.RealtimeConstants.USER_UID_DEBUG
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
-import com.dynatech2012.kamleonuserapp.views.chart.exts.day
-import com.dynatech2012.kamleonuserapp.views.chart.exts.month
-import com.dynatech2012.kamleonuserapp.views.chart.exts.year
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -23,6 +20,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import java.text.DecimalFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -163,7 +161,7 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
         return observable
     }
 
-    private fun checkNextDateDaily(mUserId: String) {
+    private fun checkNextDateDaily(userId: String) {
         if (0 < dailyDatesInRangeToCheck.size) {
             val date = dailyDatesInRangeToCheck[0]
             dailyDatesInRangeToCheck.removeAt(0)
@@ -176,25 +174,31 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
             dtf = DateTimeFormatter.ofPattern("dd")
             val day = dtf.format(localDate)
             Log.d(TAG, "PLAYING: year,month,day: $year,$month,$day")
-            val ref = averagesRef.child(mUserId)
+            val ref = averagesRef.child(userId)
             if (ref != null) {
                 ref.child(REALTIME_FOLDER_DAILY).child(year).child(month).child(day)
                     .addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             Log.d(TAG, "PLAYING: " + "DOWNLOADED: " + dataSnapshot.value)
                             if (dataSnapshot.value != null) {
-                                val a = AverageDailyMeasureData(
-                                    dataSnapshot,
-                                    Integer.valueOf(year),
-                                    Integer.valueOf(month),
-                                    Integer.valueOf(day)
-                                )
-                                Log.d(TAG, "PLAYING: " + "DOWNLOADED and ADDED: " + a.allParams)
-                                newAverageDailyMeasures!!.add(a)
+                                try {
+                                    val b = dataSnapshot.child("averageScore").value.toString()
+                                    Log.d(TAG, "bbbbbbbb 2" + b)
+                                    val a = AverageDailyMeasureData(
+                                        dataSnapshot,
+                                        Integer.valueOf(year),
+                                        Integer.valueOf(month),
+                                        Integer.valueOf(day)
+                                    )
+                                    Log.d(TAG, "PLAYING" + "DOWNLOADED and ADDED: " + a.allParams)
+                                    newAverageDailyMeasures!!.add(a)
+                                } catch (e: Exception) {
+                                    Log.e(TAG, "Daily average measure with null parameters")
+                                }
                             } else {
                                 Log.d(TAG, "PLAYING" + "NOT ADDED")
                             }
-                            checkNextDateDaily(mUserId)
+                            checkNextDateDaily(userId)
                         }
 
                         override fun onCancelled(databaseError: DatabaseError) {
@@ -378,13 +382,17 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             Log.d(TAG, "PLAYING" + "DOWNLOADED: " + dataSnapshot.value)
                             if (dataSnapshot.value != null) {
-                                val a = AverageMonthlyMeasureData(
-                                    dataSnapshot,
-                                    Integer.valueOf(year),
-                                    Integer.valueOf(month)
-                                )
-                                Log.d(TAG, "PLAYING" + "DOWNLOADED and ADDED: " + a.allParams)
-                                newAverageMonthlyMeasures!!.add(a)
+                                try {
+                                    val a = AverageMonthlyMeasureData(
+                                        dataSnapshot,
+                                        Integer.valueOf(year),
+                                        Integer.valueOf(month)
+                                    )
+                                    Log.d(TAG, "PLAYING" + "DOWNLOADED and ADDED: " + a.allParams)
+                                    newAverageMonthlyMeasures!!.add(a)
+                                } catch (e: Exception) {
+                                    Log.e(TAG, "Monthly average measure with null parameters")
+                                }
                             } else {
                                 Log.d(TAG, "PLAYING" + "NOT ADDED")
                             }
@@ -434,27 +442,35 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
     }
      */
 
-    fun getMonthsAverages(userId: String?, monthArray: List<LocalDate>) = callbackFlow {
+    suspend fun getMonthsAverages(userId: String?, monthArray: List<LocalDate>) = suspendCoroutine { continuation ->
         Log.d(TAG, "getMonthAverage")
         if (userId == null) {
-            cancel()
-            return@callbackFlow
+            continuation.resume(Response.Failure(Exception()))
+            return@suspendCoroutine
         }
         val ref = averagesRef.child(userId)
         Log.d(TAG, "averagesRef = $ref")
         val monthsAverages = ArrayList<AverageMonthlyMeasureData>()
         monthArray.forEachIndexed { i, monthItem ->
             val year = monthItem.year
-            val month = monthItem.monthValue
+            val monthInt = monthItem.monthValue
+            val numberFormat = DecimalFormat("00")
+            val month = numberFormat.format(monthInt)
             ref.child(REALTIME_FOLDER_MONTHLY).child(year.toString()).child(month.toString())
                 .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         //Get map of users in dataSnapshot
                         Log.d(TAG, "getMonthAverage: on data change")
-                        val monthAverage = AverageMonthlyMeasureData(dataSnapshot, year, month)
-                        monthsAverages.add(monthAverage)
+                        try {
+                            //val c = dataSnapshot.child("averageScore").value.toString()
+                            //Log.d(TAG, "bbbbbbbb c: date: ${month}/${year} _ averageScore: $c")
+                            val monthAverage = AverageMonthlyMeasureData(dataSnapshot, year, monthInt)
+                            monthsAverages.add(monthAverage)
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Monthly average measure with null parameters date: ${month}/${year}")
+                        }
                         if (i == monthArray.size - 1)
-                            trySend(monthsAverages)
+                            continuation.resume(Response.Success(monthsAverages))
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
@@ -463,31 +479,39 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
                     }
                 })
         }
-        awaitClose { }
     }
 
-    suspend fun getDaysAverages(userId: String?, dayArray: List<LocalDate>) = callbackFlow {
+    suspend fun getDaysAverages(userId: String?, dayArray: List<LocalDate>) = suspendCoroutine { continuation ->
         Log.d(TAG, "getMonthAverage")
         if (userId == null) {
-            cancel()
-            return@callbackFlow
+            continuation.resume(Response.Failure(Exception()))
+            return@suspendCoroutine
         }
         val ref = averagesRef.child(userId)
         Log.d(TAG, "averagesRef = $ref")
         val daysAverages = ArrayList<AverageDailyMeasureData>()
         dayArray.forEachIndexed { i, dayItem ->
             val year = dayItem.year
-            val month = dayItem.monthValue
-            val day = dayItem.dayOfMonth
-            ref.child(REALTIME_FOLDER_MONTHLY).child(year.toString()).child(month.toString())
+            val monthInt = dayItem.monthValue
+            val numberFormat = DecimalFormat("00")
+            val month = numberFormat.format(monthInt)
+            val dayInt = dayItem.dayOfMonth
+            val day = numberFormat.format(dayInt)
+            ref.child(REALTIME_FOLDER_DAILY).child(year.toString()).child(month.toString())
                 .child(day.toString()).addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         //Get map of users in dataSnapshot
                         Log.d(TAG, "getMonthAverage: on data change")
-                        val dailyAverage = AverageDailyMeasureData(dataSnapshot, year, month, day)
-                        daysAverages.add(dailyAverage)
+                        try {
+                            //val b = dataSnapshot.child("averageScore").value.toString()
+                            //Log.d(TAG, "bbbbbbbb d date: ${day}/${month}/${year} averageScore: $b")
+                            val dailyAverage = AverageDailyMeasureData(dataSnapshot, year, monthInt, dayInt)
+                            daysAverages.add(dailyAverage)
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Daily average measure with null parameters date: ${day}/${month}/${year}")
+                        }
                         if (i == dayArray.size - 1)
-                            trySend(daysAverages)
+                            continuation.resume(Response.Success(daysAverages))
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
@@ -496,7 +520,6 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
                     }
             })
         }
-        awaitClose { }
     }
 
     fun getAllMonthsAverages(userId: String?) = callbackFlow {

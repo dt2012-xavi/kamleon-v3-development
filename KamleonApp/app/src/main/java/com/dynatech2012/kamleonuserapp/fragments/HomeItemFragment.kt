@@ -7,14 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.databinding.LayoutHomeListItemBinding
 import com.dynatech2012.kamleonuserapp.views.cards.CardViewHomeItem
-import com.dynatech2012.kamleonuserapp.views.cards.Tip
 
 class HomeItemFragment : Fragment() {
     lateinit var binding: LayoutHomeListItemBinding
@@ -31,11 +29,12 @@ class HomeItemFragment : Fragment() {
         }
         binding = LayoutHomeListItemBinding.inflate(layoutInflater, container, false)
         binding.composeView.apply {
+            /*
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 when (type) {
                     0 -> {
-                        CardViewHomeItem(tip = Tip(getString(R.string.home_item1_type),
+                        CardViewHomeItem(recommendation = Tip(getString(R.string.home_item1_type),
                             clickable = true,
                             locked = false,
                             title = getString(R.string.home_item1_title),
@@ -55,7 +54,7 @@ class HomeItemFragment : Fragment() {
                         }
                     }
                     1 -> {
-                        CardViewHomeItem(tip = Tip(getString(R.string.home_item2_type),
+                        CardViewHomeItem(recommendation = Tip(getString(R.string.home_item2_type),
                             clickable = true,
                             locked = false,
                             title = getString(R.string.home_item2_title),
@@ -76,6 +75,7 @@ class HomeItemFragment : Fragment() {
                     }
                 }
             }
+            */
         }
         return binding.root
     }

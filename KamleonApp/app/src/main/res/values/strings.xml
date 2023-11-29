@@ -212,7 +212,9 @@
     <string name="last_sample_message_default">"last sample"</string>
     <string name="last_sample_message">"last sample %1$s"</string>
     <string name="subscribe_to_unlock">Subscribe to unlock this personalized content.</string>
-    <string name="premium_button">Subscribe</string>
+
+    <string name="alert_ok">Ok</string>
+
 
 
     <!-- Premium screen -->
@@ -239,5 +241,41 @@
     <string name="premium_recommendation_modal_title">Would you like to continue reading recommendations?</string>
     <string name="premium_alert_title">Request sent</string>
     <string name="premium_alert_message">We will get back to you soon</string>
-    <string name="premium_alert_ok">Ok</string>
+
+    <!-- Recommendations -->
+    <string name="recommendation_analytics_e_1_subtitle">Elevate your well-being with electrolytes! These essential minerals —sodium, potassium, calcium and chloride— maintain fluid balance, support nerves, and energize muscles. Replenish electrolytes for optimal hydration, preventing fatigue and cramps. Prioritize them through natural sources or smart beverage choices to enhance overall vitality. Stay revitalized, stay active!</string>
+    <string name="recommendation_analytics_e_1_title">What are electrolytes?</string>
+    <string name="recommendation_analytics_e_1_title_short">What are electrolytes?</string>
+    <string name="recommendation_analytics_e_2_subtitle">Sodium is considered the hydration electrolyte hero!  Essential for fluid balance, it regulates water distribution, aids nerve transmission, and supports muscle contractions. Natural sources of sodium include table salt, bread, cheese, pickled foods, and condiments. Keep sodium levels in check for optimal bodily function. Your body thanks you for the balance!\n</string>
+    <string name="recommendation_analytics_e_2_title">Meet Sodium?</string>
+    <string name="recommendation_analytics_e_2_title_short">Meet Sodium?</string>
+    <string name="recommendation_analytics_e_3_subtitle">Natural beverages are normally low in sodium content…</string>
+    <string name="recommendation_analytics_e_3_title">Natural Sodium Beverages.</string>
+    <string name="recommendation_analytics_e_3_title_short">Natural Sodium Beverages.</string>
+    <string name="recommendation_analytics_e_title">Electrolytes tip</string>
+    <string name="recommendation_analytics_h_1_subtitle">Hydration is key to optimal health, yet over 55%% of the population falls short on daily intake ! Drinking enough water maintains bodily functions, aids digestion, and supports nutrient absorption. It enhances skin health, boosts energy levels, and helps regulate body temperature. Stay hydrated to promote cognitive function, improve mood, and support overall well-being. Remember, water is the elixir of life – sip it throughout the day for a healthier you!</string>
+    <string name="recommendation_analytics_h_1_title">Hydration is essential for our daily lives.</string>
+    <string name="recommendation_analytics_h_1_title_short">Hydration is essential.</string>
+    <string name="recommendation_analytics_h_2_subtitle">Skimmed milk is a hydration powerhouse, offering a range of benefits. Rich in protein, it supports muscle health and helps in tissue repair. The calcium content promotes strong bones and teeth. Additionally, skimmed milk is low in saturated fats, making it a heart-healthy choice. With a perfect balance of nutrients, it not only nourishes the body but also provides essential hydration for overall well-being.</string>
+    <string name="recommendation_analytics_h_2_title">Milk, the most hydrating beverage</string>
+    <string name="recommendation_analytics_h_2_title_short">Milk an hydrating beverage.</string>
+    <string name="recommendation_analytics_h_3_subtitle">Hydration plays a crucial role in influencing mood and cognitive function…</string>
+    <string name="recommendation_analytics_h_3_title">Hydration &amp; mood.</string>
+    <string name="recommendation_analytics_h_3_title_short">Hydration &amp; mood.</string>
+    <string name="recommendation_analytics_h_title">Hydration tip</string>
+    <string name="recommendation_analytics_v_1_subtitle">Urinary volume, the amount of urine expelled from the body, plays a crucial role in health. Adequate hydration ensures a normal release, around 150 to 300 milliliters per micturition. Maintaining optimal urinary volume supports kidney function, aids in toxin elimination, and helps regulate bodily fluids. Monitoring and promoting regular, healthy urination contribute to overall well-being and hydration balance.</string>
+    <string name="recommendation_analytics_v_1_title">Understanding urinary volume.</string>
+    <string name="recommendation_analytics_v_1_title_short">Understanding volume.</string>
+    <string name="recommendation_analytics_v_2_subtitle">Void times, the intervals between urination, can provide valuable insights into hydration status. Adequate fluid intake often leads to more regular voiding patterns, reflecting proper hydration. Monitoring void times can help assess individual hydration needs. Short intervals between voids may suggest overhydration, while long gaps may indicate dehydration. Striking a balance supports optimal hydration and overall well-being.\n</string>
+    <string name="recommendation_analytics_v_2_title">Tracking urinary frequency.</string>
+    <string name="recommendation_analytics_v_2_title_short">Tracking urinary frequency.</string>
+    <string name="recommendation_analytics_v_3_subtitle">Early morning voiding times are important to determine daily hydration…</string>
+    <string name="recommendation_analytics_v_3_title">Early morning voiding time.</string>
+    <string name="recommendation_analytics_v_3_title_short">Early morning voiding time.</string>
+    <string name="recommendation_analytics_v_title">Volume tip</string>
+    <string name="recommendation_hydration_1">Urgently drink! Get 250 to 300 mL (1.5 medium size glass) over the next 30 to 40 minutes, but do not “chug”.</string>
+    <string name="recommendation_hydration_2">Drink right away! Immediately drink 250 mL (1 medium size glass) to improve your hydration!</string>
+    <string name="recommendation_hydration_3">Stay hydrated and maintain your current hydration practices. Drink 100 to 200 mL during the next hour (1–2 hours).</string>
+    <string name="recommendation_hydration_4">Consider drinking electrolyte 100 mL beverages to enhance water retention during the next hours (1–2 hours).</string>
+    <string name="recommendation_hydration_title">Recommendation</string>
 </resources>

@@ -52,11 +52,6 @@ class DatabaseDataSource @Inject constructor(
             Response.Success(ArrayList())
     }
 
-    suspend fun setMeasuresAsNotNew(): ResponseNullable<Nothing> {
-        measureDataDao.setMeasureAsNotNew()
-        return ResponseNullable.Success()
-    }
-
     /**
      *
      * <font color="teal">
@@ -68,6 +63,7 @@ class DatabaseDataSource @Inject constructor(
         return ResponseNullable.Success()
     }
 
+    /*
     suspend fun getAverageDailyMeasures(day: Int): Response<ArrayList<AverageDailyMeasureData>> {
         val data = averageDailyMeasureDataDao.getAverageDailyMeasuresFromDay(day)
         return if (data != null)
@@ -75,9 +71,10 @@ class DatabaseDataSource @Inject constructor(
         else
             Response.Success(ArrayList())
     }
+     */
 
     suspend fun getAllAverageDailyMeasures(): Response<ArrayList<AverageDailyMeasureData>> {
-        val data = averageDailyMeasureDataDao.allAverageDailyMeasures()
+        val data = averageDailyMeasureDataDao.getAllAverageDailyMeasures()
         return if (data != null)
             Response.Success(ArrayList(data))
         else
@@ -95,15 +92,17 @@ class DatabaseDataSource @Inject constructor(
         return ResponseNullable.Success()
     }
 
+    /*
     suspend fun getAverageMonthlyMeasures(month: Int): Response<ArrayList<AverageMonthlyMeasureData>> {
         val data = averageMonthlyMeasureDataDao.getAverageMonthlyMeasuresFromMonth(month)
         return if (data != null)
             Response.Success(ArrayList(data))
         else
             Response.Success(ArrayList())    }
+     */
 
     suspend fun getAllAverageMonthlyMeasures(): Response<ArrayList<AverageMonthlyMeasureData>> {
-        val data = averageMonthlyMeasureDataDao.allAverageMonthlyMeasures()
+        val data = averageMonthlyMeasureDataDao.getAllAverageMonthlyMeasures()
         return if (data != null)
             Response.Success(ArrayList(data))
         else

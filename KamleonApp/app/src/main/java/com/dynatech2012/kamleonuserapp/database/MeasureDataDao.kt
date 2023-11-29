@@ -22,9 +22,6 @@ interface MeasureDataDao {
     @Query("SELECT * FROM MeasureData")
     suspend fun getAllMeasures(): List<MeasureData>?
 
-    @Query("UPDATE MeasureData SET isNew = 0 WHERE isNew = 1")
-    suspend fun setMeasureAsNotNew(): Int
-
     @Query("DELETE FROM MeasureData")
     suspend fun deleteAllMeasures()
 

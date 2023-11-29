@@ -32,7 +32,7 @@ interface AverageDailyMeasureDataDao {
     suspend fun getAverageDailyMeasuresFromYear(year: Int): List<AverageDailyMeasureData?>?
 
     @Query("SELECT * FROM AverageDailyMeasureData")
-    suspend fun allAverageDailyMeasures(): List<AverageDailyMeasureData>?
+    suspend fun getAllAverageDailyMeasures(): List<AverageDailyMeasureData>?
 
     @Query("DELETE FROM AverageDailyMeasureData")
     suspend fun deleteAllAverageDailyMeasures()

@@ -2,7 +2,6 @@ package com.dynatech2012.kamleonuserapp.fragments
 
 import android.content.res.Resources.getSystem
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.util.Log
 import android.view.View
 import androidx.compose.ui.Modifier
@@ -10,16 +9,14 @@ import androidx.core.content.ContextCompat.getDrawable
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
-import coil.ImageLoader
 import coil.load
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.adapters.HomeItemAdapter
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.ActivityHomeBinding
-import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.database.MeasureData
+import com.dynatech2012.kamleonuserapp.models.RecommendationType
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
-import com.dynatech2012.kamleonuserapp.views.cards.TipType
 import com.dynatech2012.kamleonuserapp.views.cards.ViewPager
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -61,7 +58,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
             thread.start()
         }
 
-        setupTips()
+        setupTips(null)
 
         selectTab(0)
 
@@ -140,10 +137,11 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
                 binding.tvHomeMessage.text = getString(R.string.severely_dehydrated)
             }
         }
+        setupTips(measure.hydrationLevel)
     }
 
 
-    private fun setupTips() {
+    private fun setupTips(hydrationLevel: MeasureData.HydrationLevel?) {
         /*
         homeItemAdapter = HomeItemAdapter(this)
         homeItemAdapter.addFragment(HomeItemFragment.newInstance(0))
@@ -175,7 +173,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         */
 
         binding.cvHome.setContent {
-            ViewPager(tipType = TipType.HOME, modifier = Modifier) {
+            ViewPager(recommendationType = RecommendationType.HOME, hydrationLevel = hydrationLevel, modifier = Modifier) {
                 findNavController().navigate(R.id.action_homeFragment_to_analyticFragment)
             }
         }

@@ -26,7 +26,7 @@ interface AverageMonthlyMeasureDataDao {
     suspend fun getAverageMonthlyMeasuresFromYear(year: Int): List<AverageMonthlyMeasureData?>?
 
     @Query("SELECT * FROM AverageMonthlyMeasureData")
-    suspend fun allAverageMonthlyMeasures(): List<AverageMonthlyMeasureData>?
+    suspend fun getAllAverageMonthlyMeasures(): List<AverageMonthlyMeasureData>?
 
     @Query("DELETE FROM AverageMonthlyMeasureData")
     suspend fun deleteAllAverageMonthlyMeasures()
