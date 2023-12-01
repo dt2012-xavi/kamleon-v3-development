@@ -51,7 +51,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/setting_menu_item_height"
                     android:id="@+id/prefMenuItemDesactive"
-                    app:settingTypeLabel="@string/delete_desactivate"
+                    app:settingTypeLabel="@string/delete_deactivate"
                     app:settingTypeValue=""
                     app:settingRightArrow="true"
                     app:settingRightSwitch="false"/>
@@ -63,7 +63,7 @@
                 style="@style/CircularRegularFont"
                 android:layout_marginTop="16dp"
                 android:paddingHorizontal="16dp"
-                android:text="@string/delete_desactivate_desc"
+                android:text="@string/delete_deactivate_desc"
                 android:textColor="@color/kamleon_dark_grey_50"
                 android:textSize="@dimen/ts_12"/>
 
@@ -102,7 +102,7 @@
                 android:paddingVertical="0dp"
                 android:textAllCaps="false"
                 android:id="@+id/btnSave"
-                android:text="@string/button_cancel"
+                android:text="@string/dialog_cancel"
                 android:textAppearance="@style/RoundBlueButtonTextStyle"
                 android:textColor="@drawable/color_text_button_blue_round"
                 android:enabled="false"/>

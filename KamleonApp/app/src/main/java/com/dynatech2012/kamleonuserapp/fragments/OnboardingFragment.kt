@@ -78,9 +78,14 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
     override fun initEvent() {
         binding.btnNext.setOnClickListener {
             when (state) {
+                OnBoardingStep.Notification -> {
+                    activity?.supportFragmentManager?.setFragmentResult(Constants.GRANT_NOTIFICATION, Bundle().apply {
+                        putBoolean(Constants.GRANT_NOTIFICATION_BUNDLE, true)
+                    })
+                }
                 OnBoardingStep.Location -> {
-                    activity?.supportFragmentManager?.setFragmentResult(Constants.grantLocation, Bundle().apply {
-                        putBoolean(Constants.grantLocationBundle, true)
+                    activity?.supportFragmentManager?.setFragmentResult(Constants.GRANT_LOCATION, Bundle().apply {
+                        putBoolean(Constants.GRANT_LOCATION_BUNDLE, true)
                     })
                 }
                 OnBoardingStep.BirthDate -> {
@@ -124,12 +129,16 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
     }
 
     private fun checkIfGoNextStep() {
-        if (state.step == OnBoardingStep.values().size - 1) {
-            viewModel.finishSignup()
-        } else if (state.step == OnBoardingStep.Location.step){
-            // Do nothing
-        } else {
-            goNextStep()
+        when (state.step) {
+            OnBoardingStep.values().size - 1 -> {
+                viewModel.finishSignup()
+            }
+            OnBoardingStep.Notification.step, OnBoardingStep.Location.step -> {
+                // Do nothing
+            }
+            else -> {
+                goNextStep()
+            }
         }
         updateUI()
     }
@@ -186,8 +195,8 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
     private fun onStateReceived(state: Int) {
         Log.d(TAG, "Callback new state received: $state")
         when (state) {
-            3 -> { goNextStep(); updateUI() }
-            4 -> startActivity(Intent(requireContext(), MainActivity::class.java))
+            3, 4 -> { goNextStep(); updateUI() }
+            5 -> startActivity(Intent(requireContext(), MainActivity::class.java))
             else -> {}
         }
     }

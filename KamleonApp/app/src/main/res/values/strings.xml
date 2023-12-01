@@ -1,20 +1,28 @@
 <resources>
     <string name="app_name">KamleonApp</string>
 
+
+    <!-- Activities -->
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_init">InitActivity</string>
+
+    <!-- Login & Sign Up -->
+    <string name="placeholder_first_name">First Name</string>
+    <string name="placeholder_last_name">Last Name</string>
+    <string name="placeholder_email">Email</string>
+    <string name="placeholder_password">Password</string>
+
     <!-- Login -->
     <string name="login_title">Sign in with email</string>
     <string name="login_desc">Enter your details to continue. If\nyou’ve forgotten, we’ll help you out.</string>
     <string name="login_btn_signin">Sign in</string>
 
-    <string name="placeholder_first_name">First Name</string>
-    <string name="placeholder_last_name">Last Name</string>
-    <string name="placeholder_email">Email</string>
-    <string name="placeholder_password">Password</string>
+
     <string name="login_forgot_pwd"><u>Forgot password?</u></string>
     <string name="login_not_have_account">Don’t you have an account yet?</string>
     <string name="login_signup"><u>Sign Up</u></string>
 
-    <!-- SignUp -->
+    <!-- Sign Up -->
     <string name="signup_title">Register</string>
     <string name="signup_desc">Enter your details to have access\nto you analytics </string>
     <string name="signup_btn_create_account">Create account</string>
@@ -38,7 +46,6 @@
     <string name="privacy_button_next">Next</string>
     <string name="privacy_word_terms">terms of use</string>
     <string name="privacy_word_privacy">privacy policy</string>
-
     <string name="privacy_button_accept_all">Accept All</string>
 
     <!-- Onboarding -->
@@ -62,7 +69,7 @@
         <item>Prefer not to say</item>
     </string-array>
 
-    <!-- Setting -->
+    <!-- Settings -->
     <string name="setting_button_save">SAVE</string>
     <string name="setting_option_account">ACCOUNT</string>
     <string name="setting_option_pref">PREFERENCES</string>
@@ -105,64 +112,64 @@
     <string name="setting_desc_pref2">You will receive Kamleon notifcation with the score you have had after every urinal use.</string>
     <string name="setting_desc_pref3">Enable Kamleon to use location data for personalized services, while considering privacy implications.</string>
 
+    <!-- Image Pick -->
+    <string name="image_pick_gallery">Choose from library</string>
+    <string name="image_pick_camera">Take photo</string>
+    <string name="image_pick_remove">Remove current picture</string>
+
+    <!-- Email -->
     <string name="email_email">E-MAIL</string>
     <string name="email_new">NEW E-MAIL</string>
     <string name="email_confirm">CONFIRM E-MAIL</string>
 
+    <!-- Pin -->
     <string name="pin_pin">PIN</string>
     <string name="pin_new">NEW PIN</string>
     <string name="pin_confirm">CONFIRM PIN</string>
 
     <string name="pin_desc">The PIN is the personalized code that you enter on the screen before starting your experience.\n\n<b>Set Up Your PIN:</b>\n1. Enter a six digits numeric code of your choice.\n2. Confirm and start your secure journey!</string>
 
+    <!-- Change Pass -->
     <string name="pwd_pwd">PASSWORD</string>
     <string name="pwd_new">NEW PASSWORD</string>
     <string name="pwd_confirm">CONFIRM PASSWORD</string>
 
     <string name="pwd_desc">The password is the personalized combination of characters that you enter to access the website securely.\n\n<b>Set Up Your Password:</b>\n1. Choose a strong password: Use a combination of letters, numbers, and symbols and ensure it\'s unique and not easily guessable.\n2. Confirm and start your secure journey!</string>
 
-    <string name="delete_title">Desactivate or delate your account</string>
-    <string name="delete_desactivate">DESACTIVATE</string>
+    <!-- Delete account -->
+    <string name="delete_title">Deactivate or delete your account</string>
+    <string name="delete_deactivate">DEACTIVATE</string>
     <string name="delete_delete">DELETE</string>
-    <string name="delete_desactivate_desc">Desactivating can be temporary. Your profile, your name and your data will not be available.</string>
+    <string name="delete_deactivate_desc">Deactivating can be temporary. Your profile, your name and your data will not be available.</string>
     <string name="delete_delete_desc">Deleting your account will permanently remove all your profile data.</string>
 
-    <string name="button_cancel">CANCEL</string>
 
-    <string name="dialog_logout_msg">Are you sure you want to log out of your account?</string>
-    <string name="dialog_logout_y">Log Out</string>
-    <string name="dialog_logout_n">Cancel</string>
-    <string name="dialog_desactive_msg">Are you sure you want to desactivate your account?</string>
-    <string name="dialog_desactive_y">Desactivate</string>
-    <string name="dialog_desactive_n">Cancel</string>
 
+    <!-- Tab -->
     <string name="tab_home">HOMEPAGE</string>
     <string name="tab_analytic">ANALYTICS</string>
     <string name="tab_qr">USER QR</string>
 
-    <string name="add_metric">Add metric</string>
-    <string name="scan_now">SCAN NOW!</string>
 
+    <!-- QR -->
+    <string name="qr_scan_now">SCAN NOW!</string>
     <string name="qr_intro_text">Use your smartphone to scan the QR code on the screen of the urinal</string>
 
-    <!-- Chart-->
-    <string name="kmln_graph_header_item_daily">Daily</string>
-    <string name="kmln_graph_header_item_weekly">Weekly</string>
-    <string name="kmln_graph_header_item_monthly">Monthly</string>
-    <string name="kmln_graph_header_item_yearly">Yearly</string>
+    <!-- Graph -->
+    <string name="graph_header_item_daily">Daily</string>
+    <string name="graph_header_item_weekly">Weekly</string>
+    <string name="graph_header_item_monthly">Monthly</string>
+    <string name="graph_header_item_yearly">Yearly</string>
 
-    <string name="kmln_graph_header_average">AVERAGE</string>
+    <string name="graph_header_average">AVERAGE</string>
+    <string name="graph_footer_streak">Streak</string>-->
 
-    <string name="kmln_graph_footer_streak">Streak</string>
+    <string name="graph_label_optimum">Optimum</string>
+    <string name="graph_label_minimum">Minimum</string>
+    <string name="graph_label_maximum">Maximum</string>
 
-    <string name="kmln_graph_label_optimum">Optimum</string>
-    <string name="kmln_graph_label_minimum">Minimum</string>
-    <string name="kmln_graph_label_maximum">Maximum</string>
 
-    <string name="image_pick_gallery">Choose from library</string>
-    <string name="image_pick_camera">Take photo</string>
-    <string name="image_pick_remove">Remove current picture</string>
-
+    <!-- Notifications -->
     <string name="notifications">Notifications</string>
     <string name="noti_invite_req">Invitation Request</string>
     <string name="noti_role_change">Role Change</string>
@@ -170,51 +177,55 @@
     <string name="noti_deny">Deny</string>
     <string name="noti_temp_desc1">DIR Diagonal has added you to the spinning team.</string>
     <string name="noti_temp_desc2">Kamleon has assigned you the role of administrator of DIR Diagonal.</string>
+    <string name="noti_channel_id">kamleonChannel</string>
+    <string name="noti_newmeasure_title">New measure!</string>
+    <string name="noti_newmeasure_text">You can check its results in the app.</string>
 
-    <string name="msg_profile_ready">Now you are a member of the Spinning Team in Dir Diagonal!</string>
-
-
-
-    <string name="error_login">Error login</string>
-    <string name="percentage">%</string>
 
     <!--HomeScreen-->
-    <string name="home_item1_type">Tip</string>
-    <string name="home_item1_title">Healthy Diet</string>
-    <string name="home_item1_description">The full spectrum of diet healthiness relies significantly on the inclusion of the water we ingest.</string>
-    <string name="home_item2_type">Tip</string>
-    <string name="home_item2_title">Healthy Diet</string>
-    <string name="home_item2_description">The full spectrum of diet healthiness relies significantly on the inclusion of the water we ingest.</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="home_last_sample_message_default">"last sample"</string>
+    <string name="home_last_sample_message">"last sample %1$s"</string>
 
-    <string name="severely_dehydrated">Severely Dehydrated</string>
-    <string name="dehydrated">Dehydrated</string>
-    <string name="hydrated">Hydrated</string>
-    <string name="very_hydrated">Very Well Hydrated</string>
+    <!-- Analytics -->
+    <string name="analytic_severely_dehydrated">Severely Dehydrated</string>
+    <string name="analytic_dehydrated">Dehydrated</string>
+    <string name="analytic_hydrated">Hydrated</string>
+    <string name="analytic_very_hydrated">Very Well Hydrated</string>
 
-    <string name="hydratation_above">Your last urine hydration is on the recommended level.</string>
-    <string name="hydratation_under">Your last urine hydration is under the recommended level.</string>
+    <string name="analytic_hydratation_above">Your last urine hydration is on the recommended level.</string>
+    <string name="analytic_hydratation_under">Your last urine hydration is under the recommended level.</string>
 
-    <string name="elec_hypo">Hypotonic</string>
-    <string name="elec_normal">Balanced</string>
-    <string name="elec_hyper">Hypertronic</string>
+    <string name="analytic_elec_hypo">Hypotonic</string>
+    <string name="analytic_elec_normal">Balanced</string>
+    <string name="analytic_elec_hyper">Hypertronic</string>
 
-    <string name="elec_under">Your electrolyte levels are under the optimal range.</string>
-    <string name="elec_optimal">Your electrolyte levels are within the optimal range.</string>
-    <string name="elec_above">Your electrolyte levels are above the optimal range.</string>
+    <string name="analytic_elec_under">Your electrolyte levels are under the optimal range.</string>
+    <string name="analytic_elec_optimal">Your electrolyte levels are within the optimal range.</string>
+    <string name="analytic_elec_above">Your electrolyte levels are above the optimal range.</string>
 
-    <string name="volume_low">Low volume</string>
-    <string name="volume_medium">Average</string>
-    <string name="volume_high">High volume</string>
+    <string name="analytic_volume_low">Low volume</string>
+    <string name="analytic_volume_medium">Average</string>
+    <string name="analytic_volume_high">High volume</string>
 
-    <string name="volume_insuff">Your sample has insufficient volume to be analyzed. The analysis might be invalid.</string>
-    <string name="volume_good">Your sample has good volume to be analyzed.</string>
-    <string name="last_sample_message_default">"last sample"</string>
-    <string name="last_sample_message">"last sample %1$s"</string>
-    <string name="subscribe_to_unlock">Subscribe to unlock this personalized content.</string>
+    <string name="analytic_volume_insuff">Your sample has insufficient volume to be analyzed. The analysis might be invalid.</string>
+    <string name="analytic_volume_good">Your sample has good volume to be analyzed.</string>
 
-    <string name="alert_ok">Ok</string>
+    <string name="analytic_add_new">Add metric</string>
 
+
+    <!-- Dialog -->
+    <string name="dialog_ok">Ok</string>
+    <string name="dialog_cancel">CANCEL</string>
+    <string name="dialog_profile_ready">Now you are a member of the Spinning Team in Dir Diagonal!</string>
+    <string name="dialog_logout_msg">Are you sure you want to log out of your account?</string>
+    <string name="dialog_logout_y">Log Out</string>
+    <string name="dialog_logout_n">Cancel</string>
+    <string name="dialog_deactive_msg">Are you sure you want to deactivate your account?</string>
+    <string name="dialog_deactive_y">Deactivate</string>
+    <string name="dialog_deactive_n">Cancel</string>
+
+    <!-- Error -->
+    <string name="error_login">Error login</string>
 
 
     <!-- Premium screen -->
@@ -278,4 +289,13 @@
     <string name="recommendation_hydration_3">Stay hydrated and maintain your current hydration practices. Drink 100 to 200 mL during the next hour (1–2 hours).</string>
     <string name="recommendation_hydration_4">Consider drinking electrolyte 100 mL beverages to enhance water retention during the next hours (1–2 hours).</string>
     <string name="recommendation_hydration_title">Recommendation</string>
+    <string name="recomendation_home_kind">Pro Recommendation</string>
+    <string name="recomendation_home_title">Banana booster</string>
+    <string name="recomendation_home_subtitle">Bananas are a good source of essential nutrients, including potassium…</string>
+
+    <!-- Units -->
+    <string name="unit_percentage">%</string>
+    <string name="unit_electrolites">mS/cm</string>
+    <string name="unit_volume">ml</string>
+    <string name="channel_id">KAMLEON_NOTIFICATIONS_CHANNEL</string>
 </resources>

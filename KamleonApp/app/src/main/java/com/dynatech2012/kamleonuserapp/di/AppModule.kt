@@ -9,6 +9,7 @@ import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureDatabase
 import com.dynatech2012.kamleonuserapp.database.MeasureDataDao
 import com.dynatech2012.kamleonuserapp.database.MeasureDatabase
 import com.dynatech2012.kamleonuserapp.models.IntVectorTypeConverter
+import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.DatabaseDataSource
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
@@ -45,6 +46,9 @@ object AppModule {
     @Singleton
     fun databaseDataSourceProvider(measureDataDao: MeasureDataDao, dailyMeasureDataDao: AverageDailyMeasureDataDao, monthlyMeasureDataDao: AverageMonthlyMeasureDataDao): DatabaseDataSource = DatabaseDataSource(measureDataDao, dailyMeasureDataDao, monthlyMeasureDataDao)
     //fun databaseDataSourceProvider(/*measureDataDao: MeasureDataDao*/): DatabaseDataSource = DatabaseDataSource(/*measureDataDao*/)
+    @Provides
+    @Singleton
+    fun clodFunctionsProvider(userRepository: UserRepository): CloudFunctions = CloudFunctions(userRepository)
 
 
     @Provides

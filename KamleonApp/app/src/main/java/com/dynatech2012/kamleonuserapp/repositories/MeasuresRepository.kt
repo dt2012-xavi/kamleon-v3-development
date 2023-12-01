@@ -14,8 +14,8 @@ class MeasuresRepository @Inject constructor(
     private val firestoreDataSource: FirestoreDataSource,
     private val realtimeRepository: RealtimeRepository) {
 
-    var lastDateLong = 0L       // last date in DB
-    var newMeasuresFS = ArrayList<MeasureData>()
+    private var lastDateLong = 0L       // last date in DB
+    private var newMeasuresFS = ArrayList<MeasureData>()
     suspend fun getUserLastMeasureFromDB(): Response<ArrayList<MeasureData>> {
         Log.d(TAG, "will try to get measures from DB 1")
         val response = database.getAllMeasures()
@@ -94,7 +94,6 @@ class MeasuresRepository @Inject constructor(
         }
         val dates = newMeasuresFS.map { Date(it.analysisDate).toInstant().atZone(ZoneId.systemDefault()).toLocalDate() }
         val newDays = dates.distinct()
-        Log.d(TAG, "bbbbbbbb newDays: $newDays")
         val response = realtimeRepository.getDaysAverages(userId, newDays)
         if (response.isSuccess) {
             val measures = response.dataValue
@@ -117,7 +116,6 @@ class MeasuresRepository @Inject constructor(
         }
         val dates = newMeasuresFS.map { Date(it.analysisDate).toInstant().atZone(ZoneId.systemDefault()).toLocalDate() }
         val newMonths = dates.distinctBy { it.year to it.month }
-        Log.d(TAG, "bbbbbbbb newMonths: $newMonths")
         val response = realtimeRepository.getMonthsAverages(userId, newMonths)
         if (response.isSuccess) {
             val measures = response.dataValue

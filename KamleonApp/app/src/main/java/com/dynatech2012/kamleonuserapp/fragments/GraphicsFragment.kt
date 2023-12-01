@@ -15,16 +15,16 @@ import com.dynatech2012.kamleonuserapp.databinding.ActivityGraphicsBinding
 import com.dynatech2012.kamleonuserapp.models.RecommendationType
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.cards.ViewPager
-import com.dynatech2012.kamleonuserapp.views.chart.data.KamleonGraphBarItemData
-import com.dynatech2012.kamleonuserapp.views.chart.data.KamleonGraphDataType
-import com.dynatech2012.kamleonuserapp.views.chart.exts.addDays
-import com.dynatech2012.kamleonuserapp.views.chart.exts.addHours
-import com.dynatech2012.kamleonuserapp.views.chart.exts.addMonths
-import com.dynatech2012.kamleonuserapp.views.chart.exts.beginningOfDay
-import com.dynatech2012.kamleonuserapp.views.chart.exts.beginningOfYear
-import com.dynatech2012.kamleonuserapp.views.chart.exts.day
-import com.dynatech2012.kamleonuserapp.views.chart.exts.endOfMonth
-import com.dynatech2012.kamleonuserapp.views.chart.exts.formatDate
+import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphBarItemData
+import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
+import com.dynatech2012.kamleonuserapp.extensions.addDays
+import com.dynatech2012.kamleonuserapp.extensions.addHours
+import com.dynatech2012.kamleonuserapp.extensions.addMonths
+import com.dynatech2012.kamleonuserapp.extensions.beginningOfDay
+import com.dynatech2012.kamleonuserapp.extensions.beginningOfYear
+import com.dynatech2012.kamleonuserapp.extensions.day
+import com.dynatech2012.kamleonuserapp.extensions.endOfMonth
+import com.dynatech2012.kamleonuserapp.extensions.formatDate
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 import java.util.Date
@@ -82,9 +82,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
             else -> RecommendationType.HOME
         }
         binding.cvGraphTips.setContent {
-            ViewPager(recommendationType = tipType, null, modifier = Modifier) {
-
-            }
+            ViewPager(recommendationType = tipType, null, modifier = Modifier)
         }
     }
 
@@ -147,7 +145,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
     }
 
     private fun monthDataSourceOf(date: Date) : ArrayList<KamleonGraphBarItemData> {
-        Log.e("LLL", "addMonthDataSourceOf" + date.formatDate())
+        Log.d("LLL", "addMonthDataSourceOf" + date.formatDate())
         val dataSource = ArrayList<KamleonGraphBarItemData>()
         val startDate = date.beginningOfDay
 

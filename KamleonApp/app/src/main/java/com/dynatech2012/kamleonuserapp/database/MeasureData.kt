@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.dynatech2012.kamleonuserapp.models.IntVectorTypeConverter
 import com.dynatech2012.kamleonuserapp.models.RawMeasureData
-import com.dynatech2012.kamleonuserapp.views.chart.data.KamleonGraphDataType
+import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import java.util.Date
 
 @Entity

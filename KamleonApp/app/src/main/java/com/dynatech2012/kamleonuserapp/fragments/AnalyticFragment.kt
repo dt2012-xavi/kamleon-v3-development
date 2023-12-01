@@ -1,7 +1,6 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat.getDrawable
@@ -12,7 +11,6 @@ import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.databinding.ActivityAnalyticBinding
-import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -131,14 +129,14 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
         cvHy.value = score ?: 0//77
         //cvHy.analyticType = AnalyticType.HYDRATION
         cvHy.subtitle = when (score) {
-            in 0..30 -> getString(R.string.severely_dehydrated)
-            in 31..64 -> getString(R.string.dehydrated)
-            in 65..90, null -> getString(R.string.hydrated)
-            else -> getString(R.string.hydrated)
+            in 0..30 -> getString(R.string.analytic_severely_dehydrated)
+            in 31..64 -> getString(R.string.analytic_dehydrated)
+            in 65..90, null -> getString(R.string.analytic_hydrated)
+            else -> getString(R.string.analytic_hydrated)
         }
         cvHy.description = when (score) {
-            in 0..64 -> getString(R.string.hydratation_under)
-            else -> getString(R.string.hydratation_above)
+            in 0..64 -> getString(R.string.analytic_hydratation_under)
+            else -> getString(R.string.analytic_hydratation_above)
         }
         cvHy.onClick = { openGraphView(0) }
         val el = measureData?.msCond?.toInt()// ?: 0
@@ -146,14 +144,14 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
         cvEl.value = el ?: 0
         //cvEl.analyticType = AnalyticType.ELECTROLYTE
         cvEl.subtitle = when (el) {
-            in 0..4 -> getString(R.string.elec_hypo)
-            in 5..19, null -> getString(R.string.elec_normal)
-            else -> getString(R.string.elec_hyper)
+            in 0..4 -> getString(R.string.analytic_elec_hypo)
+            in 5..19, null -> getString(R.string.analytic_elec_normal)
+            else -> getString(R.string.analytic_elec_hyper)
         }
         cvEl.description = when (el) {
-            in 0..4 -> getString(R.string.elec_under)
-            in 5..19, null -> getString(R.string.elec_optimal)
-            else -> getString(R.string.elec_above)
+            in 0..4 -> getString(R.string.analytic_elec_under)
+            in 5..19, null -> getString(R.string.analytic_elec_optimal)
+            else -> getString(R.string.analytic_elec_above)
         }
         cvEl.onClick = { openGraphView(1) }
 
@@ -162,13 +160,13 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
         cvVol.value = vol ?: 0//150
         //cvVol.analyticType = AnalyticType.VOLUME
         cvVol.subtitle = when (vol) {
-            in 0..149 -> getString(R.string.volume_low)
-            in 150..249, null -> getString(R.string.volume_medium)
-            else -> getString(R.string.volume_high)
+            in 0..149 -> getString(R.string.analytic_volume_low)
+            in 150..249, null -> getString(R.string.analytic_volume_medium)
+            else -> getString(R.string.analytic_volume_high)
         }
         cvVol.description = when (vol) {
-            in 0..149 -> getString(R.string.volume_insuff)
-            else -> getString(R.string.volume_good)
+            in 0..149 -> getString(R.string.analytic_volume_insuff)
+            else -> getString(R.string.analytic_volume_good)
         }
         cvVol.onClick = { openGraphView(2) }
 

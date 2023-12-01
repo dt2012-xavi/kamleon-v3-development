@@ -1,14 +1,13 @@
 package com.dynatech2012.kamleonuserapp.models
 
-import android.content.Context
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 
 data class Recommendation(
-    val kind: String?,
-    val titleShort: String,
-    val title: String,
-    var text: String,
+    val kind: Int?,
+    val titleShort: Int,
+    val title: Int,
+    var text: Int?,
     val isRead: Boolean = false,
     var blocked: Boolean = false,
     val clickable: Boolean = true,
@@ -16,127 +15,137 @@ data class Recommendation(
     val image: Int? = null
 ) {
 
-    fun getHydrationText(hydrationLevel: MeasureData.HydrationLevel, context: Context): String {
+    fun getHydrationText(hydrationLevel: MeasureData.HydrationLevel): Int {
         val resource: Int = when (hydrationLevel) {
             MeasureData.HydrationLevel.VERYDEHYDRATED -> R.string.recommendation_hydration_1
             MeasureData.HydrationLevel.DEHYDRATED -> R.string.recommendation_hydration_2
             MeasureData.HydrationLevel.HYDRATED -> R.string.recommendation_hydration_3
             MeasureData.HydrationLevel.VERYHYDRATED -> R.string.recommendation_hydration_4
         }
-        return context.getString(resource)
+        return resource
     }
     companion object {
-        fun fromTipType(recommendationType: RecommendationType, context: Context): List<Recommendation> {
+        fun fromTipType(recommendationType: RecommendationType): List<Recommendation> {
             when (recommendationType) {
                 RecommendationType.HOME -> return listOf(
                     Recommendation(
-                        kind = context.getString(R.string.recommendation_analytics_h_title),
-                        titleShort = context.getString(R.string.recommendation_hydration_title),
-                        title = context.getString(R.string.recommendation_analytics_h_title),
-                        text = "",
+                        kind = R.string.recommendation_analytics_h_title,
+                        titleShort = R.string.recommendation_hydration_title,
+                        title = R.string.recommendation_analytics_h_title,
+                        text = null,
                         isRead = true,
                         clickable = false,
                     ),
                     Recommendation(
-                        kind = "Pro Recommendation",
-                        titleShort = "Banana booster",
-                        title = "Banana booster",
-                        text = "Bananas are a good source of essential nutrients, including potassium...",
+                        kind = R.string.recomendation_home_kind,
+                        titleShort = R.string.recomendation_home_title,
+                        title = R.string.recomendation_home_title,
+                        text = R.string.recomendation_home_subtitle,//"Bananas are a good source of essential nutrients, including potassium...",
                         isRead = true,
                         blocked = true,
+                        image = R.drawable.recom4
                     )
                 )
 
                 RecommendationType.HYDRATION -> return listOf(
                     Recommendation(
-                        kind = context.getString(R.string.recommendation_analytics_h_title),
-                        titleShort = context.getString(R.string.recommendation_analytics_h_1_title_short),
-                        title = context.getString(R.string.recommendation_analytics_h_1_title),
-                        text = context.getString(R.string.recommendation_analytics_h_1_subtitle),
+                        kind = R.string.recommendation_analytics_h_title,
+                        titleShort = R.string.recommendation_analytics_h_1_title_short,
+                        title = R.string.recommendation_analytics_h_1_title,
+                        text = R.string.recommendation_analytics_h_1_subtitle,
                         isRead = true,
                         blocked = false,
                         clickable = true,
-                        showModal = false
+                        showModal = false,
+                        image = R.drawable.recom1
                     ),
                     Recommendation(
-                        kind = context.getString(R.string.recommendation_analytics_h_title),
-                        titleShort = context.getString(R.string.recommendation_analytics_h_2_title_short),
-                        title = context.getString(R.string.recommendation_analytics_h_2_title),
-                        text = context.getString(R.string.recommendation_analytics_h_2_subtitle),
+                        kind = R.string.recommendation_analytics_h_title,
+                        titleShort = R.string.recommendation_analytics_h_2_title_short,
+                        title = R.string.recommendation_analytics_h_2_title,
+                        text = R.string.recommendation_analytics_h_2_subtitle,
                         isRead = true,
                         blocked = false,
-                        clickable = true
+                        clickable = true,
+                        image = R.drawable.recom2
                     ),
                     Recommendation(
-                        kind = context.getString(R.string.recommendation_analytics_h_title),
-                        titleShort = context.getString(R.string.recommendation_analytics_h_3_title_short),
-                        title = context.getString(R.string.recommendation_analytics_h_3_title),
-                        text = context.getString(R.string.recommendation_analytics_h_3_subtitle),
+                        kind = R.string.recommendation_analytics_h_title,
+                        titleShort = R.string.recommendation_analytics_h_3_title_short,
+                        title = R.string.recommendation_analytics_h_3_title,
+                        text = R.string.recommendation_analytics_h_3_subtitle,
                         isRead = true,
                         blocked = false,
-                        clickable = true
+                        clickable = true,
+                        image = R.drawable.recom8
                     )
                 )
 
                 RecommendationType.ELECTROLYTE -> return listOf(
                     Recommendation(
-                        kind = context.getString(R.string.recommendation_analytics_e_title),
-                        titleShort = context.getString(R.string.recommendation_analytics_e_1_title_short),
-                        title = context.getString(R.string.recommendation_analytics_e_1_title),
-                        text = context.getString(R.string.recommendation_analytics_e_1_subtitle),
+                        kind = R.string.recommendation_analytics_e_title,
+                        titleShort = R.string.recommendation_analytics_e_1_title_short,
+                        title = R.string.recommendation_analytics_e_1_title,
+                        text = R.string.recommendation_analytics_e_1_subtitle,
                         isRead = true,
                         blocked = false,
                         clickable = true,
-                        showModal = false
+                        showModal = false,
+                        image = R.drawable.recom7
                     ),
                     Recommendation(
-                        kind = context.getString(R.string.recommendation_analytics_e_title),
-                        titleShort = context.getString(R.string.recommendation_analytics_e_2_title_short),
-                        title = context.getString(R.string.recommendation_analytics_e_2_title),
-                        text = context.getString(R.string.recommendation_analytics_e_2_subtitle),
+                        kind = R.string.recommendation_analytics_e_title,
+                        titleShort = R.string.recommendation_analytics_e_2_title_short,
+                        title = R.string.recommendation_analytics_e_2_title,
+                        text = R.string.recommendation_analytics_e_2_subtitle,
                         isRead = true,
                         blocked = false,
-                        clickable = true
+                        clickable = true,
+                        image = R.drawable.recom3
                     ),
                     Recommendation(
-                        kind = context.getString(R.string.recommendation_analytics_e_title),
-                        titleShort = context.getString(R.string.recommendation_analytics_e_3_title_short),
-                        title = context.getString(R.string.recommendation_analytics_e_3_title),
-                        text = context.getString(R.string.recommendation_analytics_e_3_subtitle),
+                        kind = R.string.recommendation_analytics_e_title,
+                        titleShort = R.string.recommendation_analytics_e_3_title_short,
+                        title = R.string.recommendation_analytics_e_3_title,
+                        text = R.string.recommendation_analytics_e_3_subtitle,
                         isRead = true,
                         blocked = false,
-                        clickable = true
+                        clickable = true,
+                        image = R.drawable.recom9
                     )
                 )
 
                 RecommendationType.VOLUME -> return listOf(
                     Recommendation(
-                        kind = context.getString(R.string.recommendation_analytics_v_title),
-                        titleShort = context.getString(R.string.recommendation_analytics_v_1_title_short),
-                        title = context.getString(R.string.recommendation_analytics_v_1_title),
-                        text = context.getString(R.string.recommendation_analytics_v_1_subtitle),
+                        kind = R.string.recommendation_analytics_v_title,
+                        titleShort = R.string.recommendation_analytics_v_1_title_short,
+                        title = R.string.recommendation_analytics_v_1_title,
+                        text = R.string.recommendation_analytics_v_1_subtitle,
                         isRead = true,
                         blocked = false,
                         clickable = true,
-                        showModal = false
+                        showModal = false,
+                        image = R.drawable.recom5
                     ),
                     Recommendation(
-                        kind = context.getString(R.string.recommendation_analytics_v_title),
-                        titleShort = context.getString(R.string.recommendation_analytics_v_2_title_short),
-                        title = context.getString(R.string.recommendation_analytics_v_2_title),
-                        text = context.getString(R.string.recommendation_analytics_v_2_subtitle),
+                        kind = R.string.recommendation_analytics_v_title,
+                        titleShort = R.string.recommendation_analytics_v_2_title_short,
+                        title = R.string.recommendation_analytics_v_2_title,
+                        text = R.string.recommendation_analytics_v_2_subtitle,
                         isRead = true,
                         blocked = false,
-                        clickable = true
+                        clickable = true,
+                        image = R.drawable.recom10
                     ),
                     Recommendation(
-                        kind = context.getString(R.string.recommendation_analytics_v_title),
-                        titleShort = context.getString(R.string.recommendation_analytics_v_3_title_short),
-                        title = context.getString(R.string.recommendation_analytics_v_3_title),
-                        text = context.getString(R.string.recommendation_analytics_v_3_subtitle),
+                        kind = R.string.recommendation_analytics_v_title,
+                        titleShort = R.string.recommendation_analytics_v_3_title_short,
+                        title = R.string.recommendation_analytics_v_3_title,
+                        text = R.string.recommendation_analytics_v_3_subtitle,
                         isRead = true,
                         blocked = false,
-                        clickable = true
+                        clickable = true,
+                        image = R.drawable.recom6
                     )
                 )
             }

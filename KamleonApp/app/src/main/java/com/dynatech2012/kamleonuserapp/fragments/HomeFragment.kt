@@ -1,6 +1,5 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.content.res.Resources.getSystem
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
@@ -8,10 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.widget.ViewPager2
 import coil.load
 import com.dynatech2012.kamleonuserapp.R
-import com.dynatech2012.kamleonuserapp.adapters.HomeItemAdapter
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.ActivityHomeBinding
 import com.dynatech2012.kamleonuserapp.database.MeasureData
@@ -26,10 +23,7 @@ import java.util.Locale
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<ActivityHomeBinding>() {
     private val viewModel: MainViewModel by activityViewModels()
-    private lateinit var viewPagerCallback: ViewPager2.OnPageChangeCallback
-    private lateinit var homeItemAdapter: HomeItemAdapter
     override fun setBinding(): ActivityHomeBinding = ActivityHomeBinding.inflate(layoutInflater)
-
 
     private val onDismissScanIntro = object : BottomFragmentDismissListener {
         override fun onDismissFragment() {
@@ -48,7 +42,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
                 override fun run() {
                     try {
                         sleep(400)
-                    } catch (e: InterruptedException) {
+                    } catch (_: InterruptedException) {
                     }
                     activity?.runOnUiThread {
                         showQRIntroFragment()
@@ -118,23 +112,23 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         val date = measure.analysisDate
         val format = SimpleDateFormat("d MMMM yyy", Locale.getDefault())
         val dateString = format.format(date)
-        binding.tvHomeLastSample.text = getString(R.string.last_sample_message, dateString)
+        binding.tvHomeLastSample.text = getString(R.string.home_last_sample_message, dateString)
         when (measure.hydrationLevel) {
             MeasureData.HydrationLevel.VERYHYDRATED -> {
                 binding.homeBg.setImageResource(R.drawable.bg_very_hydrated)
-                binding.tvHomeMessage.text = getString(R.string.very_hydrated)
+                binding.tvHomeMessage.text = getString(R.string.analytic_very_hydrated)
             }
             MeasureData.HydrationLevel.HYDRATED -> {
                 binding.homeBg.setImageResource(R.drawable.bg_hydrated)
-                binding.tvHomeMessage.text = getString(R.string.hydrated)
+                binding.tvHomeMessage.text = getString(R.string.analytic_hydrated)
             }
             MeasureData.HydrationLevel.DEHYDRATED -> {
                 binding.homeBg.setImageResource(R.drawable.bg_dehydrated)
-                binding.tvHomeMessage.text = getString(R.string.dehydrated)
+                binding.tvHomeMessage.text = getString(R.string.analytic_dehydrated)
             }
             MeasureData.HydrationLevel.VERYDEHYDRATED -> {
                 binding.homeBg.setImageResource(R.drawable.bg_severely_dehydrated)
-                binding.tvHomeMessage.text = getString(R.string.severely_dehydrated)
+                binding.tvHomeMessage.text = getString(R.string.analytic_severely_dehydrated)
             }
         }
         setupTips(measure.hydrationLevel)
@@ -142,40 +136,8 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
 
 
     private fun setupTips(hydrationLevel: MeasureData.HydrationLevel?) {
-        /*
-        homeItemAdapter = HomeItemAdapter(this)
-        homeItemAdapter.addFragment(HomeItemFragment.newInstance(0))
-        homeItemAdapter.addFragment(HomeItemFragment.newInstance(1))
-        val viewPager = binding.viewPager
-        viewPager.clipToPadding = false
-        viewPager.clipChildren = false
-        viewPager.offscreenPageLimit = 2
-        val offsetPx = 48.px
-        val pageMarginPx = 8.px
-        val marginTransformer = MarginPageTransformer(pageMarginPx)
-        viewPager.setPageTransformer(marginTransformer)
-        viewPager.setPadding(offsetPx, 0, offsetPx, 0)
-        viewPager.adapter = homeItemAdapter
-        */
-
-        /*
-        val rv = binding.rvHome
-        val item1 = HomeListAdapter.HomeListItemModel("title 1", "Your hydration level is good")
-        val item2 = HomeListAdapter.HomeListItemModel("title 2", "Your hydration level is good")
-        val layoutManager = LinearLayoutManager(requireContext())
-        layoutManager.orientation = RecyclerView.HORIZONTAL
-        val adapter = HomeListAdapter(arrayListOf(item1, item2))
-        rv.adapter = adapter
-        rv.layoutManager = layoutManager
-        val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(rv)
-        rv.adapter = adapter
-        */
-
         binding.cvHome.setContent {
-            ViewPager(recommendationType = RecommendationType.HOME, hydrationLevel = hydrationLevel, modifier = Modifier) {
-                findNavController().navigate(R.id.action_homeFragment_to_analyticFragment)
-            }
+            ViewPager(recommendationType = RecommendationType.HOME, hydrationLevel = hydrationLevel, modifier = Modifier)
         }
     }
 
@@ -184,15 +146,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         qrFragment.show(parentFragmentManager, "QR")
     }
 
-    override fun onDestroy() {
-        //viewPager.unregisterOnPageChangeCallback(viewPagerCallback)
-        super.onDestroy()
-    }
-
     companion object {
         val TAG: String = HomeFragment::class.java.simpleName
     }
 }
-
-val Int.dp: Int get() = (this / getSystem().displayMetrics.density).toInt()
-val Int.px: Int get() = (this * getSystem().displayMetrics.density).toInt()

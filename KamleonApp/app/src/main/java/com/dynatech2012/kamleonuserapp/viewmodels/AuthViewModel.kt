@@ -32,7 +32,7 @@ class AuthViewModel @Inject constructor(
     var weight = -1f
     var gender = Gender.none
 
-    private val _uiState = MutableLiveData<Int>(0)
+    private val _uiState = MutableLiveData(0)
     val uiState: LiveData<Int> = _uiState
 
     fun signup() {
@@ -49,15 +49,18 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun locationPermisionGranted() {
+    fun notificationPermissionGranted() {
         _uiState.postValue(3)
+    }
+    fun locationPermissionGranted() {
+        _uiState.postValue(4)
     }
 
     fun finishSignup() {
         viewModelScope.launch(Dispatchers.IO) {
             val registerResult = firestoreRepo.createUserStep2(birthday, height, weight, gender)
             if (registerResult.isSuccess && registerResult.dataValue != null)
-                _uiState.postValue(4)
+                _uiState.postValue(5)
         }
     }
 
@@ -65,7 +68,7 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val authResult = authRepo.login(email, pass)
             if (authResult.isSuccess && authResult.dataValue != null)
-                _uiState.postValue(4)
+                _uiState.postValue(5)
         }
     }
 

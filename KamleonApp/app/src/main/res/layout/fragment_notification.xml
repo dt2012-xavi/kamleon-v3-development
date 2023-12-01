@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_bottom_sheet_fragment"
-    tools:context=".fragments.NotificationFragment">
+    tools:context=".fragments.InvitationFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,6 +29,7 @@
             style="@style/CircularBoldFont"
             android:textSize="@dimen/ts_20"/>
 
+<!--
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -188,40 +189,46 @@
                     android:textAlignment="center"
                     android:textColor="@drawable/color_blue_text_button"/>
             </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginVertical="30dp"
-                android:background="@color/color_fa"/>
-        </LinearLayout>
 
+        </LinearLayout>
+        -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_invitation_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="30dp"
+            android:background="@color/color_fa"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.dynatech2012.kamleonuserapp.views.NotificationListItemView
+            <com.dynatech2012.kamleonuserapp.views.InvitationListItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:notiType="@string/noti_role_change"
                 app:notiDate="Wednesday 19:46"
                 app:notiDesc="@string/noti_temp_desc1"
                 app:notiAction="Confirmed"/>
-            <com.dynatech2012.kamleonuserapp.views.NotificationListItemView
+            <com.dynatech2012.kamleonuserapp.views.InvitationListItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:notiType="@string/noti_role_change"
                 app:notiDate="Thursday 19:46"
                 app:notiDesc="@string/noti_temp_desc1"
                 app:notiAction="Denied"/>
-            <com.dynatech2012.kamleonuserapp.views.NotificationListItemView
+            <com.dynatech2012.kamleonuserapp.views.InvitationListItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:notiType="@string/noti_invite_req"
                 app:notiDate="Friday 19:46"
                 app:notiDesc="@string/noti_temp_desc2"
                 app:notiAction="Denied"/>
-            <com.dynatech2012.kamleonuserapp.views.NotificationListItemView
+            <com.dynatech2012.kamleonuserapp.views.InvitationListItemView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:notiType="@string/noti_invite_req"

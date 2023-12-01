@@ -14,10 +14,14 @@ import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
 import com.dynatech2012.kamleonuserapp.database.MeasureData
+import com.dynatech2012.kamleonuserapp.extensions.addDays
 import com.dynatech2012.kamleonuserapp.extensions.sha256
 import com.dynatech2012.kamleonuserapp.fragments.SettingFragment
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Gender
+import com.dynatech2012.kamleonuserapp.models.Invitation
+import com.dynatech2012.kamleonuserapp.models.InvitationStatus
+import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.DatabaseDataSource
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.MeasuresRepository
@@ -38,7 +42,8 @@ class MainViewModel @Inject constructor(
     private val firestoreRepo: FirestoreDataSource,
     private val measuresRepository: MeasuresRepository,
     private val databaseRepository: DatabaseDataSource,
-    private val realtime: RealtimeRepository
+    private val realtime: RealtimeRepository,
+    private val cloudFunctions: CloudFunctions
 ): ViewModel() {
 
     var graphicType: Int = -1
@@ -144,7 +149,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val oldPinHash = oldPin.sha256()
             if (oldPinHash != userData.value?.pin) {
-                throw Exception(Constants.unmatchingPIN)
+                throw Exception(Constants.UNMATCHING_PIN)
             }
             else {
                 val newPinHash = newPin.sha256()
@@ -302,6 +307,74 @@ class MainViewModel @Inject constructor(
                         _averageMonthlyMeasures.postValue(monthlyLoaded)
                     } }
         */
+        }
+    }
+
+
+    // NOTIFICATIONS AND INVITATIONS
+
+    /*
+    private val _newNotificationMeasure =  MutableLiveData<Boolean>()
+    val newNotificationMeasure: LiveData<Boolean> = _newNotificationMeasure
+    */
+    private val _newNotificationToken =  MutableLiveData<String>()
+    val newNotificationToken: LiveData<String> = _newNotificationToken
+    fun updateUserToken() {
+        viewModelScope.launch(Dispatchers.IO) {
+            firestoreRepo.updateToken()
+            //_newNotificationToken.postValue(token)
+        }
+    }
+    fun onGetNotification() {
+        getUserMeasures()
+        //_newNotificationMeasure.postValue(true)
+    }
+    fun resetNewNotification() {
+        //_newNotificationMeasure.postValue(false)
+    }
+
+    private val _newInvitations =  MutableLiveData<Boolean>()
+    val newInvitations: LiveData<Boolean> = _newInvitations
+    fun updateInvitationsCount() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val invitationsCount = firestoreRepo.getNewInvitations()
+            _newInvitations.postValue(invitationsCount > 0)
+        }
+    }
+    private val _pendingInvitations =  MutableLiveData<ArrayList<Invitation>>()
+    val pendingInvitations: LiveData<ArrayList<Invitation>> = _pendingInvitations
+    private val _oldInvitations =  MutableLiveData<ArrayList<Invitation>>()
+    val oldInvitations: LiveData<ArrayList<Invitation>> = _oldInvitations
+    private val _recentInvitations =  MutableLiveData<ArrayList<Invitation>>()
+    val recentInvitations: LiveData<ArrayList<Invitation>> = _recentInvitations
+    fun getInvitations() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = cloudFunctions.getInvitations()
+            val invitations = response.dataValue ?: ArrayList()
+            _pendingInvitations.postValue(invitations.filter { it.status == InvitationStatus.SENT } as ArrayList<Invitation>?)
+            _oldInvitations.postValue(invitations.filter { it.status != InvitationStatus.SENT } as ArrayList<Invitation>?)
+            // 30 days ago
+            val thirtyDaysAgo = Date().addDays(-30)
+            _recentInvitations.postValue(invitations.filter {
+                it.status != InvitationStatus.SENT && it.dateSent > thirtyDaysAgo } as ArrayList<Invitation>?)
+        }
+    }
+
+    fun acceptInvitation(invitationId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = cloudFunctions.acceptInvitation(invitationId)
+            if (response.isSuccess) {
+                getInvitations()
+            }
+        }
+    }
+
+    fun rejectInvitation(invitationId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = cloudFunctions.rejectInvitation(invitationId)
+            if (response.isSuccess) {
+                getInvitations()
+            }
         }
     }
 

@@ -26,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,11 +37,11 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ViewPager(recommendationType: RecommendationType, hydrationLevel: MeasureData.HydrationLevel?, modifier: Modifier, onClick: () -> Unit, ) {
+fun ViewPager(recommendationType: RecommendationType, hydrationLevel: MeasureData.HydrationLevel?, modifier: Modifier) {
     val pagerState = rememberPagerState(pageCount = {
         recommendationType.size
     })
-    val TAG: String = "ViewPager"
+    //val TAG: String = "ViewPager"
     Column(
         modifier = modifier
             //.wrapContentHeight()
@@ -107,11 +106,11 @@ fun CardViewHomeItemHome(recommType: RecommendationType, hydrationLevel: Measure
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(true)
     val scope = rememberCoroutineScope()
-    val recommendations = Recommendation.fromTipType(recommType, LocalContext.current)
+    val recommendations = Recommendation.fromTipType(recommType)
     val recommendation = recommendations[page]
     recommendation.blocked = page == recommendations.count() - 1
     if (recommType == RecommendationType.HOME && page == 0 && hydrationLevel != null) {
-        recommendation.text = recommendation.getHydrationText(hydrationLevel, LocalContext.current)
+        recommendation.text = recommendation.getHydrationText(hydrationLevel)
     }
     CardViewHomeItem(
         recommendation = recommendation,
@@ -173,8 +172,5 @@ fun ViewPagerPrev() {
     ViewPager(RecommendationType.ELECTROLYTE, MeasureData.HydrationLevel.HYDRATED, Modifier
         .fillMaxSize()
         .background(colorResource(id = R.color.color_red))
-    ) {
-        
-    }
-
+    )
 }

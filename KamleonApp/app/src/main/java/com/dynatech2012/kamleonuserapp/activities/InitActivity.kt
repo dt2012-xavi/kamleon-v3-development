@@ -3,13 +3,11 @@ package com.dynatech2012.kamleonuserapp.activities
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
-import android.view.inputmethod.EditorInfo
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
@@ -17,9 +15,6 @@ import androidx.core.content.ContextCompat
 import com.dynatech2012.kamleonuserapp.base.BaseActivity
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityInitBinding
-import com.dynatech2012.kamleonuserapp.databinding.ActivityLoginBinding
-import com.dynatech2012.kamleonuserapp.fragments.SettingFragment
-import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,7 +29,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
         content.viewTreeObserver.addOnPreDrawListener(
             object : ViewTreeObserver.OnPreDrawListener {
                 override fun onPreDraw(): Boolean {
-                    Log.d(TAG, "readyy")
+                    Log.d(TAG, "activity ready?")
                     // Check if the initial data is ready.
                     return if (viewModel.isReady) {
                         // The content is ready; start drawing.
@@ -55,40 +50,65 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
         )
     }
 
-    private val requestPermissionLauncher =
+    private val requestLocationPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
                 Log.i("Permission: ", "Granted")
-                viewModel.locationPermisionGranted()
+                viewModel.locationPermissionGranted()
+            } else {
+                Log.i("Permission: ", "Denied")
+            }
+        }
+    private val requestNotificationPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                Log.i("Permission: ", "Granted")
+                viewModel.notificationPermissionGranted()
             } else {
                 Log.i("Permission: ", "Denied")
             }
         }
 
-    private fun checkLocationPermission() {
+    private fun askLocationPermission() {
         when {
             ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+                this, Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED -> {
-                viewModel.locationPermisionGranted()
+                viewModel.locationPermissionGranted()
                 return
             }
 
             ActivityCompat.shouldShowRequestPermissionRationale(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+                this, Manifest.permission.ACCESS_COARSE_LOCATION
             ) -> {
-                requestPermissionLauncher.launch(
-                    Manifest.permission.ACCESS_COARSE_LOCATION
+                requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION
                 ) }
 
             else -> {
-                requestPermissionLauncher.launch(
-                    Manifest.permission.ACCESS_COARSE_LOCATION
+                requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION
                 )
+            }
+        }
+    }
+
+    private fun askNotificationPermission() {
+        // This is only necessary for API level >= 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when {
+                ContextCompat.checkSelfPermission(
+                        this, Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    viewModel.notificationPermissionGranted()
+                    return
+                }
+                shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) ->
+                    requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                else ->
+                    requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
     }
@@ -96,18 +116,24 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
 
     override fun initView() {
         supportFragmentManager
-            .setFragmentResultListener(Constants.grantLocation, this) { _, bundle ->
+            .setFragmentResultListener(Constants.GRANT_LOCATION, this) { _, bundle ->
                 Log.d(TAG, "result from activity location")
-                val result = bundle.getBoolean(Constants.grantLocationBundle)
+                val result = bundle.getBoolean(Constants.GRANT_LOCATION_BUNDLE)
                 if (result) {
-                    checkLocationPermission()
+                    askLocationPermission()
+                }
+            }
+        supportFragmentManager
+            .setFragmentResultListener(Constants.GRANT_NOTIFICATION, this) { _, bundle ->
+                Log.d(TAG, "result from activity notification")
+                val result = bundle.getBoolean(Constants.GRANT_NOTIFICATION_BUNDLE)
+                if (result) {
+                    askNotificationPermission()
                 }
             }
     }
 
-    override fun initEvent() {
-
-    }
+    override fun initEvent() { }
 
     companion object {
         val TAG: String = InitActivity::class.java.simpleName

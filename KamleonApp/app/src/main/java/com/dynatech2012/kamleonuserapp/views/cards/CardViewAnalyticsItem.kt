@@ -28,7 +28,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter.Companion.tint
@@ -38,13 +37,14 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dynatech2012.kamleonuserapp.R
-import com.dynatech2012.kamleonuserapp.views.circular.AnimatedCircularProgressIndicator
-import com.dynatech2012.kamleonuserapp.views.circular.VolumeProgressIndicator
+import com.dynatech2012.kamleonuserapp.views.progress.AnimatedCircularProgressIndicator
+import com.dynatech2012.kamleonuserapp.views.progress.VolumeProgressIndicator
 
 @Composable
 fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, descriptionStart: String, startValue: Int, onClick: () -> Unit) {
@@ -107,7 +107,7 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
                 Spacer(modifier = Modifier
                     .weight(1f))
                 Text(
-                    text = "Add metric",
+                    text = stringResource(id = R.string.analytic_add_new),
                     fontSize = dimensionResource(R.dimen.ts_14).value.sp,
                     color = colorResource(id = R.color.kamleon_dark_grey))
             }
@@ -242,7 +242,7 @@ fun HydrationView(hydration: Int) {
                 verticalArrangement = Arrangement.aligned(Alignment.Bottom)
             ) {
                 Text(
-                    text = "%",
+                    text = stringResource(id = R.string.unit_percentage),
                     fontSize = dimensionResource(R.dimen.ts_20).value.sp,
                     color = colorResource(id = R.color.kamleon_dark_grey)
                 )
@@ -371,68 +371,10 @@ fun AnalyticsEmptyView() {
                     color = colorResource(id = R.color.kamleon_dark_grey)
                 )
             Text(
-                    text = "%",
+                    text = stringResource(id = R.string.unit_percentage),
                     fontSize = dimensionResource(R.dimen.ts_20).value.sp,
                     color = colorResource(id = R.color.kamleon_dark_grey)
                 )
         }
     }
-}
-
-
-fun Modifier.drawColoredShadow(
-    color: Color = Color.Black,
-    alpha: Float = 0.07f,
-    borderRadius: Dp = 0.dp,
-    offsetX: Dp = 0.dp,
-    offsetY: Dp = 0.dp,
-    blurRadius: Dp = 7.dp,
-    spread: Dp = 0.dp,
-    enabled: Boolean = true,
-) = if(enabled) {
-    this.drawBehind {
-        val transparentColor = color.copy(alpha = 0.0f).toArgb()
-        val shadowColor = color.copy(alpha = alpha).toArgb()
-        this.drawIntoCanvas {
-            val paint = Paint()
-            val frameworkPaint = paint.asFrameworkPaint()
-            frameworkPaint.color = transparentColor
-            frameworkPaint.setShadowLayer(
-                blurRadius.toPx(),
-                offsetX.toPx(),
-                offsetY.toPx(),
-                shadowColor
-            )
-            it.save()
-
-            if(spread.value > 0) {
-                fun calcSpreadScale(spread: Float, childSize: Float): Float {
-                    return 1f + ((spread / childSize) * 2f)
-                }
-
-                it.scale(
-                    calcSpreadScale(spread.toPx(), this.size.width),
-                    calcSpreadScale(spread.toPx(), this.size.height),
-                    /*
-                    this.center.x,
-                    this.center.y
-
-                     */
-                )
-            }
-
-            it.drawRoundRect(
-                0f,
-                0f,
-                this.size.width,
-                this.size.height,
-                borderRadius.toPx(),
-                borderRadius.toPx(),
-                paint
-            )
-            it.restore()
-        }
-    }
-} else {
-    this
 }

@@ -20,7 +20,7 @@
             android:clickable="true"
             android:paddingHorizontal="32dp"
             android:textSize="@dimen/ts_20"
-            android:text="@string/msg_profile_ready"
+            android:text="@string/dialog_profile_ready"
             android:textAlignment="center"
             android:textColor="@color/white"/>
 

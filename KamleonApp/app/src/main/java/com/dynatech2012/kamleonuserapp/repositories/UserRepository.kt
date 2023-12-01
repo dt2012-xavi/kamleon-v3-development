@@ -19,6 +19,8 @@ class UserRepository {
     private var logged = false
     val uuid: String?
         get() = auth.uid
+    val email: String?
+        get() = auth.currentUser?.email
 
     suspend fun signup(email: String, pass: String) = suspendCoroutine { continuation ->
         auth.createUserWithEmailAndPassword(email, pass)

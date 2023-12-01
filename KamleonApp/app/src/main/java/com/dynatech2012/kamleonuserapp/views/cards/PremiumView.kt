@@ -143,7 +143,7 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
                     openDialog.value = false
                     onClick()
                 },
-                buttonText = stringResource(id = R.string.alert_ok)
+                buttonText = stringResource(id = R.string.dialog_ok)
             )
         }
     }

@@ -65,12 +65,12 @@ fun CardViewHomeItem(recommendation: Recommendation, modifier: Modifier, showBot
     val shape = RoundedCornerShape(12.dp)
     val elevation = 10.dp
     val clickable = recommendation.clickable
-    val locked = recommendation.blocked
+    val blocked = recommendation.blocked
     val foregroundColor = colorResource(id = R.color.color_fa_80)
-    val lockString = stringResource(id = R.string.subscribe_to_unlock)
+    val lockString = stringResource(id = R.string.premium_card_message)
 
     //val sheetState = rememberModalBottomSheetState(true)
-    val scope = rememberCoroutineScope()
+    //val scope = rememberCoroutineScope()
     //var showBottomSheet by remember { mutableStateOf(false) }
 
     ClippedShadowCard(
@@ -82,7 +82,7 @@ fun CardViewHomeItem(recommendation: Recommendation, modifier: Modifier, showBot
         elevation = elevation,
     )
     {
-        Box (){
+        Box {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -92,39 +92,32 @@ fun CardViewHomeItem(recommendation: Recommendation, modifier: Modifier, showBot
                 Column(
                     modifier = Modifier
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.tip1),
-                        modifier = Modifier.size(100.dp),
-                        /*
-                                painter = rememberVectorPainter(
-
-                                    image = ImageVector.vectorResource(
-                                        id = /*tip.image ?: */R.drawable.tip1
-                                    )
-                ),
-                */
-                        contentDescription = "",
-                    )
+                    if (recommendation.image != null) {
+                        Image(
+                            painter = painterResource(id = recommendation.image),
+                            modifier = Modifier
+                                .size(100.dp)
+                                .padding(end = 16.dp),
+                            contentDescription = "",
+                        )
+                    }
                 }
 
                 Column(
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(start = 16.dp)
-                        .fillMaxWidth(),
-
+                        .fillMaxSize(),
                     verticalArrangement = Arrangement.Center
                 ) {
                     if (recommendation.kind != null) {
                         Text(
-                            text = recommendation.kind,
+                            text = stringResource(id = recommendation.kind),
                             fontSize = dimensionResource(R.dimen.ts_14).value.sp,
                             color = colorResource(id = R.color.kamleon_secondary_grey_60)
                         )
                     }
                     Text(
                         modifier = Modifier.padding(bottom = 4.dp),
-                        text = recommendation.titleShort,
+                        text = stringResource(id = recommendation.titleShort),
                         fontSize = dimensionResource(R.dimen.ts_14).value.sp,
                         color = colorResource(id = R.color.kamleon_dark_grey),
                         fontWeight = FontWeight.Bold
@@ -132,7 +125,7 @@ fun CardViewHomeItem(recommendation: Recommendation, modifier: Modifier, showBot
                     Text(
                         modifier = Modifier
                             .padding(top = 4.dp),
-                        text = recommendation.text,
+                        text = if (recommendation.text != null ) stringResource(id = recommendation.text!!) else "",
                         fontSize = dimensionResource(R.dimen.ts_14).value.sp,
                         color = colorResource(id = R.color.kamleon_dark_grey),
                         maxLines = 2,
@@ -140,7 +133,7 @@ fun CardViewHomeItem(recommendation: Recommendation, modifier: Modifier, showBot
                     )
                 }
             }
-            if (locked) {
+            if (blocked) {
                 Row (
                     modifier = Modifier
                         .height(124.dp)
@@ -188,10 +181,9 @@ fun Modifier.coloredShadow(
     shadowRadius: Dp = 20.dp,
     offsetY: Dp = 0.dp,
     offsetX: Dp = 0.dp
-) = composed {
-    val shadowColor = color.copy(alpha = alpha).toArgb()
-    val transparent = color.copy(alpha= 0f).toArgb()
-    this.drawBehind {
+) = this.drawBehind {
+        val shadowColor = color.copy(alpha = alpha).toArgb()
+        val transparent = color.copy(alpha= 0f).toArgb()
         this.drawIntoCanvas {
             val paint = Paint()
             val frameworkPaint = paint.asFrameworkPaint()
@@ -212,7 +204,6 @@ fun Modifier.coloredShadow(
                 paint
             )
         }
-    }
 }
 
 

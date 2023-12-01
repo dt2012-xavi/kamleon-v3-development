@@ -33,14 +33,14 @@ class ImagePickFragment : BottomSheetDialogFragment() {
         val v = inflater.inflate(R.layout.fragment_image_pick, container, false)
         binding = FragmentImagePickBinding.bind(v)
         v.findViewById<LinearLayout>(R.id.layoutLibrary).setOnClickListener {
-            activity?.supportFragmentManager?.setFragmentResult(Constants.pickImage, Bundle().apply {
-                putBoolean(Constants.pickImageBundle, true)
+            activity?.supportFragmentManager?.setFragmentResult(Constants.PICK_IMAGE, Bundle().apply {
+                putBoolean(Constants.PICK_IMAGE_BUNDLE, true)
             })
 
         }
         v.findViewById<LinearLayout>(R.id.layoutCamera).setOnClickListener {
-            activity?.supportFragmentManager?.setFragmentResult(Constants.takeImage, Bundle().apply {
-                putBoolean(Constants.takeImageBundle, true)
+            activity?.supportFragmentManager?.setFragmentResult(Constants.TAKE_IMAGE, Bundle().apply {
+                putBoolean(Constants.TAKE_IMAGE_BUNDLE, true)
             })
         }
         v.findViewById<LinearLayout>(R.id.layoutRemove).setOnClickListener {

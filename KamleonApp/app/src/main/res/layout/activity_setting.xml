@@ -26,6 +26,17 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"/>
 
+        <ImageView
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/shape_circle"
+            android:id="@+id/btnSettingNotiBadge"
+            android:visibility="gone"
+            android:layout_alignEnd="@+id/btnSettingNoti"
+            android:layout_alignTop="@+id/btnSettingNoti"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="15dp"/>
+
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

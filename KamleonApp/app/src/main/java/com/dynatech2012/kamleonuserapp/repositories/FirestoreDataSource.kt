@@ -3,18 +3,25 @@ package com.dynatech2012.kamleonuserapp.repositories
 import android.net.Uri
 import android.util.Log
 import com.dynatech2012.kamleonuserapp.constants.Constants
-import com.dynatech2012.kamleonuserapp.constants.RealtimeConstants
+import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants
+import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_COLLECTION
+import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_TOKEN
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Gender
+import com.dynatech2012.kamleonuserapp.models.InvitationStatus
 import com.dynatech2012.kamleonuserapp.models.RawMeasureData
 import com.dynatech2012.kamleonuserapp.models.UserStatus
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -30,12 +37,12 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
     private val storage = Firebase.storage
 
     private val uuid: String?
-        get() = if (Constants.DEBUG_MODE) RealtimeConstants.USER_UID_DEBUG else userRepository.uuid
+        get() = if (Constants.DEBUG_MODE) FirebaseConstants.USER_UID_DEBUG else userRepository.uuid
 
     suspend fun createUserStep1(email: String, fName: String, lName: String
     ): Response<CustomUser> {
         uuid?.let { uuid ->
-            val doc = db.collection(Constants.usersCollection).document(uuid)
+            val doc = db.collection(FirebaseConstants.USERS_COLLECTION).document(uuid)
             user = CustomUser(uuid, email, fName, lName, UserStatus.active)
             doc.set(user).await()
             Firebase.auth.currentUser?.let {
@@ -49,7 +56,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
                                 height: Float, weight: Float, gender: Gender
     ): Response<CustomUser> {
         uuid?.let { uuid ->
-            val doc = db.collection(Constants.usersCollection).document(uuid)
+            val doc = db.collection(FirebaseConstants.USERS_COLLECTION).document(uuid)
             doc.update(hashMapOf("dateOfBirth" to birthday, "height" to height, "weight" to weight, "gender" to gender) as Map<String, Any>).await()
             Firebase.auth.currentUser?.let {
                 user.dateOfBirth = birthday
@@ -64,7 +71,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
 
     suspend fun updateUser(data: HashMap<String, Any>): Response<Boolean> {
         uuid?.let { uuid ->
-            val doc = db.collection(Constants.usersCollection).document(uuid)
+            val doc = db.collection(FirebaseConstants.USERS_COLLECTION).document(uuid)
             doc.update(data).await()
             return Response.Success(true)
         }
@@ -72,18 +79,21 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
     }
 
     suspend fun getUserData(): Response<CustomUser> {
-        uuid?.let { uuid ->
-            val doc = db.collection(Constants.usersCollection).document(uuid)
-            val user: CustomUser? = doc.get().await().toObject<CustomUser>()?.let {
-                return Response.Success(it)
-            }
+        if (uuid == null) {
+            return Response.Failure(Exception("User not logged in"))
         }
-        return Response.Failure(Exception())
+        val doc = db.collection(FirebaseConstants.USERS_COLLECTION).document(uuid!!)
+        doc.get().await().toObject<CustomUser>()?.let { u ->
+            user = u
+            Log.d(TAG, "getUserData token: ${u.token}")
+            return Response.Success(u)
+        }
+        return Response.Failure(Exception("User parsing error"))
     }
 
     suspend fun updateUserImage(uri: Uri): Response<Boolean> {
         uuid?.let { uuid ->
-            val doc = db.collection(Constants.usersCollection).document(uuid)
+            val doc = db.collection(FirebaseConstants.USERS_COLLECTION).document(uuid)
             val ref = storage.reference.child("users/$uuid/profile.jpeg")
             ref.putFile(uri).await()
             val url = ref.downloadUrl.await()
@@ -95,7 +105,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
 
     suspend fun removeUserImage(): Response<Boolean> {
         uuid?.let { uuid ->
-            val doc = db.collection(Constants.usersCollection).document(uuid)
+            val doc = db.collection(FirebaseConstants.USERS_COLLECTION).document(uuid)
             val ref = storage.reference.child("users/$uuid/profile.jpeg")
             ref.delete().await()
             doc.update(hashMapOf("imageUrl" to "") as Map<String, Any>).await()
@@ -104,53 +114,27 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
         return Response.Failure(Exception())
     }
 
-
-    /*
-            val query: Query = db.collection(Constants.measuresCollection)
-        Log.d(TAG, "got measures 2 last date: $lastDate")
-        val task = query.whereEqualTo(Constants.kUSERID_FIELD, userId)
-            .whereGreaterThan(
-                Constants.kANALYSIS_DATE,
-                lastDate
-            )
-            .orderBy(Constants.kANALYSIS_DATE,
-                Query.Direction.DESCENDING)
-            .limit(1)
-        try {
-            val snapshot: QuerySnapshot = task.get().await()
-            Log.d(TAG, "got measures 3")
-            val list = snapshot.toObjects(RawMeasureData::class.java)
-            val measures = ArrayList(list.mapNotNull { MeasureData(it) })
-            Log.d(TAG, "got measures 3 size ${list.size}")
-            database.saveMeasures(measures)
-            trySend(Response.Success(measures as ArrayList<MeasureData>))
-        } catch (e: Exception) {
-            throw e
-            trySend(Response.Failure(e))
-        }
-     */
-
     suspend fun getUserLastMeasure(userId: String?): Response<ArrayList<MeasureData>> {
         return getUserMeasuresNoPag(userId, null, 1)
     }
     suspend fun getUserMeasuresNoPag(userId: String?, lastDate: Long?, limit: Long?): Response<ArrayList<MeasureData>> = suspendCoroutine { continuation ->
-        val query: Query = db.collection(Constants.measuresCollection)
+        val query: Query = db.collection(FirebaseConstants.MEASURES_COLLECTION)
         val date = Date(lastDate ?: 0)
         val timestamp = com.google.firebase.Timestamp(date)
         Log.d(TAG, "got measures from FS last date: $date")
         val task = query
-            .whereEqualTo(Constants.kUSERID_FIELD, userId)
+            .whereEqualTo(FirebaseConstants.kUSERID_FIELD, userId)
             .whereGreaterThan(
-                Constants.kANALYSIS_DATE,
+                FirebaseConstants.kANALYSIS_DATE,
                 timestamp
             )
-            .orderBy(Constants.kANALYSIS_DATE, Query.Direction.DESCENDING)
+            .orderBy(FirebaseConstants.kANALYSIS_DATE, Query.Direction.DESCENDING)
         if (limit != null)
             task.limit(limit)
         task.get()
-            .addOnSuccessListener {
-                Log.d(TAG, "got measures from FS size: ${it.documents.size}")
-                val measuresRaw: List<RawMeasureData> = it.toObjects(RawMeasureData::class.java)
+            .addOnSuccessListener { snapshot ->
+                Log.d(TAG, "got measures from FS size: ${snapshot.documents.size}")
+                val measuresRaw: List<RawMeasureData> = snapshot.toObjects(RawMeasureData::class.java)
                 Log.d(TAG, "got measures from FS parsed size: ${measuresRaw.size}")
                 val measures: ArrayList<MeasureData> = ArrayList(measuresRaw.map { MeasureData(it) })
 
@@ -166,21 +150,21 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
     fun getUserMeasures(userId: String?, lastDate: Long?, limit: Int): Flow<Response<ArrayList<MeasureData>>> = flow {
         var lastPageSize = limit
         var countDebug = 0
-        val query: Query = db.collection(Constants.measuresCollection)
+        val query: Query = db.collection(FirebaseConstants.MEASURES_COLLECTION)
         Log.d(TAG, "got measures 2 last date: $lastDate")
         val date = lastDate ?: 0
         var lastVisible: DocumentSnapshot? = null
         val measures = arrayListOf<MeasureData>()
         while (lastPageSize == limit) {
-            val task = query.whereEqualTo(Constants.kUSERID_FIELD, userId)
+            val task = query.whereEqualTo(FirebaseConstants.kUSERID_FIELD, userId)
             if (lastDate != null) {
                 task.whereGreaterThan(
-                    Constants.kANALYSIS_DATE,
+                    FirebaseConstants.kANALYSIS_DATE,
                     date
                 )
             }
             task.orderBy(
-                Constants.kANALYSIS_DATE,
+                FirebaseConstants.kANALYSIS_DATE,
                 Query.Direction.DESCENDING
             )
             /*
@@ -216,6 +200,47 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
                 break
             }
         }
+    }
+
+    // Invitations
+
+    suspend fun getNewInvitations(): Int {
+        val doc = db.collection(FirebaseConstants.USERS_COLLECTION)
+            .whereEqualTo("email", userRepository.email)
+            .whereEqualTo("status", InvitationStatus.SENT.rawValue)
+            .count()
+        return try {
+            doc.get(AggregateSource.SERVER).await().count.toInt()
+        } catch (e: Exception) {
+            Log.e(TAG, "getNewInvitations error: ${e.message}")
+            0
+        }
+    }
+
+    suspend fun updateToken(): Response<Boolean> = suspendCoroutine { continuation ->
+        if (uuid == null) {
+            continuation.resume(Response.Failure(Exception("User not logged in")))
+            return@suspendCoroutine
+        }
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener { task1 ->
+                if (!task1.isSuccessful) {
+                    continuation.resume(Response.Failure(Exception("Could not get firebase messaging token")))
+                } else {
+                    // Get new FCM registration token
+                    val token = task1.result
+                    Log.d(TAG, "updateToken token: $token")
+                    db.collection(USERS_COLLECTION).document(uuid!!)
+                        .update(USERS_TOKEN, token)
+                        .addOnCompleteListener { task2 ->
+                            if (task2.isSuccessful) {
+                                continuation.resume(Response.Success(true))
+                            } else {
+                                continuation.resume(Response.Failure(Exception("Could not update firebase messaging token")))
+                            }
+                        }
+                }
+            }
     }
 
     companion object {

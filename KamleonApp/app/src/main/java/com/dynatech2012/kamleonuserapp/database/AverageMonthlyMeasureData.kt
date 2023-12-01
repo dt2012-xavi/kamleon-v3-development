@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.dynatech2012.kamleonuserapp.views.chart.data.KamleonGraphDataType
+import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.google.firebase.database.DataSnapshot
 import java.util.GregorianCalendar
 

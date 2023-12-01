@@ -1,8 +1,13 @@
 package com.dynatech2012.kamleonuserapp.activities
 
 import android.Manifest
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
@@ -10,8 +15,10 @@ import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.dynatech2012.kamleonuserapp.base.BaseActivity
 import com.dynatech2012.kamleonuserapp.constants.Constants
+import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.PUSH_NOTIFICATION
 import com.dynatech2012.kamleonuserapp.databinding.ActivityMainBinding
 import com.dynatech2012.kamleonuserapp.fragments.SettingFragment
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
@@ -32,38 +39,62 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
 
         supportFragmentManager
-            .setFragmentResultListener(Constants.pickImage, this) { _, bundle ->
+            .setFragmentResultListener(Constants.PICK_IMAGE, this) { _, bundle ->
                 Log.d(SettingFragment.TAG, "result from activity pick")
-                val result = bundle.getBoolean(Constants.pickImageBundle)
+                val result = bundle.getBoolean(Constants.PICK_IMAGE_BUNDLE)
                 if (result) {
                     galleryLauncher.launch("image/*")
                 }
             }
         supportFragmentManager
-            .setFragmentResultListener(Constants.takeImage, this) { _, bundle ->
+            .setFragmentResultListener(Constants.TAKE_IMAGE, this) { _, bundle ->
                 Log.d(SettingFragment.TAG, "result from activity take")
-                val result = bundle.getBoolean(Constants.takeImageBundle)
+                val result = bundle.getBoolean(Constants.TAKE_IMAGE_BUNDLE)
                 if (result) {
                     takePicture()
                 }
             }
+        initObservers()
     }
+
+    private fun initObservers() {
+        /*
+        NotificationService.Notification.instance?.getNewOrderBoolean()?.observe(this) {
+            Log.d(TAG, "notification received")
+            if (it) {
+                viewModel.onGetNotification()
+                NotificationService.Notification.instance?.reset()
+            }
+        }
+         */
+        setupFirebaseMessagingReceiver()
+        viewModel.updateUserToken()
+        viewModel.updateInvitationsCount()
+    }
+
+
+    private var firebaseMessagingReceiver: BroadcastReceiver? = null
+
+    private fun setupFirebaseMessagingReceiver() {
+        firebaseMessagingReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (intent.action == PUSH_NOTIFICATION) {
+                    // what happens when a notification is received while the user is in this activity
+                    viewModel.onGetNotification()
+                } } } }
 
     override fun initEvent() {
 
     }
 
-    val REQUEST_IMAGE_CAPTURE = 1
-    lateinit var currentImageUri: Uri
-
-
+    private lateinit var currentImageUri: Uri
     private fun takePicture() {
         /*
         if (Build.VERSION.SDK_INT >= 30) {
             if (!Environment.isExternalStorageManager()) {
-                val getpermission = Intent()
-                getpermission.action = ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
-                startActivity(getpermission)
+                val getPermission = Intent()
+                getPermission.action = ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+                startActivity(getPermission)
                 requestPermissionLauncher.launch(
                     ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
                 )
@@ -130,6 +161,57 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                     Manifest.permission.CAMERA
                 )
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            firebaseMessagingReceiver!!,
+            IntentFilter(PUSH_NOTIFICATION)
+        )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(firebaseMessagingReceiver!!)
+    }
+
+    private val requestNotificationPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { _: Boolean ->
+            askLocationPermission()
+        }
+
+    private fun askNotificationPermission() {
+        // This is only necessary for API level >= 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED) {
+                askLocationPermission()
+                return
+            }
+            else requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+    private val requestLocationPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { _: Boolean ->
+
+        }
+
+    private fun askLocationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+        else {
+            requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION
+            )
         }
     }
 

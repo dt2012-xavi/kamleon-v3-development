@@ -3,12 +3,12 @@ package com.dynatech2012.kamleonuserapp.fragments
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
@@ -120,7 +120,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
 
         binding.btnSettingNoti.setOnClickListener {
-            val notiFragment = NotificationFragment.newInstance(onDismissPickImage)
+            binding.btnSettingNotiBadge.visibility = View.GONE
+            val notiFragment = InvitationFragment.newInstance(onDismissPickImage)
             notiFragment.show(parentFragmentManager, "Notifications")
         }
 
@@ -132,7 +133,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
     private fun updateOptionViewUI() {
         if (isSettingAccount) {
-            binding.optionViewAcc.background = resources.getDrawable(R.drawable.bg_setting_option_layout)
+            binding.optionViewAcc.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_setting_option_layout)
 //            binding.optionViewAcc.setBackgroundResource(R.drawable.bg_setting_option_layout)
 //            binding.optionViewAcc.setBackgroundResource(R.drawable.bg_setting_option_shadow)
             binding.optionViewPref.background = null
@@ -141,7 +142,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             binding.layoutPreference.visibility = View.GONE
         } else {
             binding.optionViewAcc.background = null
-            binding.optionViewPref.background = resources.getDrawable(R.drawable.bg_setting_option_layout)
+            binding.optionViewPref.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_setting_option_layout)
 //            binding.optionViewPref.setBackgroundResource(R.drawable.bg_setting_option_layout)
 //            binding.optionViewPref.setBackgroundResource(R.drawable.bg_setting_option_shadow)
 
@@ -198,13 +199,13 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         dialog.setCancelable(false)
         val logoutDialog = dialog.show()
         logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialogView.findViewById<TextView>(R.id.tvDialogDesc).setText(R.string.dialog_desactive_msg)
-        dialogView.findViewById<TextView>(R.id.tvBtnY).setText(R.string.dialog_desactive_y)
+        dialogView.findViewById<TextView>(R.id.tvDialogDesc).setText(R.string.dialog_deactive_msg)
+        dialogView.findViewById<TextView>(R.id.tvBtnY).setText(R.string.dialog_deactive_y)
         dialogView.findViewById<TextView>(R.id.tvBtnY).setOnClickListener {
             logoutDialog.dismiss()
         }
 
-        dialogView.findViewById<TextView>(R.id.tvBtnN).setText(R.string.dialog_desactive_n)
+        dialogView.findViewById<TextView>(R.id.tvBtnN).setText(R.string.dialog_deactive_n)
         dialogView.findViewById<TextView>(R.id.tvBtnN).setOnClickListener {
             logoutDialog.dismiss()
         }
@@ -279,6 +280,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         viewModel.userData.observe(this, this::onUserDataChanged)
         viewModel.userUpdated.observe(this, this::onUserDataUpdated)
         viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
+        viewModel.newInvitations.observe(this, this::onNewInvitation)
     }
 
     private fun onUserDataChanged(userData: CustomUser) {
@@ -314,13 +316,17 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
     }
 
-
     private fun updateUserData()
     {
         val data = hashMapOf<String, Any>()
         data["name"] = binding.etAccSurName.text.toString()
         data["lastName"] = binding.etAccName.text.toString()
         viewModel.updateUserData(data)
+    }
+
+    private fun onNewInvitation(isNew: Boolean) {
+        if (isNew)
+            binding.btnSettingNotiBadge.visibility = View.VISIBLE
     }
 
     companion object {

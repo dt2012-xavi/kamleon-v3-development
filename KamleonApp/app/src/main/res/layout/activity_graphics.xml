@@ -80,7 +80,7 @@
 <!--    app:layout_constraintTop_toBottomOf="@+id/graphViewNew"-->
 
 
-    <com.dynatech2012.kamleonuserapp.views.chart.KamleonGraphView
+    <com.dynatech2012.kamleonuserapp.views.graph.KamleonGraphView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"

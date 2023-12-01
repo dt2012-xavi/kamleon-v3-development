@@ -56,7 +56,7 @@
             android:layout_marginTop="@dimen/nav_back_button_top"
             android:id="@+id/tv_home_last_sample"
             android:textAllCaps="true"
-            android:text="@string/last_sample_message_default"
+            android:text="@string/home_last_sample_message_default"
             tools:text="last sample 2 november 2023"
             android:textStyle="bold"
             android:textSize="@dimen/ts_14" />
@@ -92,7 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:text="@string/percentage"
+                android:text="@string/unit_percentage"
                 android:textSize="36sp"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </LinearLayout>
@@ -191,7 +191,7 @@
             android:paddingVertical="0dp"
             android:textAllCaps="false"
             android:id="@+id/btnSignIn"
-            android:text="@string/scan_now"
+            android:text="@string/qr_scan_now"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

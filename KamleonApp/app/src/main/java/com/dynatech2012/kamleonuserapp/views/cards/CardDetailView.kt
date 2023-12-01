@@ -36,6 +36,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -102,7 +103,7 @@ fun CardDetailView(modifier: Modifier, recommendation: Recommendation, onClick: 
                 Text(
                     modifier = Modifier
                         .padding(top = 14.dp),
-                    text = recommendation.title,
+                    text = stringResource(id = recommendation.title),
                     fontSize = dimensionResource(R.dimen.ts_20).value.sp,
                     fontWeight = FontWeight.Bold,
                     color = colorResource(id = R.color.kamleon_dark_grey)
@@ -111,13 +112,13 @@ fun CardDetailView(modifier: Modifier, recommendation: Recommendation, onClick: 
                     Text(
                         modifier = Modifier
                             .padding(bottom = 30.dp),
-                        text = recommendation.kind,
+                        text = stringResource(id = recommendation.kind),
                         fontSize = dimensionResource(R.dimen.ts_16).value.sp,
                         color = colorResource(id = R.color.kamleon_secondary_grey_60)
                     )
                 }
                 Text(
-                    text = recommendation.text,
+                    text = if (recommendation.text != null) stringResource(id = recommendation.text!!) else "",
                     fontSize = dimensionResource(R.dimen.ts_16).value.sp,
                     color = colorResource(id = R.color.kamleon_dark_grey)
                 )

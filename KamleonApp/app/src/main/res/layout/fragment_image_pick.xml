@@ -20,14 +20,12 @@
             android:layout_height="wrap_content"
             android:src="@drawable/img_bottom_sheet_line"/>
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:id="@+id/imageProfile"
-            app:shapeAppearanceOverlay="@style/roundedCorners"
-            android:scaleType="centerCrop"
             android:layout_margin="10dp"
-            app:srcCompat="@drawable/image_profile"/>
+            android:src="@drawable/image_profile"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

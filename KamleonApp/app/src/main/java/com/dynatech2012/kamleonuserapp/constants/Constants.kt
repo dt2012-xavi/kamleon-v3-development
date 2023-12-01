@@ -1,26 +1,26 @@
 package com.dynatech2012.kamleonuserapp.constants
 
 object Constants {
+
     // DEBUG
     const val DEBUG_MODE = false
 
-    // Firebase
-    const val usersCollection = "users"
-    const val measuresCollection = "measures"
-    const val kAVERAGES = "Averages"
-    const val kUSERID_FIELD = "userID"
-    const val kANALYSIS_DATE = "analysisDate"
-
     // Errors
-    const val unmatchingPIN = "Unmatching PIN"
+    const val UNMATCHING_PIN = "Unmatching PIN"
 
     // Results
-    const val pickImage = "pickImage"
-    const val pickImageBundle = "pickImageBundle"
+    const val PICK_IMAGE = "pickImage"
+    const val PICK_IMAGE_BUNDLE = "pickImageBundle"
 
-    const val takeImage = "takeImage"
-    const val takeImageBundle = "takeImageBundle"
+    const val TAKE_IMAGE = "takeImage"
+    const val TAKE_IMAGE_BUNDLE = "takeImageBundle"
 
-    const val grantLocation = "location"
-    const val grantLocationBundle = "locationBundle"
+    const val GRANT_LOCATION = "location"
+    const val GRANT_LOCATION_BUNDLE = "locationBundle"
+
+    const val GRANT_NOTIFICATION = "notification"
+    const val GRANT_NOTIFICATION_BUNDLE = "notificationBundle"
+
+    // Notifications
+    const val NOTIFICATION_KEY_TITLE = "title"
 }
