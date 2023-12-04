@@ -1,8 +1,10 @@
 package com.dynatech2012.kamleonuserapp.models
 
+import android.util.Log
 import com.dynatech2012.kamleonuserapp.extensions.isLastWeek
 import com.dynatech2012.kamleonuserapp.extensions.isToday
 import com.dynatech2012.kamleonuserapp.extensions.isYesterday
+import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -50,9 +52,15 @@ data class Invitation (
         organizationName = data["organizationName"] as String,
         centerName = data["centerName"] as String,
         teamName = data["teamName"] as String,
-        dateRejected = data["dateRejected"] as Date?,
-        dateAccepted = data["dateAccepted"] as Date?,
-        dateSent = data["dateSent"] as Date,
+        dateRejected = if ((data["dateRejected"] as? HashMap<String, Int> != null))
+            Date((((data["dateRejected"] as HashMap<String, Int>)["_seconds"]) as Int) * 1000L)
+        else null,//Date(),
+        dateAccepted = if ((data["dateAccepted"] as? HashMap<String, Int> != null))
+            Date((((data["dateAccepted"] as HashMap<String, Int>)["_seconds"]) as Int) * 1000L)
+        else null,//Date(),
+        dateSent = if ((data["dateSent"] as? HashMap<String, Int> != null))
+            Date((((data["dateSent"] as HashMap<String, Int>)["_seconds"]) as Int) * 1000L)
+        else Date(),
         status = InvitationStatus(data["status"] as String) ?: InvitationStatus.SENT,
         role = InvitationRole(data["role"] as String) ?: InvitationRole.KAMLEON_OWNER
     )
@@ -109,14 +117,37 @@ data class Invitation (
             }
             // If it's within the last week, display the day name (e.g., "Tuesday").
             else if (date.isLastWeek) {
+                Log.d(TAG, "invitationTime: isLastWeek: $date")
                 val dateFormater = SimpleDateFormat("EEEE HH:mm", Locale.getDefault())
                 return dateFormater.format(date)
             }
             // If it's more than one week ago, display the full date.
             else {
+                Log.d(TAG, "invitationTime: is old: $date")
                 val dateFormater = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
                 return dateFormater.format(date)
             }
 
         }
+
+    override fun equals(other: Any?): Boolean {
+        return if (other is Invitation) {
+            other.id == id &&
+                    other.organizationName == organizationName &&
+                    other.centerName == centerName &&
+                    other.teamName == teamName &&
+                    other.status == status &&
+                    other.role == role
+        } else false
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + status.hashCode()
+        return result
+    }
+
+    companion object {
+        val TAG: String = Invitation::class.java.simpleName
+    }
 }

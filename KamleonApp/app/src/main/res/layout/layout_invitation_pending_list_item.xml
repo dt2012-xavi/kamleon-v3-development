@@ -22,19 +22,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/noti_invite_req"
-            android:textColor="@color/color_fa"
             android:paddingHorizontal="16dp"
-            style="@style/CircularBoldFont"
-            android:textSize="@dimen/ts_14"/>
+            android:textAppearance="@style/TextAppearance.Kamleon.Subtitle2"
+            style="@style/TextStyle.Kamleon.Inverse" />
         <TextView
             android:id="@+id/tv_invitation_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="textEnd"
             tools:text="07:28"
-            android:textColor="@color/color_secondary"
-            style="@style/CircularRegularFont"
-            android:textSize="@dimen/ts_12"/>
+            android:textAppearance="@style/TextAppearance.Kamleon.Caption"
+            android:textColor="?attr/colorOnSurfaceTertiaryInverse" />
     </LinearLayout>
     <TextView
         android:id="@+id/tv_invitation_subtitle"
@@ -42,10 +40,9 @@
         android:layout_height="wrap_content"
         android:textAlignment="textStart"
         tools:text="@string/noti_temp_desc1"
-        android:textColor="@color/color_fa"
         android:layout_marginTop="8dp"
-        style="@style/CircularRegularFont"
-        android:textSize="@dimen/ts_14"/>
+        android:textAppearance="@style/TextAppearance.Kamleon.Body2"
+        style="@style/TextStyle.Kamleon.Inverse" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,17 +55,23 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/round_blue_button_height"
             android:layout_weight="1.8"
-            android:background="@drawable/bg_btn_round_blue"
-            android:paddingVertical="0dp"
+            android:paddingVertical="4dp"
             android:gravity="center"
-            android:clickable="true"
             android:text="@string/noti_confirm"
-            android:textAppearance="@style/RoundBlueButtonTextStyle"
-            android:textColor="@drawable/color_text_button_blue_round"
-            android:enabled="true"/>
-        <TextView
+            android:background="@drawable/bg_btn_round_blue"
+            android:textAppearance="@drawable/color_blue_text_button"
+            android:enabled="true"
+            android:textSize="@dimen/ts_16"
+            android:textColor="?attr/colorOnSurfaceInverse"
+            style="@style/CircularBoldFont"
+            />
+<!--
+        android:textColor="@drawable/color_text_button_blue_round"
+-->
+
+        <View
             android:layout_width="0dp"
-            android:layout_height="@dimen/round_blue_button_height"
+            android:layout_height="0dp"
             android:layout_weight="0.15"/>
         <TextView
             android:id="@+id/tv_invitation_deny"

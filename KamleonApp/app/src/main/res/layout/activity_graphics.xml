@@ -51,7 +51,6 @@
             android:id="@+id/iv_graph_profile"
             android:background="@color/transparent"
             android:scaleType="centerCrop"
-            app:shapeAppearanceOverlay="@style/roundedCorners"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"/>
 

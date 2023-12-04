@@ -81,7 +81,6 @@
                     android:scaleType="centerCrop"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:shapeAppearanceOverlay="@style/roundedCorners"
                     android:layout_marginEnd="@dimen/nav_back_button_left"
                     android:layout_marginTop="@dimen/nav_back_button_top"/>
 

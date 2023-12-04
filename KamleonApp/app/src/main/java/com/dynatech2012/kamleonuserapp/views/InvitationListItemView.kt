@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.models.Invitation
 
 class InvitationListItemView : LinearLayout {
 
@@ -48,10 +50,10 @@ class InvitationListItemView : LinearLayout {
     }
 
     private fun commonInit() {
-        tvTitle = view.findViewById(R.id.tvTitle)
-        tvDate = view.findViewById(R.id.tvDate)
-        tvDesc = view.findViewById(R.id.tvDesc)
-        tvAction = view.findViewById(R.id.tvAction)
+        tvTitle = view.findViewById(R.id.tv_invitation_title)
+        tvDate = view.findViewById(R.id.tv_invitation_date)
+        tvDesc = view.findViewById(R.id.tv_invitation_subtitle)
+        tvAction = view.findViewById(R.id.tv_invitation_status)
     }
 
     private fun parseAttributes(attrs: AttributeSet) {
@@ -88,5 +90,18 @@ class InvitationListItemView : LinearLayout {
         } finally {
             attrNoti.recycle()
         }
+    }
+}
+
+class InvitationDiffCallback2(
+    private val oldList: List<Invitation>, private val newList: List<Invitation>): DiffUtil.Callback() {
+    override fun getOldListSize(): Int = oldList.size
+    override fun getNewListSize(): Int = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return (oldList[oldItemPosition].id == newList[newItemPosition].id)
+    }
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return (oldList[oldItemPosition] == newList[newItemPosition])
     }
 }

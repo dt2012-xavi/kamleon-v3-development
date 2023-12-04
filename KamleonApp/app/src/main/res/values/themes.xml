@@ -1,38 +1,58 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
-    <style name="Theme.KamleonApp" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.KamleonApp" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="colorPrimary">@color/kamleon_blue</item>
-        <item name="android:statusBarColor">@color/black</item>
-
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/kamleon_dark_grey</item>
 
     </style>
+<!--    <item name="android:textViewStyle">@style/Circular</item>-->
 
-    <!-- Fonts -->
-    <style name="CircularRegularFont">
-        <item name="android:fontFamily">@font/circular_pro_regular</item>
-    </style>
-    <style name="CircularMediumFont">
-        <item name="android:fontFamily">@font/circular_pro_medium</item>
-    </style>
-    <style name="CircularBoldFont">
-        <item name="android:fontFamily">@font/circular_pro_bold</item>
-    </style>
-    <style name="CircularBookFont">
-        <item name="android:fontFamily">@font/circular_pro_book</item>
+
+
+
+    <style name="Theme.KamleonApp.Light">
+        <item name="android:statusBarColor">@color/kamleon_dark_grey</item>
+        <item name="colorSurface">@color/color_fa</item>
+        <item name="colorSurfaceInverse">@color/kamleon_dark_grey</item>
+        <item name="android:colorBackground">@color/color_fa</item>
+
+        <item name="colorOnSurface">@color/kamleon_dark_grey</item>
+        <item name="colorOnSurfaceSecondary">@color/kamleon_secondary_grey_40</item>
+        <item name="colorOnSurfaceTertiary">@color/kamleon_secondary_grey_40</item>
+        <item name="colorOnSurfaceQuaternary">@color/kamleon_secondary_grey_40</item>
+        <item name="colorOnSurfaceQuinary">@color/kamleon_secondary_grey_40</item>
+        <item name="colorOnSurfaceInverse">@color/color_fa</item>
+        <item name="colorOnSurfaceSecondaryInverse">@color/kamleon_secondary_grey_50</item>
+        <item name="colorOnSurfaceTertiaryInverse">@color/kamleon_secondary_grey_40</item>
+
+        <item name="android:textColor">@color/debug_red</item>
+        <item name="android:textViewStyle">@style/TextAppearance.Kamleon</item>
+
+        <item name="titleTextColor">@color/kamleon_dark_grey</item>
+        <item name="android:textColorPrimary">@color/kamleon_dark_grey</item>
+        <item name="android:textColorSecondary">@color/kamleon_secondary_grey_40</item>
+        <item name="android:textColorTertiary">@color/kamleon_secondary_grey_40</item>
+        <item name="android:textColorLink">@color/kamleon_secondary_grey_40</item>
+        <item name="android:textColorHint">@color/kamleon_secondary_grey_40</item>
+        <item name="android:textColorPrimaryInverse">@color/color_fa</item>
+        <item name="android:textColorSecondaryInverse">@color/color_fa_40</item>
+        <item name="android:textColorTertiaryInverse">@color/color_fa_40</item>
+        <item name="android:textColorLinkInverse">@color/color_fa_40</item>
+        <item name="android:textColorHintInverse">@color/color_fa_40</item>
+
+        <item name="android:color">@color/color_fa</item>
+
+        <item name="textAppearanceHeadline3">@style/TextAppearance.Kamleon.Headline3</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.Kamleon.Headline4</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.Kamleon.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.Kamleon.Body2</item>
+        <item name="textAppearanceButton">@style/TextAppearance.Kamleon.Button</item>
     </style>
 
-    <style name="RoundBlueButtonTextStyle">
-        <item name="android:fontFamily">@font/circular_pro_medium</item>
-        <item name="android:textSize">@dimen/round_blue_button_text_size</item>
-    </style>
-
-    <style name="onboardSpinnerItemStyle">
-        <!--        <item name="android:textColor">#000000</item>-->
-        <item name="android:textColor">@color/kamleon_dark_grey</item>
-        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    <style name="Theme.KamleonApp.Light.StatusBlue">
+        <item name="android:statusBarColor">@color/kamleon_blue_dark</item>
     </style>
 </resources>

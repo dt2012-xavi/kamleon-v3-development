@@ -84,7 +84,7 @@
     <!-- Background -->
     <item>
         <shape>
-            <solid android:color="@color/whiteEE" />
+            <solid android:color="@color/white93" />
 
             <corners android:radius="@dimen/setting_option_view_radius"/>
         </shape>

@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
+import com.dynatech2012.kamleonuserapp.database.AveragesData
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphAxisLabelItem
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphBarDrawData
@@ -74,18 +75,19 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
         })
     }
 
-    //private var dataSourceNew = ArrayList<AveragesData>()
+    private var dataSourceNew = ArrayList<AveragesData>()
     private var measuresDataSource = ArrayList<MeasureData>()
     private var dailyDataSource = ArrayList<AverageDailyMeasureData>()
     private var monthlyDataSource = ArrayList<AverageMonthlyMeasureData>()
 
 
-
+    /*
     private var dataSource = ArrayList<KamleonGraphBarItemData>()
     fun setData(data: ArrayList<KamleonGraphBarItemData>) {
         dataSource = data
         refreshGraphView()
     }
+     */
 
 
     fun setMeasuresDataSource(data: ArrayList<MeasureData>) {
@@ -190,36 +192,33 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
     private fun generateGraphDrawDatasource(date: Date) : KamleonGraphBarDrawData {
         val startDate = KamleonGraphBarDrawData.calcStartDateFrom(viewMode, date)
         val endDate = KamleonGraphBarDrawData.calcEndDateFrom(viewMode, date)
-        /*
         dataSourceNew = when (viewMode) {
             KamleonGraphViewMode.Daily -> measuresDataSource as ArrayList<AveragesData>
             KamleonGraphViewMode.Weekly -> dailyDataSource as ArrayList<AveragesData>
             KamleonGraphViewMode.Monthly -> dailyDataSource as ArrayList<AveragesData>
             KamleonGraphViewMode.Yearly -> monthlyDataSource as ArrayList<AveragesData>
         }
-        */
 
         Log.d(TAG, "Start:" + startDate.formatDate() + " -> End:" + endDate.formatDate())
-        Log.d("Graph", "dataSource2 size: ${dataSource.size}")
-        val filteredDataSource = dataSource.filter { it.timestamp >= startDate.time && it.timestamp <= endDate.time}
-        //val filteredDataSource2 = dataSourceNew.filter { it.timestamp >= startDate.time && it.timestamp <= endDate.time }
-        Log.d("Graph", "filteredDataSource2 size: ${filteredDataSource.size}")
+        Log.d("Graph", "dataSource2 size: ${dataSourceNew.size}")
+        //val filteredDataSource = dataSource.filter { it.timestamp >= startDate.time && it.timestamp <= endDate.time}
+        val filteredDataSource2 = dataSourceNew.filter { it.timestamp >= startDate.time && it.timestamp <= endDate.time }
+        Log.d("Graph", "filteredDataSource2 size: ${filteredDataSource2.size}")
         val xStepCount = graphViewXSteps(date)
 
         var xyValues = ArrayList<KamleonGraphDataXY>()
         var maxYVal = 0.0
         for (i in 0 until xStepCount) {
             val graphBarItemTimeRange = graphViewXRange(startDate, endDate, i)
-            val givenBarItemData = filteredDataSource.filter { it.timestamp >= graphBarItemTimeRange[0] && it.timestamp <= graphBarItemTimeRange[1]}
-            //val givenBarItemData2 = filteredDataSource2.filter { it.timestamp >= graphBarItemTimeRange[0] && it.timestamp <= graphBarItemTimeRange[1]}
-            if (givenBarItemData.isEmpty()) {
+            //val givenBarItemData = filteredDataSource.filter { it.timestamp >= graphBarItemTimeRange[0] && it.timestamp <= graphBarItemTimeRange[1]}
+            val givenBarItemData2 = filteredDataSource2.filter { it.timestamp >= graphBarItemTimeRange[0] && it.timestamp <= graphBarItemTimeRange[1]}
+            if (givenBarItemData2.isEmpty()) {
                 xyValues.add(KamleonGraphDataXY(i.toDouble(), 0.0))
             } else {
-                val itemYValue = givenBarItemData.sumOf { it.dataVal } / givenBarItemData.size
-
-                //val itemYValue2 = givenBarItemData2.sumOf { it.scoreValue(dataType) } / givenBarItemData2.size
-                if (maxYVal < itemYValue) { maxYVal = itemYValue }
-                xyValues.add(KamleonGraphDataXY(i.toDouble(), itemYValue))
+                //val itemYValue = givenBarItemData.sumOf { it.dataVal } / givenBarItemData.size
+                val itemYValue2 = givenBarItemData2.sumOf { it.scoreValue(dataType) } / givenBarItemData2.size
+                if (maxYVal < itemYValue2) { maxYVal = itemYValue2 }
+                xyValues.add(KamleonGraphDataXY(i.toDouble(), itemYValue2))
             }
         }
 

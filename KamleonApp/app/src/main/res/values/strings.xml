@@ -169,7 +169,7 @@
     <string name="graph_label_maximum">Maximum</string>
 
 
-    <!-- Notifications -->
+    <!-- Invitation -->
     <string name="notifications">Notifications</string>
     <string name="noti_invite_req">Invitation Request</string>
     <string name="noti_role_change">Role Change</string>
@@ -180,6 +180,10 @@
     <string name="noti_channel_id">kamleonChannel</string>
     <string name="noti_newmeasure_title">New measure!</string>
     <string name="noti_newmeasure_text">You can check its results in the app.</string>
+    <string name="noti_last_30_days">Last 30 days</string>
+    <string name="noti_all_time">All time</string>
+    <string name="noti_see_all"><u>See all notifications</u></string>
+    <string name="noti_see_all_arrow">></string>
 
 
     <!--HomeScreen-->
@@ -298,4 +302,5 @@
     <string name="unit_electrolites">mS/cm</string>
     <string name="unit_volume">ml</string>
     <string name="channel_id">KAMLEON_NOTIFICATIONS_CHANNEL</string>
+
 </resources>

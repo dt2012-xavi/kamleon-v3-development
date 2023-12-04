@@ -34,4 +34,13 @@
             <enum name="empty" value="3"/>
         </attr>
     </declare-styleable>
+
+<!--    Custom attributes-->
+    <attr name="colorOnSurfaceSecondary" format="color" />
+    <attr name="colorOnSurfaceTertiary" format="color" />
+    <attr name="colorOnSurfaceQuaternary" format="color" />
+    <attr name="colorOnSurfaceQuinary" format="color" />
+    <attr name="colorOnSurfaceSecondaryInverse" format="color" />
+    <attr name="colorOnSurfaceTertiaryInverse" format="color" />
+
 </resources>

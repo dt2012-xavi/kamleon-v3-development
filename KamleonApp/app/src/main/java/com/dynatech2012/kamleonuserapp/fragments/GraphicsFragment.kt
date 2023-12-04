@@ -35,22 +35,13 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
 
     override fun setBinding(): ActivityGraphicsBinding = ActivityGraphicsBinding.inflate(layoutInflater)
 
-    private lateinit var adapter: TipListAdapter
-    private var tipsAry: Array<TipListAdapter.TipListItemModel> = arrayOf(
-        TipListAdapter.TipListItemModel("Healthy Diet", "The full spectrum of diet healthiness relies significantly on the inclusion of the water we ingest."),
-        TipListAdapter.TipListItemModel("Fitness workout", "The full spectrum of diet healthiness relies significantly on the inclusion of the water we ingest.")
-    )
-//    private val onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
-//        override fun onPageSelected(position: Int) {
-//            binding.pgTipLayout.setActiveIndex(position)
-//        }
-//    }
-
     private val graphTypes = arrayOf(KamleonGraphDataType.hydration, KamleonGraphDataType.electrolytes, KamleonGraphDataType.volume)
 
     override fun initView() {
+        /*
         val yearData = yearDataSourceOf(Date())
         binding.graphViewNew.setData(yearData)
+         */
 
         val typeFromIntent = viewModel.graphicType
         binding.graphViewNew.setGraphDataType(graphTypes[typeFromIntent])
@@ -62,19 +53,6 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
     }
 
     private fun setupTips() {
-        /*
-        val layoutManager = LinearLayoutManager(requireContext())
-        layoutManager.orientation = RecyclerView.HORIZONTAL
-        adapter = TipListAdapter(tipsAry)
-        binding.rcvListNew.adapter = adapter
-//        binding.rcvList.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-//        binding.rcvList.registerOnPageChangeCallback(onPageChangeCallback)
-        binding.rcvListNew.layoutManager = layoutManager
-        val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(binding.rcvListNew)
-
-        binding.rcvListNew.addItemDecoration(CirclePagerIndicatorDecoration())
-         */
         val tipType = when (viewModel.graphicType) {
             0 -> RecommendationType.HYDRATION
             1 -> RecommendationType.ELECTROLYTE

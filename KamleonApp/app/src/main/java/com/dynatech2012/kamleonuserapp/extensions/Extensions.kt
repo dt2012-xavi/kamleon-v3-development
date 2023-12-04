@@ -1,13 +1,13 @@
 package com.dynatech2012.kamleonuserapp.extensions
 
-import android.annotation.SuppressLint
 import android.content.res.Resources
-import android.text.format.DateUtils
+import android.util.Log
 import com.dynatech2012.kamleonuserapp.views.graph.KamleonUtils
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.GregorianCalendar
 import java.util.Locale
 
 fun String.sha256(): String {
@@ -24,13 +24,16 @@ private fun hashString(input: String, algorithm: String): String {
 fun String.toDate(pattern: String, locale: Locale = Locale.getDefault()): Date =
     SimpleDateFormat(pattern, locale).parse(this) ?: Date(0)
 
+fun String.capitalize(): String {
+    return this.replaceFirstChar { it.uppercase() }
+}
+
 
 
 private const val DEFAULT_FORMAT_DATE_WITHOUT_TIME = "MMM dd, yyyy"
 
-@SuppressLint("SimpleDateFormat")
 fun Date.formatDate(formatStr: String? = KamleonUtils.DEFAULT_FORMAT_DATE_WITHOUT_TIME): String {
-    return SimpleDateFormat(formatStr).format(
+    return SimpleDateFormat(formatStr, Locale.getDefault()).format(
         this
     )
 }
@@ -152,13 +155,40 @@ fun Date.day(): Int {
 }
 
 val Date.isToday: Boolean
-    get() = DateUtils.isToday(time)
+    get() = Calendar.getInstance().apply {
+        time = this@isToday
+    }.let {
+        it.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                it.get(Calendar.DAY_OF_YEAR) == Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
+    }
 
 val Date.isYesterday: Boolean
-    get() = DateUtils.isToday(time + DateUtils.DAY_IN_MILLIS)
+    get() = Calendar.getInstance().apply {
+        time = this@isYesterday
+    }.let {
+        it.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR) &&
+                it.get(Calendar.DAY_OF_YEAR) == Calendar.getInstance().get(Calendar.DAY_OF_YEAR) - 1
+    }
 
 val Date.isLastWeek: Boolean
-    get() = DateUtils.isToday(time + DateUtils.WEEK_IN_MILLIS)
+    get() = Calendar.getInstance().apply {
+        time = this@isLastWeek
+    }.let {
+        val calendar = Calendar.getInstance()
+        calendar.time = this
+
+        // Get the current date
+        val sevenDaysAgo = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, -7)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        // Check if date is after the beginning
+        Log.d("Date", "isLastWeek: ${calendar.time}, ${sevenDaysAgo.time} = ${calendar.after(sevenDaysAgo)}")
+        return calendar.after(sevenDaysAgo)
+    }
 
 
 

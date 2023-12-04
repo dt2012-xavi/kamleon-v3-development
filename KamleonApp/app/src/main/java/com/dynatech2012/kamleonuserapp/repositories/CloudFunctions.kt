@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.repositories
 
+import android.util.Log
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants
 import com.dynatech2012.kamleonuserapp.models.Invitation
@@ -25,6 +26,7 @@ class CloudFunctions(private val userRepository: UserRepository) {
 
     // Invitations
     suspend fun getInvitations(): Response<ArrayList<Invitation>> = suspendCoroutine { continuation ->
+        Log.d(TAG, "will try to get invitations")
         if (email == null) {
             continuation.resume(Response.Failure(Exception("User not logged in")))
             return@suspendCoroutine
@@ -32,19 +34,23 @@ class CloudFunctions(private val userRepository: UserRepository) {
         val body = hashMapOf(
             "email" to email
         )
-        try {
-            val result = functions.getHttpsCallable("getInvitationsForUser").call(body).result
-            val data = result.data as? ArrayList<HashMap<String, Any>>
-            val invitations = ArrayList<Invitation>()
-            data?.forEach {
-                val inv = Invitation(it)
-                invitations.add(inv)
+        functions.getHttpsCallable("getInvitationsForUser").call(body)
+            .addOnSuccessListener { result ->
+                val data = result?.data as? ArrayList<HashMap<String, Any>> ?: ArrayList()
+                Log.d(TAG, "get invitations complete: ${data}")
+                val invitations = ArrayList<Invitation>()
+                data.forEach {
+                    val inv = Invitation(it)
+                    invitations.add(inv)
+                }
+                Log.d(TAG, "get invitations: $invitations")
+                invitations.sortByDescending { it.dateSent }
+                continuation.resume(Response.Success(invitations))
             }
-            invitations.sortByDescending { it.dateSent }
-            continuation.resume(Response.Success(invitations))
-        } catch (e: Exception) {
-            continuation.resume(Response.Failure(e))
-        }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "get invitations error: ", exception)
+                continuation.resume(Response.Failure(exception))
+            }
     }
 
     suspend fun acceptInvitation(invitationId: String): ResponseNullable<Nothing> {

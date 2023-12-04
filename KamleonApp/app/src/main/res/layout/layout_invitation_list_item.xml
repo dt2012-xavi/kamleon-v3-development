@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingHorizontal="@dimen/setting_item_padding_h">
+    tools:background="?attr/colorSurfaceInverse"
+    android:paddingVertical="@dimen/setting_item_padding_h">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,22 +17,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="4dp"
-            android:id="@+id/tvType"
-            android:textSize="@dimen/ts_14"
-            style="@style/CircularBoldFont"
-            android:text="NAME"
-            android:textColor="#A7A9AC"/>
+            android:id="@+id/tv_invitation_title"
+            android:textAppearance="@style/TextAppearance.Kamleon.Subtitle2"
+            android:text="@string/noti_invite_req"
+            android:textColor="?attr/colorOnSurfaceSecondaryInverse"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="4dp"
             android:textAlignment="textEnd"
-            android:id="@+id/tvDate"
-            android:textSize="@dimen/ts_12"
-            style="@style/CircularBoldFont"
-            android:text="NAME"
-            android:textColor="@color/color_secondary"/>
+            android:id="@+id/tv_invitation_date"
+            android:textAppearance="@style/TextAppearance.Kamleon.Caption"
+            tools:text="17:15"
+            android:textColor="?attr/colorOnSurfaceTertiaryInverse"/>
     </LinearLayout>
 
     <LinearLayout
@@ -43,23 +41,21 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="4dp"
-            android:id="@+id/tvDesc"
+            android:id="@+id/tv_invitation_subtitle"
             android:textSize="@dimen/ts_14"
             android:layout_weight="1"
-            style="@style/CircularBoldFont"
-            android:text="@string/noti_temp_desc2"
-            android:textColor="#A7A9AC"/>
+            android:textAppearance="@style/TextAppearance.Kamleon.Body2"
+            tools:text="@string/noti_temp_desc2"
+            android:textColor="?attr/colorOnSurfaceSecondaryInverse"/>
         <TextView
             android:layout_width="90dp"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="4dp"
             android:textAlignment="center"
-            android:id="@+id/tvAction"
+            android:id="@+id/tv_invitation_status"
             android:textSize="@dimen/ts_14"
-            style="@style/CircularBoldFont"
-            android:text="NAME"
-            android:textColor="@color/color_fa"/>
+            android:textAppearance="@style/TextAppearance.Kamleon.Subtitle2"
+            tools:text="Accepted"
+            android:textColor="?attr/colorOnSurfaceInverse"/>
     </LinearLayout>
 
 </LinearLayout>

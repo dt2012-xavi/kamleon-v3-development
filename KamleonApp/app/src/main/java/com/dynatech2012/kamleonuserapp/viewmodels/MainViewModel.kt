@@ -20,6 +20,7 @@ import com.dynatech2012.kamleonuserapp.fragments.SettingFragment
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.models.Invitation
+import com.dynatech2012.kamleonuserapp.models.InvitationRole
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
 import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.DatabaseDataSource
@@ -352,11 +353,14 @@ class MainViewModel @Inject constructor(
             val response = cloudFunctions.getInvitations()
             val invitations = response.dataValue ?: ArrayList()
             _pendingInvitations.postValue(invitations.filter { it.status == InvitationStatus.SENT } as ArrayList<Invitation>?)
-            _oldInvitations.postValue(invitations.filter { it.status != InvitationStatus.SENT } as ArrayList<Invitation>?)
             // 30 days ago
             val thirtyDaysAgo = Date().addDays(-30)
-            _recentInvitations.postValue(invitations.filter {
-                it.status != InvitationStatus.SENT && it.dateSent > thirtyDaysAgo } as ArrayList<Invitation>?)
+            _recentInvitations.postValue(invitations.filter { it.status != InvitationStatus.SENT && it.dateSent >= thirtyDaysAgo } as ArrayList<Invitation>?)
+            val oldInvitations = invitations.filter { it.status != InvitationStatus.SENT } as ArrayList<Invitation>
+            //val oldInvitations = invitations.filter { it.status != InvitationStatus.SENT && it.dateSent < thirtyDaysAgo } as ArrayList<Invitation>
+            /*val inFake = arrayListOf(Invitation("1", "1", "1", "1", Date(), Date(), Date().addDays(-40), InvitationStatus.SENT, InvitationRole.CENTERSTAFF_ADMIN))
+            oldInvitations.addAll(inFake)*/
+            _oldInvitations.postValue(oldInvitations)
         }
     }
 

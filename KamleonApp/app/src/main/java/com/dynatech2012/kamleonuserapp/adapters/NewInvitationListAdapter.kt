@@ -4,19 +4,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.dynatech2012.kamleonuserapp.databinding.LayoutNewInvitationListItemBinding
+import com.dynatech2012.kamleonuserapp.databinding.LayoutInvitationPendingListItemBinding
 import com.dynatech2012.kamleonuserapp.models.Invitation
-import dagger.hilt.android.AndroidEntryPoint
-@AndroidEntryPoint
-class InvitationListAdapter(
-    var dataList: ArrayList<Invitation>
-): RecyclerView.Adapter<InvitationListAdapter.InvitationViewHolder>() {
-    lateinit var binding: LayoutNewInvitationListItemBinding
-    data class TipListItemModel(
-        val name: String,
-        var desc: String
-    )
+
+class NewInvitationListAdapter(
+    //private var dataList: ArrayList<Invitation>
+): ListAdapter<Invitation, NewInvitationListAdapter.InvitationViewHolder>(InvitationDiffCallback()) {
+    lateinit var binding: LayoutInvitationPendingListItemBinding
 
     interface NotificationListItemViewListener {
         fun onClick(accepted: Boolean)
@@ -27,17 +24,26 @@ class InvitationListAdapter(
         notiItemListener = listener
     }
 
+    /*
     fun setDataSource(list: ArrayList<Invitation>) {
-        dataList = list
-        notifyDataSetChanged()
+        val diffCallback = InvitationDiffCallback(dataList, list)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        dataList.clear()
+        dataList.addAll(list)
+        diffResult.dispatchUpdatesTo(this)
+        //dataList = list
+        //notifyDataSetChanged()
     }
+    */
 
+    /*
     override fun getItemCount(): Int {
         return dataList.size
     }
+    */
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InvitationViewHolder {
-        binding = LayoutNewInvitationListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        binding = LayoutInvitationPendingListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return InvitationViewHolder(binding.root)
     }
 
@@ -46,7 +52,7 @@ class InvitationListAdapter(
     }
 
     override fun onBindViewHolder(holder: InvitationViewHolder, position: Int) {
-        holder.bind(dataList[position])
+        holder.bind(getItem(position))
     }
 
     inner class InvitationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){

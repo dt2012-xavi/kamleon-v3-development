@@ -212,7 +212,7 @@ fun HydrationView(hydration: Int) {
             currentValue = hydration,
             maxValue = 100,
             progressBackgroundColor = colorResource(id = R.color.transparent),
-            progressIndicatorColor = colorResource(id = R.color.color_red),
+            progressIndicatorColor = Color.Red,
             //completedColor = colorResource(id = R.color.kamleon_blue),
             modifier = Modifier
                 .fillMaxHeight()

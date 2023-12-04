@@ -44,7 +44,6 @@
             android:id="@+id/iv_home_profile"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:shapeAppearanceOverlay="@style/roundedCorners"
             android:layout_marginEnd="@dimen/nav_back_button_left"
             android:layout_marginTop="@dimen/nav_back_button_top"/>
         <TextView
@@ -69,7 +68,7 @@
             android:layout_marginTop="2dp"
             android:id="@+id/tv_home_message"
             tools:text="Hydrated"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnSurfaceInverse"
             android:textSize="@dimen/ts_32" />
         <LinearLayout
             android:layout_width="wrap_content"

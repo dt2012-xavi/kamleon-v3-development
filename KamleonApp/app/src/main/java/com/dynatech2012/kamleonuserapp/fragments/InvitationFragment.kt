@@ -2,6 +2,7 @@ package com.dynatech2012.kamleonuserapp.fragments
 
 import android.app.Dialog
 import android.content.DialogInterface
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -10,26 +11,36 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.activityViewModels
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.dynatech2012.kamleonuserapp.R
-import com.dynatech2012.kamleonuserapp.adapters.InvitationListAdapter
-import com.dynatech2012.kamleonuserapp.databinding.FragmentNotificationBinding
+import com.dynatech2012.kamleonuserapp.adapters.NewInvitationListAdapter
+import com.dynatech2012.kamleonuserapp.adapters.OldInvitationListAdapter
+import com.dynatech2012.kamleonuserapp.databinding.FragmentInvitationBinding
+import com.dynatech2012.kamleonuserapp.extensions.px
 import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class InvitationFragment : BottomSheetDialogFragment() {
 
     var dismissListener: BottomFragmentDismissListener? = null
     private val viewModel: MainViewModel by activityViewModels()
-    lateinit var binding: FragmentNotificationBinding
+    lateinit var binding: FragmentInvitationBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        binding = FragmentNotificationBinding.inflate(inflater, container, false)
+        savedInstanceState: Bundle?): View {
+        binding = FragmentInvitationBinding.inflate(inflater, container, false)
+        setupAdapter()
+        initEvent()
+        initObservers()
+        viewModel.getInvitations()
         return binding.root
     }
 
@@ -37,24 +48,52 @@ class InvitationFragment : BottomSheetDialogFragment() {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.setOnShowListener { setupBottomSheet(it) }
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        setupAdapter()
-        viewModel.getInvitations()
         return dialog
+    }
+
+    private fun initEvent() {
+        binding.llSeeAll.setOnClickListener {
+            binding.tvTimeRange.text = getString(R.string.noti_all_time)
+            val adapter = binding.rvOldInvitationList.adapter as OldInvitationListAdapter
+            //adapter.addDataSource(viewModel.oldInvitations.value as ArrayList<Invitation>)
+            adapter.submitList(viewModel.oldInvitations.value as ArrayList<Invitation>)
+            binding.llSeeAll.visibility = View.GONE
+        }
     }
 
     private fun initObservers() {
         viewModel.pendingInvitations.observe(this, this::onGetPendingInvitations)
-        viewModel.recentInvitations.observe(this, this::onGetPendingInvitations)
-        viewModel.oldInvitations.observe(this, this::onGetPendingInvitations)
+        viewModel.recentInvitations.observe(this, this::onGetRecentInvitations)
+        viewModel.oldInvitations.observe(this, this::onGetOldInvitations)
     }
 
     private fun onGetPendingInvitations(it: List<Invitation>) {
-        Log.d(TAG, "onGetInvitations: $it")
+        val adapter = binding.rvNewInvitationList.adapter as NewInvitationListAdapter
+        //adapter.setDataSource(it as ArrayList<Invitation>)
+        adapter.submitList(it.toList())
+        if (it.isNotEmpty())
+            binding.vDivider.visibility = View.VISIBLE
+    }
+
+    private fun onGetRecentInvitations(it: List<Invitation>) {
+        val adapter = binding.rvOldInvitationList.adapter as OldInvitationListAdapter
+        adapter.submitList(it.toList())
+        //adapter.setDataSource(it as ArrayList<Invitation>)
+    }
+
+    private fun onGetOldInvitations(it: List<Invitation>) {
+        binding.llSeeAll.visibility = View.VISIBLE
+        //val adapter = binding.rvOldInvitationList.adapter as OldInvitationListAdapter
+        //adapter.setDataSource(it as ArrayList<Invitation>)
     }
 
     private fun setupAdapter() {
-        val adapter = InvitationListAdapter(arrayListOf())
-        binding.rvInvitationList.adapter = adapter
+        val adapterNewInvitations = NewInvitationListAdapter()
+        binding.rvNewInvitationList.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvNewInvitationList.adapter = adapterNewInvitations
+        val adapterOldInvitations = OldInvitationListAdapter()
+        binding.rvOldInvitationList.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvOldInvitationList.adapter = adapterOldInvitations
     }
 
     private fun setupBottomSheet(dialogInterface: DialogInterface) {
@@ -63,10 +102,24 @@ class InvitationFragment : BottomSheetDialogFragment() {
             com.google.android.material.R.id.design_bottom_sheet)
             ?: return
 
+        bottomSheet.layoutParams.height = getScreenHeight - 70.px//ViewGroup.LayoutParams.MATCH_PARENT
+
+        // Collapsed height
+        val parent = view?.parent as View
+        val params = parent.layoutParams as CoordinatorLayout.LayoutParams
+        val behavior = params.behavior
+        val bottomSheetBehavior = behavior as BottomSheetBehavior<*>?
+        bottomSheetBehavior?.peekHeight = 360.px//view?.measuredHeight ?: 0
+        //bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+
+        // Collapsed height
+        /*
         val displayMetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+        bottomSheet.minimumHeight = (displayMetrics.heightPixels * 0.85).toInt()//180
+        //bottomSheet.minimumHeight = (getScreenHeight * 0.85).toInt()//180
+        */
 
-        bottomSheet.minimumHeight = (displayMetrics.heightPixels * 0.35).toInt()
         bottomSheet.setBackgroundColor(Color.TRANSPARENT)
     }
 
@@ -85,3 +138,5 @@ class InvitationFragment : BottomSheetDialogFragment() {
         val TAG: String = InvitationFragment::class.java.simpleName
     }
 }
+
+val getScreenHeight: Int = Resources.getSystem().displayMetrics.heightPixels

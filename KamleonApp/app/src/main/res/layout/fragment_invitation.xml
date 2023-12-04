@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_bottom_sheet_fragment"
+    android:theme="@style/Theme.KamleonApp.Light"
     tools:context=".fragments.InvitationFragment">
 
     <LinearLayout
@@ -25,9 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="@string/notifications"
-            android:textColor="@color/color_fa"
-            style="@style/CircularBoldFont"
-            android:textSize="@dimen/ts_20"/>
+            android:textAppearance="@style/TextAppearance.Kamleon.Headline6"
+            style="@style/TextStyle.Kamleon.Inverse"/>
 
 <!--
         <LinearLayout
@@ -192,16 +192,58 @@
 
         </LinearLayout>
         -->
+
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_invitation_list"
+            android:id="@+id/rv_new_invitation_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp" />
         <View
+            android:id="@+id/v_divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginVertical="30dp"
+            android:layout_marginTop="30dp"
+            android:visibility="gone"
+            tools:visibility="visible"
             android:background="@color/color_fa"/>
+        <TextView
+            android:id="@+id/tv_time_range"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/noti_last_30_days"
+            android:layout_marginVertical="30dp"
+            android:textAppearance="@style/TextAppearance.Kamleon.Headline6"
+            android:textColor="?attr/colorOnSurfaceSecondaryInverse"
+            android:layout_gravity="start"
+            />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_old_invitation_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp" />
+        <LinearLayout
+            android:id="@+id/ll_see_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/noti_see_all"
+                android:textAppearance="@style/TextAppearance.Kamleon.Subtitle2"
+                android:textColor="?attr/colorPrimary"
+                />
+            <ImageView
+                android:id="@+id/iv_see_all"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_arrow_forward_ios_24"
+                app:tint="?attr/colorPrimary" />
+        </LinearLayout>
+<!--
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -235,8 +277,9 @@
                 app:notiDate="5th May at 19:46"
                 app:notiDesc="@string/noti_temp_desc2"
                 app:notiAction="Confirmed"/>
-
         </LinearLayout>
+        -->
+
     </LinearLayout>
 
 </FrameLayout>

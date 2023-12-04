@@ -1,7 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="roundedCorners" parent="">
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Fonts -->
+    <style name="CircularRegularFont">
+        <item name="android:fontFamily">@font/circular_pro_regular</item>
+    </style>
+    <style name="CircularMediumFont">
+        <item name="android:fontFamily">@font/circular_pro_medium</item>
+    </style>
+    <style name="CircularBoldFont">
+        <item name="android:fontFamily">@font/circular_pro_bold</item>
+    </style>
+    <style name="CircularBookFont">
+        <item name="android:fontFamily">@font/circular_pro_book</item>
+    </style>
+
+    <style name="RoundBlueButtonTextStyle">
+        <item name="android:fontFamily">@font/circular_pro_medium</item>
+        <item name="android:textSize">@dimen/round_blue_button_text_size</item>
+    </style>
+
+    <style name="onboardSpinnerItemStyle">
+        <!--        <item name="android:textColor">#000000</item>-->
+        <item name="android:textColor">@color/kamleon_dark_grey</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    </style>
+
+    <!-- Button styles -->
+    <style name="Button" />
+    <style name="Button.Kamleon">
+        <item name="android:fontFamily">@font/circular_pro_medium</item>
+        <item name="android:textSize">@dimen/round_blue_button_text_size</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    <style name="Button.Kamleon.Primary">
+        <item name="android:background">@drawable/bg_btn_round_blue</item>
+        <item name="android:textColor">@drawable/color_text_button_blue_round</item>
+        <item name="shapeAppearanceOverlay">@style/capsuleShape</item>
+
+    </style>
+    <style name="capsuleShape">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
+    <!-- Theme styles -->
+    <style name="Circular" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/circular_pro_regular</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="Circular.Inverse">
+        <item name="android:textColor">?attr/colorOnSurfaceInverse</item>
+    </style>
+    <style name="Circular.Regular">
+        <item name="android:fontFamily">@font/circular_pro_regular</item>
+    </style>
+    <style name="Circular.Medium">
+        <item name="android:fontFamily">@font/circular_pro_medium</item>
+    </style>
+    <style name="Circular.Bold">
+        <item name="android:fontFamily">@font/circular_pro_bold</item>
+    </style>
+    <style name="Circular.Book">
+        <item name="android:fontFamily">@font/circular_pro_book</item>
+    </style>
+
+
+    <style name="TextAppearance" />
+    <style name="TextAppearance.Kamleon">
+        <item name="fontFamily">@font/circular_pro_regular</item>
+        <item name="android:fontFamily">@font/circular_pro_regular</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+    <style name="TextAppearance.Kamleon.Regular">
+        <item name="fontFamily">@font/circular_pro_regular</item>
+        <item name="android:fontFamily">@font/circular_pro_regular</item>
+    </style>
+    <style name="TextAppearance.Kamleon.Medium">
+        <item name="fontFamily">@font/circular_pro_medium</item>
+        <item name="android:fontFamily">@font/circular_pro_medium</item>
+    </style>
+    <style name="TextAppearance.Kamleon.Bold">
+        <item name="fontFamily">@font/circular_pro_bold</item>
+        <item name="android:fontFamily">@font/circular_pro_bold</item>
+    </style>
+    <style name="TextAppearance.Kamleon.Book">
+        <item name="fontFamily">@font/circular_pro_book</item>
+        <item name="android:fontFamily">@font/circular_pro_book</item>
+    </style>
+    <!-- Headline3: 48sp -->
+    <style name="TextAppearance.Kamleon.Headline3">
+        <item name="android:textSize">@dimen/ts_45</item>
+    </style>
+    <!-- Headline4: 34sp -->
+    <style name="TextAppearance.Kamleon.Headline4">
+        <item name="android:textSize">@dimen/ts_36</item>
+    </style>
+    <!-- Headline5: 24sp -->
+    <style name="TextAppearance.Kamleon.Headline5">
+        <item name="android:textSize">@dimen/ts_24</item>
+    </style>
+    <!-- Headline6: 20sp -->
+    <style name="TextAppearance.Kamleon.Headline6">
+        <item name="fontFamily">@font/circular_pro_bold</item>
+        <item name="android:textSize">@dimen/ts_20</item>
+    </style>
+    <!-- Subtitle1: 16sp -->
+    <style name="TextAppearance.Kamleon.Subtitle1">
+        <item name="fontFamily">@font/circular_pro_bold</item>
+        <item name="android:textSize">@dimen/ts_16</item>
+    </style>
+    <!-- Subtitle2: 14sp -->
+    <style name="TextAppearance.Kamleon.Subtitle2">
+        <item name="fontFamily">@font/circular_pro_bold</item>
+        <item name="android:textSize">@dimen/ts_14</item>
+    </style>
+    <!-- Body1: 16sp -->
+    <style name="TextAppearance.Kamleon.Body1">
+        <item name="fontFamily">@font/circular_pro_book</item>
+        <item name="android:textSize">@dimen/ts_16</item>
+    </style>
+    <!-- Body2: 14sp -->
+    <style name="TextAppearance.Kamleon.Body2">
+        <item name="fontFamily">@font/circular_pro_book</item>
+        <item name="android:textSize">@dimen/ts_14</item>
+    </style>
+    <!-- Button: 14sp -->
+    <style name="TextAppearance.Kamleon.Button">
+        <item name="android:textSize">@dimen/ts_16</item>
+    </style>
+    <!-- Caption: 12sp -->
+    <style name="TextAppearance.Kamleon.Caption">
+        <item name="fontFamily">@font/circular_pro_book</item>
+        <item name="android:textSize">@dimen/ts_12</item>
+    </style>
+    <!-- Overline: 10sp -->
+    <style name="TextAppearance.Kamleon.Overline">
+        <item name="android:textSize">@dimen/ts_10</item>
+    </style>
+
+    <style name="TextStyle" />
+    <style name="TextStyle.Kamleon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <!-- For white foreground if light mode -->
+    <style name="TextStyle.Kamleon.Inverse">
+        <item name="android:textColor">?attr/colorOnSurfaceInverse</item>
+    </style>
+
+
+
 </resources>
+
+<!--<item name="android:textColor">#3364AD</item>-->
