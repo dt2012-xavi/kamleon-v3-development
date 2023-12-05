@@ -70,7 +70,7 @@
     </string-array>
 
     <!-- Settings -->
-    <string name="setting_button_save">SAVE</string>
+    <string name="setting_button_save">Save</string>
     <string name="setting_option_account">ACCOUNT</string>
     <string name="setting_option_pref">PREFERENCES</string>
     <string name="setting_option_logout">LOG OUT</string>
@@ -92,6 +92,7 @@
 
     <string name="setting_label_acc_info">ACCOUNT INFORMATION</string>
     <string name="setting_label_org">ORGANIZATION</string>
+    <string name="setting_label_org_short">ORG.</string>
     <string name="setting_label_center">CENTER</string>
     <string name="setting_label_team">TEAM</string>
 
@@ -111,6 +112,9 @@
     <string name="setting_desc_pref1">The user data is essential to deliver personalized and precise metric results and recommendations.</string>
     <string name="setting_desc_pref2">You will receive Kamleon notifcation with the score you have had after every urinal use.</string>
     <string name="setting_desc_pref3">Enable Kamleon to use location data for personalized services, while considering privacy implications.</string>
+
+    <string name="setting_display_name">%1$s %2$s</string>
+    <string name="setting_deactivate">Deactivate or delete my account</string>
 
     <!-- Image Pick -->
     <string name="image_pick_gallery">Choose from library</string>
@@ -233,7 +237,7 @@
 
 
     <!-- Premium screen -->
-    <string name="premium_card_message">Subscribe to unlock this personalized content.</string>
+    <string name="premium_card_message">Subscribe to unlock this\npersonalized content.</string>
     <string name="premium_landpage_backsoon">We will get back to you soon</string>
     <string name="premium_landpage_button">Start free trial</string>
     <string name="premium_landpage_requestsent">Request sent</string>
@@ -302,5 +306,7 @@
     <string name="unit_electrolites">mS/cm</string>
     <string name="unit_volume">ml</string>
     <string name="channel_id">KAMLEON_NOTIFICATIONS_CHANNEL</string>
+    <string name="error_camera_permission_denied">Permission denied</string>
+    <string name="error_start_camera">Error starting camera</string>
 
 </resources>

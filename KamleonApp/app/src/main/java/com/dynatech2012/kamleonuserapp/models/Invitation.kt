@@ -4,7 +4,6 @@ import android.util.Log
 import com.dynatech2012.kamleonuserapp.extensions.isLastWeek
 import com.dynatech2012.kamleonuserapp.extensions.isToday
 import com.dynatech2012.kamleonuserapp.extensions.isYesterday
-import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -100,34 +99,6 @@ data class Invitation (
                     return "$organizationName has invited you to $teamName team"
                 }
             }
-        }
-    val invitationTime: String
-        get() {
-            val date = dateSent
-            // If it's today, display the time (e.g., "19:00").
-            if (date.isToday) {
-                val dateFormater = SimpleDateFormat("HH:mm", Locale.getDefault())
-                return dateFormater.format(date)
-            }
-            // If it's yesterday, display "Yesterday".
-            else if (date.isYesterday) {
-                val dateFormater = SimpleDateFormat("HH:mm", Locale.getDefault())
-                val stringDate = dateFormater.format(date)
-                return "Yesterday $stringDate"
-            }
-            // If it's within the last week, display the day name (e.g., "Tuesday").
-            else if (date.isLastWeek) {
-                Log.d(TAG, "invitationTime: isLastWeek: $date")
-                val dateFormater = SimpleDateFormat("EEEE HH:mm", Locale.getDefault())
-                return dateFormater.format(date)
-            }
-            // If it's more than one week ago, display the full date.
-            else {
-                Log.d(TAG, "invitationTime: is old: $date")
-                val dateFormater = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
-                return dateFormater.format(date)
-            }
-
         }
 
     override fun equals(other: Any?): Boolean {

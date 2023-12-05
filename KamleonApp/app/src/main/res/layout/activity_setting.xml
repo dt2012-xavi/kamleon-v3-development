@@ -8,23 +8,31 @@
     tools:context=".fragments.SettingFragment">
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingTop="24dp"
         android:id="@+id/layoutHeader"
-        android:paddingHorizontal="20dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icn_setting_noti_badge"
-            android:id="@+id/btnSettingNoti"
-            android:background="@color/transparent"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"/>
+        <androidx.cardview.widget.CardView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:layout_marginVertical="24dp"
+            android:layout_marginStart="20dp"
+            app:cardCornerRadius="18dp"
+            android:id="@+id/cv_sett_bell"
+            android:elevation="8dp">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/bell"
+                android:id="@+id/btnSettingNoti"
+                android:layout_gravity="center"/>
+        </androidx.cardview.widget.CardView>
+
 
         <ImageView
             android:layout_width="12dp"
@@ -32,19 +40,31 @@
             android:src="@drawable/shape_circle"
             android:id="@+id/btnSettingNotiBadge"
             android:visibility="gone"
-            android:layout_alignEnd="@+id/btnSettingNoti"
-            android:layout_alignTop="@+id/btnSettingNoti"
+            tools:visibility="visible"
+            android:elevation="5dp"
+            android:layout_alignEnd="@+id/cv_sett_bell"
+            android:layout_alignTop="@+id/cv_sett_bell"
             android:layout_marginTop="5dp"
-            android:layout_marginEnd="15dp"/>
+            android:layout_marginEnd="5dp"/>
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icn_setting_close"
-            android:id="@+id/btnSettingClose"
-            android:background="@color/transparent"
+        <androidx.cardview.widget.CardView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="20dp"
+            android:layout_centerVertical="true"
+            app:cardCornerRadius="18dp"
+            android:id="@+id/cv_sett_close"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"/>
+            android:elevation="20dp">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_close_24"
+                android:id="@+id/btnSettingClose"
+                app:tint="@color/kamleon_dark_grey"
+                android:layout_gravity="center"/>
+        </androidx.cardview.widget.CardView>
     </RelativeLayout>
 
 
@@ -56,73 +76,96 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layoutHeader"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingVertical="20dp">
+            android:paddingBottom="20dp">
 
             <RelativeLayout
-                android:layout_width="128dp"
-                android:layout_height="128dp"
                 android:id="@+id/profileLayout"
-                android:clickable="true"
-                android:layout_margin="10dp"
-                android:layout_gravity="center">
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:clickable="true">
 
                 <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_sett_profile"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/image_profile"
-                    android:id="@+id/iv_sett_profile"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/nav_back_button_top"
+                    android:layout_marginEnd="@dimen/nav_back_button_left"
                     android:background="@color/transparent"
                     android:scaleType="centerCrop"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="@dimen/nav_back_button_left"
-                    android:layout_marginTop="@dimen/nav_back_button_top"/>
+                    android:src="@drawable/image_profile" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <androidx.cardview.widget.CardView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="12dp"
-                    android:src="@drawable/icn_button_camera" />
+                    android:layout_marginEnd="14dp"
+                    android:layout_marginBottom="14dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="18dp"
+                    android:id="@+id/cv_sett_camera"
+                    android:elevation="8dp">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_camera"
+                        android:layout_marginStart="1dp"
+                        android:id="@+id/iv_setting_camera"
+                        android:layout_gravity="center"/>
+                </androidx.cardview.widget.CardView>
+
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginVertical="6dp"
+                android:textAppearance="@style/TextAppearance.Kamleon.Headline5"
+
+                tools:text="Cèlia Marquès" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:paddingTop="4dp"
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="68dp"
-                    android:paddingVertical="0dp"
-                    android:paddingHorizontal="0dp"
                     android:layout_gravity="center"
                     android:background="@drawable/bg_setting_option_layout"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="0dp"
+                    android:paddingVertical="0dp">
+
                     <LinearLayout
+                        android:id="@+id/optionViewAcc"
                         android:layout_width="110dp"
                         android:layout_height="68dp"
-                        android:id="@+id/optionViewAcc"
+                        android:layout_gravity="center"
                         android:background="@drawable/bg_setting_option_layout"
                         android:gravity="center"
-                        android:layout_gravity="center"
                         android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="100dp"
                             android:layout_height="@dimen/setting_option_view_height"
+                            android:layout_gravity="center"
                             android:layout_marginBottom="6dp"
                             android:gravity="center"
-                            android:layout_gravity="center"
                             android:orientation="vertical">
 
                             <ImageView
@@ -141,15 +184,16 @@
                                 android:textSize="@dimen/ts_12" />
                         </LinearLayout>
                     </LinearLayout>
+
                     <LinearLayout
+                        android:id="@+id/optionViewPref"
                         android:layout_width="120dp"
                         android:layout_height="68dp"
-                        android:clickable="true"
-                        android:layout_marginStart="-20dp"
-                        android:id="@+id/optionViewPref"
-                        android:background="@drawable/bg_setting_option_layout"
-                        android:gravity="center"
                         android:layout_gravity="center"
+                        android:layout_marginStart="-20dp"
+                        android:background="@drawable/bg_setting_option_layout"
+                        android:clickable="true"
+                        android:gravity="center"
                         android:orientation="vertical">
 
                         <LinearLayout
@@ -178,9 +222,9 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/optionViewLogout"
                     android:layout_width="80dp"
                     android:layout_height="68dp"
-                    android:id="@+id/optionViewLogout"
                     android:layout_gravity="center"
                     android:clickable="true"
                     android:orientation="vertical">
@@ -188,9 +232,9 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/setting_option_view_height"
+                        android:layout_gravity="center"
                         android:layout_marginBottom="6dp"
                         android:gravity="center"
-                        android:layout_gravity="center"
                         android:orientation="vertical">
 
                         <ImageView
@@ -205,139 +249,143 @@
                             android:layout_gravity="center"
                             android:layout_marginTop="4dp"
                             android:text="@string/setting_option_logout"
-                            android:textColor="@color/kamleon_dark_grey"
+                            android:textColor="@color/color_red"
                             android:textSize="@dimen/ts_12" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layoutAccount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/layoutAccount"
-                android:paddingHorizontal="@dimen/setting_category_padding"
                 android:layout_marginTop="32dp"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/setting_category_padding"
+                android:visibility="gone">
 
                 <TextView
+                    style="@style/CircularMediumFont"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/CircularMediumFont"
                     android:layout_marginTop="8dp"
-                    android:textColor="@color/kamleon_dark_grey"
                     android:text="@string/setting_label_acc_data"
-                    android:textSize="@dimen/ts_14"/>
+                    android:textColor="@color/kamleon_dark_grey"
+                    android:textSize="@dimen/ts_14" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_pref_container_shadow"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
-                        android:orientation="horizontal"
-                        android:paddingHorizontal="@dimen/setting_item_padding_h"
                         android:layout_gravity="center"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/setting_item_padding_h">
 
                         <TextView
+                            style="@style/CircularBoldFont"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:paddingHorizontal="4dp"
-                            android:textSize="@dimen/ts_14"
-                            style="@style/CircularBoldFont"
                             android:text="@string/setting_label_name"
-                            android:textColor="@color/kamleon_secondary_grey_70"/>
+                            android:textColor="@color/kamleon_secondary_grey_70"
+                            android:textSize="@dimen/ts_14" />
+
                         <EditText
+                            android:id="@+id/etAccName"
+                            style="@style/CircularRegularFont"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@null"
-                            android:textAlignment="textEnd"
                             android:paddingHorizontal="4dp"
-                            android:id="@+id/etAccName"
-                            android:textSize="@dimen/ts_14"
-                            style="@style/CircularRegularFont"
                             android:text="name"
-                            android:textColor="@color/kamleon_secondary_grey_70"/>
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/kamleon_secondary_grey_70"
+                            android:textSize="@dimen/ts_14" />
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1px"
                         android:layout_marginHorizontal="@dimen/setting_item_padding_h"
                         android:background="@color/kamleon_secondary_grey_40" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
-                        android:orientation="horizontal"
-                        android:paddingHorizontal="@dimen/setting_item_padding_h"
                         android:layout_gravity="center"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/setting_item_padding_h">
 
                         <TextView
+                            style="@style/CircularBoldFont"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:paddingHorizontal="4dp"
-                            android:textSize="@dimen/ts_14"
-                            style="@style/CircularBoldFont"
                             android:text="@string/setting_label_surname"
-                            android:textColor="@color/kamleon_secondary_grey_70"/>
+                            android:textColor="@color/kamleon_secondary_grey_70"
+                            android:textSize="@dimen/ts_14" />
+
                         <EditText
+                            android:id="@+id/etAccSurName"
+                            style="@style/CircularRegularFont"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@null"
-                            android:textAlignment="textEnd"
                             android:paddingHorizontal="4dp"
-                            android:id="@+id/etAccSurName"
-                            android:textSize="@dimen/ts_14"
-                            style="@style/CircularRegularFont"
                             android:text="sur_name"
-                            android:textColor="@color/kamleon_secondary_grey_70"/>
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/kamleon_secondary_grey_70"
+                            android:textSize="@dimen/ts_14" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_pref_container_shadow"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
+                        android:id="@+id/accMenuItemEmail"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingRightArrow="false"
+                        app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_email"
-                        android:id="@+id/accMenuItemEmail"
-                        app:settingTypeValue="maria.garcia@gmail.com"
-                        app:settingRightArrow="true"
-                        app:settingRightSwitch="false"/>
+                        app:settingTypeValue="maria.garcia@gmail.com" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_pref_container_shadow"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
+                        android:id="@+id/accMenuItemPwd"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
-                        android:id="@+id/accMenuItemPwd"
-                        app:settingTypeLabel="@string/setting_label_password"
-                        app:settingTypeValue="********"
                         app:settingRightArrow="true"
-                        app:settingRightSwitch="false"/>
+                        app:settingRightSwitch="false"
+                        app:settingTypeLabel="@string/setting_label_password"
+                        app:settingTypeValue="" />
                 </LinearLayout>
 
                 <TextView
@@ -353,19 +401,19 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_pref_container_shadow"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
+                        android:id="@+id/accMenuItemPin"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
-                        app:settingTypeLabel="@string/setting_label_pin"
-                        android:id="@+id/accMenuItemPin"
-                        app:settingTypeValue="********"
                         app:settingRightArrow="true"
-                        app:settingRightSwitch="false"/>
+                        app:settingRightSwitch="false"
+                        app:settingTypeLabel="@string/setting_label_pin"
+                        app:settingTypeValue="" />
                 </LinearLayout>
 
                 <TextView
@@ -379,69 +427,75 @@
                     android:textSize="@dimen/ts_12" />
 
                 <TextView
+                    style="@style/CircularMediumFont"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/CircularMediumFont"
                     android:layout_marginTop="28dp"
-                    android:textColor="@color/kamleon_dark_grey"
                     android:text="@string/setting_label_user_data"
-                    android:textSize="@dimen/ts_14"/>
+                    android:textColor="@color/kamleon_dark_grey"
+                    android:textSize="@dimen/ts_14" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_pref_container_shadow"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
                         android:id="@+id/prefMenuItemWeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_user_weight"
-                        app:settingTypeValue="45.0kg"
-                        app:settingRightArrow="true"
-                        app:settingRightSwitch="false"/>
+                        app:settingTypeValue="45.0kg" />
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1px"
                         android:layout_marginHorizontal="@dimen/setting_item_padding_h"
                         android:background="@color/kamleon_secondary_grey_40" />
+
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
                         android:id="@+id/prefMenuItemHeight"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_user_height"
-                        app:settingTypeValue="160.0 cm"
-                        app:settingRightArrow="true"
-                        app:settingRightSwitch="false"/>
+                        app:settingTypeValue="160.0 cm" />
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1px"
                         android:layout_marginHorizontal="@dimen/setting_item_padding_h"
                         android:background="@color/kamleon_secondary_grey_40" />
+
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
                         android:id="@+id/prefMenuItemGender"
-                        app:settingTypeLabel="@string/setting_label_user_gender"
-                        app:settingTypeValue="Female"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
-                        app:settingRightSwitch="false"/>
+                        app:settingRightSwitch="false"
+                        app:settingTypeLabel="@string/setting_label_user_gender"
+                        app:settingTypeValue="Female" />
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1px"
                         android:layout_marginHorizontal="@dimen/setting_item_padding_h"
                         android:background="@color/kamleon_secondary_grey_40" />
+
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
+                        android:id="@+id/prefMenuItemBirth"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
-                        android:id="@+id/prefMenuItemBirth"
-                        app:settingTypeLabel="@string/setting_label_user_birthdate"
-                        app:settingTypeValue="21 april 1955 (68)"
                         app:settingRightArrow="true"
-                        app:settingRightSwitch="false"/>
+                        app:settingRightSwitch="false"
+                        app:settingTypeLabel="@string/setting_label_user_birthdate"
+                        app:settingTypeValue="21 april 1955 (68)" />
                 </LinearLayout>
 
                 <TextView
@@ -455,99 +509,109 @@
                     android:textSize="@dimen/ts_12" />
 
                 <TextView
+                    style="@style/CircularMediumFont"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/CircularMediumFont"
                     android:layout_marginTop="36dp"
+                    android:text="@string/setting_label_acc_info"
                     android:textColor="@color/kamleon_dark_grey"
-                    android:text="@string/setting_label_acc_info"
-                    android:textSize="@dimen/ts_14"/>
+                    android:textSize="@dimen/ts_14" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_pref_container_shadow"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
-                        app:settingTypeLabel="@string/setting_label_help"
-                        app:settingTypeValue=""
                         android:id="@+id/accMenuItemHelp"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
-                        app:settingRightSwitch="false"/>
+                        app:settingRightSwitch="false"
+                        app:settingTypeLabel="@string/setting_label_help"
+                        app:settingTypeValue="" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
-                    android:paddingTop="12dp"
                     android:background="@drawable/bg_pref_container_shadow"
-                    android:orientation="vertical">
-
-                    <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
-                        app:settingTypeLabel="@string/setting_label_tos"
-                        app:settingTypeValue=""
-                        android:id="@+id/accMenuItemTOS"
-                        app:settingRightArrow="false"
-                        app:settingRightSwitch="false"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
-                        android:background="@color/kamleon_secondary_grey_40" />
-                    <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
-                        app:settingTypeLabel="@string/setting_label_dsp"
-                        app:settingTypeValue=""
-                        android:id="@+id/accMenuItemDSP"
-                        app:settingRightArrow="true"
-                        app:settingRightSwitch="false"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
-                        android:background="@color/kamleon_secondary_grey_40" />
-                    <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
-                        app:settingTypeLabel="@string/setting_label_pp"
-                        android:id="@+id/accMenuItemPP"
-                        app:settingTypeValue=""
-                        app:settingRightArrow="true"
-                        app:settingRightSwitch="false"/>
-                </LinearLayout>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/kamleon_secondary_grey_50"
-                    style="@style/CircularRegularFont"
-                    android:paddingHorizontal="@dimen/setting_category_content_padding"
-                    android:layout_marginTop="8dp"
-                    android:textSize="@dimen/ts_12"
-                    android:text="Version: 1.1"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/CircularMediumFont"
-                    android:layout_marginTop="24dp"
-                    android:textColor="@color/kamleon_secondary_grey_60"
-                    android:text="@string/setting_label_acc_info"
-                    android:textSize="@dimen/ts_14"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
+                    android:paddingTop="12dp">
+
+                    <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
+                        android:id="@+id/accMenuItemTOS"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingRightArrow="false"
+                        app:settingRightSwitch="false"
+                        app:settingTypeLabel="@string/setting_label_tos"
+                        app:settingTypeValue="" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
+                        android:background="@color/kamleon_secondary_grey_40" />
+
+                    <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
+                        android:id="@+id/accMenuItemDSP"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"
+                        app:settingTypeLabel="@string/setting_label_dsp"
+                        app:settingTypeValue="" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
+                        android:background="@color/kamleon_secondary_grey_40" />
+
+                    <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
+                        android:id="@+id/accMenuItemPP"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"
+                        app:settingTypeLabel="@string/setting_label_pp"
+                        app:settingTypeValue="" />
+                </LinearLayout>
+
+                <TextView
+                    style="@style/CircularRegularFont"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding"
+                    android:text="Version: 1.1"
+                    android:textColor="@color/kamleon_secondary_grey_50"
+                    android:textSize="@dimen/ts_12" />
+
+                <TextView
+                    style="@style/CircularMediumFont"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/setting_label_acc_info"
+                    android:textColor="@color/kamleon_secondary_grey_60"
+                    android:textSize="@dimen/ts_14" />
+
+                <LinearLayout
+                    android:id="@+id/ll_setting_account_info_single"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:paddingTop="12dp">
 
                     <RelativeLayout
@@ -556,109 +620,182 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/kamleon_secondary_grey_60"
                             style="@style/CircularBoldFont"
-                            android:layout_alignParentStart="true"
-                            android:text="@string/setting_label_org"/>
-                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/kamleon_secondary_grey_60"
+                            android:layout_alignParentStart="true"
+                            android:text="@string/setting_label_org"
+                            android:textColor="@color/kamleon_secondary_grey_60" />
+
+                        <TextView
+                            android:id="@+id/tv_setting_account_org"
                             style="@style/CircularRegularFont"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:text="Dir"/>
+                            tools:text="Dir"
+                            android:textColor="@color/kamleon_secondary_grey_60" />
                     </RelativeLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1px"
                         android:layout_marginHorizontal="@dimen/setting_item_padding_h"
                         android:layout_marginVertical="8dp"
                         android:background="@color/kamleon_secondary_grey_40" />
+
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/kamleon_secondary_grey_60"
                             style="@style/CircularBoldFont"
-                            android:layout_alignParentStart="true"
-                            android:text="@string/setting_label_center"/>
-                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/kamleon_secondary_grey_60"
+                            android:layout_alignParentStart="true"
+                            android:text="@string/setting_label_center"
+                            android:textColor="@color/kamleon_secondary_grey_60" />
+
+                        <TextView
+                            android:id="@+id/tv_setting_account_center"
                             style="@style/CircularRegularFont"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:text="CC"/>
+                            tools:text="CC"
+                            android:textColor="@color/kamleon_secondary_grey_60" />
                     </RelativeLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1px"
                         android:layout_marginHorizontal="@dimen/setting_item_padding_h"
                         android:layout_marginVertical="8dp"
                         android:background="@color/kamleon_secondary_grey_40" />
+
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/kamleon_secondary_grey_60"
                             style="@style/CircularBoldFont"
-                            android:layout_alignParentStart="true"
-                            android:text="@string/setting_label_team"/>
-                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/kamleon_secondary_grey_60"
+                            android:layout_alignParentStart="true"
+                            android:text="@string/setting_label_team"
+                            android:textColor="@color/kamleon_secondary_grey_60" />
+
+                        <TextView
+                            android:id="@+id/tv_setting_account_team"
                             style="@style/CircularRegularFont"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:text="Cycling"/>
+                            tools:text="Cycling"
+                            android:textColor="@color/kamleon_secondary_grey_60" />
                     </RelativeLayout>
 
                 </LinearLayout>
 
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/layoutPreference"
-                android:visibility="gone"
-                android:paddingHorizontal="@dimen/setting_category_padding"
-                android:layout_marginTop="12dp"
-                android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/ll_setting_account_info_multiple"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding"
+                    android:paddingTop="12dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/CircularBoldFont"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:text="@string/setting_label_org_short"
+                            android:textColor="@color/kamleon_secondary_grey_60" />
+
+                        <TextView
+                            style="@style/CircularBoldFont"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="@string/setting_label_center"
+                            android:textColor="@color/kamleon_secondary_grey_60" />
+
+                        <TextView
+                            style="@style/CircularBoldFont"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="@string/setting_label_team"
+                            android:textColor="@color/kamleon_secondary_grey_60" />
+                    </RelativeLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_setting_organizations"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+
+                </LinearLayout>
+
 
                 <TextView
+                    android:textAppearance="@style/TextAppearance.Kamleon.Body2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/setting_deactivate"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/color_red" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="192dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutPreference"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/setting_category_padding"
+                android:visibility="gone">
+
+                <TextView
                     style="@style/CircularMediumFont"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textColor="@color/kamleon_dark_grey"
                     android:text="@string/setting_label_noti"
-                    android:textSize="@dimen/ts_14"/>
+                    android:textColor="@color/kamleon_dark_grey"
+                    android:textSize="@dimen/ts_14" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_pref_container_shadow"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
-                        app:settingTypeLabel="@string/setting_label_analytics"
-                        app:settingTypeValue=""
                         app:settingRightArrow="false"
-                        app:settingRightSwitch="true"/>
+                        app:settingRightSwitch="true"
+                        app:settingTypeLabel="@string/setting_label_analytics"
+                        app:settingTypeValue="" />
 
                 </LinearLayout>
 
@@ -673,45 +810,45 @@
                     android:textSize="@dimen/ts_12" />
 
                 <TextView
+                    style="@style/CircularMediumFont"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/CircularMediumFont"
                     android:layout_marginTop="28dp"
-                    android:textColor="@color/kamleon_dark_grey"
                     android:text="@string/setting_label_location"
-                    android:textSize="@dimen/ts_14"/>
+                    android:textColor="@color/kamleon_dark_grey"
+                    android:textSize="@dimen/ts_14" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="@dimen/setting_category_content_padding"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/bg_pref_container_shadow"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/setting_category_content_padding">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingRightArrow="false"
+                        app:settingRightSwitch="true"
                         app:settingTypeLabel="@string/setting_label_awuta"
-                        app:settingTypeValue=""
-                        app:settingRightArrow="false"
-                        app:settingRightSwitch="true"/>
+                        app:settingTypeValue="" />
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
+                        app:settingRightArrow="false"
+                        app:settingRightSwitch="true"
                         app:settingTypeLabel="@string/setting_label_allow_once"
-                        app:settingTypeValue=""
-                        app:settingRightArrow="false"
-                        app:settingRightSwitch="true"/>
+                        app:settingTypeValue="" />
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
-                        app:settingTypeLabel="@string/setting_label_not_allow"
-                        app:settingTypeValue=""
                         app:settingRightArrow="false"
-                        app:settingRightSwitch="true"/>
+                        app:settingRightSwitch="true"
+                        app:settingTypeLabel="@string/setting_label_not_allow"
+                        app:settingTypeValue="" />
                 </LinearLayout>
 
                 <TextView
@@ -725,20 +862,24 @@
                     android:textSize="@dimen/ts_12" />
 
             </LinearLayout>
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/round_blue_button_height"
-                android:background="@drawable/bg_btn_round_blue"
-                android:paddingVertical="0dp"
-                android:layout_marginHorizontal="32dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="22dp"
-                android:textAllCaps="false"
-                android:id="@+id/btnSave"
-                android:text="@string/setting_button_save"
-                android:textAppearance="@style/RoundBlueButtonTextStyle"
-                android:textColor="@drawable/color_text_button_blue_round"
-                android:enabled="true"/>
+
+
         </LinearLayout>
     </ScrollView>
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/bg_btn_round_blue"
+        android:enabled="true"
+        android:paddingVertical="0dp"
+        android:text="@string/setting_button_save"
+        android:textAllCaps="false"
+        android:textAppearance="@style/RoundBlueButtonTextStyle"
+        android:textColor="@drawable/color_text_button_blue_round" />
 </androidx.constraintlayout.widget.ConstraintLayout>

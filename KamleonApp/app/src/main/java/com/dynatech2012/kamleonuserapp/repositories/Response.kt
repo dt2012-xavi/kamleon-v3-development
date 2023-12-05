@@ -9,12 +9,14 @@ sealed class Response<out T : Any> {
     data class Success<out T : Any>(val data: T) : Response<T>()
     data class Failure(val exception: Exception) : Response<Nothing>()
     data class Loading(val loading: Boolean = true) : Response<Nothing>()
+    data class Inactive(val inactive: Boolean = true) : Response<Nothing>()
 
     override fun toString(): String {
         return when (this) {
             is Success<*> -> "Success[data=$data]"
             is Failure -> "Error[exception=$exception]"
             is Loading -> "Loading"
+            is Inactive -> "Inactive"
         }
     }
 
@@ -34,13 +36,14 @@ sealed class ResponseNullable<out T : Any> {
     data class Success<out T : Any>(val data: T? = null) : ResponseNullable<T>()
     data class Failure(val exception: Exception) : ResponseNullable<Nothing>()
     data class Loading(val loading: Boolean = true) : ResponseNullable<Nothing>()
+    data class Inactive(val inactive: Boolean = true) : ResponseNullable<Nothing>()
 
     override fun toString(): String {
         return when (this) {
             is Success<*> -> "Success[data=$data]"
             is Failure -> "Error[exception=$exception]"
             is Loading -> "Loading"
-
+            is Inactive -> "Inactive"
         }
     }
 

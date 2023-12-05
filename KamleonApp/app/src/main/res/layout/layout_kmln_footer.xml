@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingHorizontal="@dimen/kmln_graph_footer_padding_h"
     android:paddingVertical="@dimen/kmln_graph_footer_padding_v"
     android:orientation="vertical">
@@ -16,10 +17,12 @@
         android:paddingHorizontal="@dimen/kmln_graph_footer_content_padding_h">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:scaleType="fitCenter"
             android:id="@+id/ivIconStreak"
-            android:src="@drawable/icn_streak_on"/>
+            android:src="@drawable/ic_eye_crossed"
+            app:tint="?attr/colorPrimary"/>
 
         <TextView
             android:layout_width="0dp"

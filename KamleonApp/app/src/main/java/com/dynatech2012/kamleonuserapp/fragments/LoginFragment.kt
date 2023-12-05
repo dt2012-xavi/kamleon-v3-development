@@ -56,7 +56,7 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
     }
 
     private fun startActivity(state: Int) {
-        if (state == 4)
+        if (state == 5)
             startActivity(Intent(requireContext(), MainActivity::class.java))
     }
 

@@ -11,8 +11,10 @@ import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.databinding.ActivityAnalyticBinding
+import com.dynatech2012.kamleonuserapp.extensions.formatTime
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Date
 
 @AndroidEntryPoint
 class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
@@ -132,7 +134,7 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
             in 0..30 -> getString(R.string.analytic_severely_dehydrated)
             in 31..64 -> getString(R.string.analytic_dehydrated)
             in 65..90, null -> getString(R.string.analytic_hydrated)
-            else -> getString(R.string.analytic_hydrated)
+            else -> getString(R.string.analytic_very_hydrated)
         }
         cvHy.description = when (score) {
             in 0..64 -> getString(R.string.analytic_hydratation_under)
@@ -172,6 +174,12 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
 
         val cvNew = binding.cvAnalyticEmpty
         cvNew.onClick = { }
+
+        measureData?.analysisDate?.let {
+            val date = Date(it)
+            val dateString = date.formatTime.uppercase()
+            binding.tvAnalyticLastSample.text = getString(R.string.home_last_sample_message, dateString)
+        }
     }
 
 

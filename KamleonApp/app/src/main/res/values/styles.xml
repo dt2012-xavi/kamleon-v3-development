@@ -99,6 +99,7 @@
     </style>
     <!-- Headline5: 24sp -->
     <style name="TextAppearance.Kamleon.Headline5">
+        <item name="fontFamily">@font/circular_pro_book</item>
         <item name="android:textSize">@dimen/ts_24</item>
     </style>
     <!-- Headline6: 20sp -->
@@ -114,6 +115,7 @@
     <!-- Subtitle2: 14sp -->
     <style name="TextAppearance.Kamleon.Subtitle2">
         <item name="fontFamily">@font/circular_pro_bold</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/ts_14</item>
     </style>
     <!-- Body1: 16sp -->

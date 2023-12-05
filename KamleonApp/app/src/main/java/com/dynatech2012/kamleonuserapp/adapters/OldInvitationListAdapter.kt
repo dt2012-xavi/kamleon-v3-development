@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dynatech2012.kamleonuserapp.databinding.LayoutInvitationListItemBinding
 import com.dynatech2012.kamleonuserapp.extensions.capitalize
+import com.dynatech2012.kamleonuserapp.extensions.formatTime
 import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
 
@@ -87,7 +88,7 @@ class OldInvitationListAdapter(
 
         fun bind(data: Invitation){
             tvSubtitle.text = data.invitationText
-            tvDate.text = data.invitationTime
+            tvDate.text = data.dateSent.formatTime
             tvStatus.text = data.status.rawValue.capitalize()
         }
 

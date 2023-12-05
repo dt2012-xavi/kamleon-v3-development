@@ -83,17 +83,18 @@ fun CardDetailView(modifier: Modifier, recommendation: Recommendation, onClick: 
 
             )
             {
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
-                        .clip(RoundedCornerShape(0.dp, 0.dp, 20.dp, 20.dp)),
-                    painter = painterResource(
-                        id = R.drawable.tip1
-                    ),
-                    contentDescription = "",
-                    contentScale = ContentScale.Crop
-                )
+                if (recommendation.image != null)
+                    Image(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .clip(RoundedCornerShape(0.dp, 0.dp, 20.dp, 20.dp)),
+                        painter = painterResource(
+                            id = recommendation.image
+                        ),
+                        contentDescription = "",
+                        contentScale = ContentScale.Crop
+                    )
 
             }
             Column(
@@ -156,7 +157,7 @@ fun CardDetailView(modifier: Modifier, recommendation: Recommendation, onClick: 
                         },
 
                     painter = painterResource(
-                        id = R.drawable.close_24
+                        id = R.drawable.ic_close_24
                     ),
                     contentDescription = "",
                     colorFilter = ColorFilter.tint(color = colorResource(id = R.color.kamleon_dark_grey))

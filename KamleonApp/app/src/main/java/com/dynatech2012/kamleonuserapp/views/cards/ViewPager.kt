@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -86,12 +87,12 @@ fun ViewPager(recommendationType: RecommendationType, hydrationLevel: MeasureDat
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(pagerState.pageCount) { iteration ->
-                val color =
-                    if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
+                val color = Color.DarkGray
                 Box(
                     modifier = Modifier
                         .padding(8.dp)
                         .clip(CircleShape)
+                        .alpha(if (pagerState.currentPage == iteration) 0.7f else 0.2f)
                         .background(color)
                         .size(10.dp)
                 )

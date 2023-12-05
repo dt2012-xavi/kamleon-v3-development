@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dynatech2012.kamleonuserapp.databinding.LayoutInvitationPendingListItemBinding
+import com.dynatech2012.kamleonuserapp.extensions.formatTime
 import com.dynatech2012.kamleonuserapp.models.Invitation
 
 class NewInvitationListAdapter(
@@ -64,7 +64,7 @@ class NewInvitationListAdapter(
 
         fun bind(data: Invitation){
             tvSubtitle.text = data.invitationText
-            tvDate.text = data.invitationTime
+            tvDate.text = data.dateSent.formatTime
             tvConfirm.setOnClickListener {
                 notiItemListener?.onClick(true)
             }

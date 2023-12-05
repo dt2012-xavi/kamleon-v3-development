@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -51,10 +52,16 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
             )
             .padding(32.dp)
     ){
-        Row {
-            Image(painter = painterResource(
+        Row (
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Image(
+                modifier = Modifier
+                    .height(40.dp),
+                painter = painterResource(
                 id = R.drawable.kamleon),
-                contentDescription = "")
+                contentDescription = ""
+            )
             Spacer(modifier = Modifier
                 .weight(1f)
             )
@@ -63,7 +70,7 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
                     .padding(10.dp)
                     .clickable { onClick() },
                 painter = painterResource(
-                id = R.drawable.close_24),
+                id = R.drawable.ic_close_24),
                 contentDescription = "")
         }
         Text(
@@ -109,7 +116,8 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
                 openDialog.value = true
             },
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(top = 20.dp),
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(id = R.color.kamleon_blue),
@@ -120,7 +128,7 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
         ) {
             Text(
                 modifier = Modifier
-                    .padding(12.dp),
+                    .padding(6.dp),
                 text = stringResource(id = R.string.premium_landpage_button)
             )
         }
@@ -138,12 +146,6 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
                     openDialog.value = false
                     onClick()
                 },
-                onConfirmation =
-                {
-                    openDialog.value = false
-                    onClick()
-                },
-                buttonText = stringResource(id = R.string.dialog_ok)
             )
         }
     }
@@ -161,7 +163,7 @@ fun PremiumListItemView(title: String, subtitle: String) {
             modifier = Modifier
                 .size(36.dp),
             painter = painterResource(
-                id = R.drawable.baseline_check_24),
+                id = R.drawable.ic_check_24),
             contentDescription = "",
             colorFilter = ColorFilter.tint(color = colorResource(id = R.color.kamleon_blue))
         )

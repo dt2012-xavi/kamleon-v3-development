@@ -18,34 +18,38 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter.Companion.tint
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.views.progress.AnimatedCircularProgressIndicator
 import com.dynatech2012.kamleonuserapp.views.progress.VolumeProgressIndicator
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, descriptionStart: String, startValue: Int, onClick: () -> Unit) {
     val shape = RoundedCornerShape(12.dp)
@@ -53,6 +57,11 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
     val value by rememberSaveable { mutableIntStateOf(startValue) }
     val subtitle by rememberSaveable { mutableStateOf(subtitleStart) }
     val description by rememberSaveable { mutableStateOf(descriptionStart) }
+
+    val scope = rememberCoroutineScope()
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(true)
+
     Card(
         colors = CardDefaults.cardColors(
             containerColor = colorResource(id = R.color.color_fa),
@@ -84,11 +93,14 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
                     .fillMaxSize()
                     .height(130.dp)
                     .padding(horizontal = 20.dp)
-                    .padding(vertical = 20.dp),
+                    .padding(vertical = 20.dp)
+                    .clickable {
+                        showBottomSheet = true
+                    },
                 horizontalAlignment = Alignment.Start,
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.baseline_add_24),
+                    painter = painterResource(id = R.drawable.ic_add_24),
                     contentDescription = "",
                     modifier = Modifier
                         .size(36.dp)
@@ -110,6 +122,34 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
                     text = stringResource(id = R.string.analytic_add_new),
                     fontSize = dimensionResource(R.dimen.ts_14).value.sp,
                     color = colorResource(id = R.color.kamleon_dark_grey))
+            }
+            if (showBottomSheet) {
+                ModalBottomSheet(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    onDismissRequest = {
+                        showBottomSheet = false
+                    },
+                    sheetState = sheetState,
+                    shape = BottomSheetDefaults.ExpandedShape,
+                    dragHandle = {},
+                ) {
+                    // Sheet content
+                    PremiumView(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        onClick = {
+                            scope.launch {
+                                sheetState.hide()
+                            }
+                                .invokeOnCompletion {
+                                    if (!sheetState.isVisible) {
+                                        showBottomSheet = false
+                                    }
+                                }
+                        }
+                    )
+                }
             }
         } else {
 
@@ -261,9 +301,9 @@ fun ElecView(electrolytes: Int) {
         Image(
             painter = painterResource(id =
                 when (electrolytes) {
-                    in 0..4 -> R.drawable.electrolytes_blue
-                    in 5..19 -> R.drawable.electrolytes_orange
-                    else -> R.drawable.electrolytes_red
+                    in 0..4 -> R.drawable.pb_electrolytes_blue
+                    in 5..19 -> R.drawable.pb_electrolytes_orange
+                    else -> R.drawable.pb_electrolytes_red
                 }
             ),
             modifier = Modifier

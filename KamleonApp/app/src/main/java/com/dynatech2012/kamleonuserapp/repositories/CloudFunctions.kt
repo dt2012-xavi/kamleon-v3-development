@@ -5,6 +5,7 @@ import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants
 import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
+import com.dynatech2012.kamleonuserapp.models.Organization
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import kotlin.coroutines.resume
@@ -37,7 +38,7 @@ class CloudFunctions(private val userRepository: UserRepository) {
         functions.getHttpsCallable("getInvitationsForUser").call(body)
             .addOnSuccessListener { result ->
                 val data = result?.data as? ArrayList<HashMap<String, Any>> ?: ArrayList()
-                Log.d(TAG, "get invitations complete: ${data}")
+                Log.d(TAG, "get invitations complete: $data")
                 val invitations = ArrayList<Invitation>()
                 data.forEach {
                     val inv = Invitation(it)
@@ -83,6 +84,34 @@ class CloudFunctions(private val userRepository: UserRepository) {
         } catch (e: Exception) {
             continuation.resume(ResponseNullable.Failure(e))
         }
+    }
+
+    // User profiles
+    suspend fun getUserProfiles(): Response<ArrayList<Organization>> = suspendCoroutine { continuation ->
+        Log.d(TAG, "will try to get user profiles")
+        if (uuid == null) {
+            continuation.resume(Response.Failure(Exception("User not logged in")))
+            return@suspendCoroutine
+        }
+        val body = hashMapOf(
+            "id" to uuid
+        )
+        functions.getHttpsCallable("getUserProfiles").call(body)
+            .addOnSuccessListener { result ->
+                val data = result?.data as? ArrayList<HashMap<String, Any>> ?: ArrayList()
+                Log.d(TAG, "get invitations complete: $data")
+                val organizations = ArrayList<Organization>()
+                data.forEach {
+                    val organization = Organization(it)
+                    organizations.add(organization)
+                }
+                Log.d(TAG, "get user profiles: $organizations")
+                continuation.resume(Response.Success(organizations))
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "get user profiles error: ", exception)
+                continuation.resume(Response.Failure(exception))
+            }
     }
 
     companion object {

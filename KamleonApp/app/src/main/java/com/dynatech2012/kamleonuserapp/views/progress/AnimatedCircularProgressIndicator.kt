@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.views.progress
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -17,6 +18,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
@@ -31,7 +33,6 @@ fun AnimatedCircularProgressIndicator(
             //completedColor: Color,
     modifier: Modifier = Modifier
 ) {
-
     val stroke = with(LocalDensity.current) {
         Stroke(width = 6.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
     }
@@ -113,8 +114,8 @@ private fun DrawScope.drawCircularProgressIndicator(
             0.4f to colorList[1],
             0.6f to colorList[2],
             0.8f to colorList[3],
-            0.96f to colorList[4],
-            1f to colorList[0],
+            //0.96f to colorList[4],
+            1f to colorList[4],
             //center = Offset(size.width / 2, size.height / 2),
         ),
         startAngle = startAngle,
@@ -137,17 +138,32 @@ private fun DrawScope.drawBallProgressIndicator(
     // To do this we need to remove half the stroke width from the total diameter for both sides.
     val diameterOffset = stroke.width / 2
     val arcDimen = size.width - 2 * diameterOffset
+    // ranges not included
+    Log.d("PB", "sweep: $sweep _ lerp: ${sweep / 360f}")
+    val finalColor = when (val percentage = sweep / 360f)
+    {
+        in 0.0f..0.2f -> lerp(colorList[0], colorList[1], percentage)
+        in 0.2f..0.4f -> lerp(colorList[1], colorList[2], percentage)
+        in 0.4f..0.6f -> lerp(colorList[2], colorList[3], percentage)
+        in 0.6f..0.8f -> lerp(colorList[3], colorList[4], percentage)
+        in 0.8f..1f -> colorList[4]
+        else -> colorList[4]
+    }
     drawCircle(
-        //color = color,
+        color = finalColor,
+        /*
         brush = Brush.sweepGradient(
+            0.01f to colorList[0],
             0.2f to colorList[0],
             0.4f to colorList[1],
             0.6f to colorList[2],
             0.8f to colorList[3],
             0.96f to colorList[4],
+            0.99f to colorList[4],
             1f to colorList[0],
             //center = Offset(size.width / 2, size.height / 2),
         ),
+         */
         radius = stroke.width,
         center = Offset(
             diameterOffset + arcDimen / 2 + (arcDimen / 2) * Math.cos(Math.toRadians((startAngle + sweep).toDouble())).toFloat(),

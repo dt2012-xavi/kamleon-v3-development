@@ -11,11 +11,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.adapters.OrganizationsListAdapter
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.ActivitySettingBinding
 import com.dynatech2012.kamleonuserapp.models.CustomUser
+import com.dynatech2012.kamleonuserapp.models.Organization
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
 import dagger.hilt.android.AndroidEntryPoint
@@ -83,7 +86,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         for (menuItem in menuItems) {
             menuItem.setSettingMenuItemListener(this)
         }
-
+        setupAdapter()
         initObservers()
         viewModel.getUserData()
     }
@@ -278,13 +281,21 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
     private fun initObservers() {
         viewModel.userData.observe(this, this::onUserDataChanged)
+        viewModel.userProfiles.observe(this, this::onUserProfilesChanged)
         viewModel.userUpdated.observe(this, this::onUserDataUpdated)
         viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
         viewModel.newInvitations.observe(this, this::onNewInvitation)
     }
 
+    private fun setupAdapter() {
+        val adapter = OrganizationsListAdapter()
+        binding.rvSettingOrganizations.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvSettingOrganizations.adapter = adapter
+    }
+
     private fun onUserDataChanged(userData: CustomUser) {
         Log.d(TAG, "on user data changed")
+        binding.tvProfileName.text = getString(R.string.setting_display_name, userData.name, userData.lastName)
         binding.etAccSurName.setText(userData.name)
         binding.etAccName.setText(userData.lastName)
         binding.accMenuItemEmail.setValue(userData.email)
@@ -298,6 +309,30 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         val age = Period.between(localDate, LocalDate.now()).years
         val stringDate = "$formattedDate ($age)"
         binding.prefMenuItemBirth.setValue(stringDate)
+
+    }
+
+    private fun onUserProfilesChanged(organizations: ArrayList<Organization>) {
+        Log.d(TAG, "on user profiles changed: $organizations")
+        if (organizations.isEmpty()) {
+            binding.llSettingAccountInfoSingle.visibility = View.GONE
+            binding.llSettingAccountInfoMultiple.visibility = View.GONE
+            return
+        }
+        else if (organizations.size == 1) {
+            binding.llSettingAccountInfoMultiple.visibility = View.GONE
+            binding.tvSettingAccountOrg.text = organizations[0].organizationName
+            binding.tvSettingAccountCenter.text = organizations[0].centerName
+            binding.tvSettingAccountTeam.text = organizations[0].teamName
+            binding.llSettingAccountInfoSingle.visibility = View.VISIBLE
+            return
+        }
+        else {
+            binding.llSettingAccountInfoSingle.visibility = View.GONE
+            val adapter = binding.rvSettingOrganizations.adapter as OrganizationsListAdapter
+            adapter.submitList(organizations.toList())
+            binding.llSettingAccountInfoMultiple.visibility = View.VISIBLE
+        }
     }
 
     private fun onUserDataUpdated(updated: Boolean) {

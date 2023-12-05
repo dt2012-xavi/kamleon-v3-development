@@ -29,7 +29,7 @@ data class Recommendation(
             when (recommendationType) {
                 RecommendationType.HOME -> return listOf(
                     Recommendation(
-                        kind = R.string.recommendation_analytics_h_title,
+                        kind = null,
                         titleShort = R.string.recommendation_hydration_title,
                         title = R.string.recommendation_analytics_h_title,
                         text = null,

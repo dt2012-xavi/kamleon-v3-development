@@ -38,13 +38,14 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
 
+
         <ScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_analytic_profile"
+            app:layout_constraintTop_toBottomOf="@id/cv_analytic_profile"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <LinearLayout
@@ -80,6 +81,19 @@
                         app:titleText="Excellent"
                         app:descText="Your sample has good volume to be analyzed." />
 -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="6dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:id="@+id/tv_analytic_last_sample"
+                    android:textAllCaps="true"
+                    android:text="@string/home_last_sample_message_default"
+                    tools:text="last sample 2 november 2023"
+                    android:textColor="@color/kamleon_secondary_grey_50"
+                    android:textAppearance="@style/TextAppearance.Kamleon.Subtitle2" />
+
                 <com.dynatech2012.kamleonuserapp.views.cards.CardViewAnalyticsItemComposeView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -131,16 +145,24 @@
             </LinearLayout>
 
         </ScrollView>
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="58dp"
-            android:layout_height="58dp"
-            android:src="@drawable/img_circle_profile"
-            android:id="@+id/iv_analytic_profile"
-            android:scaleType="centerCrop"
+        <androidx.cardview.widget.CardView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="@dimen/nav_back_button_left"
-            android:layout_marginTop="@dimen/nav_back_button_top"/>
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
+            app:cardCornerRadius="18dp"
+            android:id="@+id/cv_analytic_profile"
+            android:elevation="8dp">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/img_circle_profile"
+                android:id="@+id/iv_analytic_profile"
+                android:layout_gravity="center"/>
+        </androidx.cardview.widget.CardView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

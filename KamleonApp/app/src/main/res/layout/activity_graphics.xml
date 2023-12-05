@@ -19,20 +19,28 @@
         android:layout_width="0dp"
         android:layout_height="58dp"
         android:id="@+id/layoutHeader"
-        android:layout_marginTop="@dimen/nav_back_button_top"
+        android:layout_marginTop="9dp"
         android:layout_marginHorizontal="@dimen/nav_back_button_top"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/bg_nav_back_circle"
-            android:id="@+id/navBack"
-            android:background="@color/transparent"
+        <androidx.cardview.widget.CardView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"/>
+            android:layout_margin="2dp"
+            app:cardCornerRadius="18dp"
+            android:id="@+id/cv_graph_back"
+            android:elevation="8dp">
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_arrow_back_ios_new_24"
+                android:id="@+id/navBack"
+                android:layout_gravity="center"/>
+        </androidx.cardview.widget.CardView>
 
         <TextView
             style="@style/CircularMediumFont"
@@ -44,16 +52,22 @@
             android:textColor="@color/kamleon_secondary_grey_50"
             android:textSize="@dimen/ts_16" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="58dp"
-            android:layout_height="58dp"
-            android:src="@drawable/img_circle_profile"
-            android:id="@+id/iv_graph_profile"
-            android:background="@color/transparent"
-            android:scaleType="centerCrop"
+        <androidx.cardview.widget.CardView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"/>
-
+            android:layout_marginEnd="4dp"
+            app:cardCornerRadius="18dp"
+            android:id="@+id/cv_graph_profile"
+            android:elevation="8dp">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/img_circle_profile"
+                android:id="@+id/iv_graph_profile"
+                android:layout_gravity="center"/>
+        </androidx.cardview.widget.CardView>
     </RelativeLayout>
 
     <!--<androidx.recyclerview.widget.RecyclerView

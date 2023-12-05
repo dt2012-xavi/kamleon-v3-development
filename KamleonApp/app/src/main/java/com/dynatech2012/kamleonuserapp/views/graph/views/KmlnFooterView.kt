@@ -1,6 +1,7 @@
 package com.dynatech2012.kamleonuserapp.views.graph.views
 
 import android.content.Context
+import android.graphics.ColorFilter
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -58,7 +59,9 @@ class KmlnFooterView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
     fun updateStreak(new: Boolean) {
         bStreak = new
 
-        ivStreak.setImageResource(if (bStreak) R.drawable.icn_streak_off else R.drawable.icn_streak_on)
+        ivStreak.setImageResource(if (bStreak) R.drawable.ic_eye_open else R.drawable.ic_eye_crossed)
+        val color = if (bStreak) R.color.kmln_graph_color_white else R.color.kmln_graph_color_active
+        ivStreak.setColorFilter(context.getColor(color), android.graphics.PorterDuff.Mode.SRC_IN)
         if (bStreak) {
             containerView.background = context.getDrawable(R.drawable.kmln_bg_streak_view)
             tvValue1.setTextColor(context.getColor(R.color.kmln_graph_color_white))

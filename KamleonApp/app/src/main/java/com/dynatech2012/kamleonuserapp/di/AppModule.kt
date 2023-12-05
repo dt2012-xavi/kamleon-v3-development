@@ -2,6 +2,7 @@ package com.dynatech2012.kamleonuserapp.di
 
 import android.content.Context
 import androidx.room.Room
+import com.dynatech2012.kamleonuserapp.camera.QRCodeImageAnalyzerMLKitKotlin
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureDataDao
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureDatabase
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureDataDao
@@ -100,4 +101,8 @@ object AppModule {
             "AverageMonthReader"
         )
             .build()
+
+    @Provides
+    @Singleton
+    fun provideAnalizer(): QRCodeImageAnalyzerMLKitKotlin = QRCodeImageAnalyzerMLKitKotlin()
 }

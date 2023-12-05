@@ -31,11 +31,12 @@ fun PremiumModalView(modifier: Modifier, onClick: () -> Unit) {
             .wrapContentHeight()
             .background(color = colorResource(id = R.color.color_fa))
             .padding(horizontal = 40.dp)
-            .padding(top = 24.dp, bottom = 40.dp),
+            .padding(top = 24.dp, bottom = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
             modifier = Modifier
+                .padding(4.dp)
                 .size(48.dp),
             painter = painterResource(
                 id = R.drawable.padlock
@@ -44,7 +45,7 @@ fun PremiumModalView(modifier: Modifier, onClick: () -> Unit) {
         )
         Text(
             modifier = Modifier
-                .padding(bottom = 8.dp),
+                .padding(8.dp),
             text = stringResource(id = R.string.premium_recommendation_modal_title),
             fontSize = dimensionResource(R.dimen.ts_24).value.sp,
             fontWeight = FontWeight.Bold,
@@ -73,7 +74,7 @@ fun PremiumModalView(modifier: Modifier, onClick: () -> Unit) {
         ) {
             Text(
                 modifier = Modifier
-                    .padding(12.dp),
+                    .padding(6.dp),
                 text = stringResource(id = R.string.premium_recommendation_modal_button)
             )
         }

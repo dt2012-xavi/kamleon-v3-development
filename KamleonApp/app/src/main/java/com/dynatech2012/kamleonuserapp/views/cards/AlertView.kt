@@ -58,12 +58,15 @@ import kotlinx.coroutines.launch
 @Composable
 fun AlertView
             (onDismissRequest: () -> Unit,
-             onConfirmation: () -> Unit,
              dialogTitle: String,
              dialogText: String,
-             buttonText: String,
 )
 {
+    LaunchedEffect(key1 = "key1", block =
+    {
+        delay(3000)
+        onDismissRequest()
+    })
     Dialog(onDismissRequest = { onDismissRequest() },) {
         // Draw a rectangle shape with rounded corners inside the dialog
         Card(
@@ -97,26 +100,6 @@ fun AlertView
                     fontSize = 16.sp,
                     color = colorResource(id = R.color.color_fa),
                     )
-                Button(
-                    onClick = {
-                        onDismissRequest()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(id = R.color.kamleon_blue),
-                        contentColor = colorResource(id = R.color.color_fa),
-                        disabledContainerColor = colorResource(id = R.color.kamleon_secondary_grey_40),
-                        disabledContentColor = colorResource(id = R.color.kamleon_secondary_grey_40),
-                    )
-                ) {
-                    Text(
-                        text = buttonText,
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .padding(vertical = 4.dp),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
-                }
             }
         }
     }

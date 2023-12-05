@@ -20,8 +20,8 @@ import com.dynatech2012.kamleonuserapp.fragments.SettingFragment
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.models.Invitation
-import com.dynatech2012.kamleonuserapp.models.InvitationRole
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
+import com.dynatech2012.kamleonuserapp.models.Organization
 import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.DatabaseDataSource
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
@@ -60,6 +60,8 @@ class MainViewModel @Inject constructor(
 
     private val _userData = MutableLiveData<CustomUser>()
     val userData: LiveData<CustomUser> = _userData
+    private val _userProfiles = MutableLiveData<ArrayList<Organization>>()
+    val userProfiles: LiveData<ArrayList<Organization>> = _userProfiles
     private val _userUpdated = MutableLiveData<Boolean>()
     val userUpdated: LiveData<Boolean> = _userUpdated
 
@@ -93,6 +95,11 @@ class MainViewModel @Inject constructor(
                     }
                     .build()
                 val disposable = imageLoader.enqueue(request)
+            }
+            val userProfilesResult = cloudFunctions.getUserProfiles()
+            if (userProfilesResult.isSuccess && userProfilesResult.dataValue != null) {
+                val userProfiles = userProfilesResult.dataValue!!
+                _userProfiles.postValue(userProfiles)
             }
             Log.d(TAG, "user data changed got user ${userResult.dataValue}")
         }
