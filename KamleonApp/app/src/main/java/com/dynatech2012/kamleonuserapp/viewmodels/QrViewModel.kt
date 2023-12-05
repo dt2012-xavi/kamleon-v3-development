@@ -35,14 +35,7 @@ class QrViewModel @Inject constructor(
     private var _qrString: MutableLiveData<Response<String>> = MutableLiveData()
     val qrString: LiveData<Response<String>> = _qrString
     val imageAnalysis = ImageAnalysis.Builder()
-        /*
-        .setResolutionSelector(ResolutionSelector(
-            Size(720, 720),
-            Size(1280, 720),
-            Size(1920, 1080)
-        ))
-         */
-        //.setTargetResolution(Size(720, 720)) //1280, 720
+        .setTargetResolution(Size(720, 1280)) //1280, 720
         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
         .build()
 

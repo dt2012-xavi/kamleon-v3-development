@@ -124,8 +124,6 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
             binding.layoutTabHome.background = null
 
             binding.layoutContentQR.visibility = View.VISIBLE
-
-            startCamera()
         }
     }
 
@@ -175,8 +173,8 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
     }
 
     private fun showQRIntroFragment() {
-        ///val qrFragment = ScanIntroFragment.newInstance(onDismissScanIntro)
-        ///qrFragment.show(parentFragmentManager, "QR")
+        val qrFragment = ScanIntroFragment.newInstance(onDismissScanIntro)
+        qrFragment.show(parentFragmentManager, "QR")
     }
 
     companion object {
@@ -191,7 +189,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         if (result) {
             // Permission is granted
             Log.d(TAG, "qrScanner, permission granted")
-            //startCamera()
+            startCamera()
         } else {
             // Permission is denied
             // Should go back to home fragment
@@ -207,7 +205,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             Log.d(TAG, "qrScanner, permission granted")
-            //startCamera()
+            startCamera()
         } else {
             requestPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
@@ -266,8 +264,8 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         //imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), new QRCodeImageAnalyzerKotlin(qrListener));
         //imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), new QRCodeImageAnalyzer(qrListener));
         //imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), new QRCodeImageAnalyzerMLKit(qrListener));
-        ////qrViewModel.startScanner()
-        ///qrViewModel.startAnalyzing()
+        qrViewModel.startScanner()
+        qrViewModel.startAnalyzing()
         cameraProvider
           .bindToLifecycle(this as LifecycleOwner, cameraSelector, qrViewModel.imageAnalysis, preview)
     }

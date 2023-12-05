@@ -64,7 +64,7 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:src="@drawable/img_circle_profile"
+                android:src="@drawable/image_profile"
                 android:id="@+id/iv_graph_profile"
                 android:layout_gravity="center"/>
         </androidx.cardview.widget.CardView>

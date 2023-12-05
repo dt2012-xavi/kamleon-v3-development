@@ -86,8 +86,8 @@
 
             <RelativeLayout
                 android:id="@+id/profileLayout"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="76dp"
+                android:layout_height="76dp"
                 android:layout_gravity="center"
                 android:clickable="true">
 
@@ -96,8 +96,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:layout_marginTop="@dimen/nav_back_button_top"
-                    android:layout_marginEnd="@dimen/nav_back_button_left"
                     android:background="@color/transparent"
                     android:scaleType="centerCrop"
                     android:src="@drawable/image_profile" />
@@ -107,8 +105,8 @@
                     android:layout_height="26dp"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginEnd="14dp"
-                    android:layout_marginBottom="14dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginBottom="2dp"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="18dp"
                     android:id="@+id/cv_sett_camera"
@@ -130,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginVertical="6dp"
+                android:layout_marginVertical="8dp"
                 android:textAppearance="@style/TextAppearance.Kamleon.Headline5"
 
                 tools:text="Cèlia Marquès" />
