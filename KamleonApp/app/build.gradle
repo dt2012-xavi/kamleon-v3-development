@@ -153,4 +153,7 @@ dependencies {
 
     //implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.0'
     implementation 'com.google.mlkit:barcode-scanning:17.2.0'
+
+    // Splash
+    implementation 'androidx.core:core-splashscreen:1.1.0-alpha02'
 }

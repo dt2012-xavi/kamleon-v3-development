@@ -69,7 +69,12 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
                 binding.btnSignIn.text = ""
                 binding.pbLogin.visibility = VISIBLE
             }
-            5 -> startActivity(Intent(requireContext(), MainActivity::class.java))
+            5 -> {
+                binding.btnSignIn.isEnabled = true
+                binding.btnSignIn.text = getString(R.string.login_btn_signin)
+                binding.pbLogin.visibility = INVISIBLE
+                startActivity(Intent(requireContext(), MainActivity::class.java))
+            }
         }
     }
 

@@ -30,7 +30,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.KamleonApp.Light"
-
         android:hardwareAccelerated="true"
         android:largeHeap="true"
 
@@ -49,8 +48,9 @@
             android:name=".activities.MainActivity"
             android:exported="false"
             android:label="@string/title_activity_main"
-            android:theme="@style/Theme.KamleonApp" />
+            android:theme="@style/Theme.KamleonApp.Light" />
         <activity
+            android:theme="@style/Theme.KamleonApp.Splash"
             android:name=".activities.InitActivity"
             android:exported="true"
             android:label="@string/title_activity_init"

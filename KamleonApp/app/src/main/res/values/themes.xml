@@ -10,7 +10,13 @@
 <!--    <item name="android:textViewStyle">@style/Circular</item>-->
 
 
-
+    <style name="Theme.KamleonApp.Splash" parent="Theme.KamleonApp">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="windowSplashScreenBackground">@android:color/transparent</item>
+        <item name="windowSplashScreenAnimationDuration">50</item>
+        <item name="postSplashScreenTheme">@style/Theme.KamleonApp.Light</item>
+    </style>
 
     <style name="Theme.KamleonApp.Light">
         <item name="android:statusBarColor">@color/kamleon_dark_grey</item>

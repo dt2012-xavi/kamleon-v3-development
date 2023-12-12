@@ -26,6 +26,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
         val content: View = findViewById(android.R.id.content)
         viewModel.resetLogged()
         viewModel.checkLogin()
+        /*
         content.viewTreeObserver.addOnPreDrawListener(
             object : ViewTreeObserver.OnPreDrawListener {
                 override fun onPreDraw(): Boolean {
@@ -48,6 +49,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
                 }
             }
         )
+         */
     }
 
     private val requestLocationPermissionLauncher =
