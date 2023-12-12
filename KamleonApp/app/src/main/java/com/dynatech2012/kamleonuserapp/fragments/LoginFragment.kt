@@ -3,6 +3,8 @@ package com.dynatech2012.kamleonuserapp.fragments
 import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -56,8 +58,19 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
     }
 
     private fun startActivity(state: Int) {
-        if (state == 5)
-            startActivity(Intent(requireContext(), MainActivity::class.java))
+        when (state) {
+            0 -> {
+                binding.btnSignIn.isEnabled = true
+                binding.btnSignIn.text = getString(R.string.login_btn_signin)
+                binding.pbLogin.visibility = INVISIBLE
+            }
+            1 -> {
+                binding.btnSignIn.isEnabled = false
+                binding.btnSignIn.text = ""
+                binding.pbLogin.visibility = VISIBLE
+            }
+            5 -> startActivity(Intent(requireContext(), MainActivity::class.java))
+        }
     }
 
     private fun updateButtonState() {

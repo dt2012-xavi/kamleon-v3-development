@@ -51,6 +51,9 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
             selectTab(0)
             findNavController().navigate(R.id.action_analyticFragment_to_homeFragment)
         }
+        binding.layoutTabAnalytic.setOnClickListener {
+            selectTab(1)
+        }
         binding.layoutTabQr.setOnClickListener {
             selectTab(2)
             requestCamera()
@@ -113,7 +116,7 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
     }
 
     private fun selectTab(tabIndex: Int) {
-        binding.layoutContentAnalytics.visibility = View.GONE
+        //binding.layoutContentAnalytics.visibility = View.GONE
         binding.layoutContentQR.visibility = View.GONE
 
         when (tabIndex) {

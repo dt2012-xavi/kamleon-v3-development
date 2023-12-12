@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tab_nav"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.dynatech2012.kamleonuserapp.fragments.HomeFragment"
+        android:label="activity_home"
+        tools:layout="@layout/activity_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_analyticFragment"
+            app:destination="@id/analyticFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/analyticFragment"
+        android:name="com.dynatech2012.kamleonuserapp.fragments.AnalyticFragment"
+        android:label="activity_analytic"
+        tools:layout="@layout/activity_analytic" >
+        <action
+            android:id="@+id/action_analyticFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_analyticFragment_to_graphicsFragment"
+            app:destination="@id/graphicsFragment" />
+        <action
+            android:id="@+id/action_analyticFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/graphicsFragment"
+        android:name="com.dynatech2012.kamleonuserapp.fragments.GraphicsFragment"
+        android:label="activity_graphics"
+        tools:layout="@layout/activity_graphics" >
+        <action
+            android:id="@+id/action_graphicsFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_graphicsFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+</navigation>

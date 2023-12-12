@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:paddingHorizontal="@dimen/kmln_graph_footer_padding_h"
     android:paddingVertical="@dimen/kmln_graph_footer_padding_v"
     android:orientation="vertical">
@@ -31,7 +32,7 @@
             android:id="@+id/tvLabelStreak"
             android:paddingHorizontal="12dp"
             android:text="@string/graph_footer_streak"
-            android:textSize="@dimen/kmln_graph_footer_streak_title_text_size"/>
+            android:textAppearance="@style/TextAppearance.Kamleon.Body1" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -42,17 +43,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="8"
+                tools:text="8"
                 android:id="@+id/tvStreakValue1"
                 android:textColor="@color/kmln_graph_color_active"
-                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.Kamleon.Body1"
                 android:textSize="@dimen/kmln_graph_footer_streak_value1_text_size"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="/20"
+                tools:text="/20"
                 android:id="@+id/tvStreakValue2"
+                android:textAppearance="@style/TextAppearance.Kamleon.Body1"
                 android:textColor="@color/kmln_graph_color_active"
                 android:textSize="@dimen/kmln_graph_footer_streak_value2_text_size"/>
 

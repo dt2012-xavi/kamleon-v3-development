@@ -13,14 +13,14 @@
     <string name="placeholder_password">Password</string>
 
     <!-- Login -->
-    <string name="login_title">Sign in with email</string>
+    <string name="login_title">Log in</string>
     <string name="login_desc">Enter your details to continue. If\nyou’ve forgotten, we’ll help you out.</string>
     <string name="login_btn_signin">Sign in</string>
 
 
     <string name="login_forgot_pwd"><u>Forgot password?</u></string>
     <string name="login_not_have_account">Don’t you have an account yet?</string>
-    <string name="login_signup"><u>Sign Up</u></string>
+    <string name="login_signup"><u>Register</u></string>
 
     <!-- Sign Up -->
     <string name="signup_title">Register</string>
@@ -100,6 +100,8 @@
     <string name="setting_label_user_gender">GENDER</string>
     <string name="setting_label_user_weight">WEIGHT</string>
     <string name="setting_label_user_height">HEIGHT</string>
+    <string name="setting_label_user_weight_text">%1$s cm</string>
+    <string name="setting_label_user_height_text">%1$s Kg</string>
     <string name="setting_label_user_birthdate">BIRTH DATE</string>
 
     <string name="setting_label_noti">NOTIFICATIONS</string>
@@ -127,14 +129,16 @@
     <string name="email_confirm">CONFIRM E-MAIL</string>
 
     <!-- Pin -->
-    <string name="pin_pin">PIN</string>
+    <string name="pin_title">SET A NEW PIN</string>
+    <string name="pin_pin">CURRENT PIN</string>
     <string name="pin_new">NEW PIN</string>
     <string name="pin_confirm">CONFIRM PIN</string>
 
     <string name="pin_desc">The PIN is the personalized code that you enter on the screen before starting your experience.\n\n<b>Set Up Your PIN:</b>\n1. Enter a six digits numeric code of your choice.\n2. Confirm and start your secure journey!</string>
 
     <!-- Change Pass -->
-    <string name="pwd_pwd">PASSWORD</string>
+    <string name="pwd_title">SET A NEW PASSWORD</string>
+    <string name="pwd_password">CURRENT PASSWORD</string>
     <string name="pwd_new">NEW PASSWORD</string>
     <string name="pwd_confirm">CONFIRM PASSWORD</string>
 

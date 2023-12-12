@@ -205,111 +205,18 @@
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="93dp"
-        android:id="@+id/tabContainer"
+    <!--<androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="8dp"
         android:layout_marginHorizontal="24dp"
+        app:cardBackgroundColor="@color/white50"
+        android:elevation="0dp"
         android:paddingVertical="0dp"
-        android:paddingHorizontal="0dp"
-        android:weightSum="3"
-        android:background="@drawable/bg_tab"
-        android:orientation="horizontal">
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/layoutTabHome"
-            android:background="@drawable/bg_tab_button_shadow"
-            android:clickable="true"
-            android:orientation="vertical">
+        android:paddingHorizontal="0dp">-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/tab_content_height"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="@dimen/tab_icon_size"
-                    android:layout_height="@dimen/tab_icon_size"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/icn_tab_home"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/CircularMediumFont"
-                    android:layout_marginTop="8dp"
-                    android:textColor="@color/kamleon_dark_grey"
-                    android:text="@string/tab_home"
-                    android:textSize="@dimen/ts_12"/>
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/layoutTabAnalytic"
-            android:clickable="true"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/tab_content_height"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="@dimen/tab_icon_size"
-                    android:layout_height="@dimen/tab_icon_size"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/icn_tab_analytic"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/CircularMediumFont"
-                    android:layout_marginTop="8dp"
-                    android:textColor="@color/black"
-                    android:text="@string/tab_analytic"
-                    android:textSize="@dimen/ts_12"/>
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/layoutTabQr"
-            android:clickable="true"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/tab_content_height"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="@dimen/tab_icon_size"
-                    android:layout_height="@dimen/tab_icon_size"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/icn_tab_qr"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/CircularMediumFont"
-                    android:layout_marginTop="8dp"
-                    android:textColor="@color/black"
-                    android:text="@string/tab_qr"
-                    android:textSize="@dimen/ts_12"/>
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

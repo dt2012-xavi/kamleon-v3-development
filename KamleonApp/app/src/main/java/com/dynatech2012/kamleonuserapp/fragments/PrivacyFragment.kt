@@ -48,7 +48,7 @@ class PrivacyFragment : BaseFragment<ActivityPrivacyBinding>() {
     }
 
     override fun initEvent() {
-        binding.btnNavBack.setOnClickListener { activity?.finish() }
+        binding.btnNavBack.setOnClickListener { findNavController().popBackStack() }
         binding.btnAcceptAll.setOnClickListener {
             acceptState = arrayOf(true, true, true)
             updatePrivacyItemViews()

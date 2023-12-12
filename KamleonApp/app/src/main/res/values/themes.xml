@@ -6,7 +6,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor">@color/kamleon_dark_grey</item>
-
     </style>
 <!--    <item name="android:textViewStyle">@style/Circular</item>-->
 
@@ -15,7 +14,7 @@
 
     <style name="Theme.KamleonApp.Light">
         <item name="android:statusBarColor">@color/kamleon_dark_grey</item>
-        <item name="colorSurface">@color/color_fa</item>
+        <item name="colorSurface">@color/white</item>
         <item name="colorSurfaceInverse">@color/kamleon_dark_grey</item>
         <item name="android:colorBackground">@color/color_fa</item>
 

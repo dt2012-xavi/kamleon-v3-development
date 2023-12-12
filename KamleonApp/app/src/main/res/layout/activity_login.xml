@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color_activity"
+    android:background="?attr/colorSurface"
     tools:context=".fragments.LoginFragment">
 
     <ImageButton
@@ -36,11 +36,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/CircularMediumFont"
+            android:textAppearance="@style/TextAppearance.Kamleon.Headline6"
             android:layout_marginTop="8dp"
             android:textColor="@color/kamleon_dark_grey"
-            android:text="@string/login_title"
-            android:textSize="@dimen/ts_20"/>
+            android:text="@string/login_title"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,17 +98,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <Button
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/round_blue_button_height"
-            android:background="@drawable/bg_btn_round_blue"
-            android:paddingVertical="0dp"
-            android:textAllCaps="false"
-            android:id="@+id/btnSignIn"
-            android:text="@string/login_btn_signin"
-            android:textAppearance="@style/RoundBlueButtonTextStyle"
-            android:textColor="@drawable/color_text_button_blue_round"
-            android:enabled="true"/>
+            android:layout_height="@dimen/round_blue_button_height">
+            <ProgressBar
+                android:id="@+id/pb_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:indeterminate="true"
+                style="?android:attr/progressBarStyleSmall"
+                android:visibility="invisible"
+                android:indeterminateTint="@color/kamleon_secondary_grey_40" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/round_blue_button_height"
+                android:background="@drawable/bg_btn_round_blue"
+                android:paddingVertical="0dp"
+                android:textAllCaps="false"
+                android:id="@+id/btnSignIn"
+                android:text="@string/login_btn_signin"
+                android:textAppearance="@style/RoundBlueButtonTextStyle"
+                android:textColor="@drawable/color_text_button_blue_round"
+                android:enabled="true"/>
+        </RelativeLayout>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

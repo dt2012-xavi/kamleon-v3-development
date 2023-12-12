@@ -45,6 +45,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.application.fontFamily
+import com.dynatech2012.kamleonuserapp.application.fontFamilyBook
 import com.dynatech2012.kamleonuserapp.views.progress.AnimatedCircularProgressIndicator
 import com.dynatech2012.kamleonuserapp.views.progress.VolumeProgressIndicator
 import kotlinx.coroutines.launch
@@ -72,11 +74,11 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
             .clickable { onClick() }
             .coloredShadow(
                 color = Color.Black,
-                alpha = 0.15f,
+                alpha = 0.1f,
                 offsetX = 2.dp,
                 offsetY = 2.dp,
-                shadowRadius = 8.dp,
-                //blurRadius = 12.dp,
+                shadowRadius = 2.dp,
+                blurRadius = 2.dp,
                 //spread = 0.dp,
                 borderRadius = 12.dp,
             ),
@@ -100,7 +102,7 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
                 horizontalAlignment = Alignment.Start,
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_add_24),
+                    painter = painterResource(id = R.drawable.plus),
                     contentDescription = "",
                     modifier = Modifier
                         .size(36.dp)
@@ -113,12 +115,14 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
                             borderRadius = 18.dp,
                             shadowRadius = 4.dp,
                         )
-                        .background(colorResource(id = R.color.color_fa), CircleShape),
+                        .background(colorResource(id = R.color.color_fa), CircleShape)
+                        .padding(8.dp),
                     colorFilter = tint(colorResource(id = R.color.kamleon_dark_grey))
                 )
                 Spacer(modifier = Modifier
                     .weight(1f))
                 Text(
+                    fontFamily = fontFamily,
                     text = stringResource(id = R.string.analytic_add_new),
                     fontSize = dimensionResource(R.dimen.ts_14).value.sp,
                     color = colorResource(id = R.color.kamleon_dark_grey))
@@ -157,7 +161,7 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(130.dp)
-                    .padding(8.dp)
+                    .padding(start = 12.dp, end = 8.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -168,24 +172,29 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(bottom = 2.dp),
                         text = analyticType.title,
                         fontSize = dimensionResource(R.dimen.ts_14).value.sp,
-                        color = colorResource(id = R.color.kamleon_secondary_grey_50),
+                        color = colorResource(id = R.color.kamleon_secondary_grey_60),
                     )
                     Text(
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(bottom = 6.dp),
                         text = subtitle,
                         fontSize = dimensionResource(R.dimen.ts_20).value.sp,
                         color = colorResource(id = R.color.kamleon_dark_grey),
-                        fontWeight = FontWeight.Bold
                     )
                     Text(
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight.Medium,
                         modifier = Modifier
                             .padding(top = 4.dp),
                         text = description,
                         fontSize = dimensionResource(R.dimen.ts_14).value.sp,
-                        color = colorResource(id = R.color.kamleon_secondary_grey_40),
+                        color = colorResource(id = R.color.kamleon_secondary_grey_50),
                     )
                 }
                 Column(
@@ -271,8 +280,9 @@ fun HydrationView(hydration: Int) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
+                    fontFamily = fontFamilyBook,
                     text = hydration.toString(),
-                    fontSize = dimensionResource(R.dimen.ts_36).value.sp,
+                    fontSize = dimensionResource(R.dimen.ts_40).value.sp,
                     color = colorResource(id = R.color.kamleon_dark_grey)
                 )
             }
@@ -282,6 +292,7 @@ fun HydrationView(hydration: Int) {
                 verticalArrangement = Arrangement.aligned(Alignment.Bottom)
             ) {
                 Text(
+                    fontFamily = fontFamilyBook,
                     text = stringResource(id = R.string.unit_percentage),
                     fontSize = dimensionResource(R.dimen.ts_20).value.sp,
                     color = colorResource(id = R.color.kamleon_dark_grey)
@@ -323,8 +334,9 @@ fun ElecView(electrolytes: Int) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
+                    fontFamily = fontFamilyBook,
                     text = electrolytes.toString(),
-                    fontSize = dimensionResource(R.dimen.ts_36).value.sp,
+                    fontSize = dimensionResource(R.dimen.ts_40).value.sp,
                     color = colorResource(id = R.color.kamleon_dark_grey)
                 )
             }
@@ -334,6 +346,7 @@ fun ElecView(electrolytes: Int) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
+                    fontFamily = fontFamilyBook,
                     text = "mS/cm",
                     fontSize = dimensionResource(R.dimen.ts_16).value.sp,
                     color = colorResource(id = R.color.kamleon_secondary_grey_60)
@@ -370,8 +383,9 @@ fun VolumeView(volume: Int) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
+                    fontFamily = fontFamilyBook,
                     text = volume.toString(),
-                    fontSize = dimensionResource(R.dimen.ts_36).value.sp,
+                    fontSize = dimensionResource(R.dimen.ts_40).value.sp,
                     color = colorResource(id = R.color.kamleon_dark_grey)
                 )
             }
@@ -381,6 +395,7 @@ fun VolumeView(volume: Int) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
+                    fontFamily = fontFamilyBook,
                     text = "ml",
                     fontSize = dimensionResource(R.dimen.ts_16).value.sp,
                     color = colorResource(id = R.color.kamleon_secondary_grey_60)

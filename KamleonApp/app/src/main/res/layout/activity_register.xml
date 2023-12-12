@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color_activity"
+    android:background="?attr/colorSurface"
     tools:context=".fragments.RegisterFragment">
     <ImageButton
         android:layout_width="@dimen/nav_back_button_size"
@@ -34,11 +34,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/CircularMediumFont"
+            android:textAppearance="@style/TextAppearance.Kamleon.Headline6"
             android:layout_marginTop="8dp"
             android:textColor="@color/kamleon_dark_grey"
-            android:text="@string/signup_title"
-            android:textSize="@dimen/ts_20"/>
+            android:text="@string/signup_title"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

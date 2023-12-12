@@ -296,19 +296,19 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     private fun onUserDataChanged(userData: CustomUser) {
         Log.d(TAG, "on user data changed")
         binding.tvProfileName.text = getString(R.string.setting_display_name, userData.name, userData.lastName)
-        binding.etAccSurName.setText(userData.name)
-        binding.etAccName.setText(userData.lastName)
+        binding.etAccSurName.setText(userData.lastName)
+        binding.etAccName.setText(userData.name)
         binding.accMenuItemEmail.setValue(userData.email)
-        binding.prefMenuItemWeight.setValue(userData.weight.toString())
-        binding.prefMenuItemHeight.setValue(userData.height.toString())
-        binding.prefMenuItemGender.setValue(userData.gender.toString())
+        binding.prefMenuItemWeight.setValue(getString(R.string.setting_label_user_weight_text, userData.weight.toString()))
+        binding.prefMenuItemHeight.setValue(getString(R.string.setting_label_user_height_text, userData.height.toString()))
+        binding.prefMenuItemGender.setValue(userData.gender.raw)
         val localDate: LocalDate = userData.dateOfBirth.toInstant().atZone(ZoneId.systemDefault())
             .toLocalDate()
-        val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         val formattedDate = localDate.format(formatter)
         val age = Period.between(localDate, LocalDate.now()).years
         val stringDate = "$formattedDate ($age)"
-        binding.prefMenuItemBirth.setValue(stringDate)
+        binding.prefMenuItemBirth.setValue(formattedDate)
 
     }
 

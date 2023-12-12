@@ -113,7 +113,7 @@ fun CardViewHomeItemHome(recommType: RecommendationType, hydrationLevel: Measure
     if (recommType == RecommendationType.HOME && page == 0 && hydrationLevel != null) {
         recommendation.text = recommendation.getHydrationText(hydrationLevel)
     }
-    CardViewHomeItem(
+    RecommendationCardView(
         recommendation = recommendation,
         modifier = Modifier,
         showBottomSheet = showBottomSheet,
@@ -149,7 +149,7 @@ fun CardViewHomeItemHome(recommType: RecommendationType, hydrationLevel: Measure
                 }
             )
         else
-            CardDetailView(
+            RecommendationDetailView(
                 modifier = Modifier
                     .fillMaxSize(),
                 recommendation = recommendation,

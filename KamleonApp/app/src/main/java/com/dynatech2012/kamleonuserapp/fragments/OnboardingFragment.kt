@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.activities.MainActivity
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.constants.Constants
@@ -112,15 +113,13 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
                     val gender = Gender.fromRaw(genderPicked)
                     viewModel.gender = gender
                 }
-                else -> {}
             }
             checkIfGoNextStep()
         }
 
         binding.btnNavBack.setOnClickListener {
-            if (state.step == 0) {
-                activity?.finish()
-            } else {
+            if (state.step == 0) { findNavController().popBackStack() }
+            else {
                 state = OnBoardingStep.values()[state.step - 1]
             }
 

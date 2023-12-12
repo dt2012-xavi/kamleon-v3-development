@@ -92,6 +92,7 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
 
     fun setMeasuresDataSource(data: ArrayList<MeasureData>) {
         measuresDataSource = data
+        /*
         val fakeData = MeasureData()
         fakeData.timestamp = Date().time
         fakeData.score = 90
@@ -104,6 +105,7 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
         measuresDataSource.add(fakeData)
         measuresDataSource.add(fakeData2)
         measuresDataSource.add(fakeData3)
+         */
         refreshGraphView()
     }
 

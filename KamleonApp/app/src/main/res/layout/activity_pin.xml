@@ -33,13 +33,12 @@
             style="@style/CircularBoldFont"
             android:layout_marginTop="16dp"
             android:textColor="@color/text_color_category"
-            android:text="@string/pin_pin"
+            android:text="@string/pin_title"
             android:textSize="@dimen/ts_14"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="12dp"
             android:paddingVertical="8dp"
             android:orientation="vertical">
 
@@ -125,6 +124,15 @@
                         android:inputType="numberPassword"
                         android:imeOptions="actionDone"
                         android:text=""/>
+                    <ImageView
+                        android:layout_width="@dimen/input_text_box_eye_width"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:paddingVertical="4dp"
+                        android:clickable="true"
+                        android:id="@+id/iv_pin_new_eye"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/icn_eye_off"/>
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -158,6 +166,15 @@
                         android:inputType="numberPassword"
                         android:imeOptions="actionDone"
                         android:text=""/>
+                    <ImageView
+                        android:layout_width="@dimen/input_text_box_eye_width"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:paddingVertical="4dp"
+                        android:clickable="true"
+                        android:id="@+id/iv_pin_confirm_eye"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/icn_eye_off"/>
                 </LinearLayout>
 
             </LinearLayout>

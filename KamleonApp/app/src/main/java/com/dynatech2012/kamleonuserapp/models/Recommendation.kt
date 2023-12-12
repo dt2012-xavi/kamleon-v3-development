@@ -59,6 +59,8 @@ data class Recommendation(
                         showModal = false,
                         image = R.drawable.recom1
                     ),
+
+
                     Recommendation(
                         kind = R.string.recommendation_analytics_h_title,
                         titleShort = R.string.recommendation_analytics_h_2_title_short,
@@ -69,16 +71,18 @@ data class Recommendation(
                         clickable = true,
                         image = R.drawable.recom2
                     ),
+
                     Recommendation(
-                        kind = R.string.recommendation_analytics_h_title,
-                        titleShort = R.string.recommendation_analytics_h_3_title_short,
-                        title = R.string.recommendation_analytics_h_3_title,
-                        text = R.string.recommendation_analytics_h_3_subtitle,
-                        isRead = true,
-                        blocked = false,
-                        clickable = true,
-                        image = R.drawable.recom8
+                    kind = R.string.recommendation_analytics_h_title,
+                    titleShort = R.string.recommendation_analytics_h_3_title_short,
+                    title = R.string.recommendation_analytics_h_3_title,
+                    text = R.string.recommendation_analytics_h_3_subtitle,
+                    isRead = true,
+                    blocked = false,
+                    clickable = true,
+                    image = R.drawable.recom8
                     )
+
                 )
 
                 RecommendationType.ELECTROLYTE -> return listOf(

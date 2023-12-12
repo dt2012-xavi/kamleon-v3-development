@@ -2,6 +2,7 @@ package com.dynatech2012.kamleonuserapp.views.graph.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -11,6 +12,7 @@ import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphBarDrawData
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphViewMode
 import com.dynatech2012.kamleonuserapp.extensions.formatDate
+import kotlinx.coroutines.DEBUG_PROPERTY_NAME
 
 class KmlnHeaderView(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
 
@@ -27,10 +29,10 @@ class KmlnHeaderView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
     private var tvValueUnit: TextView? = null
     private var tvTimstamp: TextView? = null
 
-    var optionViewDaily = view.findViewById(R.id.kmlnHeaderItemDaily) as KmlnOptionView
-    var optionViewWeekly = view.findViewById(R.id.kmlnHeaderItemWeekly) as KmlnOptionView
-    var optionViewMonthly = view.findViewById(R.id.kmlnHeaderItemMonthly) as KmlnOptionView
-    var optionViewYearly = view.findViewById(R.id.kmlnHeaderItemYearly) as KmlnOptionView
+    private var optionViewDaily = view.findViewById(R.id.kmlnHeaderItemDaily) as KmlnOptionView
+    private var optionViewWeekly = view.findViewById(R.id.kmlnHeaderItemWeekly) as KmlnOptionView
+    private var optionViewMonthly = view.findViewById(R.id.kmlnHeaderItemMonthly) as KmlnOptionView
+    private var optionViewYearly = view.findViewById(R.id.kmlnHeaderItemYearly) as KmlnOptionView
 
 //    private var layoutDaily: RelativeLayout =
 //        view.findViewById(R.id.kmlnHeaderItemDaily) as RelativeLayout
@@ -90,6 +92,7 @@ class KmlnHeaderView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
     }
 
     fun setData(data: KamleonGraphBarDrawData) {
+        Log.d("KmlnHeaderView", "setData size: ${data.values.size}")
         if (data.values.isEmpty()) {
             return
         }
@@ -98,6 +101,17 @@ class KmlnHeaderView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
         val avgValue = nonZeroVals.sumOf { it.y } / nonZeroVals.size
         var strAvg = ""
         val strAvgUnit = context.getString(data.type.getUnit())
+        if (nonZeroVals.isEmpty()) {
+            Log.d("KmlnHeaderView", "setData: nonZeroVals.isEmpty()")
+            val strDateRange = when(data.mode) {
+                KamleonGraphViewMode.Daily -> data.date.formatDate("dd MMM, yyyy")
+                KamleonGraphViewMode.Weekly -> data.startDate().formatDate("dd MMM, yyyy") + " - " + data.endDate().formatDate("dd MMM, yyyy")
+                KamleonGraphViewMode.Monthly -> data.startDate().formatDate("MMM") + " - " + data.endDate().formatDate("MMM")
+                KamleonGraphViewMode.Yearly -> data.startDate().formatDate("yyyy") + " - " + data.endDate().formatDate("yyyy")
+            }
+            setVisualData("--", strAvgUnit, strDateRange)
+            return
+        }
         when (data.type) {
             KamleonGraphDataType.hydration -> {
                 strAvg = String.format("%d", avgValue.toInt())
@@ -112,10 +126,10 @@ class KmlnHeaderView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
             }
         }
         val strDateRange = when(data.mode) {
-            KamleonGraphViewMode.Daily -> data.date.formatDate("MMM, dd, yyyy")
-            KamleonGraphViewMode.Weekly -> data.startDate().formatDate("MMM, dd, yyyy") + " - " + data.endDate().formatDate("MMM, dd, yyyy")
-            KamleonGraphViewMode.Monthly -> data.date.formatDate("MMM, yyyy")
-            KamleonGraphViewMode.Yearly -> data.date.formatDate("yyyy")
+            KamleonGraphViewMode.Daily -> data.date.formatDate("dd MMM, yyyy")
+            KamleonGraphViewMode.Weekly -> data.startDate().formatDate("dd MMM, yyyy") + " - " + data.endDate().formatDate("dd MMM, yyyy")
+            KamleonGraphViewMode.Monthly -> data.startDate().formatDate("MMM") + " - " + data.endDate().formatDate("MMM")
+            KamleonGraphViewMode.Yearly -> data.startDate().formatDate("yyyy") + " - " + data.endDate().formatDate("yyyy")
         }
 
         setVisualData(strAvg, strAvgUnit, strDateRange)

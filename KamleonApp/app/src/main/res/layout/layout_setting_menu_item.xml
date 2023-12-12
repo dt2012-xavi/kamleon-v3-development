@@ -17,8 +17,8 @@
         android:paddingHorizontal="4dp"
         android:id="@+id/tvLabel"
         android:textSize="@dimen/ts_14"
-        style="@style/CircularBoldFont"
-        android:text="NAME"
+        android:textAppearance="@style/TextAppearance.Kamleon.Bold"
+        tools:text="NAME"
         android:textColor="@color/kamleon_secondary_grey_70"/>
 
     <TextView
@@ -29,7 +29,7 @@
         android:paddingHorizontal="4dp"
         android:id="@+id/tvValue"
         android:textSize="@dimen/ts_14"
-        style="@style/CircularRegularFont"
+        android:textAppearance="@style/TextAppearance.Kamleon.Book"
         android:text="value"
         android:textColor="@color/kamleon_secondary_grey_70"/>
 

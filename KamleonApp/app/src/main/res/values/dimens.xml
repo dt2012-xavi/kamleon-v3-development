@@ -19,6 +19,7 @@
     <dimen name="ts_30">30sp</dimen>
     <dimen name="ts_32">32sp</dimen>
     <dimen name="ts_36">36sp</dimen>
+    <dimen name="ts_40">40sp</dimen>
     <dimen name="ts_45">45sp</dimen>
 
     <dimen name="round_blue_button_text_size">16sp</dimen>
@@ -58,8 +59,8 @@
     <dimen name="kmln_graph_header_item_text_size">12sp</dimen>
 
     <dimen name="kmln_graph_footer_streak_title_text_size">18sp</dimen>
-    <dimen name="kmln_graph_footer_streak_value1_text_size">24sp</dimen>
-    <dimen name="kmln_graph_footer_streak_value2_text_size">12sp</dimen>
+    <dimen name="kmln_graph_footer_streak_value1_text_size">33sp</dimen>
+    <dimen name="kmln_graph_footer_streak_value2_text_size">17sp</dimen>
 
     <dimen name="kmln_graph_header_average_title_text_size">15sp</dimen>
     <dimen name="kmln_graph_header_average_value_text_size">25sp</dimen>

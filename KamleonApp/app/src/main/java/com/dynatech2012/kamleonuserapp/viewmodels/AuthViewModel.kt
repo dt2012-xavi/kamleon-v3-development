@@ -65,10 +65,14 @@ class AuthViewModel @Inject constructor(
     }
 
     fun login(email: String, pass: String) {
+        _uiState.value = 1
         viewModelScope.launch(Dispatchers.IO) {
             val authResult = authRepo.login(email, pass)
             if (authResult.isSuccess && authResult.dataValue != null)
                 _uiState.postValue(5)
+            else {
+                _uiState.postValue(0)
+            }
         }
     }
 

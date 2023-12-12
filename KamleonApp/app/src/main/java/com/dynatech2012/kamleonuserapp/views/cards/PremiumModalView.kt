@@ -3,6 +3,7 @@ package com.dynatech2012.kamleonuserapp.views.cards
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,10 +29,11 @@ fun PremiumModalView(modifier: Modifier, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight()
+            //.wrapContentHeight()
+            .fillMaxSize()
             .background(color = colorResource(id = R.color.color_fa))
-            .padding(horizontal = 40.dp)
-            .padding(top = 24.dp, bottom = 48.dp),
+            .padding(horizontal = 40.dp),
+            //.padding(top = 24.dp, bottom = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(

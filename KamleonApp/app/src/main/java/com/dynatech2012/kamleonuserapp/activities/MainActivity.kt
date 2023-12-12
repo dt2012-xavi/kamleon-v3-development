@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.util.Log
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
@@ -55,6 +56,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
             }
         initObservers()
+        onBackPressedDispatcher.addCallback {  }
     }
 
     private fun initObservers() {

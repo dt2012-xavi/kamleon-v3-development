@@ -6,13 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SheetState
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.databinding.LayoutHomeListItemBinding
-import com.dynatech2012.kamleonuserapp.views.cards.CardViewHomeItem
 
 class HomeItemFragment : Fragment() {
     lateinit var binding: LayoutHomeListItemBinding

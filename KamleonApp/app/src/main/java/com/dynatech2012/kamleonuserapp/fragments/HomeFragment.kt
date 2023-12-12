@@ -51,6 +51,9 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
     }
 
     override fun initView() {
+        binding.layoutTabHome.setOnClickListener {
+            selectTab(0)
+        }
         binding.layoutTabAnalytic.setOnClickListener {
             selectTab(1)
             findNavController().navigate(R.id.action_homeFragment_to_analyticFragment)

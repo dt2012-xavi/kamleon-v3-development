@@ -11,7 +11,7 @@
         <item name="android:fontFamily">@font/circular_pro_bold</item>
     </style>
     <style name="CircularBookFont">
-        <item name="android:fontFamily">@font/circular_pro_book</item>
+        <item name="android:fontFamily">@font/circular_pro_boo</item>
     </style>
 
     <style name="RoundBlueButtonTextStyle">
@@ -63,18 +63,17 @@
         <item name="android:fontFamily">@font/circular_pro_bold</item>
     </style>
     <style name="Circular.Book">
-        <item name="android:fontFamily">@font/circular_pro_book</item>
+        <item name="android:fontFamily">@font/circular_pro_boo</item>
     </style>
 
 
     <style name="TextAppearance" />
     <style name="TextAppearance.Kamleon">
-        <item name="fontFamily">@font/circular_pro_regular</item>
-        <item name="android:fontFamily">@font/circular_pro_regular</item>
+        <item name="fontFamily">@font/circular_pro</item>
+        <item name="android:fontFamily">@font/circular_pro</item>
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
     <style name="TextAppearance.Kamleon.Regular">
-        <item name="fontFamily">@font/circular_pro_regular</item>
         <item name="android:fontFamily">@font/circular_pro_regular</item>
     </style>
     <style name="TextAppearance.Kamleon.Medium">
@@ -82,12 +81,11 @@
         <item name="android:fontFamily">@font/circular_pro_medium</item>
     </style>
     <style name="TextAppearance.Kamleon.Bold">
-        <item name="fontFamily">@font/circular_pro_bold</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">@font/circular_pro_bold</item>
     </style>
     <style name="TextAppearance.Kamleon.Book">
-        <item name="fontFamily">@font/circular_pro_book</item>
-        <item name="android:fontFamily">@font/circular_pro_book</item>
+        <item name="android:fontFamily">@font/circular_pro_boo</item>
     </style>
     <!-- Headline3: 48sp -->
     <style name="TextAppearance.Kamleon.Headline3">
@@ -99,33 +97,30 @@
     </style>
     <!-- Headline5: 24sp -->
     <style name="TextAppearance.Kamleon.Headline5">
-        <item name="fontFamily">@font/circular_pro_book</item>
+        <item name="android:fontFamily">@font/circular_pro_boo</item>
         <item name="android:textSize">@dimen/ts_24</item>
     </style>
     <!-- Headline6: 20sp -->
     <style name="TextAppearance.Kamleon.Headline6">
-        <item name="fontFamily">@font/circular_pro_bold</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/ts_20</item>
     </style>
     <!-- Subtitle1: 16sp -->
     <style name="TextAppearance.Kamleon.Subtitle1">
-        <item name="fontFamily">@font/circular_pro_bold</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/ts_16</item>
     </style>
     <!-- Subtitle2: 14sp -->
     <style name="TextAppearance.Kamleon.Subtitle2">
-        <item name="fontFamily">@font/circular_pro_bold</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/ts_14</item>
     </style>
     <!-- Body1: 16sp -->
     <style name="TextAppearance.Kamleon.Body1">
-        <item name="fontFamily">@font/circular_pro_book</item>
         <item name="android:textSize">@dimen/ts_16</item>
     </style>
     <!-- Body2: 14sp -->
     <style name="TextAppearance.Kamleon.Body2">
-        <item name="fontFamily">@font/circular_pro_book</item>
         <item name="android:textSize">@dimen/ts_14</item>
     </style>
     <!-- Button: 14sp -->
@@ -134,7 +129,6 @@
     </style>
     <!-- Caption: 12sp -->
     <style name="TextAppearance.Kamleon.Caption">
-        <item name="fontFamily">@font/circular_pro_book</item>
         <item name="android:textSize">@dimen/ts_12</item>
     </style>
     <!-- Overline: 10sp -->

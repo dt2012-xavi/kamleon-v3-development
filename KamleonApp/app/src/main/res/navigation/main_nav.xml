@@ -3,8 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/tabFragment">
+    <fragment
+        android:id="@+id/tabFragment"
+        android:name="com.dynatech2012.kamleonuserapp.fragments.TabFragment"
+        android:label="activity_tab"
+        tools:layout="@layout/activity_tab" >
+        <action
+            android:id="@+id/action_tabFragment_to_analyticFragment"
+            app:destination="@id/analyticFragment" />
+        <action
+            android:id="@+id/action_tabFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+    </fragment>
 
+    <!--
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.dynatech2012.kamleonuserapp.fragments.HomeFragment"
@@ -33,6 +46,7 @@
             android:id="@+id/action_analyticFragment_to_settingFragment"
             app:destination="@id/settingFragment" />
     </fragment>
+    -->
 
     <fragment
         android:id="@+id/graphicsFragment"
@@ -102,4 +116,4 @@
             app:destination="@id/pwdFragment" />
     </fragment>
 
-    </navigation>
+</navigation>

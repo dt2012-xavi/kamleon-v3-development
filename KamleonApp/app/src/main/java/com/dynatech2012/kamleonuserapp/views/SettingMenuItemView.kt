@@ -128,7 +128,10 @@ class SettingMenuItemView : LinearLayout {
         }
     }
 
-    public fun setValue(value: String) {
+    fun setValue(value: String) {
         tvValue?.text = value
+        if (value.isNotEmpty() && tvValue?.visibility != VISIBLE) {
+            tvValue?.visibility = VISIBLE
+        }
     }
 }
