@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat.getDrawable
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.dynatech2012.kamleonuserapp.R
@@ -47,6 +48,7 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
     }
 
     override fun initView() {
+        /*
         binding.layoutTabHome.setOnClickListener {
             selectTab(0)
             findNavController().navigate(R.id.action_analyticFragment_to_homeFragment)
@@ -71,21 +73,14 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
             }
             thread.start()
         }
+        */
 
-        selectTab(1)
+        //selectTab(1)
 
         initObservers()
         viewModel.getUserData()
         //viewModel.getUserMeasures()
 
-        // Scan
-        bindViews()
-    }
-
-    private fun bindViews()
-    {
-        previewView = binding.cameraPreview
-        cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
     }
 
     override fun initEvent() {
@@ -106,7 +101,9 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
 
         binding.ivAnalyticProfile.isClickable = true
         binding.ivAnalyticProfile.setOnClickListener {
-            findNavController().navigate(R.id.action_analyticFragment_to_settingFragment)
+            val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
+            val navController = navHostFragment.navController
+            navController.navigate(R.id.action_tabFragment_to_settingFragment)
         }
     }
 
@@ -115,33 +112,6 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
         findNavController().navigate(R.id.action_analyticFragment_to_graphicsFragment)
     }
 
-    private fun selectTab(tabIndex: Int) {
-        //binding.layoutContentAnalytics.visibility = View.GONE
-        binding.layoutContentQR.visibility = View.GONE
-
-        when (tabIndex) {
-            0 -> {
-                binding.layoutTabHome.background = getDrawable(requireContext(), R.drawable.bg_tab_button_shadow)
-    //            binding.layoutTabHome.setBackgroundResource(R.drawable.bg_setting_option_shadow)
-                binding.layoutTabAnalytic.background = null
-                binding.layoutTabQr.background = null
-            }
-            1 -> {
-                binding.layoutTabAnalytic.setBackgroundResource(R.drawable.bg_tab_button_shadow)
-                binding.layoutTabHome.background = null
-                binding.layoutTabQr.background = null
-
-                binding.layoutContentAnalytics.visibility = View.VISIBLE
-            }
-            else -> {
-                binding.layoutTabQr.setBackgroundResource(R.drawable.bg_tab_button_shadow)
-                binding.layoutTabAnalytic.background = null
-                binding.layoutTabHome.background = null
-
-                binding.layoutContentQR.visibility = View.VISIBLE
-            }
-        }
-    }
     private fun initObservers() {
         onLastMeasureChanged(viewModel.lastMeasure.value)
         viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
@@ -214,109 +184,7 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
         }
     }
 
-
-    private fun showQRIntroFragment() {
-        val qrFragment = ScanIntroFragment.newInstance(onDismissScanIntro)
-        qrFragment.show(parentFragmentManager, "QR")
-    }
-
     companion object {
         val TAG: String = AnalyticFragment::class.java.simpleName
-    }
-
-
-    // Scan
-    private val requestPermissionLauncher = registerForActivityResult<String, Boolean>(
-        ActivityResultContracts.RequestPermission()
-    ) { result: Boolean ->
-        if (result) {
-            // Permission is granted
-            Log.d(HomeFragment.TAG, "qrScanner, permission granted")
-            startCamera()
-        } else {
-            // Permission is denied
-            // Should go back to home fragment
-            Log.e(HomeFragment.TAG, "qrScanner, permission denied")
-            selectTab(1)
-        }
-    }
-
-    private fun requestCamera() {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            Log.d(HomeFragment.TAG, "qrScanner, permission granted")
-            startCamera()
-        } else {
-            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
-        }
-    }
-
-    private fun startCamera() {
-        cameraProviderFuture.addListener({
-            try {
-                val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-                bindCameraPreview(cameraProvider)
-            } catch (e: ExecutionException) {
-                Log.e(HomeFragment.TAG, "startCamera: ${e.message}", e)
-            } catch (e: InterruptedException) {
-                Log.e(HomeFragment.TAG, "startCamera: ${e.message}", e)
-            } catch (e: Exception) {
-                Log.e(HomeFragment.TAG, "startCamera: ${e.message}", e)
-            }
-        }, ContextCompat.getMainExecutor(requireContext()))
-    }
-
-    private fun bindCameraPreview(cameraProvider: ProcessCameraProvider) {
-        Log.d(HomeFragment.TAG, "qrScanner, bindCameraPreview 1")
-        previewView.implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-        val preview = Preview.Builder().build()
-        val cameraSelector = CameraSelector.Builder()
-            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-            .build()
-
-        preview.setSurfaceProvider(previewView.surfaceProvider)
-        Log.d(HomeFragment.TAG, "qrScanner, bindCameraPreview 2")
-
-        // Callback when result from analyzing image is returned
-        qrListener = object : QRCodeFoundListener {
-            var qrFound = false
-            override fun onQRCodeFound(qrCode: String) {
-                // Sometimes it is called multiple times
-                if (view != null && !qrFound) {
-                    Log.d(HomeFragment.TAG,"qrScanner, getView != null")
-                    qrFound = true
-                    uploadQr(qrCode)
-                } else {
-                    Log.e(HomeFragment.TAG, "qrScanner, getView == null")
-                }
-            }
-
-            override fun onQRCodeException(e: Exception?) {
-                Log.e(HomeFragment.TAG, "qrScanner, qrCode EXCEPTION: ", e)
-            }
-
-            override fun onQRCodeNotFound(e: Exception?) {
-                Log.e(HomeFragment.TAG, "qrScanner, qrCode NOT FOUND, exception: ", e)
-            }
-        }
-
-        // Create QRCode analyzer to analyze image
-        //imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), new QRCodeImageAnalyzerKotlin(qrListener));
-        //imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), new QRCodeImageAnalyzer(qrListener));
-        //imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), new QRCodeImageAnalyzerMLKit(qrListener));
-        qrViewModel.startScanner()
-        qrViewModel.startAnalyzing()
-        cameraProvider
-            .bindToLifecycle(this as LifecycleOwner, cameraSelector, qrViewModel.imageAnalysis, preview)
-    }
-
-    private fun uploadQr(qrCode: String) {
-        Log.d(HomeFragment.TAG, "qrCode: $qrCode")
-        qrViewModel.uploadQRtoRealtime(qrCode)
-        selectTab(1)
-        qrViewModel.stopAnalyzing()
     }
 }

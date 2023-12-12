@@ -1,6 +1,7 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.ActivityDeleteBinding
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
@@ -16,10 +17,7 @@ class DeleteFragment : BaseFragment<ActivityDeleteBinding>() {
     }
 
     override fun initEvent() {
-        binding.btnNavClose.setOnClickListener { activity?.finish() }
-        binding.btnSave.setOnClickListener {
-            viewModel.deleteUser()
-        }
+        binding.btnNavClose.setOnClickListener { findNavController().popBackStack() }
     }
 
     private fun initObservers() {

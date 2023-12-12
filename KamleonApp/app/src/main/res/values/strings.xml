@@ -7,10 +7,11 @@
     <string name="title_activity_init">InitActivity</string>
 
     <!-- Login & Sign Up -->
-    <string name="placeholder_first_name">First Name</string>
-    <string name="placeholder_last_name">Last Name</string>
+    <string name="placeholder_first_name">Name</string>
+    <string name="placeholder_last_name">Surname</string>
     <string name="placeholder_email">Email</string>
     <string name="placeholder_password">Password</string>
+    <string name="placeholder_password_repeat">Repeat Password</string>
 
     <!-- Login -->
     <string name="login_title">Log in</string>

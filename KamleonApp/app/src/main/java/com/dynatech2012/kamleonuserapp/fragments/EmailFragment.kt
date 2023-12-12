@@ -1,6 +1,7 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.ActivityEmailBinding
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
@@ -16,7 +17,7 @@ class EmailFragment : BaseFragment<ActivityEmailBinding>() {
     }
 
     override fun initEvent() {
-        binding.btnNavClose.setOnClickListener { activity?.finish() }
+        binding.btnNavClose.setOnClickListener { findNavController().popBackStack() }
         binding.btnSave.setOnClickListener {
             // TODO: old pass needed to reauthenticate
             val currentPwd = ""

@@ -759,6 +759,7 @@
 
 
                 <TextView
+                    android:id="@+id/tv_delete"
                     android:textAppearance="@style/TextAppearance.Kamleon.Body2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

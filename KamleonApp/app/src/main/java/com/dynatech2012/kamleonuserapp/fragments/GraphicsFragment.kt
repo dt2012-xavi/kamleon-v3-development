@@ -6,7 +6,6 @@ import androidx.compose.ui.Modifier
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
-import com.dynatech2012.kamleonuserapp.adapters.TipListAdapter
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData

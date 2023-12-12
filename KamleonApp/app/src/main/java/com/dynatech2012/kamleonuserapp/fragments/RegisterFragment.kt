@@ -66,9 +66,11 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
 
     private fun updateButtonState() {
         val hasValidInput = binding.inputBoxFName.getEditTextView()?.text.toString().isNotBlank()
-                            && binding.inputBoxLName.getEditTextView()?.text.toString().isNotBlank()
-                            && binding.inputBoxEmail.getEditTextView()?.text.toString().isNotBlank()
-                            && binding.inputBoxPwd.getEditTextView()?.text.toString().isNotBlank()
+                && binding.inputBoxLName.getEditTextView()?.text.toString().isNotBlank()
+                && binding.inputBoxEmail.getEditTextView()?.text.toString().isNotBlank()
+                && binding.inputBoxPwd.getEditTextView()?.text.toString().isNotBlank()
+                && binding.inputBoxPwdRepeat.getEditTextView()?.text.toString().isNotBlank()
+                && binding.inputBoxPwd.getEditTextView()?.text.toString() == binding.inputBoxPwdRepeat.getEditTextView()?.text.toString()
         binding.btnCreateAccount.isEnabled = hasValidInput
     }
 }

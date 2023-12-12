@@ -86,6 +86,13 @@
             android:layout_marginTop="12dp"
             app:placeholder="@string/placeholder_password"
             app:secureInput="true"/>
+        <com.dynatech2012.kamleonuserapp.views.KamleonInputBox
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/input_text_box_height"
+            android:id="@+id/inputBoxPwdRepeat"
+            android:layout_marginTop="12dp"
+            app:placeholder="@string/placeholder_password_repeat"
+            app:secureInput="true"/>
     </LinearLayout>
 
     <LinearLayout

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav"
     app:startDestination="@id/tabFragment">
+
     <fragment
         android:id="@+id/tabFragment"
         android:name="com.dynatech2012.kamleonuserapp.fragments.TabFragment"
@@ -17,35 +18,25 @@
             app:destination="@id/settingFragment" />
     </fragment>
 
-    <!--
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.dynatech2012.kamleonuserapp.fragments.HomeFragment"
-        android:label="activity_home"
-        tools:layout="@layout/activity_home" >
-        <action
-            android:id="@+id/action_homeFragment_to_analyticFragment"
-            app:destination="@id/analyticFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_settingFragment"
-            app:destination="@id/settingFragment" />
-    </fragment>
+    <include app:graph="@navigation/tab_nav" />
 
-    <fragment
-        android:id="@+id/analyticFragment"
-        android:name="com.dynatech2012.kamleonuserapp.fragments.AnalyticFragment"
-        android:label="activity_analytic"
-        tools:layout="@layout/activity_analytic" >
-        <action
-            android:id="@+id/action_analyticFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
-        <action
-            android:id="@+id/action_analyticFragment_to_graphicsFragment"
-            app:destination="@id/graphicsFragment" />
-        <action
-            android:id="@+id/action_analyticFragment_to_settingFragment"
-            app:destination="@id/settingFragment" />
-    </fragment>
+    <!--
+
+        <fragment
+            android:id="@+id/analyticFragment"
+            android:name="com.dynatech2012.kamleonuserapp.fragments.AnalyticFragment"
+            android:label="activity_analytic"
+            tools:layout="@layout/activity_analytic" >
+            <action
+                android:id="@+id/action_analyticFragment_to_homeFragment"
+                app:destination="@id/homeFragment" />
+            <action
+                android:id="@+id/action_analyticFragment_to_graphicsFragment"
+                app:destination="@id/graphicsFragment" />
+            <action
+                android:id="@+id/action_analyticFragment_to_settingFragment"
+                app:destination="@id/settingFragment" />
+        </fragment>
     -->
 
     <fragment
@@ -61,6 +52,24 @@
             app:destination="@id/loginFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.dynatech2012.kamleonuserapp.fragments.SettingFragment"
+        android:label="activity_setting"
+        tools:layout="@layout/activity_setting" >
+        <action
+            android:id="@+id/action_settingFragment_to_emailFragment"
+            app:destination="@id/emailFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_pinFragment"
+            app:destination="@id/pinFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_pwdFragment"
+            app:destination="@id/pwdFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_deleteFragment"
+            app:destination="@id/deleteFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/emailFragment"
@@ -100,20 +109,6 @@
             android:id="@+id/action_pwdFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/settingFragment"
-        android:name="com.dynatech2012.kamleonuserapp.fragments.SettingFragment"
-        android:label="activity_setting"
-        tools:layout="@layout/activity_setting" >
-        <action
-            android:id="@+id/action_settingFragment_to_emailFragment"
-            app:destination="@id/emailFragment" />
-        <action
-            android:id="@+id/action_settingFragment_to_pinFragment"
-            app:destination="@id/pinFragment" />
-        <action
-            android:id="@+id/action_settingFragment_to_pwdFragment"
-            app:destination="@id/pwdFragment" />
-    </fragment>
+
 
 </navigation>

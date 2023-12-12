@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@color/kamleon_dark_grey" />
+    <background android:drawable="@drawable/app_icon_background" />
     <foreground>
-        <inset android:drawable="@drawable/app_icon_foreground"
+        <inset android:drawable="@drawable/app_icon_foreground_test"
             android:inset="15%"/>
     </foreground>
     <monochrome>
-        <inset android:drawable="@drawable/app_icon_foreground"
+        <inset android:drawable="@drawable/app_icon_foreground_test"
             android:inset="15%"/>
     </monochrome>
 </adaptive-icon>

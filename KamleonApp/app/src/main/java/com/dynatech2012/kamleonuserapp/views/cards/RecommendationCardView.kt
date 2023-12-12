@@ -74,7 +74,7 @@ import kotlin.math.tan
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecommendationCardView(recommendation: Recommendation, modifier: Modifier, showBottomSheet: Boolean, sheetState: SheetState, onClick: () -> Unit, onDismiss: () -> Unit, sheetContent: @Composable () -> Unit) {
-    val shape = RoundedCornerShape(12.dp)
+    val shape = RoundedCornerShape(16.dp)
     val elevation = 10.dp
     val clickable = recommendation.clickable
     val blocked = recommendation.blocked
@@ -122,7 +122,8 @@ fun RecommendationCardView(recommendation: Recommendation, modifier: Modifier, s
 
                 Column(
                     modifier = Modifier
-                        .fillMaxSize(),
+                        .fillMaxSize()
+                        .padding(horizontal = if (recommendation.image != null) 0.dp else 8.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
                     if (recommendation.kind != null) {

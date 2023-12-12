@@ -164,36 +164,7 @@
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:id="@+id/layoutContentQR"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <androidx.camera.view.PreviewView
-            android:id="@+id/cameraPreview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-        <ImageView
-            android:layout_width="256dp"
-            android:layout_height="256dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="100dp"
-            android:src="@drawable/img_camera_rect"
-            android:importantForAccessibility="no"
-            />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+<!--
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="93dp"
@@ -297,5 +268,6 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,11 +33,11 @@
             android:layout_marginTop="16dp"
             android:textColor="@color/text_color_category"
             android:text="@string/delete_title"
+            android:textAllCaps="true"
             android:textSize="@dimen/ts_14"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="12dp"
             android:paddingVertical="8dp"
             android:orientation="vertical">
 
@@ -93,19 +93,6 @@
                 android:text="@string/delete_delete_desc"
                 android:textColor="@color/kamleon_dark_grey_50"
                 android:textSize="@dimen/ts_12"/>
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/round_blue_button_height"
-                android:background="@drawable/bg_btn_round_blue"
-                android:layout_marginTop="20dp"
-                android:paddingVertical="0dp"
-                android:textAllCaps="false"
-                android:id="@+id/btnSave"
-                android:text="@string/dialog_cancel"
-                android:textAppearance="@style/RoundBlueButtonTextStyle"
-                android:textColor="@drawable/color_text_button_blue_round"
-                android:enabled="false"/>
         </LinearLayout>
     </LinearLayout>
 

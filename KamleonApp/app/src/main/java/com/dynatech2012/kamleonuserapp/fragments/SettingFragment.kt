@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
@@ -129,8 +130,17 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
 
         binding.btnSettingClose.setOnClickListener {
-            findNavController().navigateUp()
+            //val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
+            //val navController = navHostFragment.navController
+            findNavController().popBackStack()
+            //findNavController().navigateUp()
             //activity?.finish()
+        }
+
+        binding.tvDelete.setOnClickListener {
+            val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
+            val navController = navHostFragment.navController
+            navController.navigate(R.id.action_settingFragment_to_deleteFragment)
         }
     }
 
