@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -172,9 +175,9 @@ fun RecommendationDetailView(modifier: Modifier, recommendation: Recommendation,
 
         if (showBottomSheet && recommendation.showModal) {
             ModalBottomSheet(
-                modifier = Modifier
+                modifier = Modifier,
                     //.wrapContentHeight(),
-                    .fillMaxSize(),
+                    //.fillMaxSize(),
                 onDismissRequest = {
                     showBottomSheet = false
                     key2 = true
@@ -182,11 +185,13 @@ fun RecommendationDetailView(modifier: Modifier, recommendation: Recommendation,
                 sheetState = sheetState,
                 shape = RoundedCornerShape(12.dp),
                 dragHandle = {},
-            )
+                windowInsets = WindowInsets(0, 0, 0, 0),
+                )
             {
                 // Sheet content
                 PremiumModalView(
-                    modifier = Modifier
+                    modifier = Modifier,
+                    //.wrapContentHeight(),
                 ) {
                     showBottomSheetPremium = true
                 }
@@ -203,7 +208,8 @@ fun RecommendationDetailView(modifier: Modifier, recommendation: Recommendation,
                 sheetState = sheetStatePremium,
                 shape = BottomSheetDefaults.ExpandedShape,
                 dragHandle = {},
-            ) {
+                windowInsets = WindowInsets(0, 0, 0, 0),
+                ) {
                 // Sheet content
                 PremiumView(
                     modifier = Modifier

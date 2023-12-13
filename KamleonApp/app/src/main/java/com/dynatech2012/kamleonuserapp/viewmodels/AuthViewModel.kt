@@ -22,6 +22,7 @@ class AuthViewModel @Inject constructor(
 
     var isReady = false
     var alreadyLogged = false
+    var alreadySplash = false
 
     var fName: String? = ""
     var lName: String? = ""

@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -50,14 +53,19 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
 
                     )
             )
-            .padding(32.dp)
     ){
         Row (
-            verticalAlignment = Alignment.CenterVertically
+            Modifier.safeDrawingPadding()
+            //verticalAlignment = Alignment.CenterVertically
         ){
             Image(
                 modifier = Modifier
-                    .height(40.dp),
+                    .padding(
+                        start = dimensionResource(id = R.dimen.margin_horizontal_header),
+                        top = dimensionResource(id = R.dimen.margin_top_header),
+                        bottom = dimensionResource(id = R.dimen.margin_bottom_header)
+                    )
+                    .height(36.dp),
                 painter = painterResource(
                 id = R.drawable.kamleon),
                 contentDescription = ""
@@ -67,71 +75,82 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
             )
             Image(
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(
+                        end = dimensionResource(id = R.dimen.margin_horizontal_header),
+                        top = dimensionResource(id = R.dimen.margin_top_header),
+                        bottom = dimensionResource(id = R.dimen.margin_bottom_header)
+                    )
+                    .size(36.dp)
+                    .wrapContentSize()
                     .clickable { onClick() },
-                painter = painterResource(
-                id = R.drawable.ic_close_24),
-                contentDescription = "")
-        }
-        Text(
-            modifier = Modifier
-                .padding(top = 24.dp, bottom = 4.dp),
-            text = stringResource(id = R.string.premium_landpage_title),
-            fontSize = dimensionResource(R.dimen.ts_24).value.sp,
-            fontWeight = FontWeight.Bold,
-            color = colorResource(id = R.color.kamleon_dark_grey))
-        Text(
-            modifier = Modifier
-                .padding(bottom = 30.dp),
-            text = stringResource(id = R.string.premium_landpage_subtitle),
-            fontSize = dimensionResource(R.dimen.ts_14).value.sp,
-            color = colorResource(id = R.color.kamleon_dark_grey))
-        PremiumListItemView(
-            title = stringResource(id = R.string.premium_landpage_title1),
-            subtitle = stringResource(id = R.string.premium_landpage_subtitle1)
-        )
-        PremiumListItemView(
-            title = stringResource(id = R.string.premium_landpage_title2),
-            subtitle = stringResource(id = R.string.premium_landpage_subtitle2)
-        )
-        PremiumListItemView(
-            title = stringResource(id = R.string.premium_landpage_title3),
-            subtitle = stringResource(id = R.string.premium_landpage_subtitle3)
-        )
-        PremiumListItemView(
-            title = stringResource(id = R.string.premium_landpage_title4),
-            subtitle = stringResource(id = R.string.premium_landpage_subtitle4)
-        )
-        PremiumListItemView(
-            title = stringResource(id = R.string.premium_landpage_title5),
-            subtitle = stringResource(id = R.string.premium_landpage_subtitle5)
-        )
-        PremiumListItemView(
-            title = stringResource(id = R.string.premium_landpage_title6),
-            subtitle = stringResource(id = R.string.premium_landpage_subtitle6)
-        )
-
-        Button(
-            onClick = {
-                openDialog.value = true
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp),
-            shape = CircleShape,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(id = R.color.kamleon_blue),
-                contentColor = colorResource(id = R.color.color_fa),
-                disabledContainerColor = colorResource(id = R.color.kamleon_secondary_grey_40),
-                disabledContentColor = colorResource(id = R.color.kamleon_secondary_grey_40),
+                painter = painterResource(id = R.drawable.ic_close_24),
+                contentDescription = ""
             )
-        ) {
+        }
+        Column (modifier = Modifier
+            .padding(32.dp)
+        ){
             Text(
                 modifier = Modifier
-                    .padding(6.dp),
-                text = stringResource(id = R.string.premium_landpage_button)
+                    .padding(top = 24.dp, bottom = 4.dp),
+                text = stringResource(id = R.string.premium_landpage_title),
+                fontSize = dimensionResource(R.dimen.ts_24).value.sp,
+                fontWeight = FontWeight.Bold,
+                color = colorResource(id = R.color.kamleon_dark_grey))
+            Text(
+                modifier = Modifier
+                    .padding(bottom = 30.dp),
+                text = stringResource(id = R.string.premium_landpage_subtitle),
+                fontSize = dimensionResource(R.dimen.ts_14).value.sp,
+                color = colorResource(id = R.color.kamleon_dark_grey))
+            PremiumListItemView(
+                title = stringResource(id = R.string.premium_landpage_title1),
+                subtitle = stringResource(id = R.string.premium_landpage_subtitle1)
             )
+            PremiumListItemView(
+                title = stringResource(id = R.string.premium_landpage_title2),
+                subtitle = stringResource(id = R.string.premium_landpage_subtitle2)
+            )
+            PremiumListItemView(
+                title = stringResource(id = R.string.premium_landpage_title3),
+                subtitle = stringResource(id = R.string.premium_landpage_subtitle3)
+            )
+            PremiumListItemView(
+                title = stringResource(id = R.string.premium_landpage_title4),
+                subtitle = stringResource(id = R.string.premium_landpage_subtitle4)
+            )
+            PremiumListItemView(
+                title = stringResource(id = R.string.premium_landpage_title5),
+                subtitle = stringResource(id = R.string.premium_landpage_subtitle5)
+            )
+            PremiumListItemView(
+                title = stringResource(id = R.string.premium_landpage_title6),
+                subtitle = stringResource(id = R.string.premium_landpage_subtitle6)
+            )
+
+            Button(
+                onClick = {
+                    openDialog.value = true
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp),
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(id = R.color.kamleon_blue),
+                    contentColor = colorResource(id = R.color.color_fa),
+                    disabledContainerColor = colorResource(id = R.color.kamleon_secondary_grey_40),
+                    disabledContentColor = colorResource(id = R.color.kamleon_secondary_grey_40),
+                )
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(6.dp),
+                    text = stringResource(id = R.string.premium_landpage_button)
+                )
+            }
         }
+
         Spacer(modifier = Modifier
             .weight(1f)
         )

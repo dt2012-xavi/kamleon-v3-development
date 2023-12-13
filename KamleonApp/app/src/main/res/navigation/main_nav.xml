@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_tabFragment_to_settingFragment"
             app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_tabFragment_to_graphicsFragment"
+            app:destination="@id/graphicsFragment" />
     </fragment>
 
     <include app:graph="@navigation/tab_nav" />
@@ -44,12 +47,6 @@
         android:name="com.dynatech2012.kamleonuserapp.fragments.GraphicsFragment"
         android:label="activity_graphics"
         tools:layout="@layout/activity_graphics" >
-        <action
-            android:id="@+id/action_graphicsFragment_to_registerFragment"
-            app:destination="@id/registerFragment" />
-        <action
-            android:id="@+id/action_graphicsFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
     </fragment>
 
     <fragment

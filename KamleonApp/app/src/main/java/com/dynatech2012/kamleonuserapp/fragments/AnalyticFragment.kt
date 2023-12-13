@@ -109,7 +109,10 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
 
     private fun openGraphView(type: Int) {
         viewModel.graphicType = type
-        findNavController().navigate(R.id.action_analyticFragment_to_graphicsFragment)
+        val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
+        val navController = navHostFragment.navController
+        navController.navigate(R.id.action_tabFragment_to_graphicsFragment)
+        //findNavController().navigate(R.id.action_analyticFragment_to_graphicsFragment)
     }
 
     private fun initObservers() {

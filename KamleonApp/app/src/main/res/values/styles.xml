@@ -37,6 +37,7 @@
         <item name="android:textColor">@drawable/color_text_button_blue_round</item>
         <item name="shapeAppearanceOverlay">@style/capsuleShape</item>
 
+
     </style>
     <style name="capsuleShape">
         <item name="cornerFamily">rounded</item>

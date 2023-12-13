@@ -12,9 +12,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseActivity
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityInitBinding
+import com.dynatech2012.kamleonuserapp.databinding.ActivitySplashBinding
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,6 +28,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val content: View = findViewById(android.R.id.content)
+        Log.d(TAG, "init activity on create")
         viewModel.resetLogged()
         viewModel.checkLogin()
         /*
@@ -50,6 +55,10 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             }
         )
          */
+    }
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "init activity on resume")
     }
 
     private val requestLocationPermissionLauncher =

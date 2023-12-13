@@ -89,5 +89,8 @@
     <dimen name="kmln_graph_footer_content_height">54dp</dimen>
     <dimen name="kmln_graph_footer_content_corner_radius">10dp</dimen>
     <dimen name="kmln_graph_footer_content_padding_h">18dp</dimen>
+    <dimen name="margin_horizontal_header">20dp</dimen>
+    <dimen name="margin_top_header">24dp</dimen>
+    <dimen name="margin_bottom_header">8dp</dimen>
 
 </resources>

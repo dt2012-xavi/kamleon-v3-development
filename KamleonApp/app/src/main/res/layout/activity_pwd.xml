@@ -7,22 +7,44 @@
     android:background="@color/bg_color_activity"
     tools:context=".fragments.PwdFragment">
 
-    <ImageButton
-        android:layout_width="@dimen/nav_back_button_size"
-        android:layout_height="@dimen/nav_back_button_size"
-        android:src="@drawable/bg_nav_back_circle"
-        android:id="@+id/btnNavClose"
-        android:background="@color/transparent"
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/layoutHeader"
+        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="@dimen/nav_back_button_left"
-        android:layout_marginTop="@dimen/nav_back_button_top"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="@dimen/margin_top_header"
+            android:layout_marginBottom="@dimen/margin_bottom_header"
+            android:layout_marginStart="@dimen/margin_horizontal_header"
+            app:cardCornerRadius="18dp"
+            android:id="@+id/cv_sett_bell"
+            android:elevation="8dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:paddingEnd="3dp"
+                android:src="@drawable/ic_arrow_back_ios_new_24"
+                android:id="@+id/btnNavClose"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                tools:ignore="RtlSymmetry" />
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="32dp"
-        app:layout_constraintTop_toBottomOf="@id/btnNavClose"
+        android:paddingHorizontal="@dimen/margin_horizontal_header"
+        app:layout_constraintTop_toBottomOf="@id/layoutHeader"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:orientation="vertical">

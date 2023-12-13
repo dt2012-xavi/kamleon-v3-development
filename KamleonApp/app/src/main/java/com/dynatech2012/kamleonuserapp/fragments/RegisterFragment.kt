@@ -42,6 +42,7 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
         binding.inputBoxLName.getEditTextView()?.addTextChangedListener(inputWatcher)
         binding.inputBoxEmail.getEditTextView()?.addTextChangedListener(inputWatcher)
         binding.inputBoxPwd.getEditTextView()?.addTextChangedListener(inputWatcher)
+        binding.inputBoxPwdRepeat.getEditTextView()?.addTextChangedListener(inputWatcher)
     }
 
     override fun initEvent() {

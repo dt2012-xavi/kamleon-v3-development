@@ -3,10 +3,16 @@ package com.dynatech2012.kamleonuserapp.views.cards
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
@@ -29,11 +35,13 @@ fun PremiumModalView(modifier: Modifier, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            //.wrapContentHeight()
-            .fillMaxSize()
+            .wrapContentHeight()
+            //.fillMaxSize()
             .background(color = colorResource(id = R.color.color_fa))
-            .padding(horizontal = 40.dp),
-            //.padding(top = 24.dp, bottom = 48.dp),
+            .padding(horizontal = 40.dp)
+            .padding(top = 24.dp, bottom = 48.dp)
+            //.windowInsetsPadding(WindowInsets(bottom = 0.dp, top = 0.dp))
+        ,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(

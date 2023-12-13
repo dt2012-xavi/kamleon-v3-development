@@ -19,9 +19,9 @@
         <androidx.cardview.widget.CardView
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginTop="@dimen/margin_top_header"
+            android:layout_marginBottom="@dimen/margin_bottom_header"
+            android:layout_marginStart="@dimen/margin_horizontal_header"
             app:cardCornerRadius="18dp"
             android:id="@+id/cv_sett_bell"
             android:elevation="8dp">
@@ -31,7 +31,8 @@
                 android:layout_height="28dp"
                 android:src="@drawable/bell"
                 android:id="@+id/btnSettingNoti"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:importantForAccessibility="no" />
         </androidx.cardview.widget.CardView>
 
 
@@ -46,14 +47,15 @@
             android:layout_alignEnd="@+id/cv_sett_bell"
             android:layout_alignTop="@+id/cv_sett_bell"
             android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"/>
+            android:layout_marginEnd="5dp"
+            android:importantForAccessibility="no" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp"            app:cardCornerRadius="18dp"
+            android:layout_marginEnd="@dimen/margin_horizontal_header"
+            android:layout_marginTop="@dimen/margin_top_header"
+            android:layout_marginBottom="@dimen/margin_bottom_header"          app:cardCornerRadius="18dp"
             android:id="@+id/cv_sett_close"
             android:layout_alignParentEnd="true"
             android:elevation="20dp">

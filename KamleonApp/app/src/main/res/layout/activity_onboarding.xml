@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                style="@style/CircularBookFont"
+                android:textAppearance="@style/TextAppearance.Kamleon.Body1"
                 android:textSize="@dimen/ts_30"
                 android:textColor="@color/kamleon_dark_grey"
                 android:text="@string/onboard_noti_title"/>
@@ -100,8 +100,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                style="@style/CircularBoldFont"
-                android:textSize="@dimen/ts_20"
+                android:textAppearance="@style/TextAppearance.Kamleon.Headline6"
                 android:textColor="@color/kamleon_dark_grey"
                 android:text="@string/onboard_noti_sub1"/>
             <TextView
@@ -109,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 style="@style/CircularRegularFont"
-                android:textSize="@dimen/ts_20"
+                android:textSize="@dimen/ts_16"
                 android:textColor="@color/kamleon_dark_grey"
                 android:text="@string/onboard_noti_sub2"/>
         </LinearLayout>
@@ -124,7 +123,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                style="@style/CircularBookFont"
+                android:textAppearance="@style/TextAppearance.Kamleon.Body1"
                 android:textSize="@dimen/ts_30"
                 android:textColor="@color/kamleon_dark_grey"
                 android:text="@string/onboard_location_title"/>
@@ -133,8 +132,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                style="@style/CircularBoldFont"
-                android:textSize="@dimen/ts_20"
+                android:textAppearance="@style/TextAppearance.Kamleon.Headline6"
                 android:textColor="@color/kamleon_dark_grey"
                 android:text="@string/onboard_location_sub1"/>
             <TextView
@@ -142,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 style="@style/CircularRegularFont"
-                android:textSize="@dimen/ts_20"
+                android:textSize="@dimen/ts_16"
                 android:textColor="@color/kamleon_dark_grey"
                 android:text="@string/onboard_location_sub2"/>
         </LinearLayout>
@@ -159,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_gravity="center"
-                style="@style/CircularBookFont"
+                android:textAppearance="@style/TextAppearance.Kamleon.Body1"
                 android:textSize="@dimen/ts_30"
                 android:textColor="@color/kamleon_dark_grey"
                 android:text="@string/onboard_birthday_title"/>
@@ -196,7 +194,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_gravity="center"
-                style="@style/CircularBookFont"
+                android:textAppearance="@style/TextAppearance.Kamleon.Body1"
                 android:textSize="@dimen/ts_30"
                 android:textColor="@color/kamleon_dark_grey"
                 android:text="@string/onboard_height_title"/>
@@ -233,7 +231,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_gravity="center"
-                style="@style/CircularBookFont"
+                android:textAppearance="@style/TextAppearance.Kamleon.Body1"
                 android:textSize="@dimen/ts_30"
                 android:textColor="@color/kamleon_dark_grey"
                 android:text="@string/onboard_weight_title"/>
@@ -269,7 +267,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_gravity="center"
-                style="@style/CircularBookFont"
+                android:textAppearance="@style/TextAppearance.Kamleon.Body1"
                 android:textSize="@dimen/ts_30"
                 android:textColor="@color/kamleon_dark_grey"
                 android:text="@string/onboard_gender_title"/>
