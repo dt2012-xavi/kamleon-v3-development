@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="28dp"
+        android:paddingHorizontal="16dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_modal_dialog">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Kamleon.Headline6"
+            android:id="@+id/tvDialogTitle"
+            android:paddingHorizontal="32dp"
+            android:text="@string/login_alert_title_login_error"
+            android:textAlignment="center"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Kamleon.Body1"
+            android:id="@+id/tvDialogDesc"
+            android:paddingHorizontal="32dp"
+            tools:text="@string/login_alert_description_login_error"
+            android:textAlignment="center"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_modal_btn_y"
+            android:layout_marginTop="16dp"
+            style="@style/CircularBoldFont"
+            android:id="@+id/tvBtnOk"
+            android:textSize="@dimen/ts_16"
+            android:clickable="true"
+            android:text="@string/dialog_ok"
+            android:textAllCaps="true"
+            android:textAlignment="center"
+            android:textColor="@drawable/color_white_text_button"/>
+    </LinearLayout>
+</FrameLayout>

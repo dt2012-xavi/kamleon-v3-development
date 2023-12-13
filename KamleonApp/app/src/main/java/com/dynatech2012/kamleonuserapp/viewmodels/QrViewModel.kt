@@ -69,6 +69,8 @@ class QrViewModel @Inject constructor(
         //_qrString.value = null
     }
 
+    var cameraStarted = false
+
     companion object {
         private val TAG = QrViewModel::class.java.simpleName
     }

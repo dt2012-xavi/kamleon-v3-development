@@ -2,14 +2,18 @@ package com.dynatech2012.kamleonuserapp.base
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
+import com.dynatech2012.kamleonuserapp.activities.MainActivity
 
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     protected lateinit var binding: VB

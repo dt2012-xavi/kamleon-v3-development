@@ -34,8 +34,12 @@
 
     <action
         android:id="@+id/action_to_analyticFragment"
-        app:destination="@id/analyticFragment" />
+        app:destination="@id/analyticFragment"/>
+<!--        app:popUpTo="@+id/homeFragment"
+        app:popUpToInclusive="true"/>-->
     <action
         android:id="@+id/action_to_homeFragment"
-        app:destination="@id/homeFragment" />
+        app:destination="@id/homeFragment"/>
+<!--        app:popUpTo="@+id/homeFragment"
+        app:popUpToInclusive="true"/>-->
 </navigation>

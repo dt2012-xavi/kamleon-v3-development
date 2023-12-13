@@ -1,18 +1,21 @@
 package com.dynatech2012.kamleonuserapp.viewmodels
 
+import android.text.TextUtils
 import android.util.Log
+import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dynatech2012.kamleonuserapp.models.Gender
-import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
+import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
+
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
@@ -67,14 +70,28 @@ class AuthViewModel @Inject constructor(
 
     fun login(email: String, pass: String) {
         _uiState.value = 1
+        if (!isValidEmail(email)) {
+            _uiState.postValue(-2)
+            return
+        }
+        if (pass.count() < 6) {
+            _uiState.postValue(-3)
+            return
+        }
         viewModelScope.launch(Dispatchers.IO) {
             val authResult = authRepo.login(email, pass)
             if (authResult.isSuccess && authResult.dataValue != null)
                 _uiState.postValue(5)
+            else if (authResult.isFailure)
+                _uiState.postValue(-1)
             else {
                 _uiState.postValue(0)
             }
         }
+    }
+
+    fun resetUiState() {
+        _uiState.value = 0
     }
 
     fun resetLogged() {
@@ -85,6 +102,10 @@ class AuthViewModel @Inject constructor(
     fun checkLogin() {
         alreadyLogged = authRepo.checkLogged
         isReady = true
+    }
+
+    private fun isValidEmail(target: CharSequence): Boolean {
+        return !TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches()
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.views.cards
 
+import android.graphics.Insets
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,10 +11,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
@@ -196,19 +200,23 @@ fun RecommendationCardView(recommendation: Recommendation, modifier: Modifier, s
             }
         }
         if (showBottomSheet) {
-            ModalBottomSheet(
-                modifier = Modifier
-                    .fillMaxSize(),
-                onDismissRequest = {
-                    //showBottomSheet = false
-                    onDismiss()
-                },
-                sheetState = sheetState,
-                shape = BottomSheetDefaults.ExpandedShape,
-                dragHandle = {},
-            ) {
-                // Sheet content
-                sheetContent()
+                ModalBottomSheet(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    onDismissRequest = {
+                        //showBottomSheet = false
+                        onDismiss()
+                    },
+                    containerColor = colorResource(id = R.color.kamleon_dark_grey),
+                    sheetState = sheetState,
+                    shape = BottomSheetDefaults.ExpandedShape,
+                    //scrimColor = colorResource(id = R.color.transparent),
+                    dragHandle = {},
+                ) {
+                    // Sheet content
+                    Box(Modifier.safeDrawingPadding()) {
+                        sheetContent()
+                    }
             }
         }
     }

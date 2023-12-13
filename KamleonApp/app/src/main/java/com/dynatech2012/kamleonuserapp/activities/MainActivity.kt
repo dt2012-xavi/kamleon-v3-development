@@ -1,26 +1,35 @@
 package com.dynatech2012.kamleonuserapp.activities
 
 import android.Manifest
+import android.R
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.util.DisplayMetrics
 import android.util.Log
+import android.view.View
+import android.view.ViewTreeObserver
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.doOnLayout
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.findNavController
 import com.dynatech2012.kamleonuserapp.base.BaseActivity
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.PUSH_NOTIFICATION
 import com.dynatech2012.kamleonuserapp.databinding.ActivityMainBinding
+import com.dynatech2012.kamleonuserapp.extensions.px
 import com.dynatech2012.kamleonuserapp.fragments.SettingFragment
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,7 +65,34 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
             }
         initObservers()
-        onBackPressedDispatcher.addCallback {  }
+
+
+        // TODO: trying to disable swipe navigation gesture
+        /*
+        binding.root.apply {
+            doOnLayout {
+                // updating exclusion rect
+                val rects = mutableListOf<Rect>()
+                rects.add(Rect(0,(height/2 - 75).px, 150.px, 150.px))
+                //rects.add(Rect(width.px - 150.px,0, 150.px, (height.px/2)))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    Log.d(TAG, "setting systemGestureExclusionRects")
+                    systemGestureExclusionRects = rects
+                }
+            }
+        }
+        val content = binding.root
+        val treeObserver = content.viewTreeObserver;
+        treeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                content.viewTreeObserver.removeOnGlobalLayoutListener(this);
+                //updateGestureExclusion(this@MainActivity)
+            }
+        })
+        */
+        onBackPressedDispatcher.addCallback {
+            //binding.root.findNavController().navigateUp()
+        }
     }
 
     private fun initObservers() {
@@ -219,5 +255,28 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     companion object {
         val TAG: String = MainActivity::class.java.simpleName
+    }
+
+
+    private var exclusionRects: MutableList<Rect> = ArrayList()
+
+    fun updateGestureExclusion(activity: AppCompatActivity) {
+        if (Build.VERSION.SDK_INT < 29) return
+        exclusionRects.clear()
+        val rect = Rect(0, 0, 150.px, getScreenHeight(activity))
+        exclusionRects.add(rect)
+        binding.root.systemGestureExclusionRects = exclusionRects
+        activity.findViewById<View>(R.id.content).systemGestureExclusionRects =
+            exclusionRects
+    }
+
+    private fun getScreenHeight(activity: AppCompatActivity): Int {
+        val displayMetrics = DisplayMetrics()
+        activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics.heightPixels
+    }
+
+    fun dpToPx(context: Context, i: Int): Int {
+        return (i.toFloat() * context.resources.displayMetrics.density).toInt()
     }
 }

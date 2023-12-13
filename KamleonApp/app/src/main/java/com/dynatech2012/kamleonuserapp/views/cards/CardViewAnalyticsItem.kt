@@ -55,7 +55,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, descriptionStart: String, startValue: Int, onClick: () -> Unit) {
     val shape = RoundedCornerShape(12.dp)
-    val elevation = 10.dp
+    //val elevation = 10.dp
+    val elevation = 0.dp
     val value by rememberSaveable { mutableIntStateOf(startValue) }
     val subtitle by rememberSaveable { mutableStateOf(subtitleStart) }
     val description by rememberSaveable { mutableStateOf(descriptionStart) }
@@ -73,16 +74,16 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
             .fillMaxWidth(if (analyticType == AnalyticType.EMPTY) 0.5f else 1f)
             .clickable { onClick() }
             .coloredShadow(
-                color = Color.Black,
-                alpha = 0.1f,
+                color = colorResource(id = R.color.kamleon_dark_grey),
+                alpha = 0.5f,
                 offsetX = 2.dp,
                 offsetY = 2.dp,
-                shadowRadius = 2.dp,
-                blurRadius = 2.dp,
+                shadowRadius = 6.dp,
+                //blurRadius = 1.dp,
                 //spread = 0.dp,
                 borderRadius = 12.dp,
             ),
-        shape = shape,
+    shape = shape,
         elevation = CardDefaults.cardElevation(
             defaultElevation = elevation
         ),
@@ -108,12 +109,12 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
                         .size(36.dp)
                         //.clip(CircleShape)
                         .coloredShadow(
-                            color = Color.Black,
-                            alpha = 0.15f,
+                            color = colorResource(id = R.color.kamleon_dark_grey),
+                            alpha = 0.1f,
                             offsetX = 2.dp,
                             offsetY = 2.dp,
                             borderRadius = 18.dp,
-                            shadowRadius = 4.dp,
+                            shadowRadius = 2.dp,
                         )
                         .background(colorResource(id = R.color.color_fa), CircleShape)
                         .padding(8.dp),

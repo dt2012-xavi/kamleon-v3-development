@@ -19,12 +19,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -34,10 +36,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dynatech2012.kamleonuserapp.R
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
     val openDialog = remember { mutableStateOf(false)  }
+    /*
+    val systemUiController = rememberSystemUiController()
+    val colorGray = colorResource(id = R.color.kamleon_dark_grey)
+    LaunchedEffect(key1 = "changeStatusBar", block = {
+        systemUiController.setSystemBarsColor(
+            color = colorGray, darkIcons = true)
+    })
+     */
     Column (
         modifier = modifier
             .fillMaxWidth()
@@ -53,9 +64,11 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
 
                     )
             )
+            //.safeDrawingPadding()
     ){
         Row (
-            Modifier.safeDrawingPadding()
+            //modifier = Modifier
+                //.safeDrawingPadding()
             //verticalAlignment = Alignment.CenterVertically
         ){
             Image(
@@ -88,11 +101,17 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
             )
         }
         Column (modifier = Modifier
-            .padding(32.dp)
+            /*
+            .background(
+                color = colorResource(id = R.color.color_red)
+            )
+            */
+            .padding(horizontal = 32.dp)
+            .padding(bottom = 32.dp, top = 24.dp)
         ){
             Text(
                 modifier = Modifier
-                    .padding(top = 24.dp, bottom = 4.dp),
+                    .padding(bottom = 4.dp),
                 text = stringResource(id = R.string.premium_landpage_title),
                 fontSize = dimensionResource(R.dimen.ts_24).value.sp,
                 fontWeight = FontWeight.Bold,

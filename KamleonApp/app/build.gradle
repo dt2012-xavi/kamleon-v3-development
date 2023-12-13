@@ -36,14 +36,17 @@ android {
     productFlavors {
         development {
             dimension "environment"
+            resValue "string", "app_name", "Kamleon-DEV"
             versionNameSuffix "-dev"
         }
         prod {
             dimension "environment"
+            resValue "string", "app_name", "Kamleon"
         }
         stagging {
             dimension "environment"
-            versionNameSuffix "-testing"
+            resValue "string", "app_name", "Kamleon-PRE"
+            versionNameSuffix "-pre"
         }
     }
     compileOptions {
@@ -64,7 +67,9 @@ android {
 }
 
 dependencies {
+    // Compose
     implementation 'androidx.compose.material3:material3:1.1.2'
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.27.0"
 
     implementation "com.google.dagger:hilt-android:$hilt_version"
     implementation 'androidx.camera:camera-core:1.3.0'

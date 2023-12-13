@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import coil.load
+import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
@@ -24,6 +25,7 @@ import com.dynatech2012.kamleonuserapp.extensions.beginningOfYear
 import com.dynatech2012.kamleonuserapp.extensions.day
 import com.dynatech2012.kamleonuserapp.extensions.endOfMonth
 import com.dynatech2012.kamleonuserapp.extensions.formatDate
+import com.dynatech2012.kamleonuserapp.models.CustomUser
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 import java.util.Date
@@ -69,10 +71,17 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         }
     }
     private fun initObservers() {
+        viewModel.userData.observe(this, this::onUserDataChanged)
         viewModel.measures.observe(this, this::onGetMeasures)
         viewModel.averageMonthlyMeasures.observe(this, this::onGetAverageMonthlyMeasures)
         viewModel.averageDailyMeasures.observe(this, this::onGetAverageDailyMeasures)
         viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
+    }
+
+    private fun onUserDataChanged(userData: CustomUser) {
+        Log.d(SettingFragment.TAG, "on user data changed")
+        val initials = getString(R.string.user_name_initials, userData.name.substring(0, 1).uppercase(), userData.lastName.substring(0, 1).uppercase())
+        binding.tvGraphicProfileName.text = initials
     }
 
     private fun onGetMeasures(measures: ArrayList<MeasureData>) {
@@ -96,6 +105,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         Log.d(HomeFragment.TAG, "image changed")
         drawable?.let {
             binding.ivGraphProfile.load(drawable)
+            binding.ivGraphProfile.visibility = android.view.View.VISIBLE
             return
         }
     }

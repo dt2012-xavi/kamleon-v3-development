@@ -1,5 +1,7 @@
 <resources>
+<!--
     <string name="app_name">KamleonApp</string>
+-->
 
 
     <!-- Activities -->
@@ -17,7 +19,10 @@
     <string name="login_title">Log in</string>
     <string name="login_desc">Enter your details to continue. If\nyou’ve forgotten, we’ll help you out.</string>
     <string name="login_btn_signin">Sign in</string>
-
+    <string name="login_alert_title_login_error">Invalid input.</string>
+    <string name="login_alert_description_not_valid_email">Email address is missing or invalid.</string>
+    <string name="login_alert_description_short_pass">Password must be at least 6 symbols in length.</string>
+    <string name="login_alert_description_login_error">Email address is missing or invalid.</string>
 
     <string name="login_forgot_pwd"><u>Forgot password?</u></string>
     <string name="login_not_have_account">Don’t you have an account yet?</string>
@@ -314,4 +319,7 @@
     <string name="error_camera_permission_denied">Permission denied</string>
     <string name="error_start_camera">Error starting camera</string>
 
+
+    <string name="default_value">--</string>
+    <string name="user_name_initials">%1$s%2$s</string>
 </resources>

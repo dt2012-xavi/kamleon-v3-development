@@ -305,6 +305,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
     private fun onUserDataChanged(userData: CustomUser) {
         Log.d(TAG, "on user data changed")
+        val initials = getString(R.string.user_name_initials, userData.name.substring(0, 1).uppercase(), userData.lastName.substring(0, 1).uppercase())
+        binding.tvSettingProfileName.text = initials
         binding.tvProfileName.text = getString(R.string.setting_display_name, userData.name, userData.lastName)
         binding.etAccSurName.setText(userData.lastName)
         binding.etAccName.setText(userData.name)
@@ -357,6 +359,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         Log.d(HomeFragment.TAG, "image changed")
         drawable?.let {
             binding.ivSettProfile.load(drawable)
+            binding.ivSettProfile.visibility = View.VISIBLE
             return
         }
     }

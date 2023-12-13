@@ -10,31 +10,22 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import coil.load
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.camera.QRCodeFoundListener
-import com.dynatech2012.kamleonuserapp.database.MeasureData
-import com.dynatech2012.kamleonuserapp.databinding.ActivityHomeBinding
 import com.dynatech2012.kamleonuserapp.databinding.ActivityTabBinding
-import com.dynatech2012.kamleonuserapp.extensions.formatTime
-import com.dynatech2012.kamleonuserapp.models.RecommendationType
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.viewmodels.QrViewModel
-import com.dynatech2012.kamleonuserapp.views.cards.ViewPager
 import com.google.common.util.concurrent.ListenableFuture
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Date
 import java.util.concurrent.ExecutionException
 
 
@@ -55,7 +46,9 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
 
     override fun initView() {
         Log.d(TAG, "initView")
-        val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_host_fragment_tab) as NavHostFragment
+        bindViews()
+        //val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_host_fragment_tab) as NavHostFragment
+        val navHostFragment = binding.navHostFragmentTab.getFragment<NavHostFragment>()
         when (navHostFragment.childFragmentManager.fragments[0]) {
             is HomeFragment -> {
                 Log.d(TAG, "initView is home")
@@ -70,10 +63,12 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
 
         binding.layoutTabHome.setOnClickListener {
             selectTab(0)
+            navController.popBackStack()
             navController.navigate(R.id.action_to_homeFragment)
         }
         binding.layoutTabAnalytic.setOnClickListener {
             selectTab(1)
+            navController.popBackStack()
             navController.navigate(R.id.action_to_analyticFragment)
         }
 
@@ -102,7 +97,6 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         viewModel.getUserMeasures()
 
         // Scan
-        bindViews()
     }
 
     private fun bindViews()
@@ -131,12 +125,16 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
                 binding.layoutTabAnalytic.background = null
                 binding.layoutTabQr.background = null
                 binding.layoutContentQR.visibility = View.GONE
+                qrViewModel.stopAnalyzing()
+                stopCamera()
             }
             1 -> {
                 binding.layoutTabAnalytic.setBackgroundResource(R.drawable.bg_tab_shape)
                 binding.layoutTabHome.background = null
                 binding.layoutTabQr.background = null
                 binding.layoutContentQR.visibility = View.GONE
+                qrViewModel.stopAnalyzing()
+                stopCamera()
             }
             2 -> {
                 binding.layoutTabQr.setBackgroundResource(R.drawable.bg_tab_shape)
@@ -210,6 +208,13 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
+    private fun stopCamera() {
+        if (!qrViewModel.cameraStarted) { return }
+        val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+        cameraProvider.unbindAll()
+        qrViewModel.cameraStarted = false
+    }
+
     private fun bindCameraPreview(cameraProvider: ProcessCameraProvider) {
         Log.d(TAG, "qrScanner, bindCameraPreview 1")
         previewView.implementationMode = PreviewView.ImplementationMode.COMPATIBLE
@@ -252,12 +257,12 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         qrViewModel.startAnalyzing()
         cameraProvider
           .bindToLifecycle(this as LifecycleOwner, cameraSelector, qrViewModel.imageAnalysis, preview)
+        qrViewModel.cameraStarted = true
     }
 
     private fun uploadQr(qrCode: String) {
         Log.d(TAG, "qrCode: $qrCode")
         qrViewModel.uploadQRtoRealtime(qrCode)
         selectTab(0)
-        qrViewModel.stopAnalyzing()
     }
 }

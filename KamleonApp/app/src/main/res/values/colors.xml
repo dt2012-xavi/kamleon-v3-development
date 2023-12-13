@@ -42,6 +42,8 @@
 
     <color name="kamleon_dark_grey">#221E1E</color>
     <color name="kamleon_dark_grey_50">#88221E1E</color>
+    <color name="kamleon_dark_grey_20">#33221E1E</color>
+    <color name="kamleon_dark_grey_05">#0D221E1E</color>
 
     <color name="kamleon_secondary_grey_70">#414042</color>
     <color name="kamleon_secondary_grey_60">#808285</color>

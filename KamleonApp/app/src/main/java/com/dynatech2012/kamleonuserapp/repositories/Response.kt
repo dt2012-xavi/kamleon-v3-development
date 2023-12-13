@@ -22,6 +22,8 @@ sealed class Response<out T : Any> {
 
     val isSuccess: Boolean
         get() = this is Success
+    val isFailure: Boolean
+        get() = this is Failure
     val isLoading: Boolean
         get() = this is Loading
 

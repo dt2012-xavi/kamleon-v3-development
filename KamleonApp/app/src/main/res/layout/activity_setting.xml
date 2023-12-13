@@ -100,14 +100,23 @@
                     android:layout_centerInParent="true"
                     app:cardCornerRadius="38dp"
                     android:id="@+id/cv_sett_profile"
-                    android:elevation="8dp">
+                    android:elevation="8dp"
+                    app:cardBackgroundColor="?attr/colorSurfaceInverse">
+                    <TextView
+                        android:id="@+id/tv_setting_profile_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/default_value"
+                        android:textAppearance="@style/TextAppearance.Kamleon.Headline5"
+                        android:textColor="?attr/colorOnSurfaceInverse"
+                        android:layout_gravity="center"/>
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/iv_sett_profile"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:visibility="invisible"
                         android:background="@color/transparent"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/image_profile" />
+                        android:scaleType="centerCrop"/>
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView

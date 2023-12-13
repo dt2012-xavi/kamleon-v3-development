@@ -1,86 +1,30 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.PreviewView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getDrawable
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import coil.load
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
-import com.dynatech2012.kamleonuserapp.camera.QRCodeFoundListener
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.databinding.ActivityAnalyticBinding
 import com.dynatech2012.kamleonuserapp.extensions.formatTime
+import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
-import com.dynatech2012.kamleonuserapp.viewmodels.QrViewModel
-import com.google.common.util.concurrent.ListenableFuture
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
-import java.util.concurrent.ExecutionException
 
 @AndroidEntryPoint
 class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
     private val viewModel: MainViewModel by activityViewModels()
     override fun setBinding(): ActivityAnalyticBinding = ActivityAnalyticBinding.inflate(layoutInflater)
 
-    private val qrViewModel: QrViewModel by viewModels()
-    private lateinit var previewView: PreviewView
-    private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
-    private var qrListener: QRCodeFoundListener? = null
-
-    private val onDismissScanIntro = object : BottomFragmentDismissListener {
-        override fun onDismissFragment() {
-        }
-    }
-
     override fun initView() {
-        /*
-        binding.layoutTabHome.setOnClickListener {
-            selectTab(0)
-            findNavController().navigate(R.id.action_analyticFragment_to_homeFragment)
-        }
-        binding.layoutTabAnalytic.setOnClickListener {
-            selectTab(1)
-        }
-        binding.layoutTabQr.setOnClickListener {
-            selectTab(2)
-            requestCamera()
-            val thread: Thread = object : Thread() {
-                override fun run() {
-                    try {
-                        sleep(400)
-                    } catch (e: InterruptedException) {
-                        Log.e(TAG, "run: ", e)
-                    }
-                    activity?.runOnUiThread {
-                        showQRIntroFragment()
-                    }
-                }
-            }
-            thread.start()
-        }
-        */
-
-        //selectTab(1)
-
         initObservers()
         viewModel.getUserData()
         //viewModel.getUserMeasures()
-
     }
 
     override fun initEvent() {
@@ -98,7 +42,6 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
             openGraphView(2)
         }
         */
-
         binding.ivAnalyticProfile.isClickable = true
         binding.ivAnalyticProfile.setOnClickListener {
             val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
@@ -117,14 +60,22 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
 
     private fun initObservers() {
         onLastMeasureChanged(viewModel.lastMeasure.value)
+        viewModel.userData.observe(this, this::onUserDataChanged)
         viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
         viewModel.lastMeasure.observe(this, this::onLastMeasureChanged)
+    }
+
+    private fun onUserDataChanged(userData: CustomUser) {
+        Log.d(SettingFragment.TAG, "on user data changed")
+        val initials = getString(R.string.user_name_initials, userData.name.substring(0, 1).uppercase(), userData.lastName.substring(0, 1).uppercase())
+        binding.tvAnalyticProfileName.text = initials
     }
 
     private fun onUserImageChanged(drawable: Drawable?) {
         Log.d(HomeFragment.TAG, "image changed")
         drawable?.let {
             binding.ivAnalyticProfile.load(drawable)
+            binding.ivAnalyticProfile.visibility = View.VISIBLE
             return
         }
     }

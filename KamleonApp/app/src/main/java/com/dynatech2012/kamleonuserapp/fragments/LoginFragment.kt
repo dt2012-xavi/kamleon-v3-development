@@ -1,11 +1,16 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
@@ -59,6 +64,24 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
 
     private fun startActivity(state: Int) {
         when (state) {
+            -3 -> { // email not valid
+                showReadyDialog(state)
+                binding.btnSignIn.isEnabled = true
+                binding.btnSignIn.text = getString(R.string.login_btn_signin)
+                binding.pbLogin.visibility = INVISIBLE
+            }
+            -2 -> { // password not valid
+                showReadyDialog(state)
+                binding.btnSignIn.isEnabled = true
+                binding.btnSignIn.text = getString(R.string.login_btn_signin)
+                binding.pbLogin.visibility = INVISIBLE
+            }
+            -1 -> { // firebase error
+                showReadyDialog(state)
+                binding.btnSignIn.isEnabled = true
+                binding.btnSignIn.text = getString(R.string.login_btn_signin)
+                binding.pbLogin.visibility = INVISIBLE
+            }
             0 -> {
                 binding.btnSignIn.isEnabled = true
                 binding.btnSignIn.text = getString(R.string.login_btn_signin)
@@ -82,5 +105,28 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
         val hasValidInput = binding.inputBoxEmail.getEditTextView()?.text.toString().isNotBlank()
                             && binding.inputBoxPwd.getEditTextView()?.text.toString().isNotBlank()
         binding.btnSignIn.isEnabled = hasValidInput
+    }
+
+    private fun showReadyDialog(errorType: Int) {
+        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        val inflater = this.layoutInflater
+        val dialogView: View = inflater.inflate(R.layout.layout_dialog_ok, null)
+
+        dialog.setView(dialogView)
+        dialog.setCancelable(false)
+        // -3 is email not valid, -2 is password not valid, -1 is firebase error
+        dialogView.findViewById<TextView>(R.id.tvDialogTitle).text = getString(R.string.login_alert_title_login_error)
+        dialogView.findViewById<TextView>(R.id.tvDialogDesc).text = when (errorType) {
+            -3 -> getString(R.string.login_alert_description_not_valid_email)
+            -2 -> getString(R.string.login_alert_description_short_pass)
+            -1 -> getString(R.string.login_alert_description_login_error)
+            else -> ""
+        }
+        val logoutDialog = dialog.show()
+        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener {
+            logoutDialog.dismiss()
+        }
     }
 }

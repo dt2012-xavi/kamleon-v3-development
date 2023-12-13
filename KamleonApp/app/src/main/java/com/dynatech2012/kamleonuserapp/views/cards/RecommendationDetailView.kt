@@ -76,6 +76,7 @@ fun RecommendationDetailView(modifier: Modifier, recommendation: Recommendation,
     Box(
         modifier = modifier
             .fillMaxSize()
+            .background(colorResource(id = R.color.color_fa))
     )
     {
         Column(
@@ -208,23 +209,26 @@ fun RecommendationDetailView(modifier: Modifier, recommendation: Recommendation,
                 sheetState = sheetStatePremium,
                 shape = BottomSheetDefaults.ExpandedShape,
                 dragHandle = {},
+                containerColor = colorResource(id = R.color.kamleon_dark_grey),
                 windowInsets = WindowInsets(0, 0, 0, 0),
                 ) {
                 // Sheet content
-                PremiumView(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    onClick = {
-                        scope.launch {
-                            sheetStatePremium.hide()
-                        }
-                            .invokeOnCompletion {
-                                if (!sheetStatePremium.isVisible) {
-                                    showBottomSheetPremium = false
-                                }
+                Box(Modifier.safeDrawingPadding()) {
+                    PremiumView(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        onClick = {
+                            scope.launch {
+                                sheetStatePremium.hide()
                             }
-                    }
-                )
+                                .invokeOnCompletion {
+                                    if (!sheetStatePremium.isVisible) {
+                                        showBottomSheetPremium = false
+                                    }
+                                }
+                        }
+                    )
+                }
             }
         }
     }

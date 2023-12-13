@@ -14,13 +14,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:importantForAccessibility="no" />
     <RelativeLayout
         android:layout_width="0dp"
-        android:layout_height="58dp"
+        android:layout_height="wrap_content"
         android:id="@+id/layoutHeader"
-        android:layout_marginTop="9dp"
-        android:layout_marginHorizontal="@dimen/nav_back_button_top"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -28,26 +27,32 @@
         <androidx.cardview.widget.CardView
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
-            android:layout_margin="2dp"
+            android:layout_marginTop="@dimen/margin_top_header"
+            android:layout_marginBottom="@dimen/margin_bottom_header"
+            android:layout_marginStart="@dimen/margin_horizontal_header"
             app:cardCornerRadius="18dp"
             android:id="@+id/cv_graph_back"
             android:elevation="8dp">
             <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:paddingEnd="3dp"
                 android:src="@drawable/ic_arrow_back_ios_new_24"
                 android:id="@+id/navBack"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                tools:ignore="RtlSymmetry" />
         </androidx.cardview.widget.CardView>
 
         <TextView
             style="@style/CircularMediumFont"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
             android:id="@+id/tvNavTitle"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/margin_top_header"
+            android:layout_marginBottom="@dimen/margin_bottom_header"
             android:text="HYDRATION"
             android:textColor="@color/kamleon_secondary_grey_50"
             android:textSize="@dimen/ts_16" />
@@ -55,16 +60,26 @@
         <androidx.cardview.widget.CardView
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="4dp"
+            android:layout_marginTop="@dimen/margin_top_header"
+            android:layout_marginBottom="@dimen/margin_bottom_header"
+            android:layout_marginEnd="@dimen/margin_horizontal_header"
             app:cardCornerRadius="18dp"
             android:id="@+id/cv_graph_profile"
-            android:elevation="8dp">
+            android:elevation="8dp"
+            app:cardBackgroundColor="?attr/colorSurfaceInverse">
+            <TextView
+                android:id="@+id/tv_graphic_profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/default_value"
+                android:textAppearance="@style/TextAppearance.Kamleon.Body1"
+                android:textColor="?attr/colorOnSurfaceInverse"
+                android:layout_gravity="center"/>
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:src="@drawable/image_profile"
+                android:visibility="invisible"
                 android:id="@+id/iv_graph_profile"
                 android:layout_gravity="center"/>
         </androidx.cardview.widget.CardView>

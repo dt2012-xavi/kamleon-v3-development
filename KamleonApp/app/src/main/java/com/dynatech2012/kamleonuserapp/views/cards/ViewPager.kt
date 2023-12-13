@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
@@ -18,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +36,7 @@ import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.models.Recommendation
 import com.dynatech2012.kamleonuserapp.models.RecommendationType
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -113,6 +116,12 @@ fun CardViewHomeItemHome(recommType: RecommendationType, hydrationLevel: Measure
     if (recommType == RecommendationType.HOME && page == 0 && hydrationLevel != null) {
         recommendation.text = recommendation.getHydrationText(hydrationLevel)
     }
+    val systemUiController = rememberSystemUiController()
+    val colorGray = colorResource(id = R.color.kamleon_dark_grey)
+    LaunchedEffect(key1 = "changeStatusBar", block = {
+        systemUiController.setSystemBarsColor(
+            color = colorGray)
+    })
     RecommendationCardView(
         recommendation = recommendation,
         modifier = Modifier,
@@ -133,7 +142,7 @@ fun CardViewHomeItemHome(recommType: RecommendationType, hydrationLevel: Measure
         }
         )
     {
-        if (page == recommendations.count() - 1)
+        if (page == recommendations.count() - 1) {
             PremiumView(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -148,6 +157,7 @@ fun CardViewHomeItemHome(recommType: RecommendationType, hydrationLevel: Measure
                         }
                 }
             )
+        }
         else
             RecommendationDetailView(
                 modifier = Modifier
