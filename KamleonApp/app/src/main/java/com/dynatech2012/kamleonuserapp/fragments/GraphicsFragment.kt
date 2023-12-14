@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.dynatech2012.kamleonuserapp.R
@@ -15,21 +16,9 @@ import com.dynatech2012.kamleonuserapp.databinding.ActivityGraphicsBinding
 import com.dynatech2012.kamleonuserapp.models.RecommendationType
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.cards.ViewPager
-import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphBarItemData
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
-import com.dynatech2012.kamleonuserapp.extensions.addDays
-import com.dynatech2012.kamleonuserapp.extensions.addHours
-import com.dynatech2012.kamleonuserapp.extensions.addMonths
-import com.dynatech2012.kamleonuserapp.extensions.beginningOfDay
-import com.dynatech2012.kamleonuserapp.extensions.beginningOfYear
-import com.dynatech2012.kamleonuserapp.extensions.day
-import com.dynatech2012.kamleonuserapp.extensions.endOfMonth
-import com.dynatech2012.kamleonuserapp.extensions.formatDate
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Calendar
-import java.util.Date
-import kotlin.random.Random
 @AndroidEntryPoint
 class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
     private val viewModel: MainViewModel by activityViewModels()
@@ -68,6 +57,11 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
     override fun initEvent() {
         binding.navBack.setOnClickListener {
             findNavController().popBackStack()
+        }
+        binding.ivGraphProfile.setOnClickListener {
+            val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
+            val navController = navHostFragment.navController
+            navController.navigate(R.id.action_graphicsFragment_to_settingFragment)
         }
     }
     private fun initObservers() {
@@ -109,7 +103,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
             return
         }
     }
-
+    /*
     private fun dailyDataSourceOf(date: Date) : ArrayList<KamleonGraphBarItemData> {
         val dataSource = ArrayList<KamleonGraphBarItemData>()
         val startDate = date.beginningOfDay
@@ -154,6 +148,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         }
         return dataSource
     }
+     */
 
     companion object {
         val TAG: String = GraphicsFragment::class.java.simpleName
