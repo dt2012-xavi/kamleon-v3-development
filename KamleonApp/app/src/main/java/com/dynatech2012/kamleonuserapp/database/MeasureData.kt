@@ -6,6 +6,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.dynatech2012.kamleonuserapp.models.IntVectorTypeConverter
+import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
+import com.dynatech2012.kamleonuserapp.models.MeasureType
 import com.dynatech2012.kamleonuserapp.models.RawMeasureData
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import java.util.Date
@@ -50,6 +52,8 @@ data class MeasureData (
     var waterDetect: String? = null,
     var gS_Chemist: String? = null,
     var gS_Observation: String? = null, //String
+    var type: MeasureType? = null, //String
+    var precision: MeasurePrecision? = null, //String
 
     @TypeConverters( IntVectorTypeConverter::class )
     var xyz: IntArray? = null, //ArrayList<Integer> xyz = new ArrayList<Integer>();
@@ -122,6 +126,8 @@ data class MeasureData (
         waterDetect = null,
         gS_Chemist = null,
         gS_Observation = null,
+        type = MeasureType.urine,
+        precision = MeasurePrecision.Good,
         xyz = null,
         minxyz = null,
         maxxyz = null,
@@ -168,6 +174,8 @@ data class MeasureData (
         waterDetect = rawMeasureData.waterDetect,
         gS_Chemist = rawMeasureData.gS_Chemist,
         gS_Observation = rawMeasureData.gS_Observation,
+        type = rawMeasureData.type,
+        precision = rawMeasureData.precision,
         xyz = rawMeasureData.xyz,
         minxyz = rawMeasureData.minxyz,
         maxxyz = rawMeasureData.maxxyz,
@@ -216,6 +224,8 @@ data class MeasureData (
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
+        MeasureType.fromString(parcel.readString()),
+        MeasurePrecision.fromString(parcel.readString()),
         parcel.createIntArray(),
         parcel.createIntArray(),
         parcel.createIntArray(),
@@ -322,6 +332,8 @@ data class MeasureData (
         parcel.writeString(waterDetect)
         parcel.writeString(gS_Chemist)
         parcel.writeString(gS_Observation)
+        parcel.writeString(type.toString())
+        parcel.writeString(precision.toString())
         parcel.writeIntArray(xyz)
         parcel.writeIntArray(minxyz)
         parcel.writeIntArray(maxxyz)
@@ -339,6 +351,8 @@ data class MeasureData (
     override fun describeContents(): Int {
         return 0
     }
+
+    override var isPrecise = precision != MeasurePrecision.Bad
 
     override fun scoreValue(type: KamleonGraphDataType): Double {
         return when (type) {
@@ -387,6 +401,8 @@ data class MeasureData (
         if (waterDetect != other.waterDetect) return false
         if (gS_Chemist != other.gS_Chemist) return false
         if (gS_Observation != other.gS_Observation) return false
+        if (type != other.type) return false
+        if (precision != other.precision) return false
         if (xyz != null) {
             if (other.xyz == null) return false
             if (!xyz.contentEquals(other.xyz)) return false
@@ -469,6 +485,8 @@ data class MeasureData (
         result = 31 * result + (waterDetect?.hashCode() ?: 0)
         result = 31 * result + (gS_Chemist?.hashCode() ?: 0)
         result = 31 * result + (gS_Observation?.hashCode() ?: 0)
+        result = 31 * result + (type?.hashCode() ?: 0)
+        result = 31 * result + (precision?.hashCode() ?: 0)
         result = 31 * result + (xyz?.contentHashCode() ?: 0)
         result = 31 * result + (minxyz?.contentHashCode() ?: 0)
         result = 31 * result + (maxxyz?.contentHashCode() ?: 0)

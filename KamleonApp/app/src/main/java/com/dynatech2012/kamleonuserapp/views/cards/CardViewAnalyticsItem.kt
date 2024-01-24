@@ -53,11 +53,11 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, descriptionStart: String, startValue: Int, onClick: () -> Unit) {
+fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, descriptionStart: String, startValue: Int?, onClick: () -> Unit) {
     val shape = RoundedCornerShape(12.dp)
     //val elevation = 10.dp
     val elevation = 0.dp
-    val value by rememberSaveable { mutableIntStateOf(startValue) }
+    val value by rememberSaveable { mutableStateOf(startValue) }
     val subtitle by rememberSaveable { mutableStateOf(subtitleStart) }
     val description by rememberSaveable { mutableStateOf(descriptionStart) }
 
@@ -236,7 +236,7 @@ enum class AnalyticType(val title: String) {
 }
 
 @Composable
-fun HydrationView(hydration: Int) {
+fun HydrationView(hydration: Int?) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -280,9 +280,10 @@ fun HydrationView(hydration: Int) {
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.Center
             ) {
+                val value = hydration?.toString() ?: stringResource(id = R.string.default_value)
                 Text(
                     fontFamily = fontFamilyBook,
-                    text = hydration.toString(),
+                    text = value,
                     fontSize = dimensionResource(R.dimen.ts_40).value.sp,
                     color = colorResource(id = R.color.kamleon_dark_grey)
                 )
@@ -294,7 +295,7 @@ fun HydrationView(hydration: Int) {
             ) {
                 Text(
                     fontFamily = fontFamilyBook,
-                    text = stringResource(id = R.string.unit_percentage),
+                    text = if (hydration != null) stringResource(id = R.string.unit_percentage) else "",
                     fontSize = dimensionResource(R.dimen.ts_20).value.sp,
                     color = colorResource(id = R.color.kamleon_dark_grey)
                 )
@@ -304,7 +305,7 @@ fun HydrationView(hydration: Int) {
 }
 
 @Composable
-fun ElecView(electrolytes: Int) {
+fun ElecView(electrolytes: Int?) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -334,9 +335,10 @@ fun ElecView(electrolytes: Int) {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
+                val value = electrolytes?.toString() ?: stringResource(id = R.string.default_value)
                 Text(
                     fontFamily = fontFamilyBook,
-                    text = electrolytes.toString(),
+                    text = value,
                     fontSize = dimensionResource(R.dimen.ts_40).value.sp,
                     color = colorResource(id = R.color.kamleon_dark_grey)
                 )
@@ -348,7 +350,7 @@ fun ElecView(electrolytes: Int) {
             ) {
                 Text(
                     fontFamily = fontFamilyBook,
-                    text = "mS/cm",
+                    text = if (electrolytes != null) "mS/cm" else "",
                     fontSize = dimensionResource(R.dimen.ts_16).value.sp,
                     color = colorResource(id = R.color.kamleon_secondary_grey_60)
                 )
@@ -358,7 +360,7 @@ fun ElecView(electrolytes: Int) {
 }
 
 @Composable
-fun VolumeView(volume: Int) {
+fun VolumeView(volume: Int?) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -383,9 +385,10 @@ fun VolumeView(volume: Int) {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
+                val value = volume?.toString() ?: stringResource(id = R.string.default_value)
                 Text(
                     fontFamily = fontFamilyBook,
-                    text = volume.toString(),
+                    text = value,
                     fontSize = dimensionResource(R.dimen.ts_40).value.sp,
                     color = colorResource(id = R.color.kamleon_dark_grey)
                 )
@@ -397,7 +400,7 @@ fun VolumeView(volume: Int) {
             ) {
                 Text(
                     fontFamily = fontFamilyBook,
-                    text = "ml",
+                    text = if (volume != null) "ml" else "",
                     fontSize = dimensionResource(R.dimen.ts_16).value.sp,
                     color = colorResource(id = R.color.kamleon_secondary_grey_60)
                 )

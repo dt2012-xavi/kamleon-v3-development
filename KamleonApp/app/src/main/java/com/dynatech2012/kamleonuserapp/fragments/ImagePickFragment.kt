@@ -30,6 +30,7 @@ class ImagePickFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d(TAG, "image pick dialog oncreate view 1")
         val v = inflater.inflate(R.layout.fragment_image_pick, container, false)
         binding = FragmentImagePickBinding.bind(v)
         v.findViewById<LinearLayout>(R.id.layoutLibrary).setOnClickListener {
@@ -58,9 +59,12 @@ class ImagePickFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        Log.d(TAG, "image pick dialog oncreate dialog 1")
         val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.setOnShowListener { setupBottomSheet(it) }
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        //dialog.setOnShowListener { setupBottomSheet(it) }
+        //dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        Log.d(TAG, "image pick dialog oncreate dialog 2")
+        //isCancelable = true
         return dialog
     }
 
@@ -73,9 +77,14 @@ class ImagePickFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        Log.e("BottomSheet", "onCancel")
+        Log.e("BottomSheet", "image pick dialog onCancel")
         super.onCancel(dialog)
-        dismissListener?.onDismissFragment()
+        //dismissListener?.onDismissFragment()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        Log.d(TAG, "image pick dialog onDismiss")
     }
 
     private fun onProfileImagePrevUriChanged(uri: Uri?) {
@@ -84,6 +93,9 @@ class ImagePickFragment : BottomSheetDialogFragment() {
     }
     private fun onProfileImageUriChanged(uri: Uri?) {
         Log.d(TAG, "Got image profile update")
+        /*dialog?.setOnCancelListener {  }
+        onCancel(dialog)*/
+        dismissListener?.onDismissFragment()
         dismiss()
     }
 

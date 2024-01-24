@@ -6,7 +6,7 @@ import com.dynatech2012.kamleonuserapp.database.MeasureData
 data class Recommendation(
     val kind: Int?,
     val titleShort: Int,
-    val title: Int,
+    var title: Int,
     var text: Int?,
     val isRead: Boolean = false,
     var blocked: Boolean = false,
@@ -15,8 +15,13 @@ data class Recommendation(
     val image: Int? = null
 ) {
 
-    fun getHydrationText(hydrationLevel: MeasureData.HydrationLevel): Int {
-        val resource: Int = when (hydrationLevel) {
+    fun getHydrationTitle(measure: MeasureData): Int {
+        return if (measure.precision == MeasurePrecision.Bad) R.string.recommendation_alert_title
+        else R.string.recommendation_analytics_h_title
+    }
+    fun getHydrationSubtitle(measure: MeasureData): Int {
+        if (measure.precision == MeasurePrecision.Bad) return R.string.recommendation_alert_subtitle
+        val resource: Int = when (measure.hydrationLevel) {
             MeasureData.HydrationLevel.VERYDEHYDRATED -> R.string.recommendation_hydration_1
             MeasureData.HydrationLevel.DEHYDRATED -> R.string.recommendation_hydration_2
             MeasureData.HydrationLevel.HYDRATED -> R.string.recommendation_hydration_3
@@ -27,6 +32,26 @@ data class Recommendation(
     companion object {
         fun fromTipType(recommendationType: RecommendationType): List<Recommendation> {
             when (recommendationType) {
+                RecommendationType.HOMELOW -> return listOf(
+                    Recommendation(
+                        kind = null,
+                        titleShort = R.string.recommendation_alert_title,
+                        title = R.string.recommendation_alert_subtitle,
+                        text = null,
+                        isRead = true,
+                        clickable = false,
+                    ),
+                    Recommendation(
+                        kind = R.string.recomendation_home_kind,
+                        titleShort = R.string.recomendation_home_title,
+                        title = R.string.recomendation_home_title,
+                        text = R.string.recomendation_home_subtitle,//"Bananas are a good source of essential nutrients, including potassium...",
+                        isRead = true,
+                        blocked = true,
+                        image = R.drawable.recom4
+                    )
+                )
+
                 RecommendationType.HOME -> return listOf(
                     Recommendation(
                         kind = null,
@@ -158,7 +183,8 @@ data class Recommendation(
 }
 
 enum class RecommendationType(val title: String) {
-    HOME("Home"),
+    HOMELOW("Home"),
+    HOME("HomeLow"),
     HYDRATION("Hydration"),
     ELECTROLYTE("Electrolytes"),
     VOLUME("Volume");
@@ -166,10 +192,8 @@ enum class RecommendationType(val title: String) {
     val size: Int
         get() {
             return when (this@RecommendationType) {
-                HOME -> 2
-                HYDRATION -> 3
-                ELECTROLYTE -> 3
-                VOLUME -> 3
+                HOME, HOMELOW -> 2
+                HYDRATION, ELECTROLYTE, VOLUME -> 3
             }
         }
 

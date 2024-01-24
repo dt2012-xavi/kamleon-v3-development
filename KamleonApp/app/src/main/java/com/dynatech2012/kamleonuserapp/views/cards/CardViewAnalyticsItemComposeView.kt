@@ -3,6 +3,7 @@ package com.dynatech2012.kamleonuserapp.views.cards
 import android.content.Context
 import android.util.AttributeSet
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.AbstractComposeView
@@ -14,22 +15,22 @@ class CardViewAnalyticsItemComposeView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
 ) : AbstractComposeView(context, attrs, defStyle) {
 
-    private val valueState = mutableIntStateOf(0)
+    private val valueState : MutableState<Int?> = mutableStateOf(0)
     var analyticType: AnalyticType = AnalyticType.HYDRATION
-    private val subtitleSate = mutableStateOf("")
+    private val subtitleState = mutableStateOf("")
     private val descriptionState = mutableStateOf("")
     var onClick: () -> Unit = {}
 
-    var value: Int
-        get() = valueState.intValue
+    var value: Int?
+        get() = valueState.value
         set(value) {
-            valueState.intValue = value
+            valueState.value = value
         }
 
     var subtitle: String
-        get() = subtitleSate.value
+        get() = subtitleState.value
         set(value) {
-            subtitleSate.value = value
+            subtitleState.value = value
         }
     var description: String
         get() = descriptionState.value
@@ -57,9 +58,9 @@ class CardViewAnalyticsItemComposeView @JvmOverloads constructor(
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         CardViewAnalyticsItem(
             analyticType,
-            subtitleSate.value,
+            subtitleState.value,
             descriptionState.value,
-            valueState.intValue,
+            valueState.value,
             onClick
         )
     }

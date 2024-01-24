@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/tv_graphics_label_item_timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="12:00 am"
+        android:textColor="@color/kmln_graph_color_grey"
+        android:textSize="@dimen/kmln_graph_label_average_datetime_text_size"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0"/>
+    <TextView
+        android:id="@+id/tv_graphics_label_item_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="200%"
+        android:textColor="@color/kmln_graph_color_black"
+        android:textSize="@dimen/kmln_graph_label_average_datetime_text_size"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_graphics_label_item_timestamp"
+        android:layout_marginStart="6dp"
+        app:layout_constraintHorizontal_bias="1"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

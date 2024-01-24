@@ -12,6 +12,7 @@ import android.util.Log
 import android.util.SizeF
 import android.view.View
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.database.AveragesData
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphBarDrawData
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphViewMode
@@ -22,25 +23,26 @@ import kotlin.math.min
 
 class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context, attributeSet) {
     private val xAxisLinePaint = Paint().apply {
-        color = context.getColor(R.color.kmln_graph_color_grey)
+        color = context.getColor(R.color.kamleon_secondary_grey_40)
         strokeWidth = 1f
     }
 
     private val yAxisLinePaint = Paint().apply {
-        color = context.getColor(R.color.kmln_graph_color_grey)
-        pathEffect = DashPathEffect(floatArrayOf(10f, 20f), 0f)
+        color = context.getColor(R.color.kamleon_secondary_grey_40)
+        pathEffect = DashPathEffect(floatArrayOf(5f, 5f), 0f)
         strokeWidth = 1f
     }
 
     private val xAxisLabelPaint = Paint().apply {
         color = context.getColor(R.color.kmln_graph_color_black)
-        textSize = 32f
+        textSize = resources.getDimension(R.dimen.kmln_graph_x_axis_label_text_size)
         strokeWidth = 1f
     }
 
     private val yAxisLabelPaint = Paint().apply {
         color = context.getColor(R.color.kmln_graph_color_black)
-        textSize = 40f
+        textSize = resources.getDimension(R.dimen.kmln_graph_y_axis_label_text_size)
+        //textSize = 40f
         strokeWidth = 1f
     }
 
@@ -51,7 +53,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
 
     private val streakLinePaint = Paint().apply {
         color = context.getColor(R.color.kmln_graph_color_active)
-        strokeWidth = 2f
+        strokeWidth = 4f
     }
 
     private val graphBarItemGreyPaint = Paint().apply {
@@ -71,10 +73,16 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
     }
 
     private val xAxisLines: Int = 4
-    private val yAxisLines: Int = 7
+    private val yAxisLines: Int
+        get() = when (dataSource.mode) {
+            KamleonGraphViewMode.Daily -> 6
+            KamleonGraphViewMode.Weekly -> 7
+            KamleonGraphViewMode.Monthly -> 6
+            KamleonGraphViewMode.Yearly -> 6
+        }
     private val xLabelHeight: Int = 40
 
-    private val xAxisMarginStart: Int = 16
+    private val xAxisMarginStart: Int = 0//16
 
     private var isStreak = false
 
@@ -161,6 +169,10 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
         return String.format("%.1f", barItemVal)
     }
 
+    fun getDataInRange(index: Int): ArrayList<AveragesData> {
+        return dataSource.values[index].data
+    }
+
     fun getBarValueUnit() : String {
         return context.getString(dataSource.type.getUnit())
     }
@@ -187,7 +199,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
     }
 
     private fun calcHStep(canvasRt: SizeF) : Double {
-        return ((canvasRt.width - xAxisMarginStart) / (yAxisLines + 1) * yAxisLines) / (dataSource.xyRange.x + 0.3)
+        return ((canvasRt.width - xAxisMarginStart) / (yAxisLines + 1) * yAxisLines) / (dataSource.xyRange.x/* + 0.3*/)
     }
 
     private fun calcVStep(canvasRt: SizeF) : Double {
@@ -198,6 +210,8 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
         when (dataSource.type) {
             KamleonGraphDataType.hydration -> {
                 renderStreakLine(canvas, KamleonGraphDataType.HydrationStreakValue)
+                renderStreakLineLabel(context.getString(R.string.graph_label_optimum), canvas, KamleonGraphDataType.HydrationStreakValue, false)
+
             }
             KamleonGraphDataType.electrolytes -> {
                 renderStreakLine(canvas, KamleonGraphDataType.ElectrolyteStreakValueLower)

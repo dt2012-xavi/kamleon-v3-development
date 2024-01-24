@@ -94,6 +94,8 @@ data class AverageMonthlyMeasureData(
         return 0
     }
 
+    override var isPrecise = true
+
     override fun scoreValue(type: KamleonGraphDataType): Double {
         return when(type) {
             KamleonGraphDataType.hydration -> hydration

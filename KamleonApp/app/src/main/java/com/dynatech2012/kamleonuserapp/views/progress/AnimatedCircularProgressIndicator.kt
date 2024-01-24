@@ -26,7 +26,7 @@ import com.dynatech2012.kamleonuserapp.R
 
 @Composable
 fun AnimatedCircularProgressIndicator(
-    currentValue: Int,
+    currentValue: Int?,
     maxValue: Int,
     progressBackgroundColor: Color,
     progressIndicatorColor: Color,
@@ -46,7 +46,7 @@ fun AnimatedCircularProgressIndicator(
     )
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        val animateFloat = remember { currentValue / maxValue.toFloat() }
+        val animateFloat = remember { (currentValue ?: 0) / maxValue.toFloat() }
         /*
         val animateFloat = remember { Animatable(0f) }
         LaunchedEffect(animateFloat) {
@@ -59,7 +59,7 @@ fun AnimatedCircularProgressIndicator(
 
         Canvas(
             Modifier
-                .progressSemantics(currentValue / maxValue.toFloat())
+                .progressSemantics((currentValue ?: 0) / maxValue.toFloat())
                 .size(CircularIndicatorDiameter)
         ) {
             // Start at 12 O'clock

@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun VolumeProgressIndicator(
-    currentValue: Int,
+    currentValue: Int?,
     maxValue: Int,
     color: Color,
     modifier: Modifier = Modifier
@@ -32,6 +32,7 @@ fun VolumeProgressIndicator(
         Stroke(width = 6.dp.toPx(), cap = StrokeCap.Square, join = StrokeJoin.Round)
     }
     val alfa = when {
+        currentValue == null -> 0f
         currentValue < 150 -> 0.3f
         currentValue < 250 -> 0.6f
         else -> 1f
@@ -46,15 +47,18 @@ fun VolumeProgressIndicator(
                 animationSpec = tween(durationMillis = 2000, easing = FastOutSlowInEasing)
             )
         }*/
-        val displayValue = remember { currentValue / maxValue.toFloat() }
+        val displayValue = remember { (currentValue ?: 0) / maxValue.toFloat() }
 
         Canvas(
             Modifier
-                .progressSemantics(currentValue / maxValue.toFloat())
+                .progressSemantics((currentValue ?: 0) / maxValue.toFloat())
                 .size(CircularIndicatorDiameter)
                 .alpha(alfa)
         ) {
             // Start at 12 O'clock
+            if (currentValue == null) {
+                return@Canvas
+            }
             if (currentValue > 0f) {
                 val startAngle = 135f
                 val sweep: Float = 90f - diff//80f
