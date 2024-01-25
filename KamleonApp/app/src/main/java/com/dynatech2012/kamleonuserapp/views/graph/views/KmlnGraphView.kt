@@ -68,7 +68,8 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
     private val minMaxLabelPaint = Paint().apply {
         color = context.getColor(R.color.kmln_graph_color_black)
         typeface = Typeface.DEFAULT_BOLD
-        textSize = 28f
+        //textSize = 28f
+        textSize = resources.getDimension(R.dimen.kmln_graph_min_max_label_text_size)
         strokeWidth = 1f
     }
 
@@ -80,6 +81,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
             KamleonGraphViewMode.Monthly -> 6
             KamleonGraphViewMode.Yearly -> 6
         }
+
     private val xLabelHeight: Int = 40
 
     private val xAxisMarginStart: Int = 0//16
@@ -223,15 +225,15 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
             KamleonGraphDataType.volume -> {
                 renderStreakLine(canvas, dataSource.minForStreak())
                 renderStreakLine(canvas, dataSource.maxForStreak())
-                renderStreakLineLabel(context.getString(R.string.graph_label_minimum), canvas, dataSource.minForStreak(), true)
-                renderStreakLineLabel(context.getString(R.string.graph_label_maximum), canvas, dataSource.maxForStreak(), false)
+                renderStreakLineLabel(context.getString(R.string.graph_label_minimum), canvas, dataSource.minForStreak(), false)
+                renderStreakLineLabel(context.getString(R.string.graph_label_maximum), canvas, dataSource.maxForStreak(), true)
             }
         }
     }
 
-    private fun renderStreakLineLabel(strLabel: String, canvas: Canvas, value: Double, isMin: Boolean) {
+    private fun renderStreakLineLabel(strLabel: String, canvas: Canvas, value: Double, isTextAbove: Boolean) {
         val canvasSize = SizeF(canvas.width.toFloat(), canvas.height.toFloat())
-        val yOffset = if (isMin) -30 else 30
+        val yOffset = if (isTextAbove) -20 else (20 + minMaxLabelPaint.textSize).toInt()
 
         canvas.drawText(strLabel,
             (canvas.width / 3.0 * 2.0).toFloat(), calcBarRect(canvasSize, 0, 0.0, value).bottom + yOffset, minMaxLabelPaint)
@@ -241,8 +243,8 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
         val canvasSize = SizeF(canvas.width.toFloat(), canvas.height.toFloat())
         val rtB = canvas.height - xLabelHeight
         val streakLinePosY = (rtB - calcVStep(canvasSize) * value).toFloat()
-
-        canvas.drawLine(0f, streakLinePosY, canvas.width.toFloat(), streakLinePosY, streakLinePaint)
+        val endX = (canvas.width / (yAxisLines + 1.0) * yAxisLines).toFloat() //canvas.width.toFloat()
+        canvas.drawLine(0f, streakLinePosY, endX, streakLinePosY, streakLinePaint)
     }
 
     private fun renderGraphData(canvas: Canvas) {
@@ -250,31 +252,49 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
 
         for (vIndex in dataSource.values.indices) {
             val orgBarRect = calcBarRect(canvasSize, vIndex)
-            if (isStreak) {
-                val yVal = dataSource.values[vIndex].y
-                if (dataSource.type == KamleonGraphDataType.hydration) {
-                    if (yVal > 0 && yVal < KamleonGraphDataType.HydrationStreakValue) {
-                        canvas.drawRect(calcBarRect(canvasSize, vIndex, yVal, KamleonGraphDataType.HydrationStreakValue), graphBarItemOrangePaint)
-                    }
-
-                    canvas.drawRect(orgBarRect, graphBarItemGreyPaint)
-
-                } else if (dataSource.type == KamleonGraphDataType.electrolytes) {
-                    canvas.drawRect(orgBarRect, graphBarItemGreyPaint)
-                    if (yVal > KamleonGraphDataType.ElectrolyteStreakValueLower) {
-                        canvas.drawRect(calcBarRect(canvasSize, vIndex, KamleonGraphDataType.ElectrolyteStreakValueLower, min(yVal, KamleonGraphDataType.ElectrolyteStreakValueUpper)), graphBarItemPaint)
-                    }
-                } else if (dataSource.type == KamleonGraphDataType.volume) {
-                    val minValue = dataSource.minForStreak()
-                    val maxValue = dataSource.maxForStreak()
-                    if (yVal == minValue || yVal == maxValue) {
-                        canvas.drawRect(orgBarRect, graphBarItemPaint)
-                    } else {
-                        canvas.drawRect(orgBarRect, graphBarItemGreyPaint)
-                    }
-                }
+            if (!dataSource.arePrecise[vIndex]) {
+                canvas.drawRect(orgBarRect, graphBarItemGreyPaint)
             } else {
-                canvas.drawRect(orgBarRect, graphBarItemPaint)
+                if (isStreak) {
+                    val yVal = dataSource.values[vIndex].y
+                    if (dataSource.type == KamleonGraphDataType.hydration) {
+                        if (yVal > 0 && yVal < KamleonGraphDataType.HydrationStreakValue) {
+                            canvas.drawRect(
+                                calcBarRect(
+                                    canvasSize,
+                                    vIndex,
+                                    yVal,
+                                    KamleonGraphDataType.HydrationStreakValue
+                                ), graphBarItemOrangePaint
+                            )
+                        }
+
+                        canvas.drawRect(orgBarRect, graphBarItemGreyPaint)
+
+                    } else if (dataSource.type == KamleonGraphDataType.electrolytes) {
+                        canvas.drawRect(orgBarRect, graphBarItemGreyPaint)
+                        if (yVal > KamleonGraphDataType.ElectrolyteStreakValueLower) {
+                            canvas.drawRect(
+                                calcBarRect(
+                                    canvasSize,
+                                    vIndex,
+                                    KamleonGraphDataType.ElectrolyteStreakValueLower,
+                                    min(yVal, KamleonGraphDataType.ElectrolyteStreakValueUpper)
+                                ), graphBarItemPaint
+                            )
+                        }
+                    } else if (dataSource.type == KamleonGraphDataType.volume) {
+                        val minValue = dataSource.minForStreak()
+                        val maxValue = dataSource.maxForStreak()
+                        if (yVal == minValue || yVal == maxValue) {
+                            canvas.drawRect(orgBarRect, graphBarItemPaint)
+                        } else {
+                            canvas.drawRect(orgBarRect, graphBarItemGreyPaint)
+                        }
+                    }
+                } else {
+                    canvas.drawRect(orgBarRect, graphBarItemPaint)
+                }
             }
         }
     }
@@ -289,7 +309,8 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
         val hStep = canvas.width / (yAxisLines + 1)
         for (yIndex in 0 until yAxisLines) {
             val xPos: Float = (hStep * (yIndex + 1)).toFloat()
-            canvas.drawLine(xPos, 0f, xPos, canvas.height.toFloat(), yAxisLinePaint)
+            // xLabelHeight.toFloat() for end vertical lines bottom before x axis labels
+            canvas.drawLine(xPos, /*0f*/xLabelHeight.toFloat(), xPos, canvas.height.toFloat(), yAxisLinePaint)
         }
     }
 

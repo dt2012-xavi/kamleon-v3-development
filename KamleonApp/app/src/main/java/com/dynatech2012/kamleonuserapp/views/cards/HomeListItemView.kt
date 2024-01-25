@@ -58,11 +58,11 @@ class HomeListItemView : LinearLayout {
 
             val nType = attrEditText.getInteger(R.styleable.AnalyticListItemViewStyle_type, 0)
             if (nType == 0) {
-                ivRight?.setImageResource(R.drawable.img_ana_chart1)
+                ivRight?.setImageResource(R.drawable.image_profile)
             } else if (nType == 1) {
-                ivRight?.setImageResource(R.drawable.img_ana_chart2)
+                ivRight?.setImageResource(R.drawable.image_profile)
             } else if (nType == 2) {
-                ivRight?.setImageResource(R.drawable.img_ana_chart3)
+                ivRight?.setImageResource(R.drawable.image_profile)
             }
         } finally {
             attrEditText.recycle()

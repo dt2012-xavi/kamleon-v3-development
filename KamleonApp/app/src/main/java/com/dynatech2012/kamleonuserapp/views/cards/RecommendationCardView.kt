@@ -138,7 +138,8 @@ fun RecommendationCardView(recommendation: Recommendation, modifier: Modifier, s
                         )
                     }
                     Text(
-                        modifier = Modifier.padding(bottom = 4.dp),
+                        modifier = Modifier.padding(top =
+                            if (recommendation.kind == null) 4.dp else 0.dp, bottom = 4.dp),
                         text = stringResource(id = recommendation.titleShort),
                         fontSize = dimensionResource(R.dimen.ts_14).value.sp,
                         color = colorResource(id = R.color.kamleon_dark_grey),
@@ -153,6 +154,7 @@ fun RecommendationCardView(recommendation: Recommendation, modifier: Modifier, s
                         maxLines = if (recommendation.kind != null) 2 else 3,
                         overflow = TextOverflow.Ellipsis
                     )
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
             if (blocked) {
@@ -185,7 +187,7 @@ fun RecommendationCardView(recommendation: Recommendation, modifier: Modifier, s
                                     drawCornerTriangle((-14).dp, (-14).dp) },
                         ){
                             Image(
-                                painterResource(id = R.drawable.padlock),
+                                painterResource(id = R.drawable.ic_padlock),
                                 contentDescription = "",
                                 modifier = Modifier
                                     .padding(10.dp)

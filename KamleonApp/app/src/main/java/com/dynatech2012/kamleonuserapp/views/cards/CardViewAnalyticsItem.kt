@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -37,11 +38,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter.Companion.tint
+import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dynatech2012.kamleonuserapp.R
@@ -49,6 +54,7 @@ import com.dynatech2012.kamleonuserapp.application.fontFamily
 import com.dynatech2012.kamleonuserapp.application.fontFamilyBook
 import com.dynatech2012.kamleonuserapp.views.progress.AnimatedCircularProgressIndicator
 import com.dynatech2012.kamleonuserapp.views.progress.VolumeProgressIndicator
+import com.google.android.material.internal.BaselineLayout
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -175,7 +181,7 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
                     Text(
                         fontFamily = fontFamily,
                         fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(bottom = 2.dp),
+                        modifier = Modifier.padding(bottom = 8.dp),
                         text = analyticType.title,
                         fontSize = dimensionResource(R.dimen.ts_14).value.sp,
                         color = colorResource(id = R.color.kamleon_secondary_grey_60),
@@ -183,7 +189,7 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
                     Text(
                         fontFamily = fontFamily,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 6.dp),
+                        modifier = Modifier.padding(bottom = 2.dp),
                         text = subtitle,
                         fontSize = dimensionResource(R.dimen.ts_20).value.sp,
                         color = colorResource(id = R.color.kamleon_dark_grey),
@@ -191,8 +197,7 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
                     Text(
                         fontFamily = fontFamily,
                         fontWeight = FontWeight.Medium,
-                        modifier = Modifier
-                            .padding(top = 4.dp),
+                        modifier = Modifier,
                         text = description,
                         fontSize = dimensionResource(R.dimen.ts_14).value.sp,
                         color = colorResource(id = R.color.kamleon_secondary_grey_50),
@@ -349,8 +354,10 @@ fun ElecView(electrolytes: Int?) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
+                    modifier = Modifier
+                        .offset(y = (-4).dp),
                     fontFamily = fontFamilyBook,
-                    text = if (electrolytes != null) "mS/cm" else "",
+                    text = if (electrolytes != null) stringResource(id = R.string.unit_electrolites) else "",
                     fontSize = dimensionResource(R.dimen.ts_16).value.sp,
                     color = colorResource(id = R.color.kamleon_secondary_grey_60)
                 )
@@ -390,7 +397,8 @@ fun VolumeView(volume: Int?) {
                     fontFamily = fontFamilyBook,
                     text = value,
                     fontSize = dimensionResource(R.dimen.ts_40).value.sp,
-                    color = colorResource(id = R.color.kamleon_dark_grey)
+                    color = colorResource(id = R.color.kamleon_dark_grey),
+
                 )
             }
             Row(
@@ -399,10 +407,13 @@ fun VolumeView(volume: Int?) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
+                    modifier = Modifier
+                        .offset(y = (-4).dp),                        //.background(colorResource(id = R.color.color_red)),
                     fontFamily = fontFamilyBook,
-                    text = if (volume != null) "ml" else "",
+
+                    text = if (volume != null) stringResource(id = R.string.unit_volume) else "",
                     fontSize = dimensionResource(R.dimen.ts_16).value.sp,
-                    color = colorResource(id = R.color.kamleon_secondary_grey_60)
+                    color = colorResource(id = R.color.kamleon_secondary_grey_60),
                 )
             }
         }

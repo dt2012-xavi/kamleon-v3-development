@@ -51,7 +51,6 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:id="@+id/ivRight"
-            android:src="@drawable/img_ana_chart1"
             android:scaleType="fitCenter"/>
 
     </LinearLayout>

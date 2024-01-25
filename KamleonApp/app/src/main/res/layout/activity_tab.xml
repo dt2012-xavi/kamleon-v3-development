@@ -86,7 +86,7 @@
                     android:layout_width="@dimen/tab_icon_size"
                     android:layout_height="@dimen/tab_icon_size"
                     android:scaleType="centerInside"
-                    android:src="@drawable/icn_tab_home"/>
+                    android:src="@drawable/ic_tab_home"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                     android:layout_width="@dimen/tab_icon_size"
                     android:layout_height="@dimen/tab_icon_size"
                     android:scaleType="centerInside"
-                    android:src="@drawable/icn_tab_analytic"/>
+                    android:src="@drawable/ic_tab_analytics"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
                     android:layout_width="@dimen/tab_icon_size"
                     android:layout_height="@dimen/tab_icon_size"
                     android:scaleType="centerInside"
-                    android:src="@drawable/icn_tab_qr"/>
+                    android:src="@drawable/ic_tab_qr"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -101,14 +101,14 @@
                     app:cardCornerRadius="38dp"
                     android:id="@+id/cv_sett_profile"
                     android:elevation="8dp"
-                    app:cardBackgroundColor="?attr/colorSurfaceInverse">
+                    app:cardBackgroundColor="?attr/colorSurface">
                     <TextView
                         android:id="@+id/tv_setting_profile_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/default_value"
                         android:textAppearance="@style/TextAppearance.Kamleon.Headline5"
-                        android:textColor="?attr/colorOnSurfaceInverse"
+                        android:textColor="@color/kamleon_secondary_grey_60"
                         android:layout_gravity="center"/>
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/iv_sett_profile"
@@ -186,9 +186,10 @@
                             android:orientation="vertical">
 
                             <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/icn_setting_user" />
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:src="@drawable/ic_user"
+                                android:importantForAccessibility="no" />
 
                             <TextView
                                 style="@style/CircularBoldFont"
@@ -221,9 +222,10 @@
                             android:orientation="vertical">
 
                             <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/icn_setting_pref" />
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:src="@drawable/ic_settings"
+                                android:importantForAccessibility="no" />
 
                             <TextView
                                 style="@style/CircularBoldFont"
@@ -255,9 +257,11 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/icn_setting_logout" />
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/ic_log_out"
+                            app:tint="@color/color_red"
+                            android:importantForAccessibility="no" />
 
                         <TextView
                             style="@style/CircularBoldFont"

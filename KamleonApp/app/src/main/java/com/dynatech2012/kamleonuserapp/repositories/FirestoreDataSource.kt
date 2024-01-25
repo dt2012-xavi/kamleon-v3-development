@@ -6,6 +6,7 @@ import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_COLLECTION
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_TOKEN
+import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.kANALYSIS_TYPE_URINE
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Gender
@@ -124,6 +125,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
         Log.d(TAG, "got measures from FS last date: $date")
         val task = query
             .whereEqualTo(FirebaseConstants.kUSERID_FIELD, userId)
+            .whereEqualTo(FirebaseConstants.kANALYSIS_TYPE, kANALYSIS_TYPE_URINE)
             .whereGreaterThan(
                 FirebaseConstants.kANALYSIS_DATE,
                 timestamp

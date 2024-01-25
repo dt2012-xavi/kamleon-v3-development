@@ -43,9 +43,10 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icn_pick_image_gallery"/>
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:tint="@color/color_fa"
+                android:src="@drawable/ic_photo"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,9 +69,10 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icn_pick_image_camera"/>
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:tint="@color/color_fa"
+                android:src="@drawable/ic_camera"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -93,9 +95,10 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icn_pick_image_remove"/>
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:tint="@color/color_red"
+                android:src="@drawable/ic_trash"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

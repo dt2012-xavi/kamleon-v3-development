@@ -352,7 +352,8 @@ data class MeasureData (
         return 0
     }
 
-    override var isPrecise = precision != MeasurePrecision.Bad
+    override val isPrecise
+        get() = precision != MeasurePrecision.Bad
 
     override fun scoreValue(type: KamleonGraphDataType): Double {
         return when (type) {
