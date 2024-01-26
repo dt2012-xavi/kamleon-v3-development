@@ -17,9 +17,9 @@ enum class KamleonGraphDataType(val identifier: String) {
 
     companion object {
         @JvmStatic
-        var HydrationStreakValue = 50.0
+        var HydrationStreakValue = 66.0
 
-        var ElectrolyteStreakValueLower = 20.0
-        var ElectrolyteStreakValueUpper = 35.0
+        var ElectrolyteStreakValueLower = 5.0
+        var ElectrolyteStreakValueUpper = 25.0
     }
 }

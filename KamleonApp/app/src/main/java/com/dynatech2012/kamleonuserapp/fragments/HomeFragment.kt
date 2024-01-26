@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import coil.load
@@ -13,6 +14,7 @@ import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.databinding.ActivityHomeBinding
 import com.dynatech2012.kamleonuserapp.extensions.formatTime
 import com.dynatech2012.kamleonuserapp.models.CustomUser
+import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
 import com.dynatech2012.kamleonuserapp.models.RecommendationType
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.cards.ViewPager
@@ -38,11 +40,14 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
     }
 
     override fun initEvent() {
-        binding.ivHomeProfile.isClickable = true
-        binding.ivHomeProfile.setOnClickListener {
+        Log.d(TAG, "settings clicked 0")
+        binding.cvHomeProfile.isClickable = true
+        binding.cvHomeProfile.setOnClickListener {
+            Log.d(TAG, "settings clicked 1")
             val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
             val navController = navHostFragment.navController
             //Log.d(TAG, "frgmts ${navHostFragment.childFragmentManager.fragments[0]}")
+            Log.d(TAG, "settings clicked 2")
             navController.navigate(R.id.action_tabFragment_to_settingFragment)
             //navController.popBackStack(R.id.tabFragment, true)
         }
@@ -70,13 +75,22 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
 
     private fun onLastMeasureChanged(measure: MeasureData) {
         Log.d(TAG, "got measures 6 changed")
-        binding.lastMeasure.text = measure.score.toString()
-        binding.homeProgressBar.progress = measure.score
         val date = Date(measure.analysisDate)
         //val format = SimpleDateFormat("d MMMM yyy", Locale.getDefault())
         //val dateString = format.format(date)
         val dateString = date.formatTime.uppercase()
         binding.tvHomeLastSample.text = getString(R.string.home_last_sample_message, dateString)
+        setupTips(measure)
+        if (measure.precision == MeasurePrecision.Bad) {
+            binding.lastMeasure.text = getString(R.string.default_value)
+            binding.homeProgressBar.progress = 0
+
+            binding.homeBg.setImageResource(R.drawable.bg_low_volume)
+            binding.tvHomeMessage.text = getString(R.string.analytic_volume_low)
+            return
+        }
+        binding.lastMeasure.text = measure.score.toString()
+        binding.homeProgressBar.progress = measure.score
         when (measure.hydrationLevel) {
             MeasureData.HydrationLevel.VERYHYDRATED -> {
                 binding.homeBg.setImageResource(R.drawable.bg_very_hydrated)
@@ -95,13 +109,13 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
                 binding.tvHomeMessage.text = getString(R.string.analytic_severely_dehydrated)
             }
         }
-        setupTips(measure.hydrationLevel)
     }
 
 
-    private fun setupTips(hydrationLevel: MeasureData.HydrationLevel?) {
+    private fun setupTips(measure: MeasureData?) {
+        val recommendationType = RecommendationType.HOME
         binding.cvHome.setContent {
-            ViewPager(recommendationType = RecommendationType.HOME, hydrationLevel = hydrationLevel, modifier = Modifier)
+            ViewPager(recommendationType = recommendationType, measure = measure, modifier = Modifier)
         }
     }
 

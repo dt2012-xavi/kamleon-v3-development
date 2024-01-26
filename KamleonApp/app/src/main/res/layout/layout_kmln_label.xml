@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="wrap_content"
@@ -27,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textViewAvgValue"
-                android:text="45"
+                tools:text="45"
                 android:textColor="@color/kmln_graph_color_black"
                 android:textSize="@dimen/kmln_graph_label_average_value_text_size"/>
 
@@ -44,10 +45,22 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Jul 12, 2023"
+            tools:text="Jul 12, 2023"
             android:id="@+id/textViewAvgTimestamp"
             android:textColor="@color/kmln_graph_color_grey"
             android:textSize="@dimen/kmln_graph_label_average_datetime_text_size"/>
+
+        <View
+            android:id="@+id/v_graphics_label_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white"
+            android:layout_marginVertical="4dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_graphics_label_bar_clicked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
     <RelativeLayout

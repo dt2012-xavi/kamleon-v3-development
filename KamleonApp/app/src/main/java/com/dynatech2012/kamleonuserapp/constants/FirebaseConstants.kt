@@ -21,6 +21,8 @@ object FirebaseConstants {
     const val INVITATIONS_COLLECTION = "invitations"
     const val kAVERAGES = "Averages"
     const val kUSERID_FIELD = "userID"
+    const val kANALYSIS_TYPE = "ID"
+    const val kANALYSIS_TYPE_URINE = "urine"
     const val kANALYSIS_DATE = "analysisDate"
 
     // Realtime

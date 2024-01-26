@@ -182,6 +182,7 @@
     <string name="graph_label_minimum">Minimum</string>
     <string name="graph_label_maximum">Maximum</string>
 
+    <string name="graph_label_item_value">%1$s%2$s</string>
 
     <!-- Invitation -->
     <string name="notifications">Notifications</string>
@@ -221,14 +222,16 @@
     <string name="analytic_elec_optimal">Your electrolyte levels are within the optimal range.</string>
     <string name="analytic_elec_above">Your electrolyte levels are above the optimal range.</string>
 
+    <string name="analytic_volume_insuff_title">Insufficient</string>
     <string name="analytic_volume_low">Low volume</string>
     <string name="analytic_volume_medium">Average</string>
     <string name="analytic_volume_high">High volume</string>
 
-    <string name="analytic_volume_insuff">Your sample has insufficient volume to be analyzed. The analysis might be invalid.</string>
+    <string name="analytic_volume_insuff_desc">Your sample has insufficient volume to be analyzed. The analysis might be invalid.</string>
     <string name="analytic_volume_good">Your sample has good volume to be analyzed.</string>
 
     <string name="analytic_add_new">Add metric</string>
+    <string name="analytic_no_data">No data</string>
 
 
     <!-- Dialog -->
@@ -306,6 +309,8 @@
     <string name="recommendation_hydration_2">Drink right away! Immediately drink 250 mL (1 medium size glass) to improve your hydration!</string>
     <string name="recommendation_hydration_3">Stay hydrated and maintain your current hydration practices. Drink 100 to 200 mL during the next hour (1–2 hours).</string>
     <string name="recommendation_hydration_4">Consider drinking electrolyte 100 mL beverages to enhance water retention during the next hours (1–2 hours).</string>
+    <string name="recommendation_alert_title">Alert</string>
+    <string name="recommendation_alert_subtitle">Your sample has insufficient volume to be analyzed. The analysis might be invalid.</string>
     <string name="recommendation_hydration_title">Recommendation</string>
     <string name="recomendation_home_kind">Pro Recommendation</string>
     <string name="recomendation_home_title">Banana booster</string>

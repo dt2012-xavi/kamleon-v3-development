@@ -72,6 +72,10 @@
     <dimen name="kmln_graph_label_average_percent_text_size">16sp</dimen>
     <dimen name="kmln_graph_label_average_datetime_text_size">12sp</dimen>
 
+    <dimen name="kmln_graph_min_max_label_text_size">10sp</dimen>
+    <dimen name="kmln_graph_x_axis_label_text_size">12sp</dimen>
+    <dimen name="kmln_graph_y_axis_label_text_size">14sp</dimen>
+
     <dimen name="shadow_round_rect_bottom_padding">4dp</dimen>
     <dimen name="shadow_round_rect_height">34dp</dimen>
 

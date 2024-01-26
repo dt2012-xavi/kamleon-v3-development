@@ -58,7 +58,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         binding.navBack.setOnClickListener {
             findNavController().popBackStack()
         }
-        binding.ivGraphProfile.setOnClickListener {
+        binding.cvGraphProfile.setOnClickListener {
             val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
             val navController = navHostFragment.navController
             navController.navigate(R.id.action_graphicsFragment_to_settingFragment)

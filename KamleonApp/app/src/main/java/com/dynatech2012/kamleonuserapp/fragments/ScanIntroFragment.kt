@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import coil.ImageLoader
 import coil.decode.GifDecoder
@@ -22,6 +23,7 @@ import com.dynatech2012.kamleonuserapp.extensions.px
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 
 class ScanIntroFragment : BottomSheetDialogFragment() {
 
@@ -34,6 +36,7 @@ class ScanIntroFragment : BottomSheetDialogFragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentScanIntroBinding.inflate(inflater, container, false)
+        // show snackbar
         val imageLoader = ImageLoader.Builder(binding.root.context)
             .components {
                 if (SDK_INT >= 28) {

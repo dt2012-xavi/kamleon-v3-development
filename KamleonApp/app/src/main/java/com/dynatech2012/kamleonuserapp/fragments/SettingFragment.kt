@@ -117,10 +117,18 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
 
         binding.profileLayout.setOnClickListener {
+            /*val lastImagePickFragment = childFragmentManager.fragments.lastOrNull() as? ImagePickFragment
+            val ft = childFragmentManager.beginTransaction()
+            if (lastImagePickFragment != null) {
+                ft.remove(lastImagePickFragment)
+                //return@setOnClickListener
+            }
+            Log.d(TAG, "show pick image fragment"
+             */
             val pickFragment = ImagePickFragment.newInstance(onDismissPickImage)
-            Log.d(TAG, "show pick image fragment")
-            childFragmentManager.beginTransaction().add(pickFragment, "ImagePick").commit()
-            //pickFragment.show(parentFragmentManager, "ImagePick")
+            //ft.add(pickFragment, "ImagePick").commit()
+            pickFragment.show(childFragmentManager, "ImagePick")
+            Log.d(TAG, "image pick dialog after show")
         }
 
         binding.btnSettingNoti.setOnClickListener {

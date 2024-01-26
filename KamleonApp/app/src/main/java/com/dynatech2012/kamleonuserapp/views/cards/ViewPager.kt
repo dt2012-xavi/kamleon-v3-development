@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
@@ -41,7 +40,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ViewPager(recommendationType: RecommendationType, hydrationLevel: MeasureData.HydrationLevel?, modifier: Modifier) {
+fun ViewPager(recommendationType: RecommendationType, measure: MeasureData?, modifier: Modifier) {
     val pagerState = rememberPagerState(pageCount = {
         recommendationType.size
     })
@@ -66,20 +65,7 @@ fun ViewPager(recommendationType: RecommendationType, hydrationLevel: MeasureDat
             ),
         ) { page ->
             // Our page content
-            when (recommendationType) {
-                RecommendationType.HOME -> {
-                    CardViewHomeItemHome(recommendationType, hydrationLevel, page)
-                }
-                RecommendationType.HYDRATION -> {
-                    CardViewHomeItemHome(recommendationType, hydrationLevel, page)
-                }
-                RecommendationType.ELECTROLYTE -> {
-                    CardViewHomeItemHome(recommendationType, hydrationLevel, page)
-                }
-                RecommendationType.VOLUME -> {
-                    CardViewHomeItemHome(recommendationType, hydrationLevel, page)
-                }
-            }
+            CardViewHomeItemHome(recommendationType, measure, page)
         }
         Row(
             Modifier
@@ -106,15 +92,16 @@ fun ViewPager(recommendationType: RecommendationType, hydrationLevel: MeasureDat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardViewHomeItemHome(recommType: RecommendationType, hydrationLevel: MeasureData.HydrationLevel?, page: Int) {
+fun CardViewHomeItemHome(recommType: RecommendationType, measure: MeasureData?, page: Int) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(true)
     val scope = rememberCoroutineScope()
     val recommendations = Recommendation.fromTipType(recommType)
     val recommendation = recommendations[page]
     recommendation.blocked = page == recommendations.count() - 1
-    if (recommType == RecommendationType.HOME && page == 0 && hydrationLevel != null) {
-        recommendation.text = recommendation.getHydrationText(hydrationLevel)
+    if (recommType == RecommendationType.HOME && page == 0 && measure != null) {
+        recommendation.title = recommendation.getHydrationTitle(measure)
+        recommendation.text = recommendation.getHydrationSubtitle(measure)
     }
     val systemUiController = rememberSystemUiController()
     val colorGray = colorResource(id = R.color.kamleon_dark_grey)
@@ -180,7 +167,7 @@ fun CardViewHomeItemHome(recommType: RecommendationType, hydrationLevel: Measure
 @Preview
 @Composable
 fun ViewPagerPrev() {
-    ViewPager(RecommendationType.ELECTROLYTE, MeasureData.HydrationLevel.HYDRATED, Modifier
+    ViewPager(RecommendationType.ELECTROLYTE, MeasureData(), Modifier
         .fillMaxSize()
         .background(colorResource(id = R.color.color_red))
     )

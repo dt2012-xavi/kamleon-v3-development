@@ -49,7 +49,7 @@ fun PremiumModalView(modifier: Modifier, onClick: () -> Unit) {
                 .padding(4.dp)
                 .size(48.dp),
             painter = painterResource(
-                id = R.drawable.padlock
+                id = R.drawable.ic_padlock
             ),
             contentDescription = "",
         )

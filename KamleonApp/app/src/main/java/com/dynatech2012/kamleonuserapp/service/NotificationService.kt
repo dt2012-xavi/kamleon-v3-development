@@ -68,7 +68,7 @@ class NotificationService : FirebaseMessagingService() {
                 R.string.channel_id
             )
         )
-            .setSmallIcon(R.drawable.ic_notifications_24)
+            .setSmallIcon(R.drawable.ic_notifications)
             .setLargeIcon(
                 BitmapFactory.decodeResource(
                     context.resources,

@@ -47,14 +47,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cv_analytic_profile"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="104dp" >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="20dp"
                 android:paddingTop="20dp"
-                android:paddingBottom="120dp"
+                android:paddingBottom="20dp"
                 android:orientation="vertical">
 
                     <!--<com.dynatech2012.kamleonuserapp.views.AnalyticListItemView
@@ -157,14 +158,14 @@
             android:layout_marginBottom="@dimen/margin_bottom_header"
             app:cardCornerRadius="18dp"
             android:elevation="8dp"
-            app:cardBackgroundColor="?attr/colorSurfaceInverse">
+            app:cardBackgroundColor="?attr/colorSurface">
             <TextView
                 android:id="@+id/tv_analytic_profile_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/default_value"
                 android:textAppearance="@style/TextAppearance.Kamleon.Body1"
-                android:textColor="?attr/colorOnSurfaceInverse"
+                android:textColor="@color/kamleon_secondary_grey_60"
                 android:layout_gravity="center"/>
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/iv_analytic_profile"

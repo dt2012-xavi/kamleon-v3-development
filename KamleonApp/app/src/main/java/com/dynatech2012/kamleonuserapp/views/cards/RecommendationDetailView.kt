@@ -91,7 +91,7 @@ fun RecommendationDetailView(modifier: Modifier, recommendation: Recommendation,
                     Image(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .aspectRatio(1f),
+                            .aspectRatio(1.5f),
                             //.clip(RoundedCornerShape(0.dp, 0.dp, 20.dp, 20.dp)),
                         painter = painterResource(
                             id = recommendation.image
@@ -149,11 +149,20 @@ fun RecommendationDetailView(modifier: Modifier, recommendation: Recommendation,
                 )
                 Image(
                     modifier = Modifier
-                        .padding(10.dp)
-                        .size(40.dp)
-                        .background(colorResource(id = R.color.white30), CircleShape)
+                        .padding(horizontal = 6.dp, vertical = 32.dp)
+                        .size(36.dp)
+                        .coloredShadow(
+                            color = colorResource(id = R.color.kamleon_dark_grey),
+                            alpha = 0.1f,
+                            offsetX = 2.dp,
+                            offsetY = 2.dp,
+                            borderRadius = 18.dp,
+                            shadowRadius = 2.dp,
+                        )
+                        .background(colorResource(id = R.color.color_fa), CircleShape)
+                        ///.background(colorResource(id = R.color.white30), CircleShape)
                         .clip(CircleShape)                       // clip to the circle shape
-                        .border(2.dp, colorResource(id = R.color.color_fa), CircleShape)
+                        //.border(2.dp, colorResource(id = R.color.color_fa), CircleShape)
                         .clickable
                         {
                             key2 = false

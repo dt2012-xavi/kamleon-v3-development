@@ -1,6 +1,7 @@
 package com.dynatech2012.kamleonuserapp.models
 
 import androidx.room.TypeConverters
+import com.google.firebase.firestore.PropertyName
 import java.sql.Timestamp
 import java.util.Date
 
@@ -36,6 +37,10 @@ data class RawMeasureData(
     var waterDetect: String? = null,
     var gS_Chemist: String? = null,
     var gS_Observation: String? = null, //String
+    @PropertyName(value="ID")
+    var type: MeasureType? = null, //String
+    @PropertyName(value="Prediction_Precision")
+    var precision: MeasurePrecision? = null, //String
 
     @TypeConverters(IntVectorTypeConverter::class)
     var xyz: IntArray,
@@ -77,6 +82,7 @@ data class RawMeasureData(
         0, 0, 0, 0, 0f, 0f, 0f,
         null, null, null, null, null, null, null,
         null, null, null, null, null, null, null,
+        MeasureType.urine, MeasurePrecision.Good,
         IntArray(0), IntArray(0), IntArray(0), IntArray(0), IntArray(0), IntArray(0),
         IntArray(0), IntArray(0), IntArray(0), IntArray(0), IntArray(0))
 
@@ -119,5 +125,24 @@ data class RawMeasureData(
         result = 31 * result + std11Band.contentHashCode()
         result = 31 * result + water11Band.contentHashCode()
         return result
+    }
+}
+
+enum class MeasureType {
+    urine;
+    companion object {
+        fun fromString(value: String?): MeasureType? {
+            if (value == null) return null
+            return MeasureType.valueOf(value)
+        }
+    }
+}
+enum class MeasurePrecision {
+    Good, Bad;
+    companion object {
+        fun fromString(value: String?): MeasurePrecision? {
+            if (value == null) return null
+            return MeasurePrecision.valueOf(value)
+        }
     }
 }

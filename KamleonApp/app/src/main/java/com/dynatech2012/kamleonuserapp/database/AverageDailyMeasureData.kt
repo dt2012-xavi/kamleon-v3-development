@@ -10,7 +10,7 @@ import java.util.GregorianCalendar
 
 interface AveragesData {
     var timestamp: Long
-
+    val isPrecise: Boolean
     fun scoreValue(type: KamleonGraphDataType): Double
 }
 
@@ -105,6 +105,8 @@ data class AverageDailyMeasureData (
     override fun describeContents(): Int {
         return 0
     }
+
+    override var isPrecise = true
 
     override fun scoreValue(type: KamleonGraphDataType): Double {
         return when(type) {

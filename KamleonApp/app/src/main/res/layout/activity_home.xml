@@ -55,14 +55,14 @@
                 app:cardCornerRadius="18dp"
                 android:id="@+id/cv_home_profile"
                 android:elevation="8dp"
-                app:cardBackgroundColor="?attr/colorSurfaceInverse">
+                app:cardBackgroundColor="?attr/colorSurface">
             <TextView
                     android:id="@+id/tv_home_profile_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/default_value"
                     android:textAppearance="@style/TextAppearance.Kamleon.Body1"
-                    android:textColor="?attr/colorOnSurfaceInverse"
+                    android:textColor="@color/kamleon_secondary_grey_60"
                     android:layout_gravity="center"/>
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="36dp"

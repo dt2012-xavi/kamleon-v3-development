@@ -12,6 +12,7 @@ import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.databinding.ActivityAnalyticBinding
 import com.dynatech2012.kamleonuserapp.extensions.formatTime
 import com.dynatech2012.kamleonuserapp.models.CustomUser
+import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
@@ -42,8 +43,8 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
             openGraphView(2)
         }
         */
-        binding.ivAnalyticProfile.isClickable = true
-        binding.ivAnalyticProfile.setOnClickListener {
+        binding.cvAnalyticProfile.isClickable = true
+        binding.cvAnalyticProfile.setOnClickListener {
             val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
             val navController = navHostFragment.navController
             navController.navigate(R.id.action_tabFragment_to_settingFragment)
@@ -84,46 +85,49 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
         Log.d(TAG, "onLastMeasureChanged: $measureData")
         val cvHy = binding.cvAnalyticHydration
         val score = measureData?.score
-        cvHy.value = score ?: 0//77
-        //cvHy.analyticType = AnalyticType.HYDRATION
+        cvHy.value = if (measureData?.precision == MeasurePrecision.Bad) null else score
         cvHy.subtitle = when (score) {
+            null -> getString(R.string.analytic_no_data)
             in 0..30 -> getString(R.string.analytic_severely_dehydrated)
             in 31..64 -> getString(R.string.analytic_dehydrated)
-            in 65..90, null -> getString(R.string.analytic_hydrated)
+            in 65..90 -> getString(R.string.analytic_hydrated)
             else -> getString(R.string.analytic_very_hydrated)
         }
         cvHy.description = when (score) {
+            null -> ""
             in 0..64 -> getString(R.string.analytic_hydratation_under)
             else -> getString(R.string.analytic_hydratation_above)
         }
         cvHy.onClick = { openGraphView(0) }
         val el = measureData?.msCond?.toInt()// ?: 0
         val cvEl = binding.cvAnalyticElectrol
-        cvEl.value = el ?: 0
-        //cvEl.analyticType = AnalyticType.ELECTROLYTE
+        cvEl.value = if (measureData?.precision == MeasurePrecision.Bad) null else el
         cvEl.subtitle = when (el) {
+            null -> getString(R.string.analytic_no_data)
             in 0..4 -> getString(R.string.analytic_elec_hypo)
-            in 5..19, null -> getString(R.string.analytic_elec_normal)
+            in 5..19 -> getString(R.string.analytic_elec_normal)
             else -> getString(R.string.analytic_elec_hyper)
         }
         cvEl.description = when (el) {
+            null -> ""
             in 0..4 -> getString(R.string.analytic_elec_under)
-            in 5..19, null -> getString(R.string.analytic_elec_optimal)
+            in 5..19 -> getString(R.string.analytic_elec_optimal)
             else -> getString(R.string.analytic_elec_above)
         }
         cvEl.onClick = { openGraphView(1) }
 
         val cvVol = binding.cvAnalyticVolume
         val vol = measureData?.vol?.toInt()
-        cvVol.value = vol ?: 0//150
-        //cvVol.analyticType = AnalyticType.VOLUME
+        cvEl.value = if (measureData?.precision == MeasurePrecision.Bad) null else vol
         cvVol.subtitle = when (vol) {
+            null -> getString(R.string.analytic_volume_insuff_title)
             in 0..149 -> getString(R.string.analytic_volume_low)
-            in 150..249, null -> getString(R.string.analytic_volume_medium)
+            in 150..249 -> getString(R.string.analytic_volume_medium)
             else -> getString(R.string.analytic_volume_high)
         }
         cvVol.description = when (vol) {
-            in 0..149 -> getString(R.string.analytic_volume_insuff)
+            null -> getString(R.string.analytic_volume_insuff_desc)
+            in 0..149 -> getString(R.string.analytic_volume_insuff_desc)
             else -> getString(R.string.analytic_volume_good)
         }
         cvVol.onClick = { openGraphView(2) }
