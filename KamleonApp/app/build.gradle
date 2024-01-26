@@ -14,7 +14,7 @@ android {
         applicationId "com.dynatech2012.kamleonuserapp"
         minSdk 26
         targetSdk 34
-        versionCode 2000
+        versionCode 2001
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

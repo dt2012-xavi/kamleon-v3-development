@@ -160,9 +160,9 @@
 
 
     <!-- Tab -->
-    <string name="tab_home">HOMEPAGE</string>
+    <string name="tab_home">HOME</string>
     <string name="tab_analytic">ANALYTICS</string>
-    <string name="tab_qr">USER QR</string>
+    <string name="tab_qr">SCAN</string>
 
 
     <!-- QR -->

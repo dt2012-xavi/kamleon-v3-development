@@ -118,7 +118,7 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
 
         val cvVol = binding.cvAnalyticVolume
         val vol = measureData?.vol?.toInt()
-        cvEl.value = if (measureData?.precision == MeasurePrecision.Bad) null else vol
+        cvVol.value = if (measureData?.precision == MeasurePrecision.Bad) null else vol
         cvVol.subtitle = when (vol) {
             null -> getString(R.string.analytic_volume_insuff_title)
             in 0..149 -> getString(R.string.analytic_volume_low)

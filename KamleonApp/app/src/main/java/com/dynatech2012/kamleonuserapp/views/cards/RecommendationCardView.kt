@@ -191,7 +191,7 @@ fun RecommendationCardView(recommendation: Recommendation, modifier: Modifier, s
                                 contentDescription = "",
                                 modifier = Modifier
                                     .padding(10.dp)
-                                    .size(24.dp),
+                                    .size(18.dp),
                                 alignment = Alignment.TopEnd
                             )
                             Spacer(modifier = Modifier.weight(1f))
