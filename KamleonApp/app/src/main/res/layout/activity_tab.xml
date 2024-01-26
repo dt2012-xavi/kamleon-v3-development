@@ -38,6 +38,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
+        <TextView
+            android:id="@+id/tv_qr_debugging"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/white30"
+            android:textAlignment="center"
+            android:gravity="top|center_horizontal"
+            android:layout_marginTop="20dp"
+            tools:text="QR debugging" />
         <ImageView
             android:layout_width="256dp"
             android:layout_height="256dp"

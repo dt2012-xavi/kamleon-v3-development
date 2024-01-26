@@ -34,7 +34,7 @@ fun String.capitalize(): String {
 private const val DEFAULT_FORMAT_DATE_WITHOUT_TIME = "MMM dd, yyyy"
 
 fun Date.formatDate(formatStr: String? = KamleonUtils.DEFAULT_FORMAT_DATE_WITHOUT_TIME): String {
-    return SimpleDateFormat(formatStr, Locale.getDefault()).format(
+    return SimpleDateFormat(formatStr, Locale.US).format(
         this
     )
 }

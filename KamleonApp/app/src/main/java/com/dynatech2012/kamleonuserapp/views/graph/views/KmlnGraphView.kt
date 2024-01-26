@@ -186,7 +186,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
                 return "${index + 1}:00 h"
             }
             KamleonGraphViewMode.Monthly -> {
-                return dataSource.startDate().addDays(index).formatDate("MMM dd, yyyy")
+                return dataSource.startDate().addDays(index).formatDate("dd MMM, yyyy")
             }
             KamleonGraphViewMode.Weekly -> {
                 val dayNames = arrayOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")

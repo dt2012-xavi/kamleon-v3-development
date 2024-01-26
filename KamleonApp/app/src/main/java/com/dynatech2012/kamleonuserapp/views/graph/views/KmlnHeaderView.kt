@@ -99,7 +99,6 @@ class KmlnHeaderView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
 
         val nonZeroVals = data.values.filter { it.y > 0 }
         val avgValue = nonZeroVals.sumOf { it.y } / nonZeroVals.size
-        var strAvg = ""
         val strAvgUnit = context.getString(data.type.getUnit())
         if (nonZeroVals.isEmpty()) {
             Log.d("KmlnHeaderView", "setData: nonZeroVals.isEmpty()")
@@ -112,17 +111,17 @@ class KmlnHeaderView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
             setVisualData("--", strAvgUnit, strDateRange)
             return
         }
-        when (data.type) {
+        val strAvg: String = when (data.type) {
             KamleonGraphDataType.hydration -> {
-                strAvg = String.format("%d", avgValue.toInt())
+                String.format("%d", avgValue.toInt())
             }
 
             KamleonGraphDataType.electrolytes -> {
-                strAvg = String.format("%.1f", avgValue)
+                String.format("%.1f", avgValue)
             }
 
             KamleonGraphDataType.volume -> {
-                strAvg = String.format("%d", avgValue.toInt())
+                String.format("%d", avgValue.toInt())
             }
         }
         val strDateRange = when(data.mode) {
