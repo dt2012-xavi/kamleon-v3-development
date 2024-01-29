@@ -44,19 +44,19 @@ class PinFragment : BaseFragment<ActivityPinBinding>() {
     }
 
     private fun updateInputMode() {
-        binding.imageViewEye.setImageResource(if (secureInputCurrent) R.drawable.icn_eye_on else R.drawable.icn_eye_off)
+        binding.imageViewEye.setImageResource(if (secureInputCurrent) R.drawable.icn_eye_off else R.drawable.icn_eye_on)
         if (secureInputCurrent) {
             binding.etPin.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
         } else {
             binding.etPin.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         }
-        binding.ivPinNewEye.setImageResource(if (secureInputNew) R.drawable.icn_eye_on else R.drawable.icn_eye_off)
+        binding.ivPinNewEye.setImageResource(if (secureInputNew) R.drawable.icn_eye_off else R.drawable.icn_eye_on)
         if (secureInputNew) {
             binding.etPinNew.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
         } else {
             binding.etPinNew.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         }
-        binding.ivPinConfirmEye.setImageResource(if (secureInputConfirm) R.drawable.icn_eye_on else R.drawable.icn_eye_off)
+        binding.ivPinConfirmEye.setImageResource(if (secureInputConfirm) R.drawable.icn_eye_off else R.drawable.icn_eye_on)
         if (secureInputConfirm) {
             binding.etPinConf.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
         } else {

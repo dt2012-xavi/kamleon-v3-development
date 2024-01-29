@@ -27,9 +27,9 @@
             android:elevation="8dp">
 
             <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/bell"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_notifications_simple"
                 android:id="@+id/btnSettingNoti"
                 android:layout_gravity="center"
                 android:importantForAccessibility="no" />
@@ -37,8 +37,8 @@
 
 
         <ImageView
-            android:layout_width="12dp"
-            android:layout_height="12dp"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
             android:src="@drawable/shape_circle"
             android:id="@+id/btnSettingNotiBadge"
             android:visibility="gone"
@@ -46,8 +46,8 @@
             android:elevation="5dp"
             android:layout_alignEnd="@+id/cv_sett_bell"
             android:layout_alignTop="@+id/cv_sett_bell"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="7dp"
             android:importantForAccessibility="no" />
 
         <androidx.cardview.widget.CardView
@@ -137,7 +137,8 @@
                         android:src="@drawable/ic_camera"
                         android:layout_marginStart="1dp"
                         android:id="@+id/iv_setting_camera"
-                        android:layout_gravity="center"/>
+                        android:layout_gravity="center"
+                        android:importantForAccessibility="no" />
                 </androidx.cardview.widget.CardView>
 
             </RelativeLayout>
@@ -192,13 +193,13 @@
                                 android:importantForAccessibility="no" />
 
                             <TextView
-                                style="@style/CircularBoldFont"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginTop="4dp"
                                 android:text="@string/setting_option_account"
                                 android:textColor="@color/kamleon_dark_grey"
+                                android:textAppearance="@style/TextAppearance.Kamleon.Bold"
                                 android:textSize="@dimen/ts_12" />
                         </LinearLayout>
                     </LinearLayout>
@@ -228,12 +229,12 @@
                                 android:importantForAccessibility="no" />
 
                             <TextView
-                                style="@style/CircularBoldFont"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginTop="4dp"
                                 android:text="@string/setting_option_pref"
+                                android:textAppearance="@style/TextAppearance.Kamleon.Bold"
                                 android:textColor="@color/kamleon_dark_grey"
                                 android:textSize="@dimen/ts_12" />
                         </LinearLayout>
@@ -264,12 +265,12 @@
                             android:importantForAccessibility="no" />
 
                         <TextView
-                            style="@style/CircularBoldFont"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginTop="4dp"
                             android:text="@string/setting_option_logout"
+                            android:textAppearance="@style/TextAppearance.Kamleon.Bold"
                             android:textColor="@color/color_red"
                             android:textSize="@dimen/ts_12" />
                     </LinearLayout>
@@ -312,12 +313,12 @@
                         android:paddingHorizontal="@dimen/setting_item_padding_h">
 
                         <TextView
-                            style="@style/CircularBoldFont"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:paddingHorizontal="4dp"
                             android:text="@string/setting_label_name"
+                            android:textAppearance="@style/TextAppearance.Kamleon.Bold"
                             android:textColor="@color/kamleon_secondary_grey_70"
                             android:textSize="@dimen/ts_14" />
 
@@ -350,12 +351,12 @@
                         android:paddingHorizontal="@dimen/setting_item_padding_h">
 
                         <TextView
-                            style="@style/CircularBoldFont"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:paddingHorizontal="4dp"
                             android:text="@string/setting_label_surname"
+                            android:textAppearance="@style/TextAppearance.Kamleon.Bold"
                             android:textColor="@color/kamleon_secondary_grey_70"
                             android:textSize="@dimen/ts_14" />
 
@@ -572,7 +573,7 @@
                         android:id="@+id/accMenuItemTOS"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
-                        app:settingRightArrow="false"
+                        app:settingRightArrow="true"
                         app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_tos"
                         app:settingTypeValue="" />
@@ -831,58 +832,6 @@
                     android:layout_marginTop="12dp"
                     android:paddingHorizontal="8dp"
                     android:text="@string/setting_desc_pref2"
-                    android:textColor="@color/kamleon_secondary_grey_50"
-                    android:textSize="@dimen/ts_12" />
-
-                <TextView
-                    style="@style/CircularMediumFont"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="28dp"
-                    android:text="@string/setting_label_location"
-                    android:textColor="@color/kamleon_dark_grey"
-                    android:textSize="@dimen/ts_14" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:background="@drawable/bg_pref_container_shadow"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="@dimen/setting_category_content_padding">
-
-                    <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
-                        app:settingRightArrow="false"
-                        app:settingRightSwitch="true"
-                        app:settingTypeLabel="@string/setting_label_awuta"
-                        app:settingTypeValue="" />
-
-                    <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
-                        app:settingRightArrow="false"
-                        app:settingRightSwitch="true"
-                        app:settingTypeLabel="@string/setting_label_allow_once"
-                        app:settingTypeValue="" />
-
-                    <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
-                        app:settingRightArrow="false"
-                        app:settingRightSwitch="true"
-                        app:settingTypeLabel="@string/setting_label_not_allow"
-                        app:settingTypeValue="" />
-                </LinearLayout>
-
-                <TextView
-                    android:textAppearance="@style/TextAppearance.Kamleon.Book"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:paddingHorizontal="8dp"
-                    android:text="@string/setting_desc_pref3"
                     android:textColor="@color/kamleon_secondary_grey_50"
                     android:textSize="@dimen/ts_12" />
 

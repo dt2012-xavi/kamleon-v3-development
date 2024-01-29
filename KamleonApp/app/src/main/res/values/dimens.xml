@@ -63,8 +63,8 @@
     <dimen name="kmln_graph_footer_streak_value2_text_size">17sp</dimen>
 
     <dimen name="kmln_graph_header_average_title_text_size">15sp</dimen>
-    <dimen name="kmln_graph_header_average_value_text_size">25sp</dimen>
-    <dimen name="kmln_graph_header_average_percent_text_size">19sp</dimen>
+    <dimen name="kmln_graph_header_average_value_text_size">32sp</dimen>
+    <dimen name="kmln_graph_header_average_percent_text_size">20sp</dimen>
     <dimen name="kmln_graph_header_average_datetime_text_size">14sp</dimen>
 
     <dimen name="kmln_graph_label_average_title_text_size">13sp</dimen>

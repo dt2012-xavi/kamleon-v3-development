@@ -9,12 +9,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
+import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
+import kotlin.coroutines.resume
 
 
 @HiltViewModel
@@ -71,19 +73,34 @@ class AuthViewModel @Inject constructor(
     fun login(email: String, pass: String) {
         _uiState.value = 1
         if (!isValidEmail(email)) {
-            _uiState.postValue(-2)
-            return
-        }
-        if (pass.count() < 6) {
-            _uiState.postValue(-3)
+            _uiState.postValue(-4)
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
             val authResult = authRepo.login(email, pass)
             if (authResult.isSuccess && authResult.dataValue != null)
-                _uiState.postValue(5)
-            else if (authResult.isFailure)
-                _uiState.postValue(-1)
+                if (!authRepo.isEmailVerified)
+                    _uiState.postValue(-5)
+                else
+                    _uiState.postValue(5)
+            else if (authResult.isFailure) {
+                when (val e = authResult.error) {
+                    is com.google.firebase.auth.FirebaseAuthInvalidUserException -> {
+                        // user invalid
+                        Log.e(UserRepository.TAG, "login:failure: $e _ ${e.cause}", e)
+                        _uiState.postValue(-3)
+                    }
+                    is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> {
+                        // Pass wrong
+                        Log.e(UserRepository.TAG, "login:failure: $e _ ${e.cause}", e)
+                        _uiState.postValue(-2)
+                    }
+                    else -> {
+                        Log.e(UserRepository.TAG, "login:failure: $e _ ${e?.cause}", e)
+                        _uiState.postValue(-1)
+                    }
+                }
+            }
             else {
                 _uiState.postValue(0)
             }

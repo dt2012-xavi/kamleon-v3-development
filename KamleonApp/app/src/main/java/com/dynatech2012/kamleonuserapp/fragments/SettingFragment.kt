@@ -206,7 +206,9 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         val logoutDialog = dialog.show()
         logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        dialogView.findViewById<TextView>(R.id.tvDialogDesc).setOnClickListener {
+        val tvDescr = dialogView.findViewById<TextView>(R.id.tvDialogDesc)
+        tvDescr.text = getString(R.string.dialog_profile_ready)
+        tvDescr.setOnClickListener {
             logoutDialog.dismiss()
         }
     }
@@ -238,9 +240,6 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
     override fun onMenuItemClicked(menuView: SettingMenuItemView) {
         when (menuView) {
-            binding.accMenuItemEmail -> {
-                findNavController().navigate(R.id.action_settingFragment_to_emailFragment)
-            }
             binding.accMenuItemPwd -> {
                 findNavController().navigate(R.id.action_settingFragment_to_pwdFragment)
             }
@@ -365,11 +364,13 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
     private fun onUserImageChanged(drawable: Drawable?) {
         Log.d(HomeFragment.TAG, "image changed")
-        drawable?.let {
-            binding.ivSettProfile.load(drawable)
-            binding.ivSettProfile.visibility = View.VISIBLE
+        if (drawable == null) {
+            binding.ivSettProfile.setImageDrawable(null)
+            binding.ivSettProfile.visibility = View.INVISIBLE
             return
         }
+        binding.ivSettProfile.load(drawable)
+        binding.ivSettProfile.visibility = View.VISIBLE
     }
 
     private fun updateUserData()

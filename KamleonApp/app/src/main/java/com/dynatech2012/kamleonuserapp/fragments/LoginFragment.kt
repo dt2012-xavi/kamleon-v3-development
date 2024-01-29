@@ -64,19 +64,7 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
 
     private fun startActivity(state: Int) {
         when (state) {
-            -3 -> { // email not valid
-                showReadyDialog(state)
-                binding.btnSignIn.isEnabled = true
-                binding.btnSignIn.text = getString(R.string.login_btn_signin)
-                binding.pbLogin.visibility = INVISIBLE
-            }
-            -2 -> { // password not valid
-                showReadyDialog(state)
-                binding.btnSignIn.isEnabled = true
-                binding.btnSignIn.text = getString(R.string.login_btn_signin)
-                binding.pbLogin.visibility = INVISIBLE
-            }
-            -1 -> { // firebase error
+            in Int.MIN_VALUE..-1 -> {
                 showReadyDialog(state)
                 binding.btnSignIn.isEnabled = true
                 binding.btnSignIn.text = getString(R.string.login_btn_signin)
@@ -117,9 +105,11 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
         // -3 is email not valid, -2 is password not valid, -1 is firebase error
         dialogView.findViewById<TextView>(R.id.tvDialogTitle).text = getString(R.string.login_alert_title_login_error)
         dialogView.findViewById<TextView>(R.id.tvDialogDesc).text = when (errorType) {
-            -3 -> getString(R.string.login_alert_description_not_valid_email)
-            -2 -> getString(R.string.login_alert_description_short_pass)
-            -1 -> getString(R.string.login_alert_description_login_error)
+            -5 -> getString(R.string.login_alert_description_not_verified_email)
+            -4 -> getString(R.string.login_alert_description_not_valid_email)
+            -3 -> getString(R.string.login_alert_description_user_not_found)
+            -2 -> getString(R.string.login_alert_description_wrong_pass)
+            -1 -> getString(R.string.login_alert_description_login_error_unknown)
             else -> ""
         }
         val logoutDialog = dialog.show()

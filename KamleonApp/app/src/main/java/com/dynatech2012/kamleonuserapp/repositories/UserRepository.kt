@@ -9,7 +9,7 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.installations.InstallationTokenResult
 import kotlinx.coroutines.tasks.await
-import java.lang.Exception
+import kotlin.Exception
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -21,6 +21,9 @@ class UserRepository {
         get() = auth.uid
     val email: String?
         get() = auth.currentUser?.email
+
+    val isEmailVerified: Boolean
+        get() = auth.currentUser?.isEmailVerified ?: true
 
     suspend fun signup(email: String, pass: String) = suspendCoroutine { continuation ->
         auth.createUserWithEmailAndPassword(email, pass)
@@ -49,8 +52,22 @@ class UserRepository {
                     val customUser = CustomUser(email)
                     continuation.resume(Response.Success(customUser))
                 } else {
-                    Log.e(TAG, "login:failure", task.exception)
-                    continuation.resume(Response.Failure(task.exception ?: Exception()))
+                    when (val e = task.exception) {
+                        is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> {
+                            // Pass wrong
+                            Log.e(TAG, "login:failure: $e _ ${e.cause}", e)
+                            continuation.resume(Response.Failure(e))
+                        }
+                        is com.google.firebase.auth.FirebaseAuthInvalidUserException -> {
+                            // user invalid
+                            Log.e(TAG, "login:failure: $e _ ${e.cause}", e)
+                            continuation.resume(Response.Failure(e))
+                        }
+                        else -> {
+                            Log.e(TAG, "login:failure: $e _ ${e?.cause}", e)
+                            continuation.resume(Response.Failure(e ?: Exception()))
+                        }
+                    }
                 }
             }
     }

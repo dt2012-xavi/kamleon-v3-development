@@ -30,7 +30,7 @@
             android:textAppearance="@style/TextAppearance.Kamleon.Body1"
             android:id="@+id/tvDialogDesc"
             android:paddingHorizontal="32dp"
-            tools:text="@string/login_alert_description_login_error"
+            tools:text="@string/login_alert_description_wrong_pass"
             android:textAlignment="center"
             android:textColor="@color/white"/>
 

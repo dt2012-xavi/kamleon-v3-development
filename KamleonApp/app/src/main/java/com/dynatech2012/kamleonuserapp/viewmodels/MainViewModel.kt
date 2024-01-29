@@ -65,7 +65,8 @@ class MainViewModel @Inject constructor(
     private val _userUpdated = MutableLiveData<Boolean>()
     val userUpdated: LiveData<Boolean> = _userUpdated
 
-    private var userImagePrevUri: Uri? = null
+    private val _userImagePrevUri = MutableLiveData<Uri?>()
+    val userImagePrevUri: LiveData<Uri?> = _userImagePrevUri
 
     private val _userImageUri = MutableLiveData<Uri?>()
     val userImageUri: LiveData<Uri?> = _userImageUri
@@ -86,15 +87,20 @@ class MainViewModel @Inject constructor(
                 val user = userResult.dataValue!!
                 _userData.postValue(user)
                 val imageLoader = ImageLoader(appContext)
-                val request = ImageRequest.Builder(appContext)
-                    .data(user.imageUrl)
-                    .allowHardware(false)
-                    .target { drawable ->
-                        // Handle the result.
-                        _userImageDrawable.postValue(drawable)
-                    }
-                    .build()
-                val disposable = imageLoader.enqueue(request)
+                if (user.imageUrl.isNotBlank()) {
+                    val request = ImageRequest.Builder(appContext)
+                        .data(user.imageUrl)
+                        .allowHardware(false)
+                        .target { drawable ->
+                            // Handle the result.
+                            _userImageDrawable.postValue(drawable)
+                        }
+                        .build()
+                    val disposable = imageLoader.enqueue(request)
+                }
+                else {
+                    _userImageDrawable.postValue(null)
+                }
             }
             val userProfilesResult = cloudFunctions.getUserProfiles()
             if (userProfilesResult.isSuccess && userProfilesResult.dataValue != null) {
@@ -197,10 +203,13 @@ class MainViewModel @Inject constructor(
     }
 
     fun setImageUri(uri: Uri?) {
-        uri?.let {
-            userImagePrevUri = uri
+        _userImagePrevUri.postValue(uri)
+        if (uri == null) {
+            _userImageUri.postValue(null)
+        }
+        else {
             viewModelScope.launch(Dispatchers.IO) {
-                val response = firestoreRepo.updateUserImage(it)
+                val response = firestoreRepo.updateUserImage(uri)
                 if (response.isSuccess && response.dataValue != null) {
                     getUserData()
                 }
@@ -210,9 +219,11 @@ class MainViewModel @Inject constructor(
     }
 
     fun removeUserImage() {
+        setImageUri(null)
         viewModelScope.launch(Dispatchers.IO) {
             firestoreRepo.removeUserImage()
-            _userUpdated.postValue(true)
+            //_userUpdated.postValue(true)
+            getUserData()
         }
     }
 

@@ -20,9 +20,11 @@
     <string name="login_desc">Enter your details to continue. If\nyou’ve forgotten, we’ll help you out.</string>
     <string name="login_btn_signin">Sign in</string>
     <string name="login_alert_title_login_error">Invalid input.</string>
-    <string name="login_alert_description_not_valid_email">Email address is missing or invalid.</string>
-    <string name="login_alert_description_short_pass">Password must be at least 6 symbols in length.</string>
-    <string name="login_alert_description_login_error">Email address is missing or invalid.</string>
+    <string name="login_alert_description_not_verified_email">Email not verified. Please check your email</string>
+    <string name="login_alert_description_not_valid_email">Invalid email</string>
+    <string name="login_alert_description_user_not_found">User not found</string>
+    <string name="login_alert_description_wrong_pass">Wrong password</string>
+    <string name="login_alert_description_login_error_unknown">Unknown error</string>
 
     <string name="login_forgot_pwd"><u>Forgot password?</u></string>
     <string name="login_not_have_account">Don’t you have an account yet?</string>

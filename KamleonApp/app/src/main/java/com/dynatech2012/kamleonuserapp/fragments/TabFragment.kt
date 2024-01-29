@@ -116,11 +116,10 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         binding.ivHomeProfile.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
         }
-
-         */
+        */
     }
     private fun initObservers() {
-        viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
+
     }
 
     private fun selectTab(tabIndex: Int) {
@@ -147,14 +146,6 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
                 binding.layoutTabHome.background = null
                 binding.layoutContentQR.visibility = View.VISIBLE
             }
-        }
-    }
-
-    private fun onUserImageChanged(drawable: Drawable?) {
-        Log.d(TAG, "image changed")
-        drawable?.let {
-            /////binding.ivHomeProfile.load(drawable)
-            return
         }
     }
 

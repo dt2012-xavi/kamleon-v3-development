@@ -19,6 +19,7 @@ import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphViewMode
 import com.dynatech2012.kamleonuserapp.extensions.addDays
 import com.dynatech2012.kamleonuserapp.extensions.addMonths
 import com.dynatech2012.kamleonuserapp.extensions.formatDate
+import com.dynatech2012.kamleonuserapp.extensions.px
 import kotlin.math.min
 
 class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context, attributeSet) {
@@ -82,7 +83,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
             KamleonGraphViewMode.Yearly -> 6
         }
 
-    private val xLabelHeight: Int = 40
+    private val xLabelHeight: Int = 20.px
 
     private val xAxisMarginStart: Int = 0//16
 
@@ -315,8 +316,9 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
     }
 
     private fun renderAxisLabels(canvas: Canvas) {
+        val xLabelYPos = canvas.height.toFloat() + 2.px - xAxisLabelPaint.textSize / 2.0f
 
-        val canvasSize = SizeF(canvas.width.toFloat(), canvas.height.toFloat())
+        val canvasSize = SizeF(canvas.width.toFloat(), xLabelYPos)
         val xLabelCount = dataSource.xLabels.size
         if (xLabelCount > 0) {
             val hStep = calcHStep(canvasSize)
@@ -324,7 +326,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
                 val xPos: Float = (xAxisMarginStart + hStep * dataSource.xLabels[xLabelIndex].dataVal).toFloat()
                 val xLabelDrawWidth = calcTextWidth(dataSource.xLabels[xLabelIndex].label, xAxisLabelPaint)
                 canvas.drawText(dataSource.xLabels[xLabelIndex].label,
-                    (xPos + hStep / 2.0f - xLabelDrawWidth / 2.0f).toFloat(), canvas.height.toFloat(), xAxisLabelPaint)
+                    (xPos + hStep / 2.0f - xLabelDrawWidth / 2.0f).toFloat(), xLabelYPos, xAxisLabelPaint)
             }
         }
 

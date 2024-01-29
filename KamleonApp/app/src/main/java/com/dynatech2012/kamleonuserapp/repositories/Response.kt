@@ -29,8 +29,11 @@ sealed class Response<out T : Any> {
 
     val dataValue: T?
         get() = if (this is Success) this.data else null
-    val error: String?
+    val errorMessage: String?
         get() = if (this is Failure) this.exception.message else null
+
+    val error: Exception?
+        get() = if (this is Failure) this.exception else null
 }
 
 sealed class ResponseNullable<out T : Any> {

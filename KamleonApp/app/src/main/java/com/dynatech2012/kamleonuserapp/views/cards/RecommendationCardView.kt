@@ -1,6 +1,5 @@
 package com.dynatech2012.kamleonuserapp.views.cards
 
-import android.graphics.Insets
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -58,6 +57,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -68,6 +68,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.application.AppTheme
+import com.dynatech2012.kamleonuserapp.application.MatTheme
 import com.dynatech2012.kamleonuserapp.models.Recommendation
 import kotlin.math.PI
 import kotlin.math.atan
@@ -88,120 +90,128 @@ fun RecommendationCardView(recommendation: Recommendation, modifier: Modifier, s
     //val sheetState = rememberModalBottomSheetState(true)
     //val scope = rememberCoroutineScope()
     //var showBottomSheet by remember { mutableStateOf(false) }
+    AppTheme {
 
-    ClippedShadowCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(enabled = clickable, onClick = { onClick() }),
-        shape = shape,
-        containerColor = colorResource(id = R.color.color_fa_40),
-        elevation = elevation,
-    )
-    {
-        Box {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp)
-                    .height(100.dp)
-            ) {
-                Column(
+
+        ClippedShadowCard(
+            modifier = modifier
+                .fillMaxWidth()
+                .clickable(enabled = clickable, onClick = { onClick() }),
+            shape = shape,
+            containerColor = colorResource(id = R.color.color_fa_40),
+            elevation = elevation,
+        )
+        {
+            Box {
+                Row(
                     modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp)
+                        .height(100.dp)
                 ) {
-                    if (recommendation.image != null) {
-                        Image(
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .padding(end = 16.dp)
-                                .size(100.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                            ,
-                            painter = painterResource(id = recommendation.image),
-
-                            contentDescription = "",
-
-                        )
-                    }
-                }
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = if (recommendation.image != null) 0.dp else 8.dp),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    if (recommendation.kind != null) {
-                        Text(
-                            text = stringResource(id = recommendation.kind),
-                            fontSize = dimensionResource(R.dimen.ts_14).value.sp,
-                            color = colorResource(id = R.color.kamleon_secondary_grey_60)
-                        )
-                    }
-                    Text(
-                        modifier = Modifier.padding(top =
-                            if (recommendation.kind == null) 4.dp else 0.dp, bottom = 4.dp),
-                        text = stringResource(id = recommendation.titleShort),
-                        fontSize = dimensionResource(R.dimen.ts_14).value.sp,
-                        color = colorResource(id = R.color.kamleon_dark_grey),
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
+                    Column(
                         modifier = Modifier
-                            .padding(top = 4.dp),
-                        text = if (recommendation.text != null ) stringResource(id = recommendation.text!!) else "",
-                        fontSize = dimensionResource(R.dimen.ts_14).value.sp,
-                        color = colorResource(id = R.color.kamleon_dark_grey),
-                        maxLines = if (recommendation.kind != null) 2 else 3,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-            }
-            if (blocked) {
-                Box (
-                    modifier = Modifier
-                        .height(124.dp)
-                        .background(color = foregroundColor, shape = shape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(24.dp),
-                        text = lockString,
-                        fontSize = dimensionResource(R.dimen.ts_16).value.sp,
-                        color = colorResource(id = R.color.kamleon_dark_grey),
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        maxLines = 3
-                    )
-                    Row()
-                    {
-                        Spacer(modifier = Modifier.weight(1f))
-                        val rectSize: Dp = 80.dp
-                        Column (
-                            modifier = Modifier
-
-                                //.background(color = Color.Red, shape = TriangleShape(12f)),
-                                .drawBehind {
-                                    drawCornerTriangle((-14).dp, (-14).dp) },
-                        ){
+                    ) {
+                        if (recommendation.image != null) {
                             Image(
-                                painterResource(id = R.drawable.ic_padlock),
-                                contentDescription = "",
+                                contentScale = ContentScale.Crop,
                                 modifier = Modifier
-                                    .padding(10.dp)
-                                    .size(24.dp),
-                                alignment = Alignment.TopEnd
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
+                                    .padding(end = 16.dp)
+                                    .size(100.dp)
+                                    .clip(RoundedCornerShape(8.dp)),
+                                painter = painterResource(id = recommendation.image),
+
+                                contentDescription = "",
+
+                                )
                         }
                     }
 
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = if (recommendation.image != null) 0.dp else 8.dp),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        if (recommendation.kind != null) {
+                            Text(
+                                fontFamily = MatTheme.fontFamily,
+                                text = stringResource(id = recommendation.kind),
+                                fontSize = dimensionResource(R.dimen.ts_14).value.sp,
+                                color = colorResource(id = R.color.kamleon_secondary_grey_60)
+                            )
+                        }
+                        Text(
+                            fontFamily = MatTheme.fontFamily,
+                            modifier = Modifier.padding(
+                                top =
+                                if (recommendation.kind == null) 4.dp else 0.dp, bottom = 4.dp
+                            ),
+                            text = stringResource(id = recommendation.titleShort),
+                            fontSize = dimensionResource(R.dimen.ts_14).value.sp,
+                            color = colorResource(id = R.color.kamleon_dark_grey),
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            fontFamily = MatTheme.fontFamily,
+                            modifier = Modifier
+                                .padding(top = 4.dp),
+                            text = if (recommendation.text != null) stringResource(id = recommendation.text!!) else "",
+                            fontSize = dimensionResource(R.dimen.ts_13).value.sp,
+                            color = colorResource(id = R.color.kamleon_dark_grey),
+                            maxLines = if (recommendation.kind != null) 2 else 3,
+                            lineHeight = dimensionResource(R.dimen.ts_18).value.sp,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+                if (blocked) {
+                    Box(
+                        modifier = Modifier
+                            .height(124.dp)
+                            .background(color = foregroundColor, shape = shape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp),
+                            text = lockString,
+                            fontSize = dimensionResource(R.dimen.ts_16).value.sp,
+                            color = colorResource(id = R.color.kamleon_dark_grey),
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            maxLines = 3
+                        )
+                        Row()
+                        {
+                            Spacer(modifier = Modifier.weight(1f))
+                            val rectSize: Dp = 80.dp
+                            Column(
+                                modifier = Modifier
+
+                                    //.background(color = Color.Red, shape = TriangleShape(12f)),
+                                    .drawBehind {
+                                        drawCornerTriangle((-14).dp, (-14).dp)
+                                    },
+                            ) {
+                                Image(
+                                    painterResource(id = R.drawable.ic_padlock),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                        .size(24.dp),
+                                    alignment = Alignment.TopEnd
+                                )
+                                Spacer(modifier = Modifier.weight(1f))
+                            }
+                        }
+
+                    }
                 }
             }
-        }
-        if (showBottomSheet) {
+            if (showBottomSheet) {
                 ModalBottomSheet(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -219,6 +229,7 @@ fun RecommendationCardView(recommendation: Recommendation, modifier: Modifier, s
                     Box(Modifier.safeDrawingPadding()) {
                         sheetContent()
                     }
+                }
             }
         }
     }
