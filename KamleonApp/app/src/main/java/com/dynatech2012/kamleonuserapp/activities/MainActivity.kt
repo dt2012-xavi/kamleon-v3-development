@@ -107,7 +107,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
          */
         setupFirebaseMessagingReceiver()
         viewModel.updateUserToken()
-        viewModel.updateInvitationsCount()
     }
 
 

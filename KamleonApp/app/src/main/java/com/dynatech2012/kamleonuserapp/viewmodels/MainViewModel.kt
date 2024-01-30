@@ -386,7 +386,11 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val response = cloudFunctions.acceptInvitation(invitationId)
             if (response.isSuccess) {
+                Log.d(TAG, "HHH acceptInvitation: success")
                 getInvitations()
+            }
+            else {
+                Log.d(TAG, "HHH acceptInvitation: failure")
             }
         }
     }
@@ -395,9 +399,19 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val response = cloudFunctions.rejectInvitation(invitationId)
             if (response.isSuccess) {
+                Log.d(TAG, "HHH rejectInvitation: success")
                 getInvitations()
             }
+            else {
+                Log.d(TAG, "HHH rejectInvitation: failure")
+            }
         }
+    }
+
+    fun updateNotificationStatus(on: Boolean) {
+        val data = hashMapOf<String, Any>()
+        data["notifications"] = hashMapOf("analytics" to on)
+        updateUserData(data)
     }
 
 

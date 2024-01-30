@@ -184,7 +184,8 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
         val startDate = dataSource.startDate()
         when (dataSource.mode) {
             KamleonGraphViewMode.Daily -> {
-                return "${index + 1}:00 h"
+                //return "${index + 1}:00 h"
+                return "$index:00 h"
             }
             KamleonGraphViewMode.Monthly -> {
                 return dataSource.startDate().addDays(index).formatDate("dd MMM, yyyy")
@@ -311,7 +312,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
         for (yIndex in 0 until yAxisLines) {
             val xPos: Float = (hStep * (yIndex + 1)).toFloat()
             // xLabelHeight.toFloat() for end vertical lines bottom before x axis labels
-            canvas.drawLine(xPos, /*0f*/xLabelHeight.toFloat(), xPos, canvas.height.toFloat(), yAxisLinePaint)
+            canvas.drawLine(xPos, 0f, xPos, canvas.height.toFloat() - xLabelHeight.toFloat(), yAxisLinePaint)
         }
     }
 

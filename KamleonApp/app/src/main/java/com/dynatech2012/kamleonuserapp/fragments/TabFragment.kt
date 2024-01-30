@@ -66,11 +66,13 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
 
         binding.layoutTabHome.setOnClickListener {
             selectTab(0)
+            binding.navHostFragmentTab.visibility = View.VISIBLE
             navController.popBackStack()
             navController.navigate(R.id.action_to_homeFragment)
         }
         binding.layoutTabAnalytic.setOnClickListener {
             selectTab(1)
+            binding.navHostFragmentTab.visibility = View.VISIBLE
             navController.popBackStack()
             navController.navigate(R.id.action_to_analyticFragment)
         }
@@ -79,6 +81,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
 
         binding.layoutTabQr.setOnClickListener {
             selectTab(2)
+            binding.navHostFragmentTab.visibility = View.GONE
             requestCamera()
             val thread: Thread = object : Thread() {
                 override fun run() {

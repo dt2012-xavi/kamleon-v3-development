@@ -1,45 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Drop Shadow Stack -->
-<!--    <item>-->
-<!--        <shape>-->
-<!--            <padding-->
-<!--                android:bottom="1dp"-->
-<!--                android:left="1dp"-->
-<!--                android:right="1dp"-->
-<!--                android:top="1dp" />-->
+    &lt;!&ndash; Drop Shadow Stack &ndash;&gt;
+&lt;!&ndash;    <item>&ndash;&gt;
+&lt;!&ndash;        <shape>&ndash;&gt;
+&lt;!&ndash;            <padding&ndash;&gt;
+&lt;!&ndash;                android:bottom="1dp"&ndash;&gt;
+&lt;!&ndash;                android:left="1dp"&ndash;&gt;
+&lt;!&ndash;                android:right="1dp"&ndash;&gt;
+&lt;!&ndash;                android:top="1dp" />&ndash;&gt;
 
-<!--            <solid android:color="@color/ruePurpleShadow0" />-->
+&lt;!&ndash;            <solid android:color="@color/ruePurpleShadow0" />&ndash;&gt;
 
-<!--            <corners android:radius="@dimen/rue_switch_shadow_radius" />-->
-<!--        </shape>-->
-<!--    </item>-->
-<!--    <item>-->
-<!--        <shape>-->
-<!--            <padding-->
-<!--                android:bottom="1dp"-->
-<!--                android:left="1dp"-->
-<!--                android:right="1dp"-->
-<!--                android:top="1dp" />-->
+&lt;!&ndash;            <corners android:radius="@dimen/rue_switch_shadow_radius" />&ndash;&gt;
+&lt;!&ndash;        </shape>&ndash;&gt;
+&lt;!&ndash;    </item>&ndash;&gt;
+&lt;!&ndash;    <item>&ndash;&gt;
+&lt;!&ndash;        <shape>&ndash;&gt;
+&lt;!&ndash;            <padding&ndash;&gt;
+&lt;!&ndash;                android:bottom="1dp"&ndash;&gt;
+&lt;!&ndash;                android:left="1dp"&ndash;&gt;
+&lt;!&ndash;                android:right="1dp"&ndash;&gt;
+&lt;!&ndash;                android:top="1dp" />&ndash;&gt;
 
-<!--            <solid android:color="@color/ruePurpleShadow1" />-->
+&lt;!&ndash;            <solid android:color="@color/ruePurpleShadow1" />&ndash;&gt;
 
-<!--            <corners android:radius="@dimen/rue_switch_shadow_radius" />-->
-<!--        </shape>-->
-<!--    </item>-->
-<!--    <item>-->
-<!--        <shape>-->
-<!--            <padding-->
-<!--                android:bottom="1dp"-->
-<!--                android:left="1dp"-->
-<!--                android:right="1dp"-->
-<!--                android:top="1dp" />-->
+&lt;!&ndash;            <corners android:radius="@dimen/rue_switch_shadow_radius" />&ndash;&gt;
+&lt;!&ndash;        </shape>&ndash;&gt;
+&lt;!&ndash;    </item>&ndash;&gt;
+&lt;!&ndash;    <item>&ndash;&gt;
+&lt;!&ndash;        <shape>&ndash;&gt;
+&lt;!&ndash;            <padding&ndash;&gt;
+&lt;!&ndash;                android:bottom="1dp"&ndash;&gt;
+&lt;!&ndash;                android:left="1dp"&ndash;&gt;
+&lt;!&ndash;                android:right="1dp"&ndash;&gt;
+&lt;!&ndash;                android:top="1dp" />&ndash;&gt;
 
-<!--            <solid android:color="@color/ruePurpleShadow2" />-->
+&lt;!&ndash;            <solid android:color="@color/ruePurpleShadow2" />&ndash;&gt;
 
-<!--            <corners android:radius="@dimen/rue_switch_shadow_radius" />-->
-<!--        </shape>-->
-<!--    </item>-->
+&lt;!&ndash;            <corners android:radius="@dimen/rue_switch_shadow_radius" />&ndash;&gt;
+&lt;!&ndash;        </shape>&ndash;&gt;
+&lt;!&ndash;    </item>&ndash;&gt;
     <item>
         <shape android:shape="rectangle"
             >
@@ -59,5 +60,19 @@
         </shape>
     </item>
 
+
+</layer-list>-->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:top="0sp"
+        android:bottom="0sp"
+        >
+    <shape android:shape="rectangle">
+        <solid android:color="@color/kmln_graph_color_orange" />
+        <corners android:radius="10dp" />
+        <size android:height="20dp" />
+    </shape>
+    </item>
 
 </layer-list>

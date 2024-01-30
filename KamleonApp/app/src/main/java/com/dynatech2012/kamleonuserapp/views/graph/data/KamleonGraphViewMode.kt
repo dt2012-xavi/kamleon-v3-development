@@ -24,11 +24,14 @@ enum class KamleonGraphViewMode(val identifier: String) {
     fun xLabelStrings(startDate: Date, steps: Int) : ArrayList<KamleonGraphAxisLabelItem> {
         val aryRet = ArrayList<KamleonGraphAxisLabelItem>()
         if (this == Daily) {
-            for (step in 2 .. steps step 2 ) {
-                aryRet.add(KamleonGraphAxisLabelItem((step - 1).toDouble(), step.toString()))
+            for (step in 0 until (steps - 1) step 2 ) {
+                val labelItem = KamleonGraphAxisLabelItem((step/* - 1*/).toDouble(), step.toString())
+                aryRet.add(labelItem)
+                Log.d("LLLL", "label item: ${labelItem.toString()}")
             }
         } else if (this == Monthly) {
-            for (step in 0 until steps step 2 ) {
+            // it begins with 1 so that it starts with the second one, the last is not printed
+            for (step in 1 until (steps - 1) step 2 ) {
                 aryRet.add(KamleonGraphAxisLabelItem(step.toDouble(), (startDate.addDays(step).date).toString()))
             }
         } else if (this == Weekly) {

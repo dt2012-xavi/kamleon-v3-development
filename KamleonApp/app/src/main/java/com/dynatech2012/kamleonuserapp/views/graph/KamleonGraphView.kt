@@ -28,6 +28,7 @@ import com.dynatech2012.kamleonuserapp.extensions.addDays
 import com.dynatech2012.kamleonuserapp.extensions.addHours
 import com.dynatech2012.kamleonuserapp.extensions.addMinutes
 import com.dynatech2012.kamleonuserapp.extensions.addMonths
+import com.dynatech2012.kamleonuserapp.extensions.addSeconds
 import com.dynatech2012.kamleonuserapp.extensions.beginningOfDay
 import com.dynatech2012.kamleonuserapp.extensions.beginningOfMonth
 import com.dynatech2012.kamleonuserapp.extensions.endOfDay
@@ -97,38 +98,78 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
 
         /*
         val fakeData = MeasureData()
+        val date = Date().addDays(-6)
+        Log.d(TAG, "Date measure 1: ${date.formatDate()}")
         fakeData.timestamp = Date().time
         fakeData.score = 90
         fakeData.msCond = 12f
         fakeData.vol = 88f
-        fakeData.precision = MeasurePrecision.Bad
+        //fakeData.precision = MeasurePrecision.Bad
         val fakeData2 = MeasureData()
-        fakeData2.timestamp = Date().addMinutes(-20).time
+        fakeData2.timestamp = Date().addMinutes(-20).addDays(-1).time
         fakeData2.score = 55
         fakeData2.msCond = 12f
         fakeData2.vol = 68f
-        fakeData2.precision = MeasurePrecision.Bad
+        //fakeData2.precision = MeasurePrecision.Bad
         val fakeData3 = MeasureData()
-        fakeData3.timestamp = Date().addHours(-1).time
+        fakeData3.timestamp = Date().addHours(-1).addDays(-5).time
         fakeData3.score = 76
         fakeData3.msCond = 12f
         fakeData3.vol = 410f
-        fakeData3.precision = MeasurePrecision.Bad
+        //fakeData3.precision = MeasurePrecision.Bad
         val fakeData4 = MeasureData()
-        fakeData4.timestamp = Date().addHours(-2).time
+        fakeData4.timestamp = Date().addHours(-2).addDays(-6).time
         fakeData4.score = 82
         fakeData4.msCond = 12f
         fakeData4.vol = 200f
+        val fakeData5 = MeasureData()
+        fakeData5.timestamp = Date().addHours(-2).time
+        fakeData5.score = 40
+        fakeData5.msCond = 2f
+        fakeData5.vol = 130f
         measuresDataSource.add(fakeData)
         measuresDataSource.add(fakeData2)
         measuresDataSource.add(fakeData3)
         measuresDataSource.add(fakeData4)
-        */
+        measuresDataSource.add(fakeData5)
+         */
+
         refreshGraphView()
     }
 
     fun setDailyDataSource(data: ArrayList<AverageDailyMeasureData>) {
         dailyDataSource = data
+        /*
+        val fakeData = AverageDailyMeasureData()
+        fakeData.hydration = 90.0
+        fakeData.timestamp = Date().time
+        val fakeData2 = AverageDailyMeasureData()
+        fakeData2.hydration = 80.0
+        fakeData2.timestamp = Date().addDays(-1).time
+        val fakeData3 = AverageDailyMeasureData()
+        fakeData3.hydration = 70.0
+        fakeData3.timestamp = Date().addDays(-2).time
+        val fakeData4 = AverageDailyMeasureData()
+        fakeData4.hydration = 60.0
+        fakeData4.timestamp = Date().addDays(-3).time
+        val fakeData5 = AverageDailyMeasureData()
+        fakeData5.hydration = 50.0
+        fakeData5.timestamp = Date().addDays(-4).time
+        val fakeData6 = AverageDailyMeasureData()
+        fakeData6.hydration = 60.0
+        fakeData6.timestamp = Date().addDays(-5).time
+        val fakeData7 = AverageDailyMeasureData()
+        fakeData7.hydration = 70.0
+        fakeData7.timestamp = Date().addDays(-6).addMinutes(1).time
+        dailyDataSource.add(fakeData)
+        dailyDataSource.add(fakeData2)
+        dailyDataSource.add(fakeData3)
+        dailyDataSource.add(fakeData4)
+        dailyDataSource.add(fakeData5)
+        dailyDataSource.add(fakeData6)
+        dailyDataSource.add(fakeData7)
+        */
+
         refreshGraphView()
     }
 
@@ -225,7 +266,7 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
         //val filteredDataSource = dataSource.filter { it.timestamp >= startDate.time && it.timestamp <= endDate.time}
         val filteredDataSource2 = dataSourceNew.filter { it.timestamp >= startDate.time && it.timestamp <= endDate.time }
         Log.d("Graph", "filteredDataSource2 size: ${filteredDataSource2.size}")
-        val xStepCount = graphViewXSteps(date)
+        val xStepCount = graphViewXSteps
 
         val xyValues = ArrayList<KamleonGraphDataXY>()
         val precisionValues = ArrayList<Boolean>()
@@ -314,14 +355,13 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
         )
     }
 
-    private fun graphViewXSteps(date: Date) : Int {
-        return when (viewMode) {
+    private val graphViewXSteps: Int
+        get() = when (viewMode) {
             KamleonGraphViewMode.Daily -> 24
             KamleonGraphViewMode.Weekly -> 7
-            KamleonGraphViewMode.Monthly -> 31
+            KamleonGraphViewMode.Monthly -> 30
             KamleonGraphViewMode.Yearly -> 12
         }
-    }
 
     private fun graphViewXRange(startDate: Date, endDate: Date, xStep: Int) : LongArray {
         var rangeLower: Long = startDate.time

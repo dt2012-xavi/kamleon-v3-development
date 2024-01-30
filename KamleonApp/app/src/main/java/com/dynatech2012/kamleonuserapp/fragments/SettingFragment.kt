@@ -19,6 +19,7 @@ import com.dynatech2012.kamleonuserapp.adapters.OrganizationsListAdapter
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.ActivitySettingBinding
 import com.dynatech2012.kamleonuserapp.models.CustomUser
+import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.Organization
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
@@ -34,6 +35,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     override fun setBinding(): ActivitySettingBinding = ActivitySettingBinding.inflate(layoutInflater)
     private var isSettingAccount: Boolean = true
     private val viewModel: MainViewModel by activityViewModels()
+    private var dataTypeToChange: String? = null
     private val onDismissPickImage = object : BottomFragmentDismissListener {
         override fun onDismissFragment() {
 
@@ -81,7 +83,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             binding.prefMenuItemWeight,
             binding.prefMenuItemHeight,
             binding.prefMenuItemGender,
-            binding.prefMenuItemBirth
+            binding.prefMenuItemBirth,
+            binding.smNotiSwitch
         )
 
         for (menuItem in menuItems) {
@@ -90,6 +93,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         setupAdapter()
         initObservers()
         viewModel.getUserData()
+        viewModel.getInvitations()
     }
 
     override fun initEvent() {
@@ -132,7 +136,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
 
         binding.btnSettingNoti.setOnClickListener {
-            binding.btnSettingNotiBadge.visibility = View.GONE
+            //binding.btnSettingNotiBadge.visibility = View.GONE
             val notiFragment = InvitationFragment.newInstance(onDismissPickImage)
             notiFragment.show(parentFragmentManager, "Notifications")
         }
@@ -235,7 +239,11 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     }
 
     override fun onSwitchChanged(menuView: SettingMenuItemView, isOn: Boolean) {
-
+        when (menuView) {
+            binding.smNotiSwitch -> {
+                viewModel.updateNotificationStatus(isOn)
+            }
+        }
     }
 
     override fun onMenuItemClicked(menuView: SettingMenuItemView) {
@@ -279,18 +287,21 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     }
 
     private fun showHeightPicker() {
+        dataTypeToChange = "height"
         val value = viewModel.userData.value?.height?.toString()
         val dataFragment = DataPickerFragment.newInstance(onDismissHeightPicker, "height", value)
         dataFragment.show(parentFragmentManager, "HeightPicker")
     }
 
     private fun showWeightPicker() {
+        dataTypeToChange = "weight"
         val value = viewModel.userData.value?.weight?.toString()
         val dataFragment = DataPickerFragment.newInstance(onDismissWeightPicker, "weight", value)
         dataFragment.show(parentFragmentManager, "WeightPicker")
     }
 
     private fun showGenderPicker() {
+        dataTypeToChange = "gender"
         val value = viewModel.userData.value?.gender?.toString()
         val dataFragment = DataPickerFragment.newInstance(onDismissGenderPicker, "gender", value)
         dataFragment.show(parentFragmentManager, "GenderPicker")
@@ -301,7 +312,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         viewModel.userProfiles.observe(this, this::onUserProfilesChanged)
         viewModel.userUpdated.observe(this, this::onUserDataUpdated)
         viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
-        viewModel.newInvitations.observe(this, this::onNewInvitation)
+        viewModel.pendingInvitations.observe(this, this::onGetPendingInvitations)
     }
 
     private fun setupAdapter() {
@@ -328,7 +339,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         val age = Period.between(localDate, LocalDate.now()).years
         val stringDate = "$formattedDate ($age)"
         binding.prefMenuItemBirth.setValue(formattedDate)
-
+        binding.smNotiSwitch.getSwitchComp()?.isChecked = userData.notifications["analytics"] ?: true
     }
 
     private fun onUserProfilesChanged(organizations: ArrayList<Organization>) {
@@ -358,7 +369,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         if (updated)
         {
             viewModel.resetUserUpdated()
-            showReadyDialog()
+            //showReadyDialog()
         }
     }
 
@@ -381,9 +392,10 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         viewModel.updateUserData(data)
     }
 
-    private fun onNewInvitation(isNew: Boolean) {
-        if (isNew)
+    private fun onGetPendingInvitations(invitations: ArrayList<Invitation>) {
+        if (invitations.isNotEmpty()) {
             binding.btnSettingNotiBadge.visibility = View.VISIBLE
+        }
     }
 
     companion object {

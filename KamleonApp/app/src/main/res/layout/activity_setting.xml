@@ -287,12 +287,12 @@
                 android:visibility="gone">
 
                 <TextView
-                    style="@style/CircularMediumFont"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/setting_label_acc_data"
                     android:textColor="@color/kamleon_dark_grey"
+                    android:textAppearance="@style/TextAppearance.Kamleon.Bold"
                     android:textSize="@dimen/ts_14" />
 
                 <LinearLayout
@@ -450,11 +450,11 @@
                     android:textSize="@dimen/ts_12" />
 
                 <TextView
-                    style="@style/CircularMediumFont"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="28dp"
                     android:text="@string/setting_label_user_data"
+                    android:textAppearance="@style/TextAppearance.Kamleon.Bold"
                     android:textColor="@color/kamleon_dark_grey"
                     android:textSize="@dimen/ts_14" />
 
@@ -534,11 +534,11 @@
                     android:textSize="@dimen/ts_12" />
 
                 <TextView
-                    style="@style/CircularMediumFont"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="36dp"
                     android:text="@string/setting_label_info"
+                    android:textAppearance="@style/TextAppearance.Kamleon.Bold"
                     android:textColor="@color/kamleon_dark_grey"
                     android:textSize="@dimen/ts_14" />
 
@@ -620,11 +620,11 @@
                     android:textSize="@dimen/ts_12" />
 
                 <TextView
-                    style="@style/CircularMediumFont"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:text="@string/setting_label_acc_info"
+                    android:textAppearance="@style/TextAppearance.Kamleon.Bold"
                     android:textColor="@color/kamleon_secondary_grey_60"
                     android:textSize="@dimen/ts_14" />
 
@@ -799,11 +799,11 @@
                 android:visibility="gone">
 
                 <TextView
-                    style="@style/CircularMediumFont"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/setting_label_noti"
+                    android:textAppearance="@style/TextAppearance.Kamleon.Bold"
                     android:textColor="@color/kamleon_dark_grey"
                     android:textSize="@dimen/ts_14" />
 
@@ -816,6 +816,7 @@
                     android:paddingHorizontal="@dimen/setting_category_content_padding">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
+                        android:id="@+id/sm_noti_switch"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
                         app:settingRightArrow="false"

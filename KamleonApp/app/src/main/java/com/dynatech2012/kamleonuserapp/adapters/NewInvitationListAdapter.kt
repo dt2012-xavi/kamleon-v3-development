@@ -16,7 +16,7 @@ class NewInvitationListAdapter(
     lateinit var binding: LayoutInvitationPendingListItemBinding
 
     interface NotificationListItemViewListener {
-        fun onClick(accepted: Boolean)
+        fun onClick(invitation: Invitation, accepted: Boolean)
     }
 
     private var notiItemListener: NotificationListItemViewListener? = null
@@ -66,10 +66,10 @@ class NewInvitationListAdapter(
             tvSubtitle.text = data.invitationText
             tvDate.text = data.dateSent.formatTime
             tvConfirm.setOnClickListener {
-                notiItemListener?.onClick(true)
+                notiItemListener?.onClick(data, true)
             }
             tvDeny.setOnClickListener {
-                notiItemListener?.onClick(false)
+                notiItemListener?.onClick(data, false)
             }
         }
     }
