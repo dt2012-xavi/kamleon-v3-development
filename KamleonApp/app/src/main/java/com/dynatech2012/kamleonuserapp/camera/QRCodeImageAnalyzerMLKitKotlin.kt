@@ -11,6 +11,7 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.lang.Exception
@@ -29,7 +30,8 @@ class QRCodeImageAnalyzerMLKitKotlin :
     private val formats = arrayListOf(ImageFormat.YUV_420_888, ImageFormat.YUV_422_888, ImageFormat.YUV_444_888)
     private val _qrStingFlow: MutableStateFlow<Response<String>> = MutableStateFlow(Response.Inactive())
     val qrStingFlow: StateFlow<Response<String>> = _qrStingFlow
-
+    private val _qrDebugFlow: MutableStateFlow<Response<String>> = MutableStateFlow(Response.Inactive())
+    val qrDebugFlow: StateFlow<Response<String>> = _qrDebugFlow
     @ExperimentalGetImage
     override fun analyze(imageProxy: ImageProxy) {
         if (imageProxy.format in formats) {
@@ -39,16 +41,19 @@ class QRCodeImageAnalyzerMLKitKotlin :
                 val rotation = imageProxy.imageInfo.rotationDegrees
                 val image = InputImage.fromMediaImage(mediaImage, rotation)
                 // Pass image to an ML Kit Vision API
+                _qrDebugFlow.value = Response.Success("QR debug -- ML analyzer will scan image")
                 mlKit.scanBarcodesByImage(image, imageProxy, mediaImage)
             } else {
                 Log.d(TAG, "qrScanner ML: fail: mediaImage == null")
                 val e: Exception = NullPointerException("mediaImage = null")
+                _qrDebugFlow.value = Response.Success("QR debug -- ML analyzer error: media image is null")
                 _qrStingFlow.value = Response.Failure(e)
                 //listener.onQRCodeException(e)
             }
         } else {
             Log.e("QRCodeAnalyzer", "qrScanner ML: fail: Expected YUV, now = ${imageProxy.format}")
             val e: Exception = IllegalStateException("Expected YUV format = ${imageProxy.format}")
+            _qrDebugFlow.value = Response.Success("QR debug -- ML analyzer error:Expected YUV, now = ${imageProxy.format}")
             _qrStingFlow.value = Response.Failure(e)
             //listener.onQRCodeException(e)
         }
@@ -79,7 +84,7 @@ class QRCodeImageAnalyzerMLKitKotlin :
             // BarcodeScanner scanner = BarcodeScanning.getClient();
             // Or, to specify the formats to recognize:
             val scanner = BarcodeScanning.getClient(options)
-
+            //_qrDebugFlow.value = Response.Success("QR debug -- ML analyzer: scanning...")
             /*Task<List<Barcode>> result = */scanner.process(image!!)
                 .addOnSuccessListener { barcodes: List<Barcode> ->
                     if(qrStingFlow.value is Response.Loading) {
@@ -91,11 +96,13 @@ class QRCodeImageAnalyzerMLKitKotlin :
                             // See API reference for complete list of supported types
                             if (rawValue != null && valueType == Barcode.TYPE_TEXT) {
                                 _qrStingFlow.value = Response.Success(rawValue)
+                                _qrDebugFlow.value = Response.Success("QR debug -- ML analyzer: success with value: $rawValue")
                                 //listener.onQRCodeFound(rawValue)
                             } else {
                                 val e: Exception =
                                     IllegalStateException("Unexpected value: $valueType")
                                 Log.d(TAG, "qrScanner ML: failure with exception: $e")
+                                _qrDebugFlow.value = Response.Success("QR debug -- ML analyzer: error: $e")
                                 _qrStingFlow.value = Response.Failure(e)
                                 //listener.onQRCodeException(e)
                             }
@@ -104,7 +111,8 @@ class QRCodeImageAnalyzerMLKitKotlin :
                 }
                 .addOnFailureListener { e: Exception ->
                     // Task failed with an exception
-                    Log.d(TAG, "qrScanner ML: failure with exception: $e")
+                    Log.d(TAG, "qrScanner ML: failure processing image: $e")
+                    _qrDebugFlow.value = Response.Success("QR debug -- ML analyzer: success with value: $e")
                     _qrStingFlow.value = Response.Failure(e)
                     //listener.onQRCodeException(e)
                 }

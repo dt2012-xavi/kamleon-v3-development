@@ -23,6 +23,7 @@ import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.camera.QRCodeFoundListener
 import com.dynatech2012.kamleonuserapp.databinding.ActivityTabBinding
+import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.viewmodels.QrViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -122,7 +123,19 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         */
     }
     private fun initObservers() {
-
+        qrViewModel.qrDebug.observe(viewLifecycleOwner) {
+            when (it) {
+                is Response.Success -> {
+                    Log.d(TAG, "qrScanner, qrDebug: ${it.data}")
+                    appendDebugText("QR debug FROM ANALYZER -- ${it.data}")
+                }
+                is Response.Failure -> {
+                    Log.e(TAG, "qrScanner, qrDebug: ${it.exception}")
+                    appendDebugText("QR debug FROM ANALYZER -- ${it.exception}")
+                }
+                else -> { }
+            }
+        }
     }
 
     private fun selectTab(tabIndex: Int) {
