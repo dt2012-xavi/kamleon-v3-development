@@ -32,7 +32,7 @@ class SettingMenuItemView : LinearLayout {
         if (switch?.visibility == VISIBLE) {
             switch?.isClickable = true
             switch?.setOnClickListener {
-                switch?.isChecked = !(switch?.isChecked ?: false)
+                //switch?.isChecked = !(switch?.isChecked ?: false)
                 menuItemListener?.onSwitchChanged(this, switch?.isChecked ?: false)
             }
         } else {

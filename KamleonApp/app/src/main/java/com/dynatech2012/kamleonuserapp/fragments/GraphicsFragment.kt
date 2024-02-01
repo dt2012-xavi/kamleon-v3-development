@@ -56,7 +56,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
     }
 
     override fun initEvent() {
-        binding.navBack.setOnClickListener {
+        binding.cvGraphBack.setOnClickListener {
             findNavController().popBackStack()
         }
         binding.cvGraphProfile.setOnClickListener {

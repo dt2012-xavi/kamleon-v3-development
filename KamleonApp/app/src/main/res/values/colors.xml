@@ -77,6 +77,8 @@
     <color name="color_fa_40">#66FAFAFA</color>
     <color name="color_fa_80">#CCFAFAFA</color>
     <color name="color_red">#FC664E</color>
+    <color name="color_red_40">#33FC664E</color>
+    <color name="kamleon_blue_40">#332FD5CB</color>
 
     <color name="color_secondary">#808285</color>
 

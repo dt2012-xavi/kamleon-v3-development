@@ -56,7 +56,8 @@ class DataPickerFragment : BottomSheetDialogFragment() {
             com.google.android.material.R.id.design_bottom_sheet
         )
             ?: return
-
+        val behavior = BottomSheetBehavior.from(bottomSheet)
+        behavior.isDraggable = false
 //        val contentLayout = v.findViewById<ConstraintLayout>(R.id.layoutContent)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
         bottomSheetBehavior?.isHideable = true

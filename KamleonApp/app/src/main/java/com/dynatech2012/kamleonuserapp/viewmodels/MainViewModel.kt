@@ -369,9 +369,12 @@ class MainViewModel @Inject constructor(
     fun getInvitations() {
         viewModelScope.launch(Dispatchers.IO) {
             val response = cloudFunctions.getInvitations()
+            Log.d(TAG, "HHH getInvitations: ${response.dataValue?.size}")
             val invitations = response.dataValue ?: ArrayList()
-            _pendingInvitations.postValue(invitations.filter { it.status == InvitationStatus.SENT } as ArrayList<Invitation>?)
+            val pendingInvitations = invitations.filter { it.status == InvitationStatus.SENT } as ArrayList<Invitation>
+            _pendingInvitations.postValue(pendingInvitations)
             // 30 days ago
+            Log.d(TAG, "HHH getInvitations pending: ${pendingInvitations.size}")
             val thirtyDaysAgo = Date().addDays(-30)
             _recentInvitations.postValue(invitations.filter { it.status != InvitationStatus.SENT && it.dateSent >= thirtyDaysAgo } as ArrayList<Invitation>?)
             val oldInvitations = invitations.filter { it.status != InvitationStatus.SENT } as ArrayList<Invitation>

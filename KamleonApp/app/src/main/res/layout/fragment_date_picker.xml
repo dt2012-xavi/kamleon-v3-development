@@ -6,7 +6,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_bottom_sheet_fragment"
     tools:context=".fragments.DatePickerFragment">
-
+<!--    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nsv_date_picker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="always">-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,6 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/img_bottom_sheet_line"/>
+
 
         <com.ozcanalasalvar.datepicker.view.datepicker.DatePicker
             android:id="@+id/datePicker"
@@ -47,5 +52,8 @@
             android:textColor="@drawable/color_text_button_blue_round"
             android:enabled="true"/>
     </LinearLayout>
+<!--
+</androidx.core.widget.NestedScrollView>
+-->
 
 </FrameLayout>

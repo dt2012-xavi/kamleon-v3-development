@@ -69,7 +69,7 @@ class InvitationFragment : BottomSheetDialogFragment() {
     private fun onGetPendingInvitations(it: List<Invitation>) {
         val adapter = binding.rvNewInvitationList.adapter as NewInvitationListAdapter
         //adapter.setDataSource(it as ArrayList<Invitation>)
-        Log.d(TAG, "HHH on get invitations: ${it.joinToString { it.toString() }}")
+        Log.d(TAG, "HHH on get invitations pending: ${it.size}")
         adapter.submitList(it.toList())
         if (it.isNotEmpty())
             binding.vDivider.visibility = View.VISIBLE
