@@ -139,14 +139,31 @@ private fun DrawScope.drawBallProgressIndicator(
     val diameterOffset = stroke.width / 2
     val arcDimen = size.width - 2 * diameterOffset
     // ranges not included
-    Log.d("PB", "sweep: $sweep _ lerp: ${sweep / 360f}")
-    val finalColor = when (val percentage = sweep / 360f)
+    Log.d("PB", "Progress Bar color sweep: $sweep _ lerp: ${sweep / 360f}")
+    val finalColor = when (val percentage = (sweep) / 360f)
     {
-        in 0.0f..0.2f -> lerp(colorList[0], colorList[1], percentage)
-        in 0.2f..0.4f -> lerp(colorList[1], colorList[2], percentage)
-        in 0.4f..0.6f -> lerp(colorList[2], colorList[3], percentage)
-        in 0.6f..0.8f -> lerp(colorList[3], colorList[4], percentage)
-        in 0.8f..1f -> colorList[4]
+        //in 0.0f..0.2f -> lerp(colorList[0], colorList[1], percentage)
+        //in 0.2f..0.4f -> lerp(colorList[1], colorList[2], percentage)
+        in 0f..0.2f -> colorList[0]
+        in 0.2f..0.4f -> lerp(colorList[0], colorList[1], percentage)
+        in 0.4f..0.6f -> {
+            val lerp = interpolate(0.4f, 0.6f, percentage)
+            val fc = lerp(colorList[1], colorList[2], lerp)
+            Log.d("PB","Progress Bar color 0,4 a 0,6 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
+            fc
+        }
+        in 0.6f..0.8f -> {
+            val lerp = interpolate(0.6f, 0.8f, percentage)
+            val fc = lerp(colorList[2], colorList[3], lerp)
+            Log.d("PB", "Progress Bar color 0,6 a 0,8 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
+            fc
+        }
+        in 0.8f..1f -> {
+            val lerp = interpolate(0.8f, 1f, percentage)
+            val fc = lerp(colorList[3], colorList[4], lerp)
+            Log.d("PB", "Progress Bar color 0,8 a 1 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
+            fc
+        }
         else -> colorList[4]
     }
     drawCircle(
@@ -172,6 +189,10 @@ private fun DrawScope.drawBallProgressIndicator(
         //style = style,
         //radius = size.minDimension / 2.0f - diameterOffset
     )
+}
+
+fun interpolate(floatA: Float, floatB: Float, floatC: Float): Float {
+    return (floatC - floatA) / (floatB - floatA)
 }
 
 // Diameter of the indicator circle
