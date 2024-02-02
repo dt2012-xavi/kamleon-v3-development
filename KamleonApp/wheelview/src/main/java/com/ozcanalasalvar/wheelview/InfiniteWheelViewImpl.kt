@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
@@ -30,6 +31,7 @@ fun InfiniteWheelViewImpl(
     modifier: Modifier,
     itemSize: DpSize,
     selection: Int,
+    maxIndex: Int? = null,
     itemCount: Int,
     rowOffset: Int,
     isEndless: Boolean,
@@ -63,6 +65,19 @@ fun InfiniteWheelViewImpl(
         }
     }
 
+    /*
+    val toItem = remember { mutableStateOf(0) }
+    fun goToItem(index: Int){
+        toItem.value = index
+    }
+
+    LaunchedEffect(key1 = toItem) {
+        coroutineScope.launch {
+            state.animateScrollToItem(toItem.value, 0)
+        }
+    }
+    */
+
     LaunchedEffect(key1 = isScrollInProgress) {
         if (!isScrollInProgress) {
             calculateIndexToFocus(state, size.height).let {
@@ -72,12 +87,20 @@ fun InfiniteWheelViewImpl(
                     ((it + rowOffsetCount) % count) - rowOffset
                 }
 
-                onFocusItem(indexToFocus)
-                if (state.firstVisibleItemScrollOffset != 0) {
+                /*
+                if (maxIndex != null && indexToFocus > maxIndex) { // Check if the selected index is greater than the maximum index
                     coroutineScope.launch {
-                        state.animateScrollToItem(it, 0)
+                        state.animateScrollToItem(maxIndex, 0) // Start an animation to scroll to the maximum index
                     }
-                }
+                } else {
+                */
+                    onFocusItem(indexToFocus)
+                    if (state.firstVisibleItemScrollOffset != 0) {
+                        coroutineScope.launch {
+                            state.animateScrollToItem(it, 0)
+                        }
+                    } else { }
+                // }
             }
         }
     }
@@ -101,6 +124,7 @@ fun InfiniteWheelViewImpl(
                 .fillMaxWidth(),
             state = state,
             userScrollEnabled = userScrollEnabled,
+
         ) {
 
             items(if (isEndless) Int.MAX_VALUE else count) {

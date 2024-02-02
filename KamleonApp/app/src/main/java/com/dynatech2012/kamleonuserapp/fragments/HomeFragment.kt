@@ -66,17 +66,19 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
 
     private fun onUserImageChanged(drawable: Drawable?) {
         Log.d(TAG, "image changed")
-        drawable?.let {
-            binding.ivHomeProfile.load(drawable)
-            binding.ivHomeProfile.visibility = View.VISIBLE
+        if (drawable == null) {
+            binding.ivHomeProfile.setImageDrawable(null)
+            binding.ivHomeProfile.visibility = View.INVISIBLE
             return
         }
+        binding.ivHomeProfile.load(drawable)
+        binding.ivHomeProfile.visibility = View.VISIBLE
     }
 
     private fun onLastMeasureChanged(measure: MeasureData) {
         Log.d(TAG, "got measures 6 changed")
         val date = Date(measure.analysisDate)
-        //val format = SimpleDateFormat("d MMMM yyy", Locale.getDefault())
+        //val format = SimpleDateFormat("d MMMM yyy", Locale.US)
         //val dateString = format.format(date)
         val dateString = date.formatTime.uppercase()
         binding.tvHomeLastSample.text = getString(R.string.home_last_sample_message, dateString)

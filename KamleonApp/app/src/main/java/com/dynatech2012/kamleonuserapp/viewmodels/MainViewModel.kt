@@ -65,7 +65,8 @@ class MainViewModel @Inject constructor(
     private val _userUpdated = MutableLiveData<Boolean>()
     val userUpdated: LiveData<Boolean> = _userUpdated
 
-    private var userImagePrevUri: Uri? = null
+    private val _userImagePrevUri = MutableLiveData<Uri?>()
+    val userImagePrevUri: LiveData<Uri?> = _userImagePrevUri
 
     private val _userImageUri = MutableLiveData<Uri?>()
     val userImageUri: LiveData<Uri?> = _userImageUri
@@ -86,15 +87,21 @@ class MainViewModel @Inject constructor(
                 val user = userResult.dataValue!!
                 _userData.postValue(user)
                 val imageLoader = ImageLoader(appContext)
-                val request = ImageRequest.Builder(appContext)
-                    .data(user.imageUrl)
-                    .allowHardware(false)
-                    .target { drawable ->
-                        // Handle the result.
-                        _userImageDrawable.postValue(drawable)
-                    }
-                    .build()
-                val disposable = imageLoader.enqueue(request)
+                if (user.imageUrl.isNotBlank()) {
+                    val request = ImageRequest.Builder(appContext)
+                        .data(user.imageUrl)
+                        .allowHardware(false)
+                        .size(100,100)
+                        .target { drawable ->
+                            // Handle the result.
+                            _userImageDrawable.postValue(drawable)
+                        }
+                        .build()
+                    val disposable = imageLoader.enqueue(request)
+                }
+                else {
+                    _userImageDrawable.postValue(null)
+                }
             }
             val userProfilesResult = cloudFunctions.getUserProfiles()
             if (userProfilesResult.isSuccess && userProfilesResult.dataValue != null) {
@@ -197,10 +204,13 @@ class MainViewModel @Inject constructor(
     }
 
     fun setImageUri(uri: Uri?) {
-        uri?.let {
-            userImagePrevUri = uri
+        _userImagePrevUri.postValue(uri)
+        if (uri == null) {
+            _userImageUri.postValue(null)
+        }
+        else {
             viewModelScope.launch(Dispatchers.IO) {
-                val response = firestoreRepo.updateUserImage(it)
+                val response = firestoreRepo.updateUserImage(uri)
                 if (response.isSuccess && response.dataValue != null) {
                     getUserData()
                 }
@@ -210,9 +220,11 @@ class MainViewModel @Inject constructor(
     }
 
     fun removeUserImage() {
+        setImageUri(null)
         viewModelScope.launch(Dispatchers.IO) {
             firestoreRepo.removeUserImage()
-            _userUpdated.postValue(true)
+            //_userUpdated.postValue(true)
+            getUserData()
         }
     }
 
@@ -358,9 +370,12 @@ class MainViewModel @Inject constructor(
     fun getInvitations() {
         viewModelScope.launch(Dispatchers.IO) {
             val response = cloudFunctions.getInvitations()
+            Log.d(TAG, "HHH getInvitations: ${response.dataValue?.size}")
             val invitations = response.dataValue ?: ArrayList()
-            _pendingInvitations.postValue(invitations.filter { it.status == InvitationStatus.SENT } as ArrayList<Invitation>?)
+            val pendingInvitations = invitations.filter { it.status == InvitationStatus.SENT } as ArrayList<Invitation>
+            _pendingInvitations.postValue(pendingInvitations)
             // 30 days ago
+            Log.d(TAG, "HHH getInvitations pending: ${pendingInvitations.size}")
             val thirtyDaysAgo = Date().addDays(-30)
             _recentInvitations.postValue(invitations.filter { it.status != InvitationStatus.SENT && it.dateSent >= thirtyDaysAgo } as ArrayList<Invitation>?)
             val oldInvitations = invitations.filter { it.status != InvitationStatus.SENT } as ArrayList<Invitation>
@@ -375,7 +390,11 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val response = cloudFunctions.acceptInvitation(invitationId)
             if (response.isSuccess) {
+                Log.d(TAG, "HHH acceptInvitation: success")
                 getInvitations()
+            }
+            else {
+                Log.d(TAG, "HHH acceptInvitation: failure")
             }
         }
     }
@@ -384,9 +403,19 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val response = cloudFunctions.rejectInvitation(invitationId)
             if (response.isSuccess) {
+                Log.d(TAG, "HHH rejectInvitation: success")
                 getInvitations()
             }
+            else {
+                Log.d(TAG, "HHH rejectInvitation: failure")
+            }
         }
+    }
+
+    fun updateNotificationStatus(on: Boolean) {
+        val data = hashMapOf<String, Any>()
+        data["notifications"] = hashMapOf("analytics" to on)
+        updateUserData(data)
     }
 
 

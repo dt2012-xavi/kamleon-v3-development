@@ -18,22 +18,29 @@ import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.adapters.OrganizationsListAdapter
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.ActivitySettingBinding
+import com.dynatech2012.kamleonuserapp.extensions.addYears
 import com.dynatech2012.kamleonuserapp.models.CustomUser
+import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.Organization
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
+import com.ozcanalasalvar.datepicker.view.datepicker.DatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import java.time.Period
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.GregorianCalendar
 
 @AndroidEntryPoint
 class SettingFragment : BaseFragment<ActivitySettingBinding>(),
-    SettingMenuItemView.SettingMenuItemViewListener {
+    SettingMenuItemView.SettingMenuItemViewListener, DatePicker.DateChangeListener {
     override fun setBinding(): ActivitySettingBinding = ActivitySettingBinding.inflate(layoutInflater)
+    private var dateFragment: DatePickerFragment? = null
     private var isSettingAccount: Boolean = true
     private val viewModel: MainViewModel by activityViewModels()
+    private var dataTypeToChange: String? = null
     private val onDismissPickImage = object : BottomFragmentDismissListener {
         override fun onDismissFragment() {
 
@@ -81,7 +88,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             binding.prefMenuItemWeight,
             binding.prefMenuItemHeight,
             binding.prefMenuItemGender,
-            binding.prefMenuItemBirth
+            binding.prefMenuItemBirth,
+            binding.smNotiSwitch
         )
 
         for (menuItem in menuItems) {
@@ -90,24 +98,25 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         setupAdapter()
         initObservers()
         viewModel.getUserData()
+        viewModel.getInvitations()
     }
 
     override fun initEvent() {
-        binding.optionViewAcc.setOnClickListener {
+        binding.llSettingAccount.setOnClickListener {
             if (!isSettingAccount) {
                 isSettingAccount = true
                 updateOptionViewUI()
             }
         }
 
-        binding.optionViewPref.setOnClickListener {
+        binding.llSettingPrefs.setOnClickListener {
             if (isSettingAccount) {
                 isSettingAccount = false
                 updateOptionViewUI()
             }
         }
 
-        binding.optionViewLogout.setOnClickListener {
+        binding.llSettingLogout.setOnClickListener {
             showLogoutDialog()
         }
 
@@ -132,7 +141,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
 
         binding.btnSettingNoti.setOnClickListener {
-            binding.btnSettingNotiBadge.visibility = View.GONE
+            //binding.btnSettingNotiBadge.visibility = View.GONE
             val notiFragment = InvitationFragment.newInstance(onDismissPickImage)
             notiFragment.show(parentFragmentManager, "Notifications")
         }
@@ -154,18 +163,24 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
     private fun updateOptionViewUI() {
         if (isSettingAccount) {
-            binding.optionViewAcc.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_setting_option_layout)
+            //binding.optionViewAcc.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.bg_setting_option_layout))
 //            binding.optionViewAcc.setBackgroundResource(R.drawable.bg_setting_option_layout)
 //            binding.optionViewAcc.setBackgroundResource(R.drawable.bg_setting_option_shadow)
-            binding.optionViewPref.background = null
+            //binding.optionViewPref.setImageDrawable(null)
+
+            binding.optionViewAcc.visibility = View.VISIBLE
+            binding.optionViewPref.visibility = View.INVISIBLE
 
             binding.layoutAccount.visibility = View.VISIBLE
             binding.layoutPreference.visibility = View.GONE
         } else {
-            binding.optionViewAcc.background = null
-            binding.optionViewPref.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_setting_option_layout)
+            //binding.optionViewAcc.setImageDrawable(null)
+            //binding.optionViewPref.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.bg_setting_option_layout))
 //            binding.optionViewPref.setBackgroundResource(R.drawable.bg_setting_option_layout)
 //            binding.optionViewPref.setBackgroundResource(R.drawable.bg_setting_option_shadow)
+
+            binding.optionViewAcc.visibility = View.INVISIBLE
+            binding.optionViewPref.visibility = View.VISIBLE
 
             binding.layoutAccount.visibility = View.GONE
             binding.layoutPreference.visibility = View.VISIBLE
@@ -206,7 +221,26 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         val logoutDialog = dialog.show()
         logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        dialogView.findViewById<TextView>(R.id.tvDialogDesc).setOnClickListener {
+        val tvDescr = dialogView.findViewById<TextView>(R.id.tvDialogDesc)
+        tvDescr.text = getString(R.string.dialog_profile_ready)
+        tvDescr.setOnClickListener {
+            logoutDialog.dismiss()
+        }
+    }
+
+    private fun showDateNotAllowedDialog() {
+        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        val inflater = this.layoutInflater
+        val dialogView: View = inflater.inflate(R.layout.layout_dialog_profile_ready, null)
+
+        dialog.setView(dialogView)
+        dialog.setCancelable(false)
+        val logoutDialog = dialog.show()
+        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val tvDescr = dialogView.findViewById<TextView>(R.id.tvDialogDesc)
+        tvDescr.text = getString(R.string.dialog_profile_date_not_allowed)
+        tvDescr.setOnClickListener {
             logoutDialog.dismiss()
         }
     }
@@ -233,14 +267,15 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     }
 
     override fun onSwitchChanged(menuView: SettingMenuItemView, isOn: Boolean) {
-
+        when (menuView) {
+            binding.smNotiSwitch -> {
+                viewModel.updateNotificationStatus(isOn)
+            }
+        }
     }
 
     override fun onMenuItemClicked(menuView: SettingMenuItemView) {
         when (menuView) {
-            binding.accMenuItemEmail -> {
-                findNavController().navigate(R.id.action_settingFragment_to_emailFragment)
-            }
             binding.accMenuItemPwd -> {
                 findNavController().navigate(R.id.action_settingFragment_to_pwdFragment)
             }
@@ -275,23 +310,27 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     }
 
     private fun showDatePicker() {
-        val dateFragment = DatePickerFragment.newInstance(onDismissDatePicker, viewModel.userData.value?.dateOfBirth!!)
-        dateFragment.show(parentFragmentManager, "DatePicker")
+        dateFragment = DatePickerFragment.newInstance(onDismissDatePicker, this,
+            viewModel.userData.value?.dateOfBirth!!)
+        dateFragment?.show(parentFragmentManager, "DatePicker")
     }
 
     private fun showHeightPicker() {
+        dataTypeToChange = "height"
         val value = viewModel.userData.value?.height?.toString()
         val dataFragment = DataPickerFragment.newInstance(onDismissHeightPicker, "height", value)
         dataFragment.show(parentFragmentManager, "HeightPicker")
     }
 
     private fun showWeightPicker() {
+        dataTypeToChange = "weight"
         val value = viewModel.userData.value?.weight?.toString()
         val dataFragment = DataPickerFragment.newInstance(onDismissWeightPicker, "weight", value)
         dataFragment.show(parentFragmentManager, "WeightPicker")
     }
 
     private fun showGenderPicker() {
+        dataTypeToChange = "gender"
         val value = viewModel.userData.value?.gender?.toString()
         val dataFragment = DataPickerFragment.newInstance(onDismissGenderPicker, "gender", value)
         dataFragment.show(parentFragmentManager, "GenderPicker")
@@ -302,7 +341,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         viewModel.userProfiles.observe(this, this::onUserProfilesChanged)
         viewModel.userUpdated.observe(this, this::onUserDataUpdated)
         viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
-        viewModel.newInvitations.observe(this, this::onNewInvitation)
+        viewModel.pendingInvitations.observe(this, this::onGetPendingInvitations)
     }
 
     private fun setupAdapter() {
@@ -329,7 +368,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         val age = Period.between(localDate, LocalDate.now()).years
         val stringDate = "$formattedDate ($age)"
         binding.prefMenuItemBirth.setValue(formattedDate)
-
+        binding.smNotiSwitch.getSwitchComp()?.isChecked = userData.notifications["analytics"] ?: true
     }
 
     private fun onUserProfilesChanged(organizations: ArrayList<Organization>) {
@@ -359,17 +398,19 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         if (updated)
         {
             viewModel.resetUserUpdated()
-            showReadyDialog()
+            //showReadyDialog()
         }
     }
 
     private fun onUserImageChanged(drawable: Drawable?) {
         Log.d(HomeFragment.TAG, "image changed")
-        drawable?.let {
-            binding.ivSettProfile.load(drawable)
-            binding.ivSettProfile.visibility = View.VISIBLE
+        if (drawable == null) {
+            binding.ivSettProfile.setImageDrawable(null)
+            binding.ivSettProfile.visibility = View.INVISIBLE
             return
         }
+        binding.ivSettProfile.load(drawable)
+        binding.ivSettProfile.visibility = View.VISIBLE
     }
 
     private fun updateUserData()
@@ -380,12 +421,25 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         viewModel.updateUserData(data)
     }
 
-    private fun onNewInvitation(isNew: Boolean) {
-        if (isNew)
+    private fun onGetPendingInvitations(invitations: ArrayList<Invitation>) {
+        if (invitations.isNotEmpty())
             binding.btnSettingNotiBadge.visibility = View.VISIBLE
+        else binding.btnSettingNotiBadge.visibility = View.GONE
     }
 
     companion object {
         val TAG: String = SettingFragment::class.java.simpleName
+    }
+
+    override fun onDateChanged(date: Long, day: Int, month: Int, year: Int) {
+        val dateSelected = GregorianCalendar(year, month, day).time
+        val fourteenYAgo = Date().addYears(-14)
+        Log.d(DatePickerFragment.TAG, "ggg onDateChanged: $dateSelected, $fourteenYAgo")
+        val isDateAllowed = dateSelected <= fourteenYAgo
+        dateFragment?.enableSaveButton(isDateAllowed)
+        if (!isDateAllowed) {
+            Log.d(DatePickerFragment.TAG, "ggg onDateChanged too young: $dateSelected, $fourteenYAgo")
+            showDateNotAllowedDialog()
+        }
     }
 }

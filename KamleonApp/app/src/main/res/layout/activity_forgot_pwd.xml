@@ -39,7 +39,7 @@
             android:layout_marginTop="8dp"
             android:textColor="@color/kamleon_dark_grey"
             android:text="@string/forgotpwd_title"
-            android:textSize="@dimen/ts_20"/>
+            android:textAppearance="@style/TextAppearance.Kamleon.Headline6"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,28 +80,44 @@
                 android:textSize="@dimen/ts_12"
                 android:textColor="@color/kamleon_secondary_grey_60"
                 android:text="@string/forgotpwd_can_not_reset"/>
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp">
 
                 <View
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="1px"
-                    android:layout_centerInParent="true"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_forgot_or"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     android:background="@color/kamleon_dark_grey" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1px"
+                    app:layout_constraintStart_toEndOf="@+id/tv_forgot_or"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:background="@color/kamleon_dark_grey" />
+
                 <TextView
+                    android:id="@+id/tv_forgot_or"
+                    style="@style/CircularBookFont"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_centerInParent="true"
                     android:gravity="center"
                     android:paddingHorizontal="10dp"
-                    android:background="@color/white"
-                    style="@style/CircularBookFont"
-                    android:layout_centerInParent="true"
-                    android:textSize="@dimen/ts_12"
+                    android:text="@string/forgotpwd_or"
                     android:textColor="@color/kamleon_secondary_grey_60"
-                    android:text="@string/forgotpwd_or"/>
-            </RelativeLayout>
+                    android:textSize="@dimen/ts_12" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:layout_width="wrap_content"

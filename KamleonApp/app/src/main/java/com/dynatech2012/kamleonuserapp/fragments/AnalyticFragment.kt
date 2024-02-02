@@ -74,7 +74,14 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
 
     private fun onUserImageChanged(drawable: Drawable?) {
         Log.d(HomeFragment.TAG, "image changed")
+        if (drawable == null) {
+            binding.ivAnalyticProfile.setImageDrawable(null)
+            binding.ivAnalyticProfile.visibility = View.INVISIBLE
+            return
+        }
         drawable?.let {
+
+
             binding.ivAnalyticProfile.load(drawable)
             binding.ivAnalyticProfile.visibility = View.VISIBLE
             return

@@ -3,17 +3,22 @@ package com.ozcanalasalvar.datepicker.view.datepicker
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
+import android.view.MotionEvent
 import android.widget.LinearLayout
 import com.ozcanalasalvar.library.R
 import com.ozcanalasalvar.datepicker.compose.datepicker.DatePickerComposeView
 import com.ozcanalasalvar.datepicker.model.Date
 import com.ozcanalasalvar.datepicker.utils.DateUtils
+import java.util.Calendar
 
 class DatePicker : LinearLayout {
     private var context: Context? = null
     private var pickerView: DatePickerComposeView? = null
 
     private var date: Date = Date(DateUtils.getCurrentTime())
+    private var toDate: Date = Date(DateUtils.getCurrentTime())
+    private var maxxDate: Date = Date(DateUtils.getCurrentTime())
     private var offset = 3
     private var textSize = 16
     private var textBold = false
@@ -78,13 +83,16 @@ class DatePicker : LinearLayout {
 
     private fun setAttributes() {
         pickerView?.offset = offset
-        pickerView?.yearsRange = IntRange(1922, 2128)
+        pickerView?.yearsRange = IntRange(1904, java.util.Date().addYears(-14).year())
         pickerView?.startDate = date
         pickerView?.selectorEffectEnabled = true
         pickerView?.textSize = textSize
         pickerView?.textBold = textBold
-        pickerView?.darkModeEnabled= darkModeEnabled
+        pickerView?.darkModeEnabled = darkModeEnabled
         pickerView?.setDataChangeListener(dateChangeListener)
+        pickerView?.toDate = toDate
+        pickerView?.maxDate = maxxDate
+        pickerView?.setDatePickerTouchListener(datePickerTouchListener)
     }
 
 
@@ -96,8 +104,18 @@ class DatePicker : LinearLayout {
     var maxDate: Long = 0
 
 
-    fun setDate(_date: Long) {
-        date = Date(_date)
+    fun setDate(newDate: Long) {
+        date = Date(newDate)
+        setAttributes()
+    }
+
+    fun setMaxxDate(newDate: Long) {
+        maxxDate = Date(newDate)
+        setAttributes()
+    }
+
+    fun goToDate(newDate: Long) {
+        toDate = Date(newDate)
         setAttributes()
     }
 
@@ -139,6 +157,25 @@ class DatePicker : LinearLayout {
         this.dateChangeListener = dateChangeListener
         setAttributes()
     }
+    private var datePickerTouchListener: OnDatePickerTouchListener? = null
+    fun setDatePickerTouchListener(datePickerTouchListener: OnDatePickerTouchListener) {
+        this.datePickerTouchListener = datePickerTouchListener
+        setAttributes()
+        pickerView?.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    Log.d("DatePicker", "ACTIONN_DOWN")
+                    datePickerTouchListener?.onDatePickerTouchDown()
+                    true
+                }
+                else -> {
+                    Log.d("DatePicker", "ACTIONN_UP")
+                    datePickerTouchListener?.onDatePickerTouchUp()
+                    false
+                }
+            }
+        }
+    }
 
     companion object {
         const val MONTH_ON_FIRST = 0
@@ -150,4 +187,27 @@ class DatePicker : LinearLayout {
     fun getDateSelected(): Date {
         return date
     }
+}
+
+fun java.util.Date.add(field: Int, amount: Int): java.util.Date {
+    Calendar.getInstance().apply {
+        time = this@add
+        add(field, amount)
+        return time
+    }
+}
+
+fun java.util.Date.addYears(years: Int): java.util.Date {
+    return add(Calendar.YEAR, years)
+}
+
+fun java.util.Date.year(): Int {
+    return Calendar.getInstance().apply {
+        time = this@year
+    }.get(Calendar.YEAR)
+}
+
+interface OnDatePickerTouchListener {
+    fun onDatePickerTouchDown()
+    fun onDatePickerTouchUp()
 }

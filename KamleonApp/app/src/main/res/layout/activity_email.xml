@@ -52,10 +52,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/CircularBoldFont"
             android:layout_marginTop="16dp"
             android:textColor="@color/text_color_category"
             android:text="@string/email_email"
+            android:textAppearance="@style/TextAppearance.Kamleon.Bold"
             android:textSize="@dimen/ts_14"/>
 
         <LinearLayout
@@ -82,9 +82,9 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/CircularBoldFont"
                         android:textColor="@color/kamleon_dark_grey"
                         android:text="@string/email_email"
+                        android:textAppearance="@style/TextAppearance.Kamleon.Bold"
                         android:textSize="@dimen/ts_14"/>
                     <EditText
                         android:layout_width="0dp"
@@ -121,9 +121,9 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/CircularBoldFont"
                         android:textColor="@color/kamleon_dark_grey"
                         android:text="@string/email_new"
+                        android:textAppearance="@style/TextAppearance.Kamleon.Bold"
                         android:textSize="@dimen/ts_14"/>
                     <EditText
                         android:layout_width="0dp"
@@ -154,9 +154,9 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/CircularBoldFont"
                         android:textColor="@color/kamleon_dark_grey"
                         android:text="@string/email_confirm"
+                        android:textAppearance="@style/TextAppearance.Kamleon.Bold"
                         android:textSize="@dimen/ts_14"/>
                     <EditText
                         android:layout_width="0dp"

@@ -22,7 +22,7 @@ private fun hashString(input: String, algorithm: String): String {
         .fold("") { str, it -> str + "%02x".format(it) }
 }
 
-fun String.toDate(pattern: String, locale: Locale = Locale.getDefault()): Date =
+fun String.toDate(pattern: String, locale: Locale = Locale.US): Date =
     SimpleDateFormat(pattern, locale).parse(this) ?: Date(0)
 
 fun String.capitalize(): String {
@@ -196,25 +196,25 @@ val Date.formatTime: String
         val date = this
         // If it's today, display the time (e.g., "19:00").
         if (date.isToday) {
-            val dateFormater = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val dateFormater = SimpleDateFormat("HH:mm", Locale.US)
             return dateFormater.format(date)
         }
         // If it's yesterday, display "Yesterday".
         else if (date.isYesterday) {
-            val dateFormater = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val dateFormater = SimpleDateFormat("HH:mm", Locale.US)
             val stringDate = dateFormater.format(date)
             return "Yesterday $stringDate"
         }
         // If it's within the last week, display the day name (e.g., "Tuesday").
         else if (date.isLastWeek) {
             Log.d(Invitation.TAG, "invitationTime: isLastWeek: $date")
-            val dateFormater = SimpleDateFormat("EEEE 'at' HH:mm", Locale.getDefault())
+            val dateFormater = SimpleDateFormat("EEEE 'at' HH:mm", Locale.US)
             return dateFormater.format(date)
         }
         // If it's more than one week ago, display the full date.
         else {
             Log.d(Invitation.TAG, "invitationTime: is old: $date")
-            val dateFormater = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
+            val dateFormater = SimpleDateFormat("d MMMM yyyy", Locale.US)
             return dateFormater.format(date)
         }
 

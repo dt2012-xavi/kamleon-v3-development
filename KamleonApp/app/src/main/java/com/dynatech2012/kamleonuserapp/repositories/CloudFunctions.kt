@@ -6,8 +6,10 @@ import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants
 import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
 import com.dynatech2012.kamleonuserapp.models.Organization
+import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -62,27 +64,34 @@ class CloudFunctions(private val userRepository: UserRepository) {
         return changeInvitationStatus(invitationId, InvitationStatus.REJECTED)
     }
 
-    private suspend fun changeInvitationStatus(invitationId: String, status: InvitationStatus): ResponseNullable<Nothing> = suspendCoroutine { continuation ->
+    private suspend fun changeInvitationStatus(invitationId: String, status: InvitationStatus): ResponseNullable<Nothing> {// = suspendCoroutine { continuation ->
         if (uuid == null) {
-            continuation.resume(ResponseNullable.Failure(Exception("User not logged in")))
+            /*continuation.resume(ResponseNullable.Failure(Exception("User not logged in")))
             return@suspendCoroutine
+            */
+            return ResponseNullable.Failure(Exception("User not logged in"))
         }
+
         val body = hashMapOf(
             "invitationID" to invitationId,
             "userID" to uuid,
             "status" to status.rawValue
         )
         try {
-            val result = functions.getHttpsCallable("changeInvitationStatus").call(body).result
+            val result = functions.getHttpsCallable("changeInvitationStatus").call(body).await()
             val data = result.data as? ArrayList<HashMap<String, Any>>
             val invitations = ArrayList<Invitation>()
             data?.forEach {
                 val inv = Invitation(it)
                 invitations.add(inv)
             }
-            continuation.resume(ResponseNullable.Success())
+            Log.d(MainViewModel.TAG, "HHH cloud funct change invitation: success")
+            //continuation.resume(ResponseNullable.Success())
+            return ResponseNullable.Success()
         } catch (e: Exception) {
-            continuation.resume(ResponseNullable.Failure(e))
+            Log.d(MainViewModel.TAG, "HHH cloud funct change invitation: failure: $e")
+            //continuation.resume(ResponseNullable.Failure(e))
+            return ResponseNullable.Failure(e)
         }
     }
 

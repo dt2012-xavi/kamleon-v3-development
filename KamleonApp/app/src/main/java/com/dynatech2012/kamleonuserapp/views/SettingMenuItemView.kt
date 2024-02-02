@@ -2,6 +2,7 @@ package com.dynatech2012.kamleonuserapp.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -27,12 +28,16 @@ class SettingMenuItemView : LinearLayout {
     private var menuItemListener: SettingMenuItemViewListener? = null
     fun setSettingMenuItemListener(listener: SettingMenuItemViewListener?) {
         menuItemListener = listener
-        view.isClickable = true
-        view.setOnClickListener {
-            if (switch?.visibility == VISIBLE) {
-                switch?.isChecked = !(switch?.isChecked ?: false)
+        Log.d("SettingMenuItemView", "onMenuItemClicked")
+        if (switch?.visibility == VISIBLE) {
+            switch?.isClickable = true
+            switch?.setOnClickListener {
+                //switch?.isChecked = !(switch?.isChecked ?: false)
                 menuItemListener?.onSwitchChanged(this, switch?.isChecked ?: false)
-            } else {
+            }
+        } else {
+            view.isClickable = true
+            view.setOnClickListener {
                 menuItemListener?.onMenuItemClicked(this)
             }
         }
@@ -119,12 +124,12 @@ class SettingMenuItemView : LinearLayout {
         switch?.visibility = if (switchState) VISIBLE else GONE
 
         if (switchState) {
-            switch?.isEnabled = false
-            view.isClickable = true
-            view.setOnClickListener {
+            switch?.isEnabled = true
+            /*switch?.isClickable = true
+            switch?.setOnClickListener {
                 switch?.isChecked = !(switch?.isChecked ?: false)
                 menuItemListener?.onSwitchChanged(this, switch?.isChecked ?: false)
-            }
+            }*/
         }
     }
 

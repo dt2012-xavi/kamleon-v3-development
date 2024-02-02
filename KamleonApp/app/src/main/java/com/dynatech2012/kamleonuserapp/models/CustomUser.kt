@@ -27,7 +27,9 @@ data class CustomUser(
     var pin: String = "123456".sha256(),
     var rfid: String = "",
     var teamsPermissions: Map<String, KamleonPermissions> = mapOf(),
-    var token: String? = null
+    var token: String? = null,
+
+    var notifications: Map<String, Boolean> = mapOf()
     )
 
 enum class Gender (val raw: String)

@@ -20,9 +20,11 @@
     <string name="login_desc">Enter your details to continue. If\nyou’ve forgotten, we’ll help you out.</string>
     <string name="login_btn_signin">Sign in</string>
     <string name="login_alert_title_login_error">Invalid input.</string>
-    <string name="login_alert_description_not_valid_email">Email address is missing or invalid.</string>
-    <string name="login_alert_description_short_pass">Password must be at least 6 symbols in length.</string>
-    <string name="login_alert_description_login_error">Email address is missing or invalid.</string>
+    <string name="login_alert_description_not_verified_email">Email not verified. Please check your email</string>
+    <string name="login_alert_description_not_valid_email">Invalid email</string>
+    <string name="login_alert_description_user_not_found">User not found</string>
+    <string name="login_alert_description_wrong_pass">Wrong password</string>
+    <string name="login_alert_description_login_error_unknown">Unknown error</string>
 
     <string name="login_forgot_pwd"><u>Forgot password?</u></string>
     <string name="login_not_have_account">Don’t you have an account yet?</string>
@@ -244,6 +246,7 @@
     <string name="dialog_deactive_msg">Are you sure you want to deactivate your account?</string>
     <string name="dialog_deactive_y">Deactivate</string>
     <string name="dialog_deactive_n">Cancel</string>
+    <string name="dialog_profile_date_not_allowed">You have to be at least 14 years old</string>
 
     <!-- Error -->
     <string name="error_login">Error login</string>
@@ -327,4 +330,8 @@
 
     <string name="default_value">--</string>
     <string name="user_name_initials">%1$s%2$s</string>
+
+    <string name="switch_thumb_path_checked" translatable="false">M4,16 A12,12 0 0,1 16,4 H16 A12,12 0 0,1 16,28 H16 A12,12 0 0,1 4,16</string>
+    <string name="switch_thumb_path_unchecked" translatable="false">M,16 A8,8 0 0,1 16,8 H16 A8,8 0 0,1 16,24 H16 A8,8 0 0,1 8,16</string>
+
 </resources>

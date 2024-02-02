@@ -19,7 +19,7 @@ class KamleonInputBox : ConstraintLayout {
     private var eyeIconLayout: LinearLayout? = null
     private var ivEye: ImageView? = null
 
-    private var securePwdOn: Boolean = false
+    private var securePwdOn: Boolean = true
 
     constructor(context: Context?) : super(context!!) {
         commonInit()
@@ -74,14 +74,14 @@ class KamleonInputBox : ConstraintLayout {
 
     private fun setupForPassword() {
         eyeIconLayout?.visibility = VISIBLE
-        ivEye?.setImageResource(R.drawable.icn_eye_on)
+        ivEye?.setImageResource(R.drawable.icn_eye_off)
         securePwdOn = true
 
         getEditTextView()?.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
     }
 
     private fun updateUIFromSecureMode() {
-        ivEye?.setImageResource(if (securePwdOn) R.drawable.icn_eye_on else R.drawable.icn_eye_off)
+        ivEye?.setImageResource(if (securePwdOn) R.drawable.icn_eye_off else R.drawable.icn_eye_on)
         if (securePwdOn) {
             getEditTextView()?.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         } else {

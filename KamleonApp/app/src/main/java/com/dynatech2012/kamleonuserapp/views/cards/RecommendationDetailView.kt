@@ -149,7 +149,7 @@ fun RecommendationDetailView(modifier: Modifier, recommendation: Recommendation,
                 )
                 Image(
                     modifier = Modifier
-                        .padding(horizontal = 6.dp, vertical = 32.dp)
+                        .padding(horizontal = 4.dp, vertical = 10.dp)
                         .size(36.dp)
                         .coloredShadow(
                             color = colorResource(id = R.color.kamleon_dark_grey),

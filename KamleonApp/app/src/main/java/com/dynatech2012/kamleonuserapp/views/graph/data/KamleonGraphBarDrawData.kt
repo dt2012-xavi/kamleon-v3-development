@@ -1,6 +1,7 @@
 package com.dynatech2012.kamleonuserapp.views.graph.data
 
 import com.dynatech2012.kamleonuserapp.extensions.addDays
+import com.dynatech2012.kamleonuserapp.extensions.addMonths
 import com.dynatech2012.kamleonuserapp.extensions.addYears
 import com.dynatech2012.kamleonuserapp.extensions.beginningOfDay
 import com.dynatech2012.kamleonuserapp.extensions.endOfDay
@@ -64,9 +65,9 @@ class KamleonGraphBarDrawData(
         fun calcStartDateFrom(viewMode: KamleonGraphViewMode, date: Date) : Date {
           return when (viewMode) {
             KamleonGraphViewMode.Daily -> date.beginningOfDay
-            KamleonGraphViewMode.Weekly -> date.addDays(-6)
-            KamleonGraphViewMode.Monthly -> date.addDays(-30)
-            KamleonGraphViewMode.Yearly -> date.addYears(-1)
+            KamleonGraphViewMode.Weekly -> date.addDays(-6).beginningOfDay
+            KamleonGraphViewMode.Monthly -> date.addDays(-29).beginningOfDay
+            KamleonGraphViewMode.Yearly -> date.addMonths(-11).beginningOfDay
             }
         }
 

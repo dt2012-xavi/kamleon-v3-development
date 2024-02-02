@@ -1,5 +1,6 @@
 package com.ozcanalasalvar.datepicker.compose.datepicker
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -20,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.text.font.FontWeight
@@ -36,8 +37,6 @@ import com.ozcanalasalvar.datepicker.utils.withDay
 import com.ozcanalasalvar.datepicker.utils.withMonth
 import com.ozcanalasalvar.datepicker.utils.withYear
 import com.ozcanalasalvar.datepicker.model.Date
-import com.ozcanalasalvar.datepicker.ui.theme.PickerTheme
-import com.ozcanalasalvar.datepicker.ui.theme.colorDarkBackground
 import com.ozcanalasalvar.datepicker.ui.theme.colorDarkPrimary
 import com.ozcanalasalvar.datepicker.ui.theme.colorDarkTextPrimary
 import com.ozcanalasalvar.datepicker.ui.theme.colorLightPrimary
@@ -52,9 +51,12 @@ import java.text.DateFormatSymbols
 
 @Composable
 fun WheelDatePicker(
+    modifier: Modifier = Modifier,
     offset: Int = 4,
     yearsRange: IntRange = IntRange(1923, 2121),
     startDate: Date = Date(DateUtils.getCurrentTime()),
+    //toDate: Date = Date(DateUtils.getCurrentTime()),
+    maxDate: Date = Date(DateUtils.getCurrentTime()),
     textSize: Int = 16,
     textBold: Boolean = false,
     selectorEffectEnabled: Boolean = true,
@@ -63,6 +65,7 @@ fun WheelDatePicker(
 ) {
 
     var selectedDate by remember { mutableStateOf(startDate) }
+    //var scrollToDate by remember { mutableStateOf(toDate) }
 
     val months = selectedDate.monthsOfDate()
 
@@ -74,15 +77,24 @@ fun WheelDatePicker(
         }
     }
 
+    val maxMonth = if (selectedDate.year == maxDate.year) maxDate.month else 12
+    val maxDay = if (selectedDate.year == maxDate.year && selectedDate.month == maxDate.month) maxDate.day else 31
+
     LaunchedEffect(selectedDate) {
         onDateChanged(selectedDate.day, selectedDate.month, selectedDate.year, selectedDate.date)
     }
+
+    /*
+    LaunchedEffect(scrollToDate) {
+        onDateChanged(selectedDate.day, selectedDate.month, selectedDate.year, selectedDate.date)
+    }
+    */
 
     val fontSize = maxOf(13, minOf(28, textSize))
 
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Max)
             .background(if (darkModeEnabled) colorDarkPrimary else colorLightPrimary),
@@ -98,10 +110,14 @@ fun WheelDatePicker(
                 .fillMaxSize()
                 .padding(start = 10.dp, end = 10.dp)
         ) {
-
+            val maxIndexMonth = maxMonth - 1
+            val maxIndexDay = maxDay - 1
+            Log.d("TAG", "ssss maxDate: $maxDate _ maxIndexMonth: $maxIndexMonth")
+            Log.d("TAG", "ssss maxDate: $maxDate _ maxIndexDay: $maxIndexDay")
             WheelView(modifier = Modifier.weight(7f),
                 itemSize = DpSize(150.dp, height),
                 selection = maxOf(months.indexOf(selectedDate.month), 0),
+                maxIndex = maxIndexMonth,
                 itemCount = months.size,
                 rowOffset = offset,
                 selectorOption = SelectorOptions().copy(selectEffectEnabled = selectorEffectEnabled, enabled = false),
@@ -109,6 +125,7 @@ fun WheelDatePicker(
                     selectedDate = selectedDate.withMonth(months[it])
                 },
                 content = {
+                    Log.d("TAG", "ssss month: ${months[it]} _ ${DateFormatSymbols().months[months[it]]}")
                     Text(
                         text = DateFormatSymbols().months[months[it]],
                         textAlign = TextAlign.Start,
@@ -123,6 +140,7 @@ fun WheelDatePicker(
                 WheelView(modifier = Modifier.weight(2f),
                     itemSize = DpSize(150.dp, height),
                     selection = maxOf(days.indexOf(selectedDate.day), 0),
+                    maxIndex = maxDay - 1,
                     itemCount = days.size,
                     rowOffset = offset,
                     selectorOption = SelectorOptions().copy(selectEffectEnabled = selectorEffectEnabled, enabled = false),
@@ -146,7 +164,7 @@ fun WheelDatePicker(
                 selection = years.indexOf(selectedDate.year),
                 itemCount = years.size,
                 rowOffset = offset,
-                isEndless = years.size > offset * 2,
+                isEndless = false,//years.size > offset * 2,
                 selectorOption = SelectorOptions().copy(selectEffectEnabled = selectorEffectEnabled, enabled = false),
                 onFocusItem = {
                     selectedDate = selectedDate.withYear(years[it])

@@ -2,6 +2,7 @@ package com.dynatech2012.kamleonuserapp.fragments
 
 import android.graphics.drawable.Drawable
 import android.util.Log
+import android.view.View
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
@@ -55,7 +56,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
     }
 
     override fun initEvent() {
-        binding.navBack.setOnClickListener {
+        binding.cvGraphBack.setOnClickListener {
             findNavController().popBackStack()
         }
         binding.cvGraphProfile.setOnClickListener {
@@ -97,11 +98,13 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
 
     private fun onUserImageChanged(drawable: Drawable?) {
         Log.d(HomeFragment.TAG, "image changed")
-        drawable?.let {
-            binding.ivGraphProfile.load(drawable)
-            binding.ivGraphProfile.visibility = android.view.View.VISIBLE
+        if (drawable == null) {
+            binding.ivGraphProfile.setImageDrawable(null)
+            binding.ivGraphProfile.visibility = View.INVISIBLE
             return
         }
+        binding.ivGraphProfile.load(drawable)
+        binding.ivGraphProfile.visibility = android.view.View.VISIBLE
     }
     /*
     private fun dailyDataSourceOf(date: Date) : ArrayList<KamleonGraphBarItemData> {

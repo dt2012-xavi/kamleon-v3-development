@@ -153,144 +153,129 @@
                 android:textAppearance="@style/TextAppearance.Kamleon.Headline5"
                 tools:text="Kamleon Owner" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingTop="12dp"
-                android:layout_marginHorizontal="20dp">
+                android:paddingTop="4dp"
+                android:orientation="horizontal">
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/optionViewPref"
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="68dp"
+                    android:layout_gravity="center"
                     android:background="@drawable/bg_setting_option_layout"
+                    android:orientation="horizontal"
                     android:paddingHorizontal="0dp"
-                    android:paddingVertical="0dp"/>
+                    android:paddingVertical="0dp">
 
-                <View
-                    android:id="@+id/optionViewAcc"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/ll_setting_account"
-                    app:layout_constraintEnd_toEndOf="@+id/ll_setting_account"
-                    android:layout_gravity="center"
-                    android:background="@drawable/bg_setting_option_layout"
-                    android:gravity="center"/>
+                    <LinearLayout
+                        android:id="@+id/optionViewAcc"
+                        android:layout_width="110dp"
+                        android:layout_height="68dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_setting_option_layout"
+                        android:gravity="center"
+                        android:orientation="vertical">
 
-                <View
-                    android:id="@+id/optionViewPref"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:scaleType="fitXY"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/ll_setting_prefs"
-                    app:layout_constraintEnd_toEndOf="@+id/ll_setting_prefs"
+                        <LinearLayout
+                            android:layout_width="100dp"
+                            android:layout_height="@dimen/setting_option_view_height"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="6dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:src="@drawable/ic_user"
+                                android:importantForAccessibility="no" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="4dp"
+                                android:text="@string/setting_option_account"
+                                android:textColor="@color/kamleon_dark_grey"
+                                android:textAppearance="@style/TextAppearance.Kamleon.Bold"
+                                android:textSize="@dimen/ts_12" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/optionViewPref"
+                        android:layout_width="120dp"
+                        android:layout_height="68dp"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="-20dp"
+                        android:background="@drawable/bg_setting_option_layout"
+                        android:clickable="true"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="100dp"
+                            android:layout_height="@dimen/setting_option_view_height"
+                            android:layout_marginBottom="6dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:src="@drawable/ic_settings"
+                                android:importantForAccessibility="no" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="4dp"
+                                android:text="@string/setting_option_pref"
+                                android:textAppearance="@style/TextAppearance.Kamleon.Bold"
+                                android:textColor="@color/kamleon_dark_grey"
+                                android:textSize="@dimen/ts_12" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/optionViewLogout"
+                    android:layout_width="80dp"
+                    android:layout_height="68dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/bg_setting_option_layout"
                     android:clickable="true"
-                    android:gravity="center" />
-
-                <LinearLayout
-                    android:id="@+id/ll_setting_account"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/ll_setting_prefs"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="24dp"
-                    android:gravity="center"
-                    app:layout_constraintHorizontal_weight="1"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/ic_user"
-                        android:importantForAccessibility="no" />
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginHorizontal="20dp"
-                        android:text="@string/setting_option_account"
-                        android:textColor="@color/kamleon_dark_grey"
-                        android:textAppearance="@style/TextAppearance.Kamleon.Bold"
-                        android:textSize="@dimen/ts_12" />
+                        android:layout_height="@dimen/setting_option_view_height"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="6dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
 
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@drawable/ic_log_out"
+                            app:tint="@color/color_red"
+                            android:importantForAccessibility="no" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/setting_option_logout"
+                            android:textAppearance="@style/TextAppearance.Kamleon.Bold"
+                            android:textColor="@color/color_red"
+                            android:textSize="@dimen/ts_12" />
+                    </LinearLayout>
                 </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/ll_setting_prefs"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="@+id/ll_setting_account"
-                    app:layout_constraintBottom_toBottomOf="@+id/ll_setting_account"
-                    app:layout_constraintStart_toEndOf="@+id/ll_setting_account"
-                    app:layout_constraintEnd_toStartOf="@+id/ll_setting_logout"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="24dp"
-                    android:gravity="center"
-                    app:layout_constraintHorizontal_weight="1.2"
-                    android:orientation="vertical">
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/ic_settings"
-                        android:importantForAccessibility="no" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginHorizontal="20dp"
-
-                        android:text="@string/setting_option_pref"
-                        android:textAppearance="@style/TextAppearance.Kamleon.Bold"
-                        android:textColor="@color/kamleon_dark_grey"
-                        android:textSize="@dimen/ts_12" />
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/ll_setting_logout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="@+id/ll_setting_account"
-                    app:layout_constraintBottom_toBottomOf="@+id/ll_setting_account"
-                    app:layout_constraintStart_toEndOf="@+id/ll_setting_prefs"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="24dp"
-                    android:gravity="center"
-                    app:layout_constraintHorizontal_weight="0.9"
-                    android:orientation="vertical">
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/ic_log_out"
-                        app:tint="@color/color_red"
-                        android:importantForAccessibility="no" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginHorizontal="10dp"
-
-                        android:text="@string/setting_option_logout"
-                        android:textAppearance="@style/TextAppearance.Kamleon.Bold"
-                        android:textColor="@color/color_red"
-                        android:textSize="@dimen/ts_12" />
-                </LinearLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/layoutAccount"
@@ -630,7 +615,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:paddingHorizontal="@dimen/setting_category_content_padding"
-                    android:text="@string/app_version"
+                    android:text="Version: 1.1"
                     android:textColor="@color/kamleon_secondary_grey_50"
                     android:textSize="@dimen/ts_12" />
 

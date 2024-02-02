@@ -23,6 +23,7 @@ import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.camera.QRCodeFoundListener
 import com.dynatech2012.kamleonuserapp.databinding.ActivityTabBinding
+import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.viewmodels.QrViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -66,11 +67,13 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
 
         binding.layoutTabHome.setOnClickListener {
             selectTab(0)
+            binding.navHostFragmentTab.visibility = View.VISIBLE
             navController.popBackStack()
             navController.navigate(R.id.action_to_homeFragment)
         }
         binding.layoutTabAnalytic.setOnClickListener {
             selectTab(1)
+            binding.navHostFragmentTab.visibility = View.VISIBLE
             navController.popBackStack()
             navController.navigate(R.id.action_to_analyticFragment)
         }
@@ -79,6 +82,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
 
         binding.layoutTabQr.setOnClickListener {
             selectTab(2)
+            binding.navHostFragmentTab.visibility = View.GONE
             requestCamera()
             val thread: Thread = object : Thread() {
                 override fun run() {
@@ -116,11 +120,22 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         binding.ivHomeProfile.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
         }
-
-         */
+        */
     }
     private fun initObservers() {
-        viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
+        qrViewModel.qrDebug.observe(viewLifecycleOwner) {
+            when (it) {
+                is Response.Success -> {
+                    Log.d(TAG, "qrScanner, qrDebug: ${it.data}")
+                    appendDebugText("QR debug FROM ANALYZER -- ${it.data}")
+                }
+                is Response.Failure -> {
+                    Log.e(TAG, "qrScanner, qrDebug: ${it.exception}")
+                    appendDebugText("QR debug FROM ANALYZER -- ${it.exception}")
+                }
+                else -> { }
+            }
+        }
     }
 
     private fun selectTab(tabIndex: Int) {
@@ -147,14 +162,6 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
                 binding.layoutTabHome.background = null
                 binding.layoutContentQR.visibility = View.VISIBLE
             }
-        }
-    }
-
-    private fun onUserImageChanged(drawable: Drawable?) {
-        Log.d(TAG, "image changed")
-        drawable?.let {
-            /////binding.ivHomeProfile.load(drawable)
-            return
         }
     }
 

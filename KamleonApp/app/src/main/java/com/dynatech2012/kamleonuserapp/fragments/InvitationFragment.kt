@@ -40,7 +40,6 @@ class InvitationFragment : BottomSheetDialogFragment() {
         setupAdapter()
         initEvent()
         initObservers()
-        viewModel.getInvitations()
         return binding.root
     }
 
@@ -70,6 +69,7 @@ class InvitationFragment : BottomSheetDialogFragment() {
     private fun onGetPendingInvitations(it: List<Invitation>) {
         val adapter = binding.rvNewInvitationList.adapter as NewInvitationListAdapter
         //adapter.setDataSource(it as ArrayList<Invitation>)
+        Log.d(TAG, "HHH on get invitations pending: ${it.size}")
         adapter.submitList(it.toList())
         if (it.isNotEmpty())
             binding.vDivider.visibility = View.VISIBLE
@@ -89,6 +89,18 @@ class InvitationFragment : BottomSheetDialogFragment() {
 
     private fun setupAdapter() {
         val adapterNewInvitations = NewInvitationListAdapter()
+        adapterNewInvitations.setNotificationListItemViewListener(object :
+            NewInvitationListAdapter.NotificationListItemViewListener {
+            override fun onClick(invitation: Invitation, accepted: Boolean) {
+                Log.d(TAG, "onClick")
+                if (accepted)
+                    viewModel.acceptInvitation(invitation.id)
+                else
+                    viewModel.rejectInvitation(invitation.id)
+                dismissListener?.onDismissFragment()
+                dismiss()
+            }
+        })
         binding.rvNewInvitationList.layoutManager = LinearLayoutManager(requireContext())
         binding.rvNewInvitationList.adapter = adapterNewInvitations
         val adapterOldInvitations = OldInvitationListAdapter()

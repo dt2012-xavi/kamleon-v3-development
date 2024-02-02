@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -30,19 +31,32 @@
         android:id="@+id/tvValue"
         android:textSize="@dimen/ts_14"
         android:textAppearance="@style/TextAppearance.Kamleon.Book"
-        android:text="value"
+        tools:text="value"
         android:textColor="@color/kamleon_secondary_grey_70"/>
 
-    <androidx.appcompat.widget.SwitchCompat
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+    <com.google.android.material.materialswitch.MaterialSwitch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:scaleX="0.7"
+        android:scaleY="0.7"
+        android:layout_marginEnd="-8dp"
         android:id="@+id/settingItemSwitch"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:track="@drawable/switch_track"
-        android:thumb="@drawable/switch_thumb" />
+        tools:checked="true"
+        android:thumb="@drawable/thumb_new"
+        app:trackTint="@color/switch_track_ios_color"
+        app:thumbTint="@color/switch_thumb_ios_color"
+        app:trackDecorationTint="@color/transparent"
+        android:textOn=""
+        android:textOff=""
+        />
+    </LinearLayout>
 
     <ImageView
         android:layout_width="wrap_content"

@@ -39,6 +39,9 @@ class QrViewModel @Inject constructor(
         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
         .build()
 
+    private var _qrDebug: MutableLiveData<Response<String>> = MutableLiveData()
+    val qrDebug: LiveData<Response<String>> = _qrDebug
+
     fun startScanner() {
         imageAnalysis.setAnalyzer(
             ContextCompat.getMainExecutor(appContext),
@@ -53,6 +56,11 @@ class QrViewModel @Inject constructor(
                     Log.d(TAG, "qqqq4: ${qrString.data}")
                 }
                 _qrString.postValue(qrString)
+            }
+        }
+        viewModelScope.launch(ioDispatcher) {
+            analyzer.qrDebugFlow.collect { qrDebug ->
+                _qrDebug.postValue(qrDebug)
             }
         }
     }

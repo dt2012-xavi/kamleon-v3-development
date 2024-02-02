@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.google.firebase.database.DataSnapshot
+import java.util.Date
 import java.util.GregorianCalendar
 
 interface AveragesData {
@@ -24,18 +25,18 @@ data class AverageDailyMeasureData (
     //year = 2021
     //month = 202110
     //day = 20211024
-    var hydration: Double,
-    var colorChart: Float,
-    var maxScore: Int,
-    var minScore: Int,
-    var num: Int,
-    var usg: Float,
-    var volume: Double,
-    var year: Int,
-    var month: Int,
-    var day: Int,
-    override var timestamp: Long,
-    var msCond: Double,
+    var hydration: Double = 0.0,
+    var colorChart: Float = 0f,
+    var maxScore: Int = 0,
+    var minScore: Int = 0,
+    var num: Int = 0,
+    var usg: Float = 0f,
+    var volume: Double = 0.0,
+    var year: Int = 2024,
+    var month: Int = 1,
+    var day: Int = 1,
+    override var timestamp: Long = Date().time,
+    var msCond: Double = 0.0,
 ) : Parcelable, AveragesData {
 
     constructor(parcel: Parcel) : this(
