@@ -182,26 +182,27 @@ fun RecommendationCardView(recommendation: Recommendation, modifier: Modifier, s
                         Column (
                             modifier = Modifier
 
-                                //.background(color = Color.Red, shape = TriangleShape(12f)),
-                                .drawBehind {
-                                    drawCornerTriangle((-14).dp, (-14).dp) },
-                        ){
-                            Image(
-                                painterResource(id = R.drawable.ic_padlock),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .padding(10.dp)
-                                    .size(18.dp),
-                                alignment = Alignment.TopEnd
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
+                                    //.background(color = Color.Red, shape = TriangleShape(12f)),
+                                    .drawBehind {
+                                        drawCornerTriangle((-14).dp, (-14).dp)
+                                    },
+                            ) {
+                                Image(
+                                    painterResource(id = R.drawable.ic_padlock),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                        .size(18.dp),
+                                    alignment = Alignment.TopEnd
+                                )
+                                Spacer(modifier = Modifier.weight(1f))
+                            }
                         }
-                    }
 
+                    }
                 }
             }
-        }
-        if (showBottomSheet) {
+            if (showBottomSheet) {
                 ModalBottomSheet(
                     modifier = Modifier
                         .fillMaxSize(),
