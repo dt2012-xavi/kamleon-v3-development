@@ -54,9 +54,6 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
             startPrivacy()
         }
 
-        binding.btnNavBack.setOnClickListener {
-            activity?.finish()
-        }
         binding.tvToLogin.setOnClickListener {
             findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
         }

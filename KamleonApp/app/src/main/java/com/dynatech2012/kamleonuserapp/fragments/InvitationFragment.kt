@@ -64,6 +64,15 @@ class InvitationFragment : BottomSheetDialogFragment() {
         viewModel.pendingInvitations.observe(this, this::onGetPendingInvitations)
         viewModel.recentInvitations.observe(this, this::onGetRecentInvitations)
         viewModel.oldInvitations.observe(this, this::onGetOldInvitations)
+        viewModel.recentInvitationModified.observe(this, this::onRecentInvitationModified)
+    }
+
+    private fun onRecentInvitationModified(isModified: Boolean?) {
+        if (isModified == true) {
+            viewModel.resetGettingInvitationsAfterModifyingOne()
+            dismiss()
+            dismissListener?.onDismissFragment()
+        }
     }
 
     private fun onGetPendingInvitations(it: List<Invitation>) {
@@ -98,7 +107,6 @@ class InvitationFragment : BottomSheetDialogFragment() {
                 else
                     viewModel.rejectInvitation(invitation.id)
                 dismissListener?.onDismissFragment()
-                dismiss()
             }
         })
         binding.rvNewInvitationList.layoutManager = LinearLayoutManager(requireContext())

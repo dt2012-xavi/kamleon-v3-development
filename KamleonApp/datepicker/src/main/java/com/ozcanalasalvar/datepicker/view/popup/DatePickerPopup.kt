@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ozcanalasalvar.library.R
 import com.ozcanalasalvar.datepicker.model.Date
+import com.ozcanalasalvar.datepicker.view.datepicker.DateChangeListener
 import com.ozcanalasalvar.datepicker.view.datepicker.DatePicker
 
 class DatePickerPopup(private val context: Context) : BottomSheetDialogFragment() {
@@ -48,7 +49,7 @@ class DatePickerPopup(private val context: Context) : BottomSheetDialogFragment(
         container.removeAllViews()
         container.addView(picker)
 
-        picker.setDateChangeListener(object : DatePicker.DateChangeListener {
+        picker.setDateChangeListener(object : DateChangeListener {
             override fun onDateChanged(date: Long, day: Int, month: Int, year: Int) {
                 selectedDate = date
             }

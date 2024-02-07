@@ -4,6 +4,9 @@ import android.util.Log
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
 import com.dynatech2012.kamleonuserapp.database.MeasureData
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.collect
 import java.time.ZoneId
 import java.util.Date
 import javax.inject.Inject
@@ -25,6 +28,7 @@ class MeasuresRepository @Inject constructor(
             if (measures?.isNotEmpty() == true) {
                 Log.d(TAG, "got measures from DB not empty")
                 lastDateLong = measures[0].analysisDate
+                Log.d(TAG, "got measures from DB 4 last date: ${Date(lastDateLong)}")
                 Log.d(TAG, "got measures from DB 4 score last: ${measures[0].score}")
             }
             else {
@@ -40,6 +44,9 @@ class MeasuresRepository @Inject constructor(
         if (response.isSuccess) {
             val measures = response.dataValue
             Log.d(TAG, "got measures from FS 2 size ${measures?.size}")
+            for (m in measures ?: emptyList()) {
+                Log.d(TAG, "got measures from FS 3 score and date: ${m.score} _ date: ${Date(m.analysisDate)}")
+            }
             if (measures?.isNotEmpty() == true) {
                 Log.d(TAG, "got measures from FS not empty")
                 database.saveMeasures(measures)
@@ -88,20 +95,21 @@ class MeasuresRepository @Inject constructor(
         return response
     }
 
-    suspend fun getUserDailyAverages(userId: String?): Response<ArrayList<AverageDailyMeasureData>> {
+    suspend fun getUserDailyAverages(userId: String?): Flow<Response<ArrayList<AverageDailyMeasureData>>> = callbackFlow {
         if (newMeasuresFS.isEmpty()) {
-            return Response.Success(ArrayList())
+            trySend(Response.Success(ArrayList()))
         }
         val dates = newMeasuresFS.map { Date(it.analysisDate).toInstant().atZone(ZoneId.systemDefault()).toLocalDate() }
         val newDays = dates.distinct()
-        val response = realtimeRepository.getDaysAverages(userId, newDays)
-        if (response.isSuccess) {
-            val measures = response.dataValue
-            if (measures?.isNotEmpty() == true) {
-                Log.d(TAG, "got measures from FS not empty")
-                saveNewAverageDailyMeasuresToDB(measures)
-            } }
-        return response
+        realtimeRepository.getDaysAverages(userId, newDays).collect { response ->
+            if (response.isSuccess) {
+                val measures = response.dataValue
+                if (measures?.isNotEmpty() == true) {
+                    Log.d(TAG, "got measures from FS not empty")
+                    saveNewAverageDailyMeasuresToDB(measures)
+                } }
+            trySend(response)
+        }
     }
     private suspend fun saveNewAverageDailyMeasuresToDB(measureDataList: List<AverageDailyMeasureData?>?) {
         if (measureDataList != null) {
@@ -110,20 +118,21 @@ class MeasuresRepository @Inject constructor(
         }
     }
 
-    suspend fun getUserMonthlyAverages(userId: String?): Response<ArrayList<AverageMonthlyMeasureData>> {
+    suspend fun getUserMonthlyAverages(userId: String?): Flow<Response<ArrayList<AverageMonthlyMeasureData>>> = callbackFlow {
         if (newMeasuresFS.isEmpty()) {
-            return Response.Success(ArrayList())
+            trySend(Response.Success(ArrayList()))
         }
         val dates = newMeasuresFS.map { Date(it.analysisDate).toInstant().atZone(ZoneId.systemDefault()).toLocalDate() }
         val newMonths = dates.distinctBy { it.year to it.month }
-        val response = realtimeRepository.getMonthsAverages(userId, newMonths)
-        if (response.isSuccess) {
-            val measures = response.dataValue
-            if (measures?.isNotEmpty() == true) {
-                Log.d(TAG, "got measures from FS not empty")
-                saveNewAverageMonthlyMeasuresToDB(measures)
-            } }
-        return response
+        realtimeRepository.getMonthsAverages(userId, newMonths).collect { response ->
+            if (response.isSuccess) {
+                val measures = response.dataValue
+                if (measures?.isNotEmpty() == true) {
+                    Log.d(TAG, "got measures from FS not empty")
+                    saveNewAverageMonthlyMeasuresToDB(measures)
+                } }
+            trySend(response)
+        }
     }
 
     private suspend fun saveNewAverageMonthlyMeasuresToDB(measureDataList: List<AverageMonthlyMeasureData?>?) {

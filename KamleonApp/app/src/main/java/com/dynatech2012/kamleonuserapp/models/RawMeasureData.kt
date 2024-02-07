@@ -1,6 +1,7 @@
 package com.dynatech2012.kamleonuserapp.models
 
 import androidx.room.TypeConverters
+import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.PropertyName
 import java.sql.Timestamp
 import java.util.Date
@@ -37,10 +38,11 @@ data class RawMeasureData(
     var waterDetect: String? = null,
     var gS_Chemist: String? = null,
     var gS_Observation: String? = null, //String
-    @PropertyName(value="ID")
+    @get:PropertyName(value="ID") @set:PropertyName(value="ID")
     var type: MeasureType? = null, //String
-    @PropertyName(value="Prediction_Precision")
+    @get:PropertyName("Prediction_Precision") @set:PropertyName("Prediction_Precision")
     var precision: MeasurePrecision? = null, //String
+    //var precision: String? = null, //String
 
     @TypeConverters(IntVectorTypeConverter::class)
     var xyz: IntArray,
@@ -82,7 +84,7 @@ data class RawMeasureData(
         0, 0, 0, 0, 0f, 0f, 0f,
         null, null, null, null, null, null, null,
         null, null, null, null, null, null, null,
-        MeasureType.urine, MeasurePrecision.Good,
+        MeasureType.urine, MeasurePrecision.Good,/*"Goodhh",*/
         IntArray(0), IntArray(0), IntArray(0), IntArray(0), IntArray(0), IntArray(0),
         IntArray(0), IntArray(0), IntArray(0), IntArray(0), IntArray(0))
 
@@ -133,7 +135,8 @@ enum class MeasureType {
     companion object {
         fun fromString(value: String?): MeasureType? {
             if (value == null) return null
-            return MeasureType.valueOf(value)
+            return try { MeasureType.valueOf(value) }
+            catch (e: IllegalArgumentException) { null }
         }
     }
 }
@@ -142,7 +145,8 @@ enum class MeasurePrecision {
     companion object {
         fun fromString(value: String?): MeasurePrecision? {
             if (value == null) return null
-            return MeasurePrecision.valueOf(value)
+            return try { MeasurePrecision.valueOf(value) }
+            catch (e: IllegalArgumentException) { null }
         }
     }
 }

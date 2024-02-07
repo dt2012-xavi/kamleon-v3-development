@@ -53,7 +53,7 @@
                 android:layout_height="@dimen/input_text_box_eye_height"
                 android:id="@+id/imageViewEye"
                 android:scaleType="fitCenter"
-                android:src="@drawable/icn_eye_off"/>
+                android:src="@drawable/ic_eye_crossed"/>
         </LinearLayout>
 
     </LinearLayout>

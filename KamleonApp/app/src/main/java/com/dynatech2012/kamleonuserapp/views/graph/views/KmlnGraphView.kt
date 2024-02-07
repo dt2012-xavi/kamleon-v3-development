@@ -20,6 +20,7 @@ import com.dynatech2012.kamleonuserapp.extensions.addDays
 import com.dynatech2012.kamleonuserapp.extensions.addMonths
 import com.dynatech2012.kamleonuserapp.extensions.formatDate
 import com.dynatech2012.kamleonuserapp.extensions.px
+import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataXY
 import kotlin.math.min
 
 class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context, attributeSet) {
@@ -82,6 +83,9 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
             KamleonGraphViewMode.Monthly -> 6
             KamleonGraphViewMode.Yearly -> 6
         }
+
+    // Fraction from thw whole with
+    private val yAxisLabelWidthFraction: Int = 7
 
     private val xLabelHeight: Int = 20.px
 
@@ -203,7 +207,8 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
     }
 
     private fun calcHStep(canvasRt: SizeF) : Double {
-        return ((canvasRt.width - xAxisMarginStart) / (yAxisLines + 1) * yAxisLines) / (dataSource.xyRange.x/* + 0.3*/)
+        //return ((canvasRt.width - xAxisMarginStart) / (yAxisLines + 1) * yAxisLines) / (dataSource.xyRange.x/* + 0.3*/)
+        return ((canvasRt.width - xAxisMarginStart - (canvasRt.width / yAxisLabelWidthFraction ) ) / (yAxisLines) * yAxisLines) / (dataSource.xyRange.x/* + 0.3*/)
     }
 
     private fun calcVStep(canvasRt: SizeF) : Double {
@@ -251,27 +256,32 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
 
     private fun renderGraphData(canvas: Canvas) {
         val canvasSize = SizeF(canvas.width.toFloat(), canvas.height.toFloat())
-
         for (vIndex in dataSource.values.indices) {
             val orgBarRect = calcBarRect(canvasSize, vIndex)
             if (!dataSource.arePrecise[vIndex]) {
-                canvas.drawRect(orgBarRect, graphBarItemGreyPaint)
+                // Low volume bars disappear when strek on
+                if (!isStreak)  {
+                    canvas.drawRect(orgBarRect, graphBarItemGreyPaint)
+                }
             } else {
                 if (isStreak) {
                     val yVal = dataSource.values[vIndex].y
-                    if (dataSource.type == KamleonGraphDataType.hydration) {
-                        if (yVal > 0 && yVal < KamleonGraphDataType.HydrationStreakValue) {
-                            canvas.drawRect(
-                                calcBarRect(
-                                    canvasSize,
-                                    vIndex,
-                                    yVal,
-                                    KamleonGraphDataType.HydrationStreakValue
-                                ), graphBarItemOrangePaint
-                            )
-                        }
 
-                        canvas.drawRect(orgBarRect, graphBarItemGreyPaint)
+                    if (dataSource.type == KamleonGraphDataType.hydration) {
+                        if (dataSource.arePrecise[vIndex]) {
+                            if (yVal > 0 && yVal < KamleonGraphDataType.HydrationStreakValue) {
+                                canvas.drawRect(
+                                    calcBarRect(
+                                        canvasSize,
+                                        vIndex,
+                                        yVal,
+                                        KamleonGraphDataType.HydrationStreakValue
+                                    ), graphBarItemOrangePaint
+                                )
+                            }
+
+                            canvas.drawRect(orgBarRect, graphBarItemGreyPaint)
+                        }
 
                     } else if (dataSource.type == KamleonGraphDataType.electrolytes) {
                         canvas.drawRect(orgBarRect, graphBarItemGreyPaint)
@@ -308,7 +318,8 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
             canvas.drawLine(0f, yPos, canvas.width.toFloat(), yPos, xAxisLinePaint)
         }
 
-        val hStep = canvas.width / (yAxisLines + 1)
+        //val hStep = canvas.width / (yAxisLines + 1)
+        val hStep = (canvas.width - (canvas.width / yAxisLabelWidthFraction)) / (yAxisLines)
         for (yIndex in 0 until yAxisLines) {
             val xPos: Float = (hStep * (yIndex + 1)).toFloat()
             // xLabelHeight.toFloat() for end vertical lines bottom before x axis labels
@@ -336,7 +347,8 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
             val vStep = calcVStep(canvasSize)
             for (yLabelIndex in dataSource.yLabels.indices) {
                 val yPos: Float = canvas.height - (vStep * dataSource.yLabels[yLabelIndex].dataVal).toFloat()
-                val xPos: Float = (canvas.width / (yAxisLines + 1.0 - 0.15) * yAxisLines).toFloat()
+                //val xPos: Float = (canvas.width / (yAxisLines + 1.0 - 0.15) * yAxisLines).toFloat()
+                val xPos: Float = ((canvas.width - canvas.width / yAxisLabelWidthFraction) + 30).toFloat()  // / (yAxisLines - 0.15) * yAxisLines).toFloat()
                 canvas.drawText(dataSource.yLabels[yLabelIndex].label, xPos, yPos, yAxisLabelPaint)
             }
         }
@@ -361,5 +373,9 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
             canvas.drawText(yLabelNum.toString(), xPos, yPos, yAxisLabelPaint)
         }
          */
+    }
+
+    companion object {
+        private val TAG = KmlnGraphView::class.java.simpleName
     }
 }

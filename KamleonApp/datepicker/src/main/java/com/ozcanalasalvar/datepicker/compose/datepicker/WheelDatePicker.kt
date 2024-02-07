@@ -47,6 +47,7 @@ import com.ozcanalasalvar.datepicker.utils.DateUtils
 import com.ozcanalasalvar.wheelview.WheelView
 import com.ozcanalasalvar.wheelview.SelectorOptions
 import java.text.DateFormatSymbols
+import java.util.Locale
 
 
 @Composable
@@ -127,7 +128,7 @@ fun WheelDatePicker(
                 content = {
                     Log.d("TAG", "ssss month: ${months[it]} _ ${DateFormatSymbols().months[months[it]]}")
                     Text(
-                        text = DateFormatSymbols().months[months[it]],
+                        text = DateFormatSymbols(Locale.US).months[months[it]],
                         textAlign = TextAlign.Start,
                         modifier = Modifier.width(120.dp),
                         fontSize = fontSize.sp,

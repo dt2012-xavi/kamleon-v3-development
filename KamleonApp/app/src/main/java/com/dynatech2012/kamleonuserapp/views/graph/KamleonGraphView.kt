@@ -94,6 +94,7 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
 
 
     fun setMeasuresDataSource(data: ArrayList<MeasureData>) {
+        Log.d(TAG, "setMeasuresDataSource: ${data.size}")
         measuresDataSource = data
 
         /*
@@ -237,17 +238,18 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
         labelView.x = (labelViewX + labelView.width / 2.0).toFloat()
         labelView.y = (contentLayout.y + labelViewY - labelView.height / 2.0).toFloat()
 
+        val dataReversed = ArrayList(contentView.getDataInRange(graphBarIndex).reversed())
         labelView.setData(contentView.getBarValue(graphBarIndex), contentView.getBarValueUnit(), contentView.getBarLabel(graphBarIndex),
-            contentView.getDataInRange(graphBarIndex), dataType, viewMode)
+            dataReversed, dataType, viewMode)
         labelView.setIndicatorPos((labelView.width / 2.0 - labelIndicatorDelta).toFloat())
     }
 
     private fun refreshGraphView() {
-        val dateToDraw = Date()
+        val dateToDraw = Date()//.addDays(-1) for setting yesterday as current date
         val graphDrawData = generateGraphDrawDatasource(dateToDraw)
 
         headerView.setData(graphDrawData)
-        footerView.setData(graphDrawData)
+        footerView.setData(graphDrawData, dataType)
         contentView.setData(graphDrawData)
     }
 
@@ -317,6 +319,7 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
                 xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 500.0)
             }
         } else if (dataType == KamleonGraphDataType.volume) {
+            /*
             if (maxYVal <= 50.0) {
                 xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 50.0)
             } else if (maxYVal <= 100.0) {
@@ -330,6 +333,8 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
             } else {
                 xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 5000.0)
             }
+            */
+            xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 500.0)
         }
 
         val maxY = xyRange.y.toInt()

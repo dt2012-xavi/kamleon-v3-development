@@ -1,91 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    tools:background="@color/kamleon_dark_grey"
-    android:paddingTop="24dp">
-
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
     <LinearLayout
+        android:id="@+id/ll_invitation_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-        <ImageView
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:src="@drawable/icn_tip_blue_badge"
-            android:scaleType="fitCenter"/>
-        <TextView
-            android:id="@+id/tv_invitation_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/noti_invite_req"
-            android:paddingHorizontal="16dp"
-            android:textAppearance="@style/TextAppearance.Kamleon.Subtitle2"
-            style="@style/TextStyle.Kamleon.Inverse" />
-        <TextView
-            android:id="@+id/tv_invitation_date"
+        android:orientation="vertical"
+        tools:background="@color/kamleon_dark_grey"
+        android:paddingTop="24dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="textEnd"
-            tools:text="07:28"
-            android:textAppearance="@style/TextAppearance.Kamleon.Caption"
-            android:textColor="?attr/colorOnSurfaceTertiaryInverse" />
-    </LinearLayout>
-    <TextView
-        android:id="@+id/tv_invitation_subtitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="textStart"
-        tools:text="@string/noti_temp_desc1"
-        android:layout_marginTop="8dp"
-        android:textAppearance="@style/TextAppearance.Kamleon.Body2"
-        style="@style/TextStyle.Kamleon.Inverse" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:weightSum="4"
-        android:gravity="center"
-        android:orientation="horizontal">
-        <TextView
-            android:id="@+id/tv_invitation_confirm"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/round_blue_button_height"
-            android:layout_weight="1.8"
-            android:paddingVertical="4dp"
             android:gravity="center"
-            android:text="@string/noti_confirm"
-            android:background="@drawable/bg_btn_round_blue"
-            android:textAppearance="@drawable/color_blue_text_button"
-            android:enabled="true"
-            android:textSize="@dimen/ts_16"
-            android:textColor="?attr/colorOnSurfaceInverse"
-            style="@style/CircularBoldFont"
-            />
-<!--
-        android:textColor="@drawable/color_text_button_blue_round"
--->
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/icn_tip_blue_badge"
+                android:scaleType="fitCenter"/>
+            <TextView
+                android:id="@+id/tv_invitation_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/noti_invite_req"
+                android:paddingHorizontal="16dp"
+                android:textAppearance="@style/TextAppearance.Kamleon.Subtitle2"
+                style="@style/TextStyle.Kamleon.Inverse" />
+            <TextView
+                android:id="@+id/tv_invitation_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                tools:text="07:28"
+                android:textAppearance="@style/TextAppearance.Kamleon.Caption"
+                android:textColor="?attr/colorOnSurfaceTertiaryInverse" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_invitation_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="textStart"
+            tools:text="@string/noti_temp_desc1"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.Kamleon.Body2"
+            style="@style/TextStyle.Kamleon.Inverse" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:weightSum="4"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_invitation_confirm"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/round_blue_button_height"
+                android:layout_weight="1.8"
+                android:paddingVertical="4dp"
+                android:gravity="center"
+                android:text="@string/noti_confirm"
+                android:background="@drawable/bg_btn_round_blue"
+                android:textAppearance="@drawable/color_blue_text_button"
+                android:enabled="true"
+                android:textSize="@dimen/ts_16"
+                android:textColor="?attr/colorOnSurfaceInverse"
+                style="@style/CircularBoldFont"
+                />
+            <!--
+                    android:textColor="@drawable/color_text_button_blue_round"
+            -->
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.15"/>
-        <TextView
-            android:id="@+id/tv_invitation_deny"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/round_blue_button_height"
-            android:layout_weight="1.8"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:background="@drawable/bg_modal_btn_n_blue"
-            style="@style/CircularBoldFont"
-            android:textSize="@dimen/ts_16"
-            android:clickable="true"
-            android:text="@string/noti_deny"
-            android:textAlignment="center"
-            android:textColor="@drawable/color_blue_text_button"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="0.15"/>
+            <TextView
+                android:id="@+id/tv_invitation_deny"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/round_blue_button_height"
+                android:layout_weight="1.8"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_modal_btn_n_blue"
+                style="@style/CircularBoldFont"
+                android:textSize="@dimen/ts_16"
+                android:clickable="true"
+                android:text="@string/noti_deny"
+                android:textAlignment="center"
+                android:textColor="@drawable/color_blue_text_button"/>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/pb_invitation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/white"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</RelativeLayout>

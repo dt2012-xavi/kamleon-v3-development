@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.net.Uri
@@ -28,6 +29,7 @@ import androidx.navigation.findNavController
 import com.dynatech2012.kamleonuserapp.base.BaseActivity
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.PUSH_NOTIFICATION
+import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityMainBinding
 import com.dynatech2012.kamleonuserapp.extensions.px
 import com.dynatech2012.kamleonuserapp.fragments.SettingFragment
@@ -93,6 +95,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         onBackPressedDispatcher.addCallback {
             //binding.root.findNavController().navigateUp()
         }
+
+        askNotificationPermission()
     }
 
     private fun initObservers() {
@@ -116,6 +120,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         firebaseMessagingReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == PUSH_NOTIFICATION) {
+                    Log.d(TAG, "onGetNotification from Main Activity")
                     // what happens when a notification is received while the user is in this activity
                     viewModel.onGetNotification()
                 } } } }
@@ -222,6 +227,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         }
 
     private fun askNotificationPermission() {
+        if (getPreferencesUserAskerForPermission) return
         // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
@@ -232,18 +238,39 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             }
             else requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
+        else askLocationPermission()
     }
     private val requestLocationPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { _: Boolean ->
-
+            savePreferencesUserAskerForPermission()
         }
+
+    private fun savePreferencesUserAskerForPermission() {
+        val sharedPref: SharedPreferences = getSharedPreferences(
+            "Shared Prefs", Context.MODE_PRIVATE
+        )
+        with(sharedPref.edit()) {
+            putBoolean(PreferenceConstants.PREF_USER_ASKED_FOR_PERMISSION, true)
+            apply()
+        }
+    }
+
+    private val getPreferencesUserAskerForPermission: Boolean
+        get() {
+            val sharedPref: SharedPreferences = getSharedPreferences(
+                "Shared Prefs", Context.MODE_PRIVATE
+            )
+            return sharedPref.getBoolean(PreferenceConstants.PREF_USER_ASKED_FOR_PERMISSION, false)
+        }
+
 
     private fun askLocationPermission() {
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED) {
+            savePreferencesUserAskerForPermission()
             return
         }
         else {

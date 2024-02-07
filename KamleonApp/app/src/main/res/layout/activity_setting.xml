@@ -90,14 +90,15 @@
 
             <RelativeLayout
                 android:id="@+id/profileLayout"
-                android:layout_width="76dp"
-                android:layout_height="76dp"
+                android:layout_width="82dp"
+                android:layout_height="82dp"
                 android:layout_gravity="center"
                 android:clickable="true">
                 <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="76dp"
+                    android:layout_height="76dp"
                     android:layout_centerInParent="true"
+                    android:paddingBottom="8dp"
                     app:cardCornerRadius="38dp"
                     android:id="@+id/cv_sett_profile"
                     android:elevation="8dp"
@@ -124,8 +125,8 @@
                     android:layout_height="26dp"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginBottom="2dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="13dp"
                     android:id="@+id/cv_sett_camera"
@@ -148,7 +149,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginBottom="12dp"
                 android:textAppearance="@style/TextAppearance.Kamleon.Headline5"
                 tools:text="Kamleon Owner" />

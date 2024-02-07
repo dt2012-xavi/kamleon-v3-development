@@ -14,6 +14,7 @@ import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.databinding.ActivityHomeBinding
 import com.dynatech2012.kamleonuserapp.extensions.formatTime
 import com.dynatech2012.kamleonuserapp.models.CustomUser
+import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
 import com.dynatech2012.kamleonuserapp.models.RecommendationType
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
@@ -35,8 +36,8 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         initObservers()
         viewModel.getUserData()
         Log.d(TAG, "got measures -2")
-        viewModel.getUserMeasures()
-
+        //viewModel.getUserMeasures()
+        viewModel.getInvitations()
     }
 
     override fun initEvent() {
@@ -56,6 +57,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         viewModel.userData.observe(this, this::onUserDataChanged)
         viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
         viewModel.lastMeasure.observe(this, this::onLastMeasureChanged)
+        viewModel.pendingInvitations.observe(this, this::onGetPendingInvitations)
     }
 
     private fun onUserDataChanged(userData: CustomUser) {
@@ -83,8 +85,9 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         val dateString = date.formatTime.uppercase()
         binding.tvHomeLastSample.text = getString(R.string.home_last_sample_message, dateString)
         setupTips(measure)
-        if (measure.precision == MeasurePrecision.Bad) {
+        if (!measure.isPrecise) {
             binding.lastMeasure.text = getString(R.string.default_value)
+            binding.tvHomeUnit.visibility = View.GONE
             binding.homeProgressBar.progress = 0
 
             binding.homeBg.setImageResource(R.drawable.bg_low_volume)
@@ -93,6 +96,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         }
         binding.lastMeasure.text = measure.score.toString()
         binding.homeProgressBar.progress = measure.score
+        binding.tvHomeUnit.visibility = View.VISIBLE
         when (measure.hydrationLevel) {
             MeasureData.HydrationLevel.VERYHYDRATED -> {
                 binding.homeBg.setImageResource(R.drawable.bg_very_hydrated)
@@ -113,6 +117,11 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         }
     }
 
+    private fun onGetPendingInvitations(invitations: ArrayList<Invitation>) {
+        if (invitations.isNotEmpty())
+            binding.ivHomeNotiBadge.visibility = View.VISIBLE
+        else binding.ivHomeNotiBadge.visibility = View.GONE
+    }
 
     private fun setupTips(measure: MeasureData?) {
         val recommendationType = RecommendationType.HOME

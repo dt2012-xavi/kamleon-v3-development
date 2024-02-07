@@ -8,6 +8,8 @@ import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_COLLECT
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_TOKEN
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.kANALYSIS_TYPE_URINE
 import com.dynatech2012.kamleonuserapp.database.MeasureData
+import com.dynatech2012.kamleonuserapp.extensions.addDays
+import com.dynatech2012.kamleonuserapp.extensions.addHours
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
@@ -120,7 +122,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
     }
     suspend fun getUserMeasuresNoPag(userId: String?, lastDate: Long?, limit: Long?): Response<ArrayList<MeasureData>> = suspendCoroutine { continuation ->
         val query: Query = db.collection(FirebaseConstants.MEASURES_COLLECTION)
-        val date = Date(lastDate ?: 0)
+        val date = Date(lastDate?.plus(1) ?: 0)
         val timestamp = com.google.firebase.Timestamp(date)
         Log.d(TAG, "got measures from FS last date: $date")
         val task = query
@@ -139,6 +141,21 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
                 val measuresRaw: List<RawMeasureData> = snapshot.toObjects(RawMeasureData::class.java)
                 Log.d(TAG, "got measures from FS parsed size: ${measuresRaw.size}")
                 val measures: ArrayList<MeasureData> = ArrayList(measuresRaw.map { MeasureData(it) })
+
+                for (m in measuresRaw) {
+                    if (m.analysisDate?.time in 170714827041..1707148270379) {
+                        Log.d(TAG, "got measures dates: $m _ prec: ${m.precision} _ isPrec: _ date: ${m.analysisDate}")
+                    }
+                }
+                /*
+                for (m in measures) {
+                    val date = Date(m.analysisDate)
+                    if (m.analysisDate in 170714827041..1707148270379) {
+                        Log.d(TAG, "got measures dates: $m _ id: ${m.measureId} _ prec: ${m.precision} _ isPrec: ${m.isPrecise} _ date: $date")
+                    }
+                }
+
+                 */
 
                 Log.d(TAG, "got measures from FS 23 converted to MeasureData size: ${measures.size}")
                 continuation.resume(Response.Success(measures))

@@ -57,27 +57,40 @@ fun AnimatedCircularProgressIndicator(
         }
         */
 
-        Canvas(
-            Modifier
-                .progressSemantics((currentValue ?: 0) / maxValue.toFloat())
-                .size(CircularIndicatorDiameter)
-        ) {
-            // Start at 12 O'clock
-            val startAngle = 270f
-            val sweep: Float = animateFloat * 360f
-            val diameterOffset = stroke.width / 2
+        if (currentValue != null) {
+            Canvas(
+                Modifier
+                    .progressSemantics((currentValue ?: 0) / maxValue.toFloat())
+                    .size(CircularIndicatorDiameter)
+            ) {
+                // Start at 12 O'clock
+                val startAngle = 270f
+                val sweep: Float = animateFloat * 360f
+                val diameterOffset = stroke.width / 2
 
-            drawCircle(
-                color = progressBackgroundColor,
-                style = stroke,
-                radius = size.minDimension / 2.0f - diameterOffset
-            )
-            //drawCircularProgressIndicator(startAngle, sweep, progressIndicatorColor, stroke)
-            rotate(270f, Offset(size.width / 2, size.height / 2)) {
-                drawCircularProgressIndicator(startAngle + 90, sweep, progressIndicatorColor, colorList, stroke)
-                drawBallProgressIndicator(startAngle + 90, sweep, progressIndicatorColor, colorList, stroke)
-            }
-            /*
+                drawCircle(
+                    color = progressBackgroundColor,
+                    style = stroke,
+                    radius = size.minDimension / 2.0f - diameterOffset
+                )
+                //drawCircularProgressIndicator(startAngle, sweep, progressIndicatorColor, stroke)
+                rotate(270f, Offset(size.width / 2, size.height / 2)) {
+                    drawCircularProgressIndicator(
+                        startAngle + 90,
+                        sweep,
+                        progressIndicatorColor,
+                        colorList,
+                        stroke
+                    )
+                    drawBallProgressIndicator(
+                        startAngle + 90,
+                        sweep,
+                        progressIndicatorColor,
+                        colorList,
+                        stroke
+                    )
+                }
+                /*
             if (currentValue == maxValue) {
                 drawCircle(
                     color = completedColor,
@@ -86,6 +99,7 @@ fun AnimatedCircularProgressIndicator(
                 )
             }
             */
+            }
         }
     }
 }
@@ -144,8 +158,18 @@ private fun DrawScope.drawBallProgressIndicator(
     {
         //in 0.0f..0.2f -> lerp(colorList[0], colorList[1], percentage)
         //in 0.2f..0.4f -> lerp(colorList[1], colorList[2], percentage)
-        in 0f..0.2f -> colorList[0]
-        in 0.2f..0.4f -> lerp(colorList[0], colorList[1], percentage)
+        in 0f..0.2f ->  {
+            val lerp = interpolate(0.0f, 0.2f, percentage)
+            val fc = lerp(colorList[0], colorList[1], lerp)
+            Log.d("PB","Progress Bar color 0,0 a 0,2 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
+            fc
+        }
+        in 0.2f..0.4f -> {
+            val lerp = interpolate(0.2f, 0.4f, percentage)
+            val fc = lerp(colorList[1], colorList[2], lerp)
+            Log.d("PB","Progress Bar color 0,2 a 0,4 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
+            fc
+        }
         in 0.4f..0.6f -> {
             val lerp = interpolate(0.4f, 0.6f, percentage)
             val fc = lerp(colorList[1], colorList[2], lerp)

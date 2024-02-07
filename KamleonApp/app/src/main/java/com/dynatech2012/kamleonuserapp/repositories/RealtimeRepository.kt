@@ -15,6 +15,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 import java.text.DecimalFormat
 import java.time.LocalDate
 import javax.inject.Inject
@@ -65,11 +67,14 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
      * Edu:<br></br>
      * ------- DAILY AVERAGE MEASURES -------
     </font> */
-    suspend fun getDaysAverages(userId: String?, dayArray: List<LocalDate>) = suspendCoroutine { continuation ->
+    suspend fun getDaysAverages(userId: String?, dayArray: List<LocalDate>)
+    = callbackFlow<Response<ArrayList<AverageDailyMeasureData>>> {
+    //= suspendCoroutine { continuation ->
         Log.d(TAG, "getMonthAverage")
         if (userId == null) {
-            continuation.resume(Response.Failure(Exception()))
-            return@suspendCoroutine
+            //continuation.resume(Response.Failure(Exception()))
+            trySend(Response.Failure(Exception()))
+            return@callbackFlow
         }
         val ref = averagesRef.child(userId)
         Log.d(TAG, "averagesRef = $ref")
@@ -95,7 +100,8 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
                             Log.e(TAG, "Daily average measure with null parameters date: ${day}/${month}/${year}")
                         }
                         if (i == dayArray.size - 1)
-                            continuation.resume(Response.Success(daysAverages))
+                            //continuation.resume(Response.Success(daysAverages))
+                            trySend(Response.Success(daysAverages))
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
@@ -104,6 +110,7 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
                     }
                 })
         }
+        awaitClose {  }
     }
 
     /**
@@ -113,11 +120,14 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
      * ------- MONTHLY AVERAGE MEASURES -------
     </font> */
 
-    suspend fun getMonthsAverages(userId: String?, monthArray: List<LocalDate>) = suspendCoroutine { continuation ->
+    suspend fun getMonthsAverages(userId: String?, monthArray: List<LocalDate>)
+    = callbackFlow<Response<ArrayList<AverageMonthlyMeasureData>>> {
+    //= suspendCoroutine { continuation ->
         Log.d(TAG, "getMonthAverage")
         if (userId == null) {
-            continuation.resume(Response.Failure(Exception()))
-            return@suspendCoroutine
+            //continuation.resume(Response.Failure(Exception()))
+            trySend(Response.Failure(Exception()))
+            return@callbackFlow
         }
         val ref = averagesRef.child(userId)
         Log.d(TAG, "averagesRef = $ref")
@@ -141,7 +151,8 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
                             Log.e(TAG, "Monthly average measure with null parameters date: ${month}/${year}")
                         }
                         if (i == monthArray.size - 1)
-                            continuation.resume(Response.Success(monthsAverages))
+                            //continuation.resume(Response.Success(monthsAverages))
+                            trySend(Response.Success(monthsAverages))
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
@@ -150,6 +161,7 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
                     }
                 })
         }
+        awaitClose {  }
     }
 
 

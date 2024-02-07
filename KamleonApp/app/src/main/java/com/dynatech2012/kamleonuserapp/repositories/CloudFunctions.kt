@@ -123,6 +123,23 @@ class CloudFunctions(private val userRepository: UserRepository) {
             }
     }
 
+    suspend fun resetPwd(email: String): ResponseNullable<Nothing> {
+        val body = hashMapOf("email" to email)
+        return try {
+            val result = functions.getHttpsCallable("sendPasswordEmail").call(body).await()
+            val data = result.data as? HashMap<String, String>
+            val message = data?.get("message")
+            if (message != "Reset Password email sent successfully") {
+                throw Exception("$message")
+            }
+            Log.d(MainViewModel.TAG, "HHH cloud funct reset password: success")
+            ResponseNullable.Success()
+        } catch (e: Exception) {
+            Log.d(MainViewModel.TAG, "HHH cloud funct reset password: failure: $e")
+            ResponseNullable.Failure(e)
+        }
+    }
+
     companion object {
         val TAG: String = CloudFunctions::class.java.simpleName
     }

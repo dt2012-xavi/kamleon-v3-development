@@ -28,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,31 +37,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter.Companion.tint
-import androidx.compose.ui.layout.FirstBaseline
-import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.MatTheme
 import com.dynatech2012.kamleonuserapp.views.progress.AnimatedCircularProgressIndicator
 import com.dynatech2012.kamleonuserapp.views.progress.VolumeProgressIndicator
-import com.google.android.material.internal.BaselineLayout
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, descriptionStart: String, startValue: Int?, onClick: () -> Unit) {
+fun CardViewAnalyticsItem(
+    analyticType: AnalyticType,
+    subtitleStart: String,
+    descriptionStart: String,
+    startValue: Int?,
+    isPreciseStart: Boolean,
+    onClick: () -> Unit
+) {
     val shape = RoundedCornerShape(12.dp)
     //val elevation = 10.dp
     val elevation = 0.dp
     val value by rememberSaveable { mutableStateOf(startValue) }
+    val isPrecise by rememberSaveable { mutableStateOf(isPreciseStart) }
     val subtitle by rememberSaveable { mutableStateOf(subtitleStart) }
     val description by rememberSaveable { mutableStateOf(descriptionStart) }
 
@@ -211,7 +213,7 @@ fun CardViewAnalyticsItem(analyticType: AnalyticType, subtitleStart: String, des
                     when (analyticType) {
                         AnalyticType.HYDRATION -> HydrationView(value)
                         AnalyticType.ELECTROLYTE -> ElecView(value)
-                        AnalyticType.VOLUME -> VolumeView(value)
+                        AnalyticType.VOLUME -> VolumeView(value, isPrecise)
                         //AnalyticType.EMPTY -> AnalyticsEmptyView()
                         else -> {}
                     }
@@ -318,6 +320,7 @@ fun ElecView(electrolytes: Int?) {
         Image(
             painter = painterResource(id =
                 when (electrolytes) {
+                    null -> R.drawable.pb_electrolytes_grey
                     in 0..4 -> R.drawable.pb_electrolytes_blue
                     in 5..19 -> R.drawable.pb_electrolytes_orange
                     else -> R.drawable.pb_electrolytes_red
@@ -366,7 +369,7 @@ fun ElecView(electrolytes: Int?) {
 }
 
 @Composable
-fun VolumeView(volume: Int?) {
+fun VolumeView(volume: Int?, isPrecise: Boolean) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -375,6 +378,7 @@ fun VolumeView(volume: Int?) {
         VolumeProgressIndicator(
             currentValue = volume,
             maxValue = 250,
+            isPrecise = isPrecise,
             color = colorResource(id = R.color.kamleon_blue),
             modifier = Modifier
                 .fillMaxHeight()

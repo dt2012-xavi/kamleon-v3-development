@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.service
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -7,8 +8,10 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.RingtoneManager
+import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.MainActivity
@@ -18,6 +21,7 @@ import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_COLLECT
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_TOKEN
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_USER_ID
 import com.dynatech2012.kamleonuserapp.utils.SharedPrefUtil
+import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -37,6 +41,9 @@ class NotificationService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         Log.d(TAG, "Notification Received: " + remoteMessage.data)
+        createNotificationChannel(applicationContext, applicationContext.getString(
+            R.string.channel_id
+        ), "Analytics Notifications")
         createNewMeasureNotification(applicationContext, remoteMessage)
     }
 
@@ -68,17 +75,15 @@ class NotificationService : FirebaseMessagingService() {
                 R.string.channel_id
             )
         )
-            .setSmallIcon(R.drawable.ic_notifications)
             .setLargeIcon(
-                BitmapFactory.decodeResource(
-                    context.resources,
-                    R.mipmap.ic_launcher
-                )
+                BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
             )
+            .setSmallIcon(R.drawable.ic_notifications)
+            //.setLargeIcon(R.drawable.ic_notifications)
             .setContentTitle(notifTitle)
             .setContentText(notifMessage)
             .setWhen(System.currentTimeMillis())
-            .setCategory(NotificationCompat.CATEGORY_REMINDER)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .setSound(defaultSoundUri)
@@ -94,8 +99,20 @@ class NotificationService : FirebaseMessagingService() {
         val pushNotification = Intent(PUSH_NOTIFICATION)
 
         // Send data to the app if it is in foreground
+        Log.d(TAG, "onGetNotification from Notification Service")
         LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification)
         //Notification.instance?.addOrderBoolean(true)
+    }
+
+    fun createNotificationChannel(context: Context, channelId: String, channelName: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(channelId, channelName, importance).apply {
+                description = "Analytics"
+            }
+            val notificationManager = ContextCompat.getSystemService(context, NotificationManager::class.java)
+            notificationManager?.createNotificationChannel(channel)
+        }
     }
 
     /*

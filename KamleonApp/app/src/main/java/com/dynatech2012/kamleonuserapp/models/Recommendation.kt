@@ -5,7 +5,7 @@ import com.dynatech2012.kamleonuserapp.database.MeasureData
 
 data class Recommendation(
     val kind: Int?,
-    val titleShort: Int,
+    var titleShort: Int,
     var title: Int,
     var text: Int?,
     val isRead: Boolean = false,
@@ -16,11 +16,11 @@ data class Recommendation(
 ) {
 
     fun getHydrationTitle(measure: MeasureData): Int {
-        return if (measure.precision == MeasurePrecision.Bad) R.string.recommendation_alert_title
+        return if (!measure.isPrecise) R.string.recommendation_alert_title
         else R.string.recommendation_analytics_h_title
     }
     fun getHydrationSubtitle(measure: MeasureData): Int {
-        if (measure.precision == MeasurePrecision.Bad) return R.string.recommendation_alert_subtitle
+        if (!measure.isPrecise) return R.string.recommendation_alert_subtitle
         val resource: Int = when (measure.hydrationLevel) {
             MeasureData.HydrationLevel.VERYDEHYDRATED -> R.string.recommendation_hydration_1
             MeasureData.HydrationLevel.DEHYDRATED -> R.string.recommendation_hydration_2
@@ -55,12 +55,21 @@ data class Recommendation(
                 RecommendationType.HOME -> return listOf(
                     Recommendation(
                         kind = null,
+                        titleShort = R.string.recommendation_alert_title,
+                        title = R.string.recommendation_alert_subtitle,
+                        text = null,
+                        isRead = true,
+                        clickable = false,
+                    ),
+                    /*
+                    Recommendation(
+                        kind = null,
                         titleShort = R.string.recommendation_hydration_title,
                         title = R.string.recommendation_analytics_h_title,
                         text = null,
                         isRead = true,
                         clickable = false,
-                    ),
+                    ),*/
                     Recommendation(
                         kind = R.string.recomendation_home_kind,
                         titleShort = R.string.recomendation_home_title,

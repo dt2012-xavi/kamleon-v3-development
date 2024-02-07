@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.views.cards
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +30,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dynatech2012.kamleonuserapp.R
@@ -42,7 +44,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun ViewPager(recommendationType: RecommendationType, measure: MeasureData?, modifier: Modifier) {
     val pagerState = rememberPagerState(pageCount = {
-        recommendationType.size
+        /*if (measure == null && recommendationType == RecommendationType.HOME) {
+            recommendationType.size - 1
+        }
+        else*/
+            recommendationType.size
     })
     //val TAG: String = "ViewPager"
     Column(
@@ -93,6 +99,9 @@ fun ViewPager(recommendationType: RecommendationType, measure: MeasureData?, mod
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardViewHomeItemHome(recommType: RecommendationType, measure: MeasureData?, page: Int) {
+    //val recommendationIndex = if (measure == null && recommType == RecommendationType.HOME)
+        page + 1
+    //else page
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(true)
     val scope = rememberCoroutineScope()
@@ -100,7 +109,8 @@ fun CardViewHomeItemHome(recommType: RecommendationType, measure: MeasureData?, 
     val recommendation = recommendations[page]
     recommendation.blocked = page == recommendations.count() - 1
     if (recommType == RecommendationType.HOME && page == 0 && measure != null) {
-        recommendation.title = recommendation.getHydrationTitle(measure)
+        Log.d("CardViewHomeItemHome", "first recommendation: isPrecise: ${measure.isPrecise}")
+        recommendation.titleShort = recommendation.getHydrationTitle(measure)
         recommendation.text = recommendation.getHydrationSubtitle(measure)
     }
     val systemUiController = rememberSystemUiController()

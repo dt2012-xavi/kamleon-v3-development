@@ -24,6 +24,7 @@ import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.Organization
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
+import com.ozcanalasalvar.datepicker.view.datepicker.DateChangeListener
 import com.ozcanalasalvar.datepicker.view.datepicker.DatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
@@ -35,7 +36,7 @@ import java.util.GregorianCalendar
 
 @AndroidEntryPoint
 class SettingFragment : BaseFragment<ActivitySettingBinding>(),
-    SettingMenuItemView.SettingMenuItemViewListener, DatePicker.DateChangeListener {
+    SettingMenuItemView.SettingMenuItemViewListener, DateChangeListener {
     override fun setBinding(): ActivitySettingBinding = ActivitySettingBinding.inflate(layoutInflater)
     private var dateFragment: DatePickerFragment? = null
     private var isSettingAccount: Boolean = true
@@ -98,7 +99,6 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         setupAdapter()
         initObservers()
         viewModel.getUserData()
-        viewModel.getInvitations()
     }
 
     override fun initEvent() {
@@ -365,8 +365,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             .toLocalDate()
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         val formattedDate = localDate.format(formatter)
-        val age = Period.between(localDate, LocalDate.now()).years
-        val stringDate = "$formattedDate ($age)"
+        Log.d(TAG, "formatted birth date: $formattedDate")
         binding.prefMenuItemBirth.setValue(formattedDate)
         binding.smNotiSwitch.getSwitchComp()?.isChecked = userData.notifications["analytics"] ?: true
     }
@@ -416,8 +415,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     private fun updateUserData()
     {
         val data = hashMapOf<String, Any>()
-        data["name"] = binding.etAccSurName.text.toString()
-        data["lastName"] = binding.etAccName.text.toString()
+        data["lastName"] = binding.etAccSurName.text.toString()
+        data["name"] = binding.etAccName.text.toString()
         viewModel.updateUserData(data)
     }
 
