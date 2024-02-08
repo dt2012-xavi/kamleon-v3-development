@@ -124,10 +124,10 @@ private fun DrawScope.drawCircularProgressIndicator(
             1f to Color(0x00EF7B7B)
         ),*/
         brush = Brush.sweepGradient(
-            0.2f to colorList[0],
-            0.4f to colorList[1],
-            0.6f to colorList[2],
-            0.8f to colorList[3],
+            0f to colorList[0],
+            0.25f to colorList[1],
+            0.5f to colorList[2],
+            0.75f to colorList[3],
             0.98f to colorList[4],
             1f to colorList[0],
             //center = Offset(size.width / 2, size.height / 2),
@@ -158,34 +158,28 @@ private fun DrawScope.drawBallProgressIndicator(
     {
         //in 0.0f..0.2f -> lerp(colorList[0], colorList[1], percentage)
         //in 0.2f..0.4f -> lerp(colorList[1], colorList[2], percentage)
-        in 0f..0.2f ->  {
-            val lerp = interpolate(0.0f, 0.2f, percentage)
+        in 0f..0.25f ->  {
+            val lerp = interpolate(0.0f, 0.25f, percentage)
             val fc = lerp(colorList[0], colorList[1], lerp)
-            Log.d("PB","Progress Bar color 0,0 a 0,2 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
+            Log.d("PB","Progress Bar color 0,0 a 0,25 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
             fc
         }
-        in 0.2f..0.4f -> {
-            val lerp = interpolate(0.2f, 0.4f, percentage)
+        in 0.25f..0.5f -> {
+            val lerp = interpolate(0.25f, 0.5f, percentage)
             val fc = lerp(colorList[1], colorList[2], lerp)
-            Log.d("PB","Progress Bar color 0,2 a 0,4 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
+            Log.d("PB","Progress Bar color 0,25 a 0,5 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
             fc
         }
-        in 0.4f..0.6f -> {
-            val lerp = interpolate(0.4f, 0.6f, percentage)
-            val fc = lerp(colorList[1], colorList[2], lerp)
-            Log.d("PB","Progress Bar color 0,4 a 0,6 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
-            fc
-        }
-        in 0.6f..0.8f -> {
-            val lerp = interpolate(0.6f, 0.8f, percentage)
+        in 0.5f..0.75f -> {
+            val lerp = interpolate(0.5f, 0.75f, percentage)
             val fc = lerp(colorList[2], colorList[3], lerp)
-            Log.d("PB", "Progress Bar color 0,6 a 0,8 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
+            Log.d("PB", "Progress Bar color 0,5 a 0,75 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
             fc
         }
-        in 0.8f..1f -> {
-            val lerp = interpolate(0.8f, 1f, percentage)
+        in 0.75f..1f -> {
+            val lerp = interpolate(0.75f, 1f, percentage)
             val fc = lerp(colorList[3], colorList[4], lerp)
-            Log.d("PB", "Progress Bar color 0,8 a 1 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
+            Log.d("PB", "Progress Bar color 0,75 a 1 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
             fc
         }
         else -> colorList[4]

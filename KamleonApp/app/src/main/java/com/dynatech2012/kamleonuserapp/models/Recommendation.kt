@@ -15,6 +15,8 @@ data class Recommendation(
     val image: Int? = null
 ) {
 
+    // For setting short title and subtitle for hydration recommendation
+    // in homescreen depending on low volume and score
     fun getHydrationTitle(measure: MeasureData): Int {
         return if (!measure.isPrecise) R.string.recommendation_alert_title
         else R.string.recommendation_analytics_h_title
@@ -32,6 +34,7 @@ data class Recommendation(
     companion object {
         fun fromTipType(recommendationType: RecommendationType): List<Recommendation> {
             when (recommendationType) {
+                /*
                 RecommendationType.HOMELOW -> return listOf(
                     Recommendation(
                         kind = null,
@@ -51,7 +54,7 @@ data class Recommendation(
                         image = R.drawable.recom4
                     )
                 )
-
+                */
                 RecommendationType.HOME -> return listOf(
                     Recommendation(
                         kind = null,
@@ -192,7 +195,7 @@ data class Recommendation(
 }
 
 enum class RecommendationType(val title: String) {
-    HOMELOW("Home"),
+    //HOMELOW("Home"),
     HOME("HomeLow"),
     HYDRATION("Hydration"),
     ELECTROLYTE("Electrolytes"),
@@ -201,7 +204,7 @@ enum class RecommendationType(val title: String) {
     val size: Int
         get() {
             return when (this@RecommendationType) {
-                HOME, HOMELOW -> 2
+                HOME -> 2
                 HYDRATION, ELECTROLYTE, VOLUME -> 3
             }
         }

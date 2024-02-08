@@ -27,6 +27,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,33 +45,37 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.activityViewModels
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.MatTheme
+import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.progress.AnimatedCircularProgressIndicator
 import com.dynatech2012.kamleonuserapp.views.progress.VolumeProgressIndicator
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardViewAnalyticsItem(
     analyticType: AnalyticType,
-    subtitleStart: String,
-    descriptionStart: String,
-    startValue: Int?,
-    isPreciseStart: Boolean,
+    subtitleStart: MutableState<String>,
+    descriptionStart: MutableState<String>,
+    startValue: MutableState<Int?>,
+    isPreciseStart: MutableState<Boolean>,
     onClick: () -> Unit
 ) {
     val shape = RoundedCornerShape(12.dp)
     //val elevation = 10.dp
     val elevation = 0.dp
-    val value by rememberSaveable { mutableStateOf(startValue) }
-    val isPrecise by rememberSaveable { mutableStateOf(isPreciseStart) }
-    val subtitle by rememberSaveable { mutableStateOf(subtitleStart) }
-    val description by rememberSaveable { mutableStateOf(descriptionStart) }
+    val value by rememberSaveable { startValue }
+    val isPrecise by rememberSaveable { isPreciseStart }
+    val subtitle by rememberSaveable { subtitleStart }
+    val description by rememberSaveable { descriptionStart }
 
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(true)
+
 
     Card(
         colors = CardDefaults.cardColors(

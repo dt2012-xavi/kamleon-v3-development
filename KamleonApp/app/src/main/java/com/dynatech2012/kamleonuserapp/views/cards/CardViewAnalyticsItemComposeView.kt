@@ -44,6 +44,13 @@ class CardViewAnalyticsItemComposeView @JvmOverloads constructor(
             descriptionState.value = value
         }
 
+    fun updateValues() {
+        subtitleState.value = subtitle
+        descriptionState.value = description
+        valueState.value = value
+        isPreciseState.value = isPrecise
+    }
+
     init {
         // See the footnote
         context.withStyledAttributes(attrs, R.styleable.AnalyticsComposeItemViewStyle) {
@@ -64,10 +71,10 @@ class CardViewAnalyticsItemComposeView @JvmOverloads constructor(
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         CardViewAnalyticsItem(
             analyticType,
-            subtitleState.value,
-            descriptionState.value,
-            valueState.value,
-            isPreciseState.value,
+            subtitleState,
+            descriptionState,
+            valueState,
+            isPreciseState,
             onClick
         )
     }
