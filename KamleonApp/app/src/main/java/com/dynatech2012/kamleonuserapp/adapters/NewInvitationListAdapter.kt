@@ -3,6 +3,8 @@ package com.dynatech2012.kamleonuserapp.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -61,14 +63,20 @@ class NewInvitationListAdapter(
         private var tvDate: TextView = binding.tvInvitationDate
         private var tvConfirm: TextView = binding.tvInvitationConfirm
         private var tvDeny: TextView = binding.tvInvitationDeny
+        private var progressBar: ProgressBar = binding.pbInvitation
+        private var invitationRow: LinearLayout = binding.llInvitationRow
 
         fun bind(data: Invitation){
             tvSubtitle.text = data.invitationText
             tvDate.text = data.dateSent.formatTime
             tvConfirm.setOnClickListener {
+                progressBar.visibility = View.VISIBLE
+                invitationRow.visibility = View.INVISIBLE
                 notiItemListener?.onClick(data, true)
             }
             tvDeny.setOnClickListener {
+                progressBar.visibility = View.VISIBLE
+                invitationRow.visibility = View.INVISIBLE
                 notiItemListener?.onClick(data, false)
             }
         }

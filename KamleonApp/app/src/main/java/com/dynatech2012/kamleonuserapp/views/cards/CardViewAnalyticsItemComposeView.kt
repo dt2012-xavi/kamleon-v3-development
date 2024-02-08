@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -16,6 +15,7 @@ class CardViewAnalyticsItemComposeView @JvmOverloads constructor(
 ) : AbstractComposeView(context, attrs, defStyle) {
 
     private val valueState : MutableState<Int?> = mutableStateOf(0)
+    private val isPreciseState : MutableState<Boolean> = mutableStateOf(true)
     var analyticType: AnalyticType = AnalyticType.HYDRATION
     private val subtitleState = mutableStateOf("")
     private val descriptionState = mutableStateOf("")
@@ -25,6 +25,12 @@ class CardViewAnalyticsItemComposeView @JvmOverloads constructor(
         get() = valueState.value
         set(value) {
             valueState.value = value
+        }
+
+    var isPrecise: Boolean
+        get() = isPreciseState.value
+        set(value) {
+            isPreciseState.value = value
         }
 
     var subtitle: String
@@ -37,6 +43,13 @@ class CardViewAnalyticsItemComposeView @JvmOverloads constructor(
         set(value) {
             descriptionState.value = value
         }
+
+    fun updateValues() {
+        subtitleState.value = subtitle
+        descriptionState.value = description
+        valueState.value = value
+        isPreciseState.value = isPrecise
+    }
 
     init {
         // See the footnote
@@ -58,9 +71,10 @@ class CardViewAnalyticsItemComposeView @JvmOverloads constructor(
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         CardViewAnalyticsItem(
             analyticType,
-            subtitleState.value,
-            descriptionState.value,
-            valueState.value,
+            subtitleState,
+            descriptionState,
+            valueState,
+            isPreciseState,
             onClick
         )
     }

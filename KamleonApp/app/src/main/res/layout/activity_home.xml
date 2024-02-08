@@ -70,7 +70,19 @@
                     android:visibility="invisible"
                     android:id="@+id/iv_home_profile"/>
             </androidx.cardview.widget.CardView>
-
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:src="@drawable/shape_circle"
+                android:id="@+id/iv_home_noti_badge"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:elevation="5dp"
+                android:layout_alignEnd="@+id/cv_home_profile"
+                android:layout_alignTop="@+id/cv_home_profile"
+                android:layout_marginTop="7dp"
+                android:layout_marginEnd="7dp"
+                android:importantForAccessibility="no" />
         </RelativeLayout>
 
 
@@ -122,6 +134,7 @@
                 tools:text="0"
                 android:textSize="82sp" />
             <TextView
+                android:id="@+id/tv_home_unit"
                 style="@style/TextAppearance.Kamleon.Book"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

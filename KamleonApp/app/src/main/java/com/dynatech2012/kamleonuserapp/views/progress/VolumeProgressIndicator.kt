@@ -17,11 +17,14 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import com.dynatech2012.kamleonuserapp.R
 
 @Composable
 fun VolumeProgressIndicator(
     currentValue: Int?,
+    isPrecise: Boolean,
     maxValue: Int,
     color: Color,
     modifier: Modifier = Modifier
@@ -32,11 +35,14 @@ fun VolumeProgressIndicator(
         Stroke(width = 6.dp.toPx(), cap = StrokeCap.Square, join = StrokeJoin.Round)
     }
     val alfa = when {
+        !isPrecise -> 1f
         currentValue == null -> 0f
         currentValue < 150 -> 0.3f
         currentValue < 250 -> 0.6f
         else -> 1f
     }
+    val finalColor = if (isPrecise) color
+    else colorResource(id = R.color.kamleon_secondary_grey_40)
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
 
@@ -62,19 +68,19 @@ fun VolumeProgressIndicator(
             if (currentValue > 0f) {
                 val startAngle = 135f
                 val sweep: Float = 90f - diff//80f
-                drawCircularProgressIndicator(startAngle, sweep, color, stroke)
+                drawCircularProgressIndicator(startAngle, sweep, finalColor, stroke)
             }
 
             if (currentValue >= 150f) {
                 val startAngle = 225f + diff/2//200f + diff//230f
                 val sweep: Float = 90f - diff//80f
-                drawCircularProgressIndicator(startAngle, sweep, color, stroke)
+                drawCircularProgressIndicator(startAngle, sweep, finalColor, stroke)
             }
 
             if (currentValue >= 250f) {
                 val startAngle = 315f + diff//325f
                 val sweep: Float = 90f - diff//80f
-                drawCircularProgressIndicator(startAngle, sweep, color, stroke)
+                drawCircularProgressIndicator(startAngle, sweep, finalColor, stroke)
             }
         }
     }

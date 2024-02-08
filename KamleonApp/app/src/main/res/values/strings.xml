@@ -108,9 +108,9 @@
     <string name="setting_label_user_gender">GENDER</string>
     <string name="setting_label_user_weight">WEIGHT</string>
     <string name="setting_label_user_height">HEIGHT</string>
-    <string name="setting_label_user_weight_text">%1$s cm</string>
-    <string name="setting_label_user_height_text">%1$s Kg</string>
-    <string name="setting_label_user_birthdate">BIRTH DATE</string>
+    <string name="setting_label_user_weight_text">%1$s Kg</string>
+    <string name="setting_label_user_height_text">%1$s cm</string>
+    <string name="setting_label_user_birthdate">DATE OF BIRTH</string>
 
     <string name="setting_label_noti">NOTIFICATIONS</string>
     <string name="setting_label_analytics">ANALYTICS</string>
@@ -179,6 +179,8 @@
 
     <string name="graph_header_average">AVERAGE</string>
     <string name="graph_footer_streak">Streak</string>-->
+    <string name="graph_footer_limit">Limits</string>-->
+    <string name="graph_footer_number_all">/%1$s</string>-->
 
     <string name="graph_label_optimum">Optimum</string>
     <string name="graph_label_minimum">Minimum</string>
@@ -247,7 +249,11 @@
     <string name="dialog_deactive_y">Deactivate</string>
     <string name="dialog_deactive_n">Cancel</string>
     <string name="dialog_profile_date_not_allowed">You have to be at least 14 years old</string>
-
+    <string name="dialog_reset_pwd_success_title">Email Sent</string>
+    <string name="dialog_reset_pwd_success_description">We\'ve sent you instructions to reset your password</string>
+    <string name="dialog_reset_pwd_error_title">Error</string>
+    <string name="dialog_reset_pwd_error_description">User not found</string>
+    
     <!-- Error -->
     <string name="error_login">Error login</string>
 

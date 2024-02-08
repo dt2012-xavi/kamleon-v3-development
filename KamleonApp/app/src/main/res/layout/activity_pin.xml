@@ -106,7 +106,7 @@
                         android:clickable="true"
                         android:id="@+id/imageViewEye"
                         android:scaleType="centerInside"
-                        android:src="@drawable/icn_eye_off"/>
+                        android:src="@drawable/ic_eye_crossed"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -154,7 +154,7 @@
                         android:clickable="true"
                         android:id="@+id/iv_pin_new_eye"
                         android:scaleType="centerInside"
-                        android:src="@drawable/icn_eye_off"/>
+                        android:src="@drawable/ic_eye_crossed"/>
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -196,7 +196,7 @@
                         android:clickable="true"
                         android:id="@+id/iv_pin_confirm_eye"
                         android:scaleType="centerInside"
-                        android:src="@drawable/icn_eye_off"/>
+                        android:src="@drawable/ic_eye_crossed"/>
                 </LinearLayout>
 
             </LinearLayout>

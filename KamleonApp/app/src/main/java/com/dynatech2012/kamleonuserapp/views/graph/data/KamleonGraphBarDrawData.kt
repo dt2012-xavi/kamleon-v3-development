@@ -26,24 +26,34 @@ class KamleonGraphBarDrawData(
     }
 
 
-    fun filterNonZeroValues() : List<KamleonGraphDataXY> {
+    private fun filterNonZeroValues() : List<KamleonGraphDataXY> {
         return values.filter { it.y > 0 }
     }
 
+    private fun filterNonZeroValuesAndNonLowVolumeValues() : List<KamleonGraphDataXY> {
+        val preciseData = ArrayList<KamleonGraphDataXY>()
+        for (i in 0 until values.size) {
+            if (arePrecise[i] && values[i].y > 0) {
+                preciseData.add(values[i])
+            }
+        }
+        return preciseData
+    }
+
     fun averageForStreak(): Double {
-        val nonZeroValues = filterNonZeroValues()
+        val nonZeroValues = filterNonZeroValuesAndNonLowVolumeValues()
         if (nonZeroValues.isEmpty()) { return 0.0 }
         return nonZeroValues.sumOf { it.y } / nonZeroValues.size
     }
 
     fun minForStreak(): Double {
-        val nonZeroValues = filterNonZeroValues()
+        val nonZeroValues = filterNonZeroValuesAndNonLowVolumeValues()
         if (nonZeroValues.isEmpty()) { return 0.0 }
         return nonZeroValues.minOf { it.y }
     }
 
     fun maxForStreak(): Double {
-        val nonZeroValues = filterNonZeroValues()
+        val nonZeroValues = filterNonZeroValuesAndNonLowVolumeValues()
         if (nonZeroValues.isEmpty()) { return 0.0 }
         return nonZeroValues.maxOf { it.y }
     }

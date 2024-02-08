@@ -102,7 +102,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
 
         initObservers()
         viewModel.getUserData()
-        Log.d(TAG, "got measures -2")
+        Log.d(TAG, "got measures -2 oncreateView")
         viewModel.getUserMeasures()
 
         // Scan

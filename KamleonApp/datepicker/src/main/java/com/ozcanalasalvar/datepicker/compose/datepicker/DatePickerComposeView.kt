@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.ozcanalasalvar.datepicker.model.Date
 import com.ozcanalasalvar.datepicker.utils.DateUtils
+import com.ozcanalasalvar.datepicker.view.datepicker.DateChangeListener
 import com.ozcanalasalvar.datepicker.view.datepicker.DatePicker
 import com.ozcanalasalvar.datepicker.view.datepicker.OnDatePickerTouchListener
 
@@ -92,8 +93,8 @@ class DatePickerComposeView @JvmOverloads constructor(
             darkModeEnabledState.value = value
         }
 
-    private var dateChangeListener: DatePicker.DateChangeListener? = null
-    fun setDataChangeListener(dateChangeListener: DatePicker.DateChangeListener?) {
+    private var dateChangeListener: DateChangeListener? = null
+    fun setDataChangeListener(dateChangeListener: DateChangeListener?) {
         this.dateChangeListener = dateChangeListener
     }
 

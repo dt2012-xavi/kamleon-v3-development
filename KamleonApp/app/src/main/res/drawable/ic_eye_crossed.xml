@@ -5,12 +5,12 @@
     android:viewportHeight="14.185">
   <path
       android:pathData="m21.442,7.093c0,-0.421 -0.228,-0.697 -0.683,-1.251 -1.675,-2.036 -5.382,-5.842 -9.687,-5.842 -4.304,-0 -8.012,3.806 -9.687,5.842C0.931,6.395 0.703,6.672 0.703,7.093 0.703,7.513 0.931,7.79 1.386,8.343 3.061,10.379 6.768,14.185 11.073,14.185c4.304,-0 8.012,-3.806 9.687,-5.842 0.455,-0.553 0.683,-0.83 0.683,-1.251zM11.077,10.638c1.959,-0 3.546,-1.588 3.546,-3.546 0,-1.959 -1.588,-3.546 -3.546,-3.546 -1.959,-0 -3.546,1.588 -3.546,3.546 0,1.959 1.588,3.546 3.546,3.546z"
-      android:fillColor="#000000"
-      android:strokeColor="#00000000"
+      android:fillColor="@color/kamleon_secondary_grey_60"
+      android:strokeColor="@color/kamleon_secondary_grey_60"
       android:fillType="evenOdd"/>
   <path
       android:pathData="m0.367,12.449c-0.351,0.203 -0.471,0.651 -0.268,1.002 0.203,0.351 0.651,0.471 1.002,0.268zM21.163,2.136c0.351,-0.203 0.471,-0.651 0.268,-1.002 -0.203,-0.351 -0.651,-0.471 -1.002,-0.268zM1.1,13.719l20.063,-11.583l-0.733,-1.27L0.367,12.449Z"
-      android:fillColor="#000000"
-      android:strokeColor="#00000000"
+      android:fillColor="@color/kamleon_secondary_grey_60"
+      android:strokeColor="@color/kamleon_secondary_grey_60"
       android:fillType="nonZero"/>
 </vector>

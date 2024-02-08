@@ -14,4 +14,5 @@ object PreferenceConstants {
     const val PREF_DATEFIRESTORE = "lastDateFirestoreChecked"
     const val PREF_REALTIMEDAILY = "lastDateRealtimeDailyChecked"
     const val PREF_REALTIMEMONTHLY = "lastDateRealtimeMonthlyChecked"
+    const val PREF_USER_ASKED_FOR_PERMISSION = "permissions"
 }

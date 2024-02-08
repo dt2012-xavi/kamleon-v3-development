@@ -80,8 +80,6 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
             return
         }
         drawable?.let {
-
-
             binding.ivAnalyticProfile.load(drawable)
             binding.ivAnalyticProfile.visibility = View.VISIBLE
             return
@@ -89,10 +87,10 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
     }
 
     private fun onLastMeasureChanged(measureData: MeasureData?) {
-        Log.d(TAG, "onLastMeasureChanged: $measureData")
+        Log.d(TAG, "onLastMeasureChanged is precise?: $measureData is precise: ${measureData?.isPrecise}")
         val cvHy = binding.cvAnalyticHydration
-        val score = measureData?.score
-        cvHy.value = if (measureData?.precision == MeasurePrecision.Bad) null else score
+        val score = if (measureData?.isPrecise == false) null else measureData?.score
+        cvHy.value = score
         cvHy.subtitle = when (score) {
             null -> getString(R.string.analytic_no_data)
             in 0..30 -> getString(R.string.analytic_severely_dehydrated)
@@ -106,9 +104,9 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
             else -> getString(R.string.analytic_hydratation_above)
         }
         cvHy.onClick = { openGraphView(0) }
-        val el = measureData?.msCond?.toInt()// ?: 0
+        val el = if (measureData?.isPrecise == false) null else measureData?.msCond?.toInt()// ?: 0
         val cvEl = binding.cvAnalyticElectrol
-        cvEl.value = if (measureData?.precision == MeasurePrecision.Bad) null else el
+        cvEl.value = el
         cvEl.subtitle = when (el) {
             null -> getString(R.string.analytic_no_data)
             in 0..4 -> getString(R.string.analytic_elec_hypo)
@@ -125,14 +123,16 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
 
         val cvVol = binding.cvAnalyticVolume
         val vol = measureData?.vol?.toInt()
-        cvVol.value = if (measureData?.precision == MeasurePrecision.Bad) null else vol
-        cvVol.subtitle = when (vol) {
+        val volOnlyIfPrecise = if (measureData?.isPrecise == false) null else vol
+        cvVol.isPrecise = measureData?.isPrecise ?: true
+        cvVol.value = vol
+        cvVol.subtitle = when (volOnlyIfPrecise) {
             null -> getString(R.string.analytic_volume_insuff_title)
             in 0..149 -> getString(R.string.analytic_volume_low)
             in 150..249 -> getString(R.string.analytic_volume_medium)
             else -> getString(R.string.analytic_volume_high)
         }
-        cvVol.description = when (vol) {
+        cvVol.description = when (volOnlyIfPrecise) {
             null -> getString(R.string.analytic_volume_insuff_desc)
             in 0..149 -> getString(R.string.analytic_volume_insuff_desc)
             else -> getString(R.string.analytic_volume_good)

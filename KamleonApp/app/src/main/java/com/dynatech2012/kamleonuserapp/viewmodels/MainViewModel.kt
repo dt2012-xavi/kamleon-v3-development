@@ -32,6 +32,7 @@ import com.dynatech2012.kamleonuserapp.utils.SharedPrefUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -255,7 +256,8 @@ class MainViewModel @Inject constructor(
                 Log.d(TAG, "got measures from FS success size: ${responseMeasuresFS.dataValue?.size}")
                 responseMeasuresFS.dataValue?.let { measuresFB ->
                     measuresLoaded.addAll(measuresFB)
-                    _measures.postValue(measuresFB)
+                    //_measures.postValue(measuresFB)
+                    _measures.postValue(measuresLoaded)
                     if (measuresFB.size > 0) {
                         Log.d(TAG, "got measures from FS not empty")
                         _lastMeasure.postValue(measuresFB[0])
@@ -290,21 +292,24 @@ class MainViewModel @Inject constructor(
                     }
                 }
             }
-            val avDay = measuresRepository.getUserDailyAverages(userRepository.uuid)
-            if (avDay.isSuccess && avDay.dataValue != null) {
-                Log.d(TAG, "got measures daily finally 2")
-                avDay.dataValue?.let { dailyMeasures ->
-                    Log.d(TAG, "got measures daily finally 2 size ${dailyMeasures.size}")
-                    dailyLoaded.addAll(dailyMeasures)
-                    _averageDailyMeasures.postValue(dailyLoaded)                                }
-            }
-            val avMon = measuresRepository.getUserMonthlyAverages(userRepository.uuid)
-            if (avMon.isSuccess && avMon.dataValue != null) {
-                Log.d(TAG, "got measures monthly finally 2")
-                avMon.dataValue?.let { monthlyMeasures ->
-                    Log.d(TAG, "got measures monthly finally 2 size ${monthlyMeasures.size}")
-                    monthlyLoaded.addAll(monthlyMeasures)
-                    _averageMonthlyMeasures.postValue(monthlyLoaded)
+            measuresRepository.getUserDailyAverages(userRepository.uuid).collect { avDay ->
+                if (avDay.isSuccess && avDay.dataValue != null) {
+                    Log.d(TAG, "got measures daily finally 2")
+                    avDay.dataValue?.let { dailyMeasures ->
+                        Log.d(TAG, "got measures daily finally 2 size ${dailyMeasures.size}")
+                        dailyLoaded.addAll(dailyMeasures)
+                        _averageDailyMeasures.postValue(dailyLoaded)
+                    }
+                }
+                measuresRepository.getUserMonthlyAverages(userRepository.uuid).collect { avMon ->
+                    if (avMon.isSuccess && avMon.dataValue != null) {
+                        Log.d(TAG, "got measures monthly finally 2")
+                        avMon.dataValue?.let { monthlyMeasures ->
+                            Log.d(TAG, "got measures monthly finally 2 size ${monthlyMeasures.size}")
+                            monthlyLoaded.addAll(monthlyMeasures)
+                            _averageMonthlyMeasures.postValue(monthlyLoaded)
+                        }
+                    }
                 }
             }
         /*
@@ -346,6 +351,7 @@ class MainViewModel @Inject constructor(
         }
     }
     fun onGetNotification() {
+        Log.d(TAG, "onGetNotification from viewModel")
         getUserMeasures()
         //_newNotificationMeasure.postValue(true)
     }
@@ -367,6 +373,12 @@ class MainViewModel @Inject constructor(
     val oldInvitations: LiveData<ArrayList<Invitation>> = _oldInvitations
     private val _recentInvitations =  MutableLiveData<ArrayList<Invitation>>()
     val recentInvitations: LiveData<ArrayList<Invitation>> = _recentInvitations
+    private val _recentInvitationModified =  MutableLiveData<Boolean>()
+    val recentInvitationModified: LiveData<Boolean> = _recentInvitationModified
+    private var gettingInvitationsAfterModifyingOne = false
+    fun resetGettingInvitationsAfterModifyingOne() {
+        gettingInvitationsAfterModifyingOne = false
+    }
     fun getInvitations() {
         viewModelScope.launch(Dispatchers.IO) {
             val response = cloudFunctions.getInvitations()
@@ -374,6 +386,10 @@ class MainViewModel @Inject constructor(
             val invitations = response.dataValue ?: ArrayList()
             val pendingInvitations = invitations.filter { it.status == InvitationStatus.SENT } as ArrayList<Invitation>
             _pendingInvitations.postValue(pendingInvitations)
+            if (gettingInvitationsAfterModifyingOne) {
+                gettingInvitationsAfterModifyingOne = false
+                _recentInvitationModified.postValue(true)
+            }
             // 30 days ago
             Log.d(TAG, "HHH getInvitations pending: ${pendingInvitations.size}")
             val thirtyDaysAgo = Date().addDays(-30)
@@ -391,6 +407,7 @@ class MainViewModel @Inject constructor(
             val response = cloudFunctions.acceptInvitation(invitationId)
             if (response.isSuccess) {
                 Log.d(TAG, "HHH acceptInvitation: success")
+                gettingInvitationsAfterModifyingOne = true
                 getInvitations()
             }
             else {
@@ -403,6 +420,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val response = cloudFunctions.rejectInvitation(invitationId)
             if (response.isSuccess) {
+                gettingInvitationsAfterModifyingOne = true
                 Log.d(TAG, "HHH rejectInvitation: success")
                 getInvitations()
             }

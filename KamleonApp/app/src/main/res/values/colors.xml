@@ -83,11 +83,16 @@
     <color name="color_secondary">#808285</color>
 
     <color name="bg_color_activity">#66FAFAFA</color>
-    <color name="gradient_1">#F44336</color>
+    <!--<color name="gradient_1">#F44336</color>
     <color name="gradient_2">#FF6822</color>
     <color name="gradient_3">#FFC107</color>
     <color name="gradient_4">#8BC34A</color>
-    <color name="gradient_5">#00CDD4</color>
+    <color name="gradient_5">#00CDD4</color>-->
+    <color name="gradient_1">#FC664E</color>
+    <color name="gradient_2">#ED9005</color>
+    <color name="gradient_3">#FFD952</color>
+    <color name="gradient_4">#95D790</color>
+    <color name="gradient_5">#30D5CB</color>
     <color name="premium_gradient_1">#FFFFFF</color>
     <color name="premium_gradient_2">#4BD2C9</color>
 

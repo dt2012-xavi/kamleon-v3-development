@@ -12,11 +12,11 @@ import com.ozcanalasalvar.datepicker.model.Date
 import com.ozcanalasalvar.datepicker.utils.DateUtils
 import java.util.Calendar
 
-class DatePicker : LinearLayout {
+class DatePicker : LinearLayout, DateChangeListener {
     private var context: Context? = null
     private var pickerView: DatePickerComposeView? = null
 
-    private var date: Date = Date(DateUtils.getCurrentTime())
+    private var dateSelected: Date = Date(DateUtils.getCurrentTime())
     private var toDate: Date = Date(DateUtils.getCurrentTime())
     private var maxxDate: Date = Date(DateUtils.getCurrentTime())
     private var offset = 3
@@ -84,12 +84,12 @@ class DatePicker : LinearLayout {
     private fun setAttributes() {
         pickerView?.offset = offset
         pickerView?.yearsRange = IntRange(1904, java.util.Date().addYears(-14).year())
-        pickerView?.startDate = date
+        pickerView?.startDate = dateSelected
         pickerView?.selectorEffectEnabled = true
         pickerView?.textSize = textSize
         pickerView?.textBold = textBold
         pickerView?.darkModeEnabled = darkModeEnabled
-        pickerView?.setDataChangeListener(dateChangeListener)
+        pickerView?.setDataChangeListener(this)
         pickerView?.toDate = toDate
         pickerView?.maxDate = maxxDate
         pickerView?.setDatePickerTouchListener(datePickerTouchListener)
@@ -105,7 +105,7 @@ class DatePicker : LinearLayout {
 
 
     fun setDate(newDate: Long) {
-        date = Date(newDate)
+        dateSelected = Date(newDate)
         setAttributes()
     }
 
@@ -148,9 +148,6 @@ class DatePicker : LinearLayout {
         setAttributes()
     }
 
-    interface DateChangeListener {
-        fun onDateChanged(date: Long, day: Int, month: Int, year: Int)
-    }
 
     private var dateChangeListener: DateChangeListener? = null
     fun setDateChangeListener(dateChangeListener: DateChangeListener) {
@@ -177,15 +174,21 @@ class DatePicker : LinearLayout {
         }
     }
 
+    override fun onDateChanged(date: Long, day: Int, month: Int, year: Int) {
+        dateSelected = Date(date)
+        dateChangeListener?.onDateChanged(date, day, month, year)
+    }
+
     companion object {
         const val MONTH_ON_FIRST = 0
         const val DAY_ON_FIRST = 1
         private const val MAX_TEXT_SIZE = 28
         private const val MAX_OFFSET = 3
+        private val TAG = DatePicker::class.simpleName
     }
 
     fun getDateSelected(): Date {
-        return date
+        return dateSelected
     }
 }
 
@@ -210,4 +213,8 @@ fun java.util.Date.year(): Int {
 interface OnDatePickerTouchListener {
     fun onDatePickerTouchDown()
     fun onDatePickerTouchUp()
+}
+
+interface DateChangeListener {
+    fun onDateChanged(date: Long, day: Int, month: Int, year: Int)
 }

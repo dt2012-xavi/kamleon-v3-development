@@ -5,7 +5,7 @@ import com.dynatech2012.kamleonuserapp.database.MeasureData
 
 data class Recommendation(
     val kind: Int?,
-    val titleShort: Int,
+    var titleShort: Int,
     var title: Int,
     var text: Int?,
     val isRead: Boolean = false,
@@ -15,12 +15,14 @@ data class Recommendation(
     val image: Int? = null
 ) {
 
+    // For setting short title and subtitle for hydration recommendation
+    // in homescreen depending on low volume and score
     fun getHydrationTitle(measure: MeasureData): Int {
-        return if (measure.precision == MeasurePrecision.Bad) R.string.recommendation_alert_title
+        return if (!measure.isPrecise) R.string.recommendation_alert_title
         else R.string.recommendation_analytics_h_title
     }
     fun getHydrationSubtitle(measure: MeasureData): Int {
-        if (measure.precision == MeasurePrecision.Bad) return R.string.recommendation_alert_subtitle
+        if (!measure.isPrecise) return R.string.recommendation_alert_subtitle
         val resource: Int = when (measure.hydrationLevel) {
             MeasureData.HydrationLevel.VERYDEHYDRATED -> R.string.recommendation_hydration_1
             MeasureData.HydrationLevel.DEHYDRATED -> R.string.recommendation_hydration_2
@@ -32,6 +34,7 @@ data class Recommendation(
     companion object {
         fun fromTipType(recommendationType: RecommendationType): List<Recommendation> {
             when (recommendationType) {
+                /*
                 RecommendationType.HOMELOW -> return listOf(
                     Recommendation(
                         kind = null,
@@ -51,8 +54,17 @@ data class Recommendation(
                         image = R.drawable.recom4
                     )
                 )
-
+                */
                 RecommendationType.HOME -> return listOf(
+                    Recommendation(
+                        kind = null,
+                        titleShort = R.string.recommendation_alert_title,
+                        title = R.string.recommendation_alert_subtitle,
+                        text = null,
+                        isRead = true,
+                        clickable = false,
+                    ),
+                    /*
                     Recommendation(
                         kind = null,
                         titleShort = R.string.recommendation_hydration_title,
@@ -60,7 +72,7 @@ data class Recommendation(
                         text = null,
                         isRead = true,
                         clickable = false,
-                    ),
+                    ),*/
                     Recommendation(
                         kind = R.string.recomendation_home_kind,
                         titleShort = R.string.recomendation_home_title,
@@ -183,7 +195,7 @@ data class Recommendation(
 }
 
 enum class RecommendationType(val title: String) {
-    HOMELOW("Home"),
+    //HOMELOW("Home"),
     HOME("HomeLow"),
     HYDRATION("Hydration"),
     ELECTROLYTE("Electrolytes"),
@@ -192,7 +204,7 @@ enum class RecommendationType(val title: String) {
     val size: Int
         get() {
             return when (this@RecommendationType) {
-                HOME, HOMELOW -> 2
+                HOME -> 2
                 HYDRATION, ELECTROLYTE, VOLUME -> 3
             }
         }

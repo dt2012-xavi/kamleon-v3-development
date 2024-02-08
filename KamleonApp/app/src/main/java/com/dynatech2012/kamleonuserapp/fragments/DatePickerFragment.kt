@@ -19,6 +19,7 @@ import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.extensions.addYears
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.ozcanalasalvar.datepicker.view.datepicker.DateChangeListener
 import com.ozcanalasalvar.datepicker.view.datepicker.DatePicker
 import com.ozcanalasalvar.datepicker.view.datepicker.OnDatePickerTouchListener
 import java.util.Date
@@ -28,7 +29,7 @@ class DatePickerFragment : BottomSheetDialogFragment() {
     private lateinit var behavior: BottomSheetBehavior<View>
     private val viewModel: MainViewModel by activityViewModels()
     var dismissListener: BottomFragmentDismissListener? = null
-    private lateinit var dateChangeListener: DatePicker.DateChangeListener
+    private lateinit var dateChangeListener: DateChangeListener
     private lateinit var pickerV: DatePicker
     var dateValue: Date = Date()
 
@@ -44,6 +45,9 @@ class DatePickerFragment : BottomSheetDialogFragment() {
             //dismiss()
             onSave()
         }
+
+        initObservers()
+
         return v
     }
 
@@ -116,7 +120,9 @@ class DatePickerFragment : BottomSheetDialogFragment() {
     private fun onSave() {
         Log.d(TAG, "onSave")
         pickerV.getDateSelected().let { dateSelected ->
-            val date = GregorianCalendar(dateSelected.year, dateSelected.month - 1, dateSelected.day).time
+            Log.d(TAG, "onSave date: year: ${dateSelected.year}, month: ${dateSelected.month}, day: ${dateSelected.day}")
+            val date = GregorianCalendar(dateSelected.year, dateSelected.month, dateSelected.day).time
+            Log.d(TAG, "onSave date: $date")
             viewModel.changeBirth(date)
         }
     }
@@ -125,9 +131,19 @@ class DatePickerFragment : BottomSheetDialogFragment() {
         view?.findViewById<TextView>(R.id.tvSave)?.isEnabled = enable
     }
 
+    private fun initObservers() {
+        viewModel.userUpdated.observe(this, this::onUserDateUpdated)
+    }
+    private fun onUserDateUpdated(updated: Boolean) {
+        if (updated)
+        {
+            dismiss()
+        }
+    }
+
     companion object {
         @JvmStatic
-        fun newInstance(dismissListener: BottomFragmentDismissListener, dateChangeListener: DatePicker.DateChangeListener, value: Date) =
+        fun newInstance(dismissListener: BottomFragmentDismissListener, dateChangeListener: DateChangeListener, value: Date) =
             DatePickerFragment().apply {
                 Log.d(TAG, "onDateChanged first date: $value")
                 this.dismissListener = dismissListener

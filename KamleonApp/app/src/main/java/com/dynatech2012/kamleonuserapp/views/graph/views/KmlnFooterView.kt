@@ -1,7 +1,6 @@
 package com.dynatech2012.kamleonuserapp.views.graph.views
 
 import android.content.Context
-import android.graphics.ColorFilter
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphBarDrawData
+import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
+import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataXY
 
 class KmlnFooterView(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
     interface KmlnFooterViewListener {
@@ -36,20 +37,53 @@ class KmlnFooterView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
             onStreakClicked()
         }
 
-        updateViews(false, 0, 0)
+        updateViews(false, 0, 0, KamleonGraphDataType.volume)
     }
 
-    fun setData(data: KamleonGraphBarDrawData) {
+    fun setData(data: KamleonGraphBarDrawData, type: KamleonGraphDataType) {
         if (data.values.isEmpty()) {
             return
         }
-
-        updateViews(false, 0, data.values.size)
+        tvLabelStreak.text = when (type) {
+            KamleonGraphDataType.hydration -> context.getString(R.string.graph_footer_streak)
+            KamleonGraphDataType.electrolytes -> context.getString(R.string.graph_footer_streak)
+            KamleonGraphDataType.volume -> context.getString(R.string.graph_footer_limit)
+        }
+        val preciseData = ArrayList<KamleonGraphDataXY>()
+        for (i in 0 until data.values.size) {
+            if (data.arePrecise[i] && data.values[i].y > 0) {
+                preciseData.add(data.values[i])
+            }
+        }
+        val range: IntRange = when (type) {
+            KamleonGraphDataType.hydration -> {
+                KamleonGraphDataType.HydrationStreakValue.toInt()..Int.MAX_VALUE
+            }
+            KamleonGraphDataType.electrolytes -> {
+                KamleonGraphDataType.ElectrolyteStreakValueLower.toInt()..KamleonGraphDataType.ElectrolyteStreakValueUpper.toInt()
+            }
+            KamleonGraphDataType.volume -> {
+                0..0
+            }
+        }
+        //val streakData = preciseData.filter { it.y >= range.first && it.y <= range.last }
+        val streakData = preciseData.filter { it.y.toInt() in range }
+        val active = streakData.size
+        val total = preciseData.size
+        updateViews(false, active, total, type)
     }
 
-    private fun updateViews(isStreak: Boolean, active: Int, total: Int) {
-        tvValue1.text = active.toString()
-        tvValue2.text = "/$total"
+    private fun updateViews(isStreak: Boolean, active: Int, total: Int, type: KamleonGraphDataType) {
+        if (type == KamleonGraphDataType.volume) {
+            tvValue1.visibility = View.GONE
+            tvValue2.visibility = View.GONE
+        }
+        else {
+            tvValue1.text = active.toString()
+            tvValue2.text = context.getString(R.string.graph_footer_number_all, total.toString())
+            tvValue1.visibility = View.VISIBLE
+            tvValue2.visibility = View.VISIBLE
+        }
     }
 
     private fun onStreakClicked() {

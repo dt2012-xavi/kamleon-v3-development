@@ -46,19 +46,19 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
     }
 
     private fun updateInputMode() {
-        binding.imageViewEye.setImageResource(if (secureInputCurrent) R.drawable.icn_eye_off else R.drawable.icn_eye_on)
+        binding.imageViewEye.setImageResource(if (secureInputCurrent) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open)
         if (secureInputCurrent) {
             binding.etPwd.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         } else {
             binding.etPwd.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         }
-        binding.ivPwdNewEye.setImageResource(if (secureInputNew) R.drawable.icn_eye_off else R.drawable.icn_eye_on)
+        binding.ivPwdNewEye.setImageResource(if (secureInputNew) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open)
         if (secureInputNew) {
             binding.etPwdNew.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         } else {
             binding.etPwdNew.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         }
-        binding.ivPwdConfirmEye.setImageResource(if (secureInputConfirm) R.drawable.icn_eye_off else R.drawable.icn_eye_on)
+        binding.ivPwdConfirmEye.setImageResource(if (secureInputConfirm) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open)
         if (secureInputConfirm) {
             binding.etPwdConf.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         } else {
