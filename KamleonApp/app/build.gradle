@@ -14,8 +14,8 @@ android {
         applicationId "com.dynatech2012.kamleonuserapp"
         minSdk 26
         targetSdk 34
-        versionCode 2002
-        versionName "1.0.2"
+        versionCode 2004
+        versionName "1.0.3"
 
         resValue "string", "app_version", "${versionName}"
 

@@ -16,7 +16,6 @@ import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.extensions.addDays
 import com.dynatech2012.kamleonuserapp.extensions.sha256
-import com.dynatech2012.kamleonuserapp.fragments.SettingFragment
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.models.Invitation
@@ -119,7 +118,7 @@ class MainViewModel @Inject constructor(
             if (userResult.isSuccess && userResult.dataValue != null) {
                 getUserData()
                 _userUpdated.postValue(userResult.dataValue)
-                Log.d(SettingFragment.TAG, "user data changed")
+                Log.d(TAG, "user data changed")
             }
         }
     }

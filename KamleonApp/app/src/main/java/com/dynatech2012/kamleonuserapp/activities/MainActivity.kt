@@ -15,7 +15,6 @@ import android.os.Environment
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
-import android.view.ViewTreeObserver
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -23,16 +22,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.view.doOnLayout
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.navigation.findNavController
 import com.dynatech2012.kamleonuserapp.base.BaseActivity
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.PUSH_NOTIFICATION
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityMainBinding
 import com.dynatech2012.kamleonuserapp.extensions.px
-import com.dynatech2012.kamleonuserapp.fragments.SettingFragment
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -52,7 +48,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         supportFragmentManager
             .setFragmentResultListener(Constants.PICK_IMAGE, this) { _, bundle ->
-                Log.d(SettingFragment.TAG, "result from activity pick")
+                Log.d(TAG, "result from activity pick")
                 val result = bundle.getBoolean(Constants.PICK_IMAGE_BUNDLE)
                 if (result) {
                     galleryLauncher.launch("image/*")
@@ -60,7 +56,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             }
         supportFragmentManager
             .setFragmentResultListener(Constants.TAKE_IMAGE, this) { _, bundle ->
-                Log.d(SettingFragment.TAG, "result from activity take")
+                Log.d(TAG, "result from activity take")
                 val result = bundle.getBoolean(Constants.TAKE_IMAGE_BUNDLE)
                 if (result) {
                     takePicture()

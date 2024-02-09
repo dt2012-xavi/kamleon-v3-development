@@ -67,7 +67,7 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
     }
 
     private fun onUserDataChanged(userData: CustomUser) {
-        Log.d(SettingFragment.TAG, "on user data changed")
+        Log.d(TAG, "on user data changed")
         val initials = getString(R.string.user_name_initials, userData.name.substring(0, 1).uppercase(), userData.lastName.substring(0, 1).uppercase())
         binding.tvAnalyticProfileName.text = initials
     }

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "779039759270",
+    "firebase_url": "https://kamleon-preproduction-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "kamleon-preproduction",
+    "storage_bucket": "kamleon-preproduction.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:779039759270:android:436d64340d5fbe408f4d67",
+        "android_client_info": {
+          "package_name": "com.dynatech2012.kamleonuserapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4IMf6I1VD_za-qMtrtPDzuB-ooC4MTGY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
