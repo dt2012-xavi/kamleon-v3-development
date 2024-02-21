@@ -19,6 +19,8 @@ import com.dynatech2012.kamleonuserapp.constants.Constants.NOTIFICATION_KEY_TITL
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.PUSH_NOTIFICATION
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_COLLECTION
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_TOKEN
+import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants
+import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_NEW_MEASURE
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_USER_ID
 import com.dynatech2012.kamleonuserapp.utils.SharedPrefUtil
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
@@ -28,10 +30,11 @@ import com.google.firebase.messaging.RemoteMessage
 
 
 class NotificationService : FirebaseMessagingService() {
+
+    private val sharedPrefUtil = SharedPrefUtil(applicationContext)
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         Log.d(TAG, "token app refreshed: $token")
-        val sharedPrefUtil = SharedPrefUtil(applicationContext)
         val userId: String? = sharedPrefUtil.getString(PREF_USER_ID, null)
         if (userId != null) {
             val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -45,6 +48,7 @@ class NotificationService : FirebaseMessagingService() {
             R.string.channel_id
         ), "Analytics Notifications")
         createNewMeasureNotification(applicationContext, remoteMessage)
+        sharedPrefUtil.saveBoolean(PREF_NEW_MEASURE, true)
     }
 
     /*

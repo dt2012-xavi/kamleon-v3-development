@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
@@ -15,10 +16,10 @@ import com.dynatech2012.kamleonuserapp.databinding.ActivityHomeBinding
 import com.dynatech2012.kamleonuserapp.extensions.formatTime
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Invitation
-import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
 import com.dynatech2012.kamleonuserapp.models.RecommendationType
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.cards.ViewPager
+import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
 
@@ -32,7 +33,6 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         setupTips(null)
 
         //selectTab(0)
-
         initObservers()
         viewModel.getUserData()
         Log.d(TAG, "got measures -2")
@@ -92,6 +92,8 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
 
             binding.homeBg.setImageResource(R.drawable.bg_low_volume)
             binding.tvHomeMessage.text = getString(R.string.analytic_volume_low)
+            val color = MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorOnSurface, Color.BLACK)
+            binding.tvHomeMessage.setTextColor(color)
             return
         }
         binding.lastMeasure.text = measure.score.toString()
@@ -115,6 +117,8 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
                 binding.tvHomeMessage.text = getString(R.string.analytic_severely_dehydrated)
             }
         }
+        val color = MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorOnSurfaceInverse, Color.WHITE)
+        binding.tvHomeMessage.setTextColor(color)
     }
 
     private fun onGetPendingInvitations(invitations: ArrayList<Invitation>) {

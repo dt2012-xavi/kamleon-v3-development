@@ -1,20 +1,21 @@
 package com.dynatech2012.kamleonuserapp.viewmodels
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
 import android.util.Size
 import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dynatech2012.kamleonuserapp.camera.QRCodeImageAnalyzerMLKitKotlin
+import com.dynatech2012.kamleonuserapp.models.QRResponse
+import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.RealtimeRepository
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -26,14 +27,21 @@ class QrViewModel @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val userRepository: UserRepository,
     private val realtime: RealtimeRepository,
-    private val analyzer: QRCodeImageAnalyzerMLKitKotlin
+    private val analyzer: QRCodeImageAnalyzerMLKitKotlin,
+    private val firestoreDataSource: FirestoreDataSource
 ) : ViewModel() {
-    fun uploadQRtoRealtime(qrId: String?) {
+    /*fun uploadQRtoRealtime(qrId: String?) {
         realtime.uploadQrId(qrId)
+    }*/
+
+    fun uploadQRtoFirestore(qrResponse: QRResponse?) {
+        viewModelScope.launch {
+            firestoreDataSource.uploadQrId(qrResponse)
+        }
     }
 
-    private var _qrString: MutableLiveData<Response<String>> = MutableLiveData()
-    val qrString: LiveData<Response<String>> = _qrString
+    private var _qrResponse: MutableLiveData<Response<QRResponse>> = MutableLiveData()
+    val qrResponse: LiveData<Response<QRResponse>> = _qrResponse
     val imageAnalysis = ImageAnalysis.Builder()
         .setTargetResolution(Size(720, 1280)) //1280, 720
         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
@@ -52,10 +60,15 @@ class QrViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             analyzer.qrStingFlow.collect { qrString ->
                 Log.d(TAG, "qqqq3 status: $qrString")
-                if (qrString is Response.Success && qrString.data != null) {
+                // qr example
+                // {"unitId": "1000", "sessionId": "1708532818789", "data": {}}
+                if (qrString is Response.Success) {
                     Log.d(TAG, "qqqq4: ${qrString.data}")
+                    val gson = Gson()
+                    gson.fromJson(qrString.data, QRResponse::class.java)
+                    val qrResponse = QRResponse()
+                    _qrResponse.postValue(Response.Success(qrResponse))
                 }
-                _qrString.postValue(qrString)
             }
         }
         viewModelScope.launch(ioDispatcher) {

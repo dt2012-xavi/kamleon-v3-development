@@ -24,6 +24,7 @@ object FirebaseConstants {
     const val kANALYSIS_TYPE = "ID"
     const val kANALYSIS_TYPE_URINE = "urine"
     const val kANALYSIS_DATE = "analysisDate"
+    const val QR_COLLECTION = "qr"
 
     // Realtime
     const val USER_UID_DEBUG = "AuBdJ7CpSNdm2nDyOSg0GroK8R83"

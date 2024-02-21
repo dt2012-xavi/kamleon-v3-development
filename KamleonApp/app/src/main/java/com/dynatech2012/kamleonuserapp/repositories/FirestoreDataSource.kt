@@ -13,6 +13,7 @@ import com.dynatech2012.kamleonuserapp.extensions.addHours
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
+import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.models.RawMeasureData
 import com.dynatech2012.kamleonuserapp.models.UserStatus
 import com.google.android.gms.tasks.OnCompleteListener
@@ -260,6 +261,44 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
                         }
                 }
             }
+    }
+
+    suspend fun deleteToken(): Response<Boolean> = suspendCoroutine { continuation ->
+        if (uuid == null) {
+            continuation.resume(Response.Failure(Exception("User not logged in")))
+            return@suspendCoroutine
+        }
+        db.collection(USERS_COLLECTION).document(uuid!!)
+            .update(USERS_TOKEN, "")
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    continuation.resume(Response.Success(true))
+                } else {
+                    continuation.resume(Response.Failure(Exception("Could not delete firebase messaging token")))
+                }
+            }
+    }
+
+    suspend fun uploadQrId(qrResponse: QRResponse?): Response<Boolean> {
+        if (uuid == null) {
+            return Response.Failure(Exception("User not logged in"))
+        }
+        if (qrResponse == null) {
+            return Response.Failure(Exception("QR response is null"))
+        }
+        return try {
+            db.collection(FirebaseConstants.QR_COLLECTION).document(qrResponse.unitId).set(
+                hashMapOf(
+                    "sessionId" to qrResponse.sessionId,
+                    "userId" to uuid
+                )
+            ).await()
+            Log.d(TAG, "qr upload success")
+            Response.Success(true)
+        } catch (e: Exception) {
+            Log.d(TAG, "QR upload exception: $e")
+            Response.Failure(e)
+        }
     }
 
     companion object {

@@ -46,6 +46,7 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
      * Edu:<br></br>
      * Upload a new scanned QR ID to Realtime
     </font> */
+    /*
     fun uploadQrId(qrId: String?) {
         //DatabaseReference qrRef = db.getReference(REALTIME_COLLECTION_QR_LOGIN + qrId);
         try {
@@ -60,6 +61,7 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
             Log.d(TAG, "QR upload exception: $e")
         }
     }
+    */
 
     /**
      *

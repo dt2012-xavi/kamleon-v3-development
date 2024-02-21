@@ -11,6 +11,8 @@ import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
 import coil.request.ImageRequest
 import com.dynatech2012.kamleonuserapp.constants.Constants
+import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_FIRST_LOGIN
+import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_NEW_MEASURE
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
 import com.dynatech2012.kamleonuserapp.database.MeasureData
@@ -20,6 +22,7 @@ import com.dynatech2012.kamleonuserapp.fragments.SettingFragment
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.models.Invitation
+import com.dynatech2012.kamleonuserapp.models.InvitationRole
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
 import com.dynatech2012.kamleonuserapp.models.Organization
 import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
@@ -32,7 +35,6 @@ import com.dynatech2012.kamleonuserapp.utils.SharedPrefUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -153,6 +155,7 @@ class MainViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch(Dispatchers.IO) {
+            firestoreRepo.deleteToken()
             databaseRepository.deleteAllMeasures()
             SharedPrefUtil(appContext).removeUser()
             measuresRepository.closeChannels()
@@ -332,6 +335,8 @@ class MainViewModel @Inject constructor(
                     } }
         */
         }
+        SharedPrefUtil(appContext).saveBoolean(PREF_NEW_MEASURE, false)
+
     }
 
 
@@ -401,9 +406,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun acceptInvitation(invitationId: String) {
+    fun acceptInvitation(invitationId: String, role: InvitationRole, optional: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            val response = cloudFunctions.acceptInvitation(invitationId)
+            val opt = optional && role == InvitationRole.KAMLEON_VIEWER
+            val response = cloudFunctions.acceptInvitation(invitationId, opt)
             if (response.isSuccess) {
                 Log.d(TAG, "HHH acceptInvitation: success")
                 gettingInvitationsAfterModifyingOne = true
@@ -580,6 +586,19 @@ class MainViewModel @Inject constructor(
         return observable
     }
      */
+
+    fun getFirstLogin(): Boolean {
+        val firstLogin = SharedPrefUtil(appContext).getBoolean(PREF_FIRST_LOGIN, true)
+        SharedPrefUtil(appContext).saveBoolean(PREF_FIRST_LOGIN, false)
+        return firstLogin
+    }
+
+    fun checkNewMeasures() {
+        val newMeasures =  SharedPrefUtil(appContext).getBoolean(PREF_NEW_MEASURE, false)
+        if (newMeasures) {
+            getUserMeasures()
+        }
+    }
 
     companion object {
         val TAG = MainViewModel::class.simpleName

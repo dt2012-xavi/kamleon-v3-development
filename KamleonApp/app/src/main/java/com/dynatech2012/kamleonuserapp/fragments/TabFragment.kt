@@ -2,7 +2,6 @@ package com.dynatech2012.kamleonuserapp.fragments
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -18,15 +17,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.camera.QRCodeFoundListener
 import com.dynatech2012.kamleonuserapp.databinding.ActivityTabBinding
+import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.viewmodels.QrViewModel
-import com.google.android.material.snackbar.Snackbar
 import com.google.common.util.concurrent.ListenableFuture
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.ExecutionException
@@ -50,6 +48,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
 
     override fun initView() {
         Log.d(TAG, "initView")
+        getFirstLogin()
         bindViews()
         //val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_host_fragment_tab) as NavHostFragment
         val navHostFragment = binding.navHostFragmentTab.getFragment<NavHostFragment>()
@@ -108,6 +107,21 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         // Scan
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.checkNewMeasures()
+    }
+
+    private fun getFirstLogin() {
+        val isFirstLogin = viewModel.getFirstLogin()
+        if (isFirstLogin) {
+            //val navHostFragment = binding.navHostFragmentTab.getFragment<NavHostFragment>()
+            val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
+            val navController = navHostFragment.navController
+            navController.navigate(R.id.action_tabFragment_to_tutorialFragment)
+        }
+    }
+
     private fun bindViews()
     {
         previewView = binding.cameraPreview
@@ -136,6 +150,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
                 else -> { }
             }
         }
+        qrViewModel.qrResponse.observe(viewLifecycleOwner, this::uploadQr)
     }
 
     private fun selectTab(tabIndex: Int) {
@@ -247,6 +262,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         Log.d(TAG, "qrScanner, bindCameraPreview 2")
         appendDebugText("QR debug -- starting surface provider set")
         // Callback when result from analyzing image is returned
+        /*
         qrListener = object : QRCodeFoundListener {
             var qrFound = false
             override fun onQRCodeFound(qrCode: String) {
@@ -272,6 +288,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
                 Log.e(TAG, "qrScanner, qrCode NOT FOUND, exception: ", e)
             }
         }
+        */
 
         // Create QRCode analyzer to analyze image
         //imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), new QRCodeImageAnalyzerKotlin(qrListener));
@@ -287,12 +304,21 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         qrViewModel.cameraStarted = true
     }
 
-    private fun uploadQr(qrCode: String) {
-        Log.d(TAG, "qrCode: $qrCode")
-        appendDebugText("QR debug -- uploading to realtime")
-        qrViewModel.uploadQRtoRealtime(qrCode)
-        appendDebugText("QR debug -- uploaded to realtime, going back to home")
-        selectTab(0)
+    private fun uploadQr(qrResponse: Response<QRResponse>) {
+        when (qrResponse) {
+            is Response.Success -> {
+                Log.d(TAG, "qrScanner, qrString: ${qrResponse.data}")
+                appendDebugText("QR debug -- uploading to realtime")
+                qrViewModel.uploadQRtoFirestore(qrResponse.data)
+                appendDebugText("QR debug -- uploaded to realtime, going back to home")
+                selectTab(0)
+            }
+            is Response.Failure -> {
+                Log.e(TAG, "qrScanner, qrString eeror : ${qrResponse.exception}")
+                appendDebugText("QR debug FROM ANALYZER error -- ${qrResponse.exception}")
+            }
+            else -> { }
+        }
     }
 
     private fun appendDebugText(text: String) {
