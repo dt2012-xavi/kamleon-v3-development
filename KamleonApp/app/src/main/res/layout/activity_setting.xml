@@ -586,12 +586,12 @@
                     android:paddingTop="12dp">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
-                        android:id="@+id/accMenuItemTOS"
+                        android:id="@+id/accMenuItemDSP"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"
-                        app:settingTypeLabel="@string/setting_label_tos"
+                        app:settingTypeLabel="@string/setting_label_dsp"
                         app:settingTypeValue="" />
 
                     <View
@@ -601,12 +601,12 @@
                         android:background="@color/kamleon_secondary_grey_40" />
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
-                        android:id="@+id/accMenuItemDSP"
+                        android:id="@+id/accMenuItemTOS"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"
-                        app:settingTypeLabel="@string/setting_label_dsp"
+                        app:settingTypeLabel="@string/setting_label_tos"
                         app:settingTypeValue="" />
 
                     <View

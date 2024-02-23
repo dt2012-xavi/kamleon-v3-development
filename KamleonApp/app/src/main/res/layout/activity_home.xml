@@ -80,8 +80,8 @@
                 android:elevation="5dp"
                 android:layout_alignEnd="@+id/cv_home_profile"
                 android:layout_alignTop="@+id/cv_home_profile"
-                android:layout_marginTop="7dp"
-                android:layout_marginEnd="7dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="2dp"
                 android:importantForAccessibility="no" />
         </RelativeLayout>
 

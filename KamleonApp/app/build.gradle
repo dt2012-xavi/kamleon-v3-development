@@ -140,7 +140,7 @@ dependencies {
     //kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
     // Gson
-    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.code.gson:gson:2.10'
 
     // Camera
     // The following line is optional, as the core library is included indirectly by camera-camera2

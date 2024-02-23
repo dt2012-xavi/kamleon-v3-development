@@ -65,7 +65,7 @@
                 android:text="@string/noti_confirm"
                 android:background="@drawable/bg_btn_round_blue"
                 android:textAppearance="@drawable/color_blue_text_button"
-                android:enabled="true"
+                android:enabled="false"
                 android:textSize="@dimen/ts_16"
                 android:textColor="?attr/colorOnSurfaceInverse"
                 style="@style/CircularBoldFont"
@@ -92,6 +92,73 @@
                 android:text="@string/noti_deny"
                 android:textAlignment="center"
                 android:textColor="@drawable/color_blue_text_button"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_invitation_policy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/cb_invitation_policy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/tv_invitation_policy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="2dp"
+                android:text="@string/noti_pending_policy"
+                android:textAppearance="@style/TextAppearance.Kamleon.Caption"
+                android:textColor="?attr/colorOnSurfaceTertiaryInverse" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_invitation_consent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <CheckBox
+                android:id="@+id/cb_invitation_consent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="top"/>
+
+            <TextView
+                android:id="@+id/tv_invitation_consent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="2dp"
+                android:gravity="center_vertical"
+
+                android:text="@string/noti_pending_consent"
+                android:textAppearance="@style/TextAppearance.Kamleon.Caption"
+                android:textColor="?attr/colorOnSurfaceTertiaryInverse" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_invitation_name_consent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+        <CheckBox
+                android:id="@+id/cb_invitation_name_consent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="top"/>
+
+            <TextView
+                android:id="@+id/tv_invitation_name_consent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="2dp"
+                android:gravity="center_vertical"
+                android:text="@string/noti_pending_name_consent"
+                android:textAppearance="@style/TextAppearance.Kamleon.Caption"
+                android:textColor="?attr/colorOnSurfaceTertiaryInverse" />
         </LinearLayout>
     </LinearLayout>
     <ProgressBar

@@ -17,6 +17,7 @@ import coil.load
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.adapters.OrganizationsListAdapter
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
+import com.dynatech2012.kamleonuserapp.constants.UrlConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivitySettingBinding
 import com.dynatech2012.kamleonuserapp.extensions.addYears
 import com.dynatech2012.kamleonuserapp.models.CustomUser
@@ -231,7 +232,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     private fun showDateNotAllowedDialog() {
         val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         val inflater = this.layoutInflater
-        val dialogView: View = inflater.inflate(R.layout.layout_dialog_profile_ready, null)
+        val dialogView: View = inflater.inflate(R.layout.layout_dialog_ok, null)
 
         dialog.setView(dialogView)
         dialog.setCancelable(false)
@@ -240,7 +241,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
         val tvDescr = dialogView.findViewById<TextView>(R.id.tvDialogDesc)
         tvDescr.text = getString(R.string.dialog_profile_date_not_allowed)
-        tvDescr.setOnClickListener {
+        val tvOk = dialogView.findViewById<TextView>(R.id.tvBtnOk)
+        tvOk.setOnClickListener {
             logoutDialog.dismiss()
         }
     }
@@ -283,16 +285,16 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
                 findNavController().navigate(R.id.action_settingFragment_to_pinFragment)
             }
             binding.accMenuItemHelp -> {
-                openWebBrowser("https://help.com")
-            }
-            binding.accMenuItemTOS -> {
-                openWebBrowser("https://terms_of_use.com")
+                findNavController().navigate(R.id.action_settingFragment_to_tutorialFragment)
             }
             binding.accMenuItemDSP -> {
-                showDeleteAccountDialog()
+                openWebBrowser(UrlConstants.URL_CONSENT)
+            }
+            binding.accMenuItemTOS -> {
+                openWebBrowser(UrlConstants.URL_TERMS)
             }
             binding.accMenuItemPP -> {
-                openWebBrowser("https://privacy_policy.com")
+                openWebBrowser(UrlConstants.URL_POLICY)
             }
             binding.prefMenuItemWeight -> {
                 showWeightPicker()

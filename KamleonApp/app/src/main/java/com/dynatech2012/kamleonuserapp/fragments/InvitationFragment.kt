@@ -2,11 +2,12 @@ package com.dynatech2012.kamleonuserapp.fragments
 
 import android.app.Dialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import com.dynatech2012.kamleonuserapp.adapters.OldInvitationListAdapter
 import com.dynatech2012.kamleonuserapp.databinding.FragmentInvitationBinding
 import com.dynatech2012.kamleonuserapp.extensions.px
 import com.dynatech2012.kamleonuserapp.models.Invitation
+import com.dynatech2012.kamleonuserapp.models.InvitationRole
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -100,13 +102,16 @@ class InvitationFragment : BottomSheetDialogFragment() {
         val adapterNewInvitations = NewInvitationListAdapter()
         adapterNewInvitations.setNotificationListItemViewListener(object :
             NewInvitationListAdapter.NotificationListItemViewListener {
-            override fun onClick(invitation: Invitation, accepted: Boolean) {
+            override fun onClick(invitation: Invitation, accepted: Boolean, optional: Boolean) {
                 Log.d(TAG, "onClick")
                 if (accepted)
-                    viewModel.acceptInvitation(invitation.id)
+                    viewModel.acceptInvitation(invitation.id, invitation.role, optional)
                 else
                     viewModel.rejectInvitation(invitation.id)
                 dismissListener?.onDismissFragment()
+            }
+            override fun onLinkClick(url: String) {
+                openWebBrowser(url)
             }
         })
         binding.rvNewInvitationList.layoutManager = LinearLayoutManager(requireContext())
@@ -156,6 +161,11 @@ class InvitationFragment : BottomSheetDialogFragment() {
                 dismissListener = listener
             }
         val TAG: String = InvitationFragment::class.java.simpleName
+    }
+
+    fun openWebBrowser(with: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(with))
+        startActivity(browserIntent)
     }
 }
 

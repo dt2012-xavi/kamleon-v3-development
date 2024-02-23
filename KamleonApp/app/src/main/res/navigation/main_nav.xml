@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_tabFragment_to_graphicsFragment"
             app:destination="@id/graphicsFragment" />
+        <action
+            android:id="@+id/action_tabFragment_to_tutorialFragment"
+            app:destination="@id/tutorialFragment" />
     </fragment>
 
     <include app:graph="@navigation/tab_nav" />
@@ -69,6 +72,9 @@
         <action
             android:id="@+id/action_settingFragment_to_deleteFragment"
             app:destination="@id/deleteFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_tutorialFragment"
+            app:destination="@id/tutorialFragment" />
     </fragment>
 
     <fragment
@@ -108,6 +114,16 @@
         <action
             android:id="@+id/action_pwdFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/tutorialFragment"
+        android:name="com.dynatech2012.kamleonuserapp.fragments.TutorialFragment"
+        android:label="fragment_tutorial"
+        tools:layout="@layout/fragment_tutorial" >
+        <action
+            android:id="@+id/action_tutorialFragment_to_tabFragment"
+            app:destination="@id/tabFragment" />
     </fragment>
 
 

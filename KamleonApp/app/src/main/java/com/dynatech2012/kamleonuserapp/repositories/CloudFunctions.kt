@@ -56,15 +56,15 @@ class CloudFunctions(private val userRepository: UserRepository) {
             }
     }
 
-    suspend fun acceptInvitation(invitationId: String): ResponseNullable<Nothing> {
-        return changeInvitationStatus(invitationId, InvitationStatus.ACCEPTED)
+    suspend fun acceptInvitation(invitationId: String, optional: Boolean): ResponseNullable<Nothing> {
+        return changeInvitationStatus(invitationId, InvitationStatus.ACCEPTED, optional)
     }
 
     suspend fun rejectInvitation(invitationId: String): ResponseNullable<Nothing> {
-        return changeInvitationStatus(invitationId, InvitationStatus.REJECTED)
+        return changeInvitationStatus(invitationId, InvitationStatus.REJECTED, false)
     }
 
-    private suspend fun changeInvitationStatus(invitationId: String, status: InvitationStatus): ResponseNullable<Nothing> {// = suspendCoroutine { continuation ->
+    private suspend fun changeInvitationStatus(invitationId: String, status: InvitationStatus, optional: Boolean): ResponseNullable<Nothing> {// = suspendCoroutine { continuation ->
         if (uuid == null) {
             /*continuation.resume(ResponseNullable.Failure(Exception("User not logged in")))
             return@suspendCoroutine

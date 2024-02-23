@@ -8,7 +8,6 @@ import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.GregorianCalendar
 import java.util.Locale
 
 fun String.sha256(): String {
@@ -197,7 +196,8 @@ val Date.formatTime: String
         // If it's today, display the time (e.g., "19:00").
         if (date.isToday) {
             val dateFormater = SimpleDateFormat("HH:mm", Locale.US)
-            return dateFormater.format(date)
+            val stringDate =  dateFormater.format(date)
+            return "Today at $stringDate"
         }
         // If it's yesterday, display "Yesterday".
         else if (date.isYesterday) {
@@ -214,7 +214,16 @@ val Date.formatTime: String
         // If it's more than one week ago, display the full date.
         else {
             Log.d(Invitation.TAG, "invitationTime: is old: $date")
-            val dateFormater = SimpleDateFormat("d MMMM yyyy", Locale.US)
+            val day = date.day()
+            val daySuffix = if (day in 11..13) {
+                "th"
+            } else when (day % 10) {
+                1 -> "st"
+                2 -> "nd"
+                3 -> "rd"
+                else -> "th"
+            }
+            val dateFormater = SimpleDateFormat("d'$daySuffix' MMMM yyyy", Locale.US)
             return dateFormater.format(date)
         }
 

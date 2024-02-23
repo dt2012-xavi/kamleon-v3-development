@@ -100,7 +100,7 @@
                         android:text="pwd"/>
                     <ImageView
                         android:layout_width="@dimen/input_text_box_eye_width"
-                        android:layout_height="20dp"
+                        android:layout_height="10dp"
                         android:layout_marginStart="12dp"
                         android:clickable="true"
                         android:id="@+id/imageViewEye"
@@ -147,7 +147,7 @@
                         android:text=""/>
                     <ImageView
                         android:layout_width="@dimen/input_text_box_eye_width"
-                        android:layout_height="20dp"
+                        android:layout_height="10dp"
                         android:layout_marginStart="12dp"
                         android:clickable="true"
                         android:id="@+id/iv_pwd_new_eye"
@@ -188,7 +188,7 @@
                         android:text=""/>
                     <ImageView
                         android:layout_width="@dimen/input_text_box_eye_width"
-                        android:layout_height="20dp"
+                        android:layout_height="10dp"
                         android:layout_marginStart="12dp"
                         android:clickable="true"
                         android:id="@+id/iv_pwd_confirm_eye"

@@ -36,7 +36,7 @@
             android:layout_marginTop="8dp"
             android:textColor="@color/kamleon_dark_grey"
             android:text="@string/signup_desc"
-            android:textSize="@dimen/ts_20"/>
+            android:textSize="@dimen/ts_16"/>
     </LinearLayout>
 
     <LinearLayout

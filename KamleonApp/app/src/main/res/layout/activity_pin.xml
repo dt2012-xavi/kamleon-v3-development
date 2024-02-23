@@ -100,9 +100,8 @@
                         android:text="123456"/>
                     <ImageView
                         android:layout_width="@dimen/input_text_box_eye_width"
-                        android:layout_height="wrap_content"
+                        android:layout_height="10dp"
                         android:layout_marginStart="12dp"
-                        android:paddingVertical="4dp"
                         android:clickable="true"
                         android:id="@+id/imageViewEye"
                         android:scaleType="centerInside"
@@ -148,9 +147,8 @@
                         android:text=""/>
                     <ImageView
                         android:layout_width="@dimen/input_text_box_eye_width"
-                        android:layout_height="wrap_content"
+                        android:layout_height="10dp"
                         android:layout_marginStart="12dp"
-                        android:paddingVertical="4dp"
                         android:clickable="true"
                         android:id="@+id/iv_pin_new_eye"
                         android:scaleType="centerInside"
@@ -190,9 +188,8 @@
                         android:text=""/>
                     <ImageView
                         android:layout_width="@dimen/input_text_box_eye_width"
-                        android:layout_height="wrap_content"
+                        android:layout_height="10dp"
                         android:layout_marginStart="12dp"
-                        android:paddingVertical="4dp"
                         android:clickable="true"
                         android:id="@+id/iv_pin_confirm_eye"
                         android:scaleType="centerInside"

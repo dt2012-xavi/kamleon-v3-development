@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/kamleon_dark_grey"
+    tools:context=".fragments.TutorialFragment">
+    <ImageView
+        android:id="@+id/homeBg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/bg_tutorial_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:importantForAccessibility="no" />
+    <ImageView
+        android:id="@+id/btn_tutorial_back"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="60dp"
+        android:src="@drawable/ic_arrow_back_ios_new_24"
+        app:tint="@color/color_fa"
+        android:visibility="invisible"
+        android:importantForAccessibility="no" />
+    <TextView
+        android:id="@+id/tv_tutorial_step"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/btn_tutorial_back"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_tutorial_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="60dp"
+        android:textAppearance="@style/TextAppearance.Kamleon.Body1"
+        tools:text="1/6"
+        android:textColor="@color/color_fa"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/btn_tutorial_back"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_tutorial_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingHorizontal="106dp" >
+
+        <ProgressBar
+            android:id="@+id/pb_tutorial"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:progressTint="@color/color_fa"
+            android:max="6"
+            android:progress="1" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/btn_tutorial_next"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/round_blue_button_height"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_tutorial_skip"
+        android:layout_marginHorizontal="60dp"
+        android:gravity="center"
+        android:background="@drawable/bg_btn_round_white"
+        android:textAppearance="@style/TextAppearance.Kamleon.Subtitle1"
+        android:text="@string/onboard_button_next"
+        android:textColor="@drawable/color_text_button_black_round"/>
+    <TextView
+        android:id="@+id/btn_tutorial_skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="12dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginHorizontal="60dp"
+        android:textAppearance="@style/TextAppearance.Kamleon.Subtitle1"
+        android:text="@string/onboard_button_skip"
+        android:textColor="@drawable/color_text_button_blue_round"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
