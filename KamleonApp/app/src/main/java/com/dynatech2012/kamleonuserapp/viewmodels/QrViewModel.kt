@@ -65,8 +65,7 @@ class QrViewModel @Inject constructor(
                 if (qrString is Response.Success) {
                     Log.d(TAG, "qqqq4: ${qrString.data}")
                     val gson = Gson()
-                    gson.fromJson(qrString.data, QRResponse::class.java)
-                    val qrResponse = QRResponse()
+                    val qrResponse = gson.fromJson(qrString.data, QRResponse::class.java)
                     _qrResponse.postValue(Response.Success(qrResponse))
                 }
             }
