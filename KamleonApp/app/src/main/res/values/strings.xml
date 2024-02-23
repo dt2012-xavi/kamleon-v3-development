@@ -259,7 +259,8 @@
     <string name="dialog_reset_pwd_success_description">We\'ve sent you instructions to reset your password</string>
     <string name="dialog_reset_pwd_error_title">Error</string>
     <string name="dialog_reset_pwd_error_description">User not found</string>
-    
+    <string name="dialog_scan_scanned">QR scanned correctly</string>
+
     <!-- Error -->
     <string name="error_login">Error login</string>
 

@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dynatech2012.kamleonuserapp.camera.QRCodeImageAnalyzerMLKitKotlin
+import com.dynatech2012.kamleonuserapp.models.Event
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.RealtimeRepository
@@ -34,9 +35,13 @@ class QrViewModel @Inject constructor(
         realtime.uploadQrId(qrId)
     }*/
 
+    private var _qrUploaded: MutableLiveData<Event<Boolean>> = MutableLiveData()
+    val qrUploaded: LiveData<Event<Boolean>> = _qrUploaded
     fun uploadQRtoFirestore(qrResponse: QRResponse?) {
         viewModelScope.launch {
             firestoreDataSource.uploadQrId(qrResponse)
+            val currentValue = qrUploaded.value?.peek() ?: false
+            _qrUploaded.postValue(Event(!currentValue))
         }
     }
 
@@ -65,8 +70,7 @@ class QrViewModel @Inject constructor(
                 if (qrString is Response.Success) {
                     Log.d(TAG, "qqqq4: ${qrString.data}")
                     val gson = Gson()
-                    gson.fromJson(qrString.data, QRResponse::class.java)
-                    val qrResponse = QRResponse()
+                    val qrResponse = gson.fromJson(qrString.data, QRResponse::class.java)
                     _qrResponse.postValue(Response.Success(qrResponse))
                 }
             }

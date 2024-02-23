@@ -13,7 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class TutorialFragment : BaseFragment<FragmentTutorialBinding>() {
     override fun setBinding(): FragmentTutorialBinding = FragmentTutorialBinding.inflate(layoutInflater)
-
+    val viewModel: MainViewModel by activityViewModels()
     enum class OnBoardingStep(val step: Int) {
         Hydration(0),
         Recommendation(1),
@@ -42,7 +42,10 @@ class TutorialFragment : BaseFragment<FragmentTutorialBinding>() {
             val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
             val navController = navHostFragment.navController
             Log.d(TAG, "tutorial finished")
-            navController.navigate(R.id.action_tutorialFragment_to_tabFragment)
+            if (viewModel.tutorialComingFromHome)
+                navController.navigate(R.id.action_tutorialFragment_to_tabFragment)
+            else
+                navController.navigate(R.id.action_tutorialFragment_to_settingFragment)
         }
     }
 
@@ -53,7 +56,10 @@ class TutorialFragment : BaseFragment<FragmentTutorialBinding>() {
                 val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
                 val navController = navHostFragment.navController
                 Log.d(TAG, "tutorial finished")
-                navController.navigate(R.id.action_tutorialFragment_to_tabFragment)
+                if (viewModel.tutorialComingFromHome)
+                    navController.navigate(R.id.action_tutorialFragment_to_tabFragment)
+                else
+                    navController.navigate(R.id.action_tutorialFragment_to_settingFragment)
             }
             else -> {
                 goNextStep()

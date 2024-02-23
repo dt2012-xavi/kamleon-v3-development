@@ -22,6 +22,7 @@ import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -277,6 +278,26 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
                     continuation.resume(Response.Failure(Exception("Could not delete firebase messaging token")))
                 }
             }
+    }
+
+    suspend fun updateLegal(isAdmin: Boolean): Response<Boolean> {
+        if (uuid == null) {
+            return Response.Failure(Exception("User not logged in"))
+        }
+        return try {
+            val map = if (isAdmin) {
+                mapOf("legal.privacyPolicyAdmin" to true)
+            } else {
+                mapOf("legal.privacyPolicyApp" to true, "legal.healthConsent" to true)
+            }
+            db.collection(USERS_COLLECTION).document(uuid!!)
+                .update(map).await()
+            Log.d(TAG, "update legal success")
+            Response.Success(true)
+        } catch (e: Exception) {
+            Log.d(TAG, "update legal exception: $e")
+            Response.Failure(e)
+        }
     }
 
     suspend fun uploadQrId(qrResponse: QRResponse?): Response<Boolean> {

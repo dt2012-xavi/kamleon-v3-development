@@ -40,9 +40,9 @@ class CloudFunctions(private val userRepository: UserRepository) {
         functions.getHttpsCallable("getInvitationsForUser").call(body)
             .addOnSuccessListener { result ->
                 val data = result?.data as? ArrayList<HashMap<String, Any>> ?: ArrayList()
-                Log.d(TAG, "get invitations complete: $data")
                 val invitations = ArrayList<Invitation>()
                 data.forEach {
+                    Log.d(TAG, "get invitations complete: $it")
                     val inv = Invitation(it)
                     invitations.add(inv)
                 }
@@ -108,7 +108,7 @@ class CloudFunctions(private val userRepository: UserRepository) {
         functions.getHttpsCallable("getUserProfiles").call(body)
             .addOnSuccessListener { result ->
                 val data = result?.data as? ArrayList<HashMap<String, Any>> ?: ArrayList()
-                Log.d(TAG, "get invitations complete: $data")
+                Log.d(TAG, "get user profiles complete: $data")
                 val organizations = ArrayList<Organization>()
                 data.forEach {
                     val organization = Organization(it)

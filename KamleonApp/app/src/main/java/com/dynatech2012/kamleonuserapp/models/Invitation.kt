@@ -1,12 +1,6 @@
 package com.dynatech2012.kamleonuserapp.models
 
-import android.util.Log
-import com.dynatech2012.kamleonuserapp.extensions.isLastWeek
-import com.dynatech2012.kamleonuserapp.extensions.isToday
-import com.dynatech2012.kamleonuserapp.extensions.isYesterday
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 enum class InvitationStatus(val rawValue: String) {
     ACCEPTED(rawValue = "accepted"),
@@ -29,7 +23,8 @@ enum class InvitationRole(val rawValue: String) {
     CENTERSTAFF_ADMIN(rawValue = "centerstaff_admin"),
     CENTERSTAFF_ADMIN_RESTRICTED(rawValue = "centerstaff_admin_restricted"),
     TEAMSTAFF_PRO(rawValue = "teamstaff_pro"),
-    TEAMSTAFF_USER(rawValue = "teamstaff_user");
+    TEAMSTAFF_USER(rawValue = "teamstaff_user"),
+    TEAMSTAFF_LECTOR(rawValue = "teamstaff_lector");
     companion object {
         operator fun invoke(rawValue: String): InvitationRole? = InvitationRole.values().firstOrNull { it.rawValue == rawValue }
     }
@@ -98,8 +93,18 @@ data class Invitation (
                 InvitationRole.TEAMSTAFF_PRO, InvitationRole.TEAMSTAFF_USER -> {
                     return "$organizationName has invited you to $teamName team"
                 }
+                InvitationRole.TEAMSTAFF_LECTOR -> {
+                    return "$organizationName has invited you to $teamName team"
+                }
             }
         }
+
+    val isAdmin: Boolean
+        get() =
+            when (role) {
+                InvitationRole.TEAMSTAFF_USER, InvitationRole.TEAMSTAFF_LECTOR -> true
+                else -> false
+            }
 
     override fun equals(other: Any?): Boolean {
         return if (other is Invitation) {

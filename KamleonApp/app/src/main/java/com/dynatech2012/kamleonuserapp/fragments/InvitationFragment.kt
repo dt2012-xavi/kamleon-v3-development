@@ -105,7 +105,7 @@ class InvitationFragment : BottomSheetDialogFragment() {
             override fun onClick(invitation: Invitation, accepted: Boolean, optional: Boolean) {
                 Log.d(TAG, "onClick")
                 if (accepted)
-                    viewModel.acceptInvitation(invitation.id, invitation.role, optional)
+                    viewModel.acceptInvitation(invitation.id, invitation.role, invitation.isAdmin, optional)
                 else
                     viewModel.rejectInvitation(invitation.id)
                 dismissListener?.onDismissFragment()

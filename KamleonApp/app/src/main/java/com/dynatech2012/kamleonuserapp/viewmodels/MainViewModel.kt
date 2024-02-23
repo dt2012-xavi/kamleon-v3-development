@@ -406,12 +406,13 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun acceptInvitation(invitationId: String, role: InvitationRole, optional: Boolean) {
+    fun acceptInvitation(invitationId: String, role: InvitationRole, isAdmin: Boolean, optional: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             val opt = optional && role == InvitationRole.KAMLEON_VIEWER
             val response = cloudFunctions.acceptInvitation(invitationId, opt)
             if (response.isSuccess) {
                 Log.d(TAG, "HHH acceptInvitation: success")
+                firestoreRepo.updateLegal(isAdmin)
                 gettingInvitationsAfterModifyingOne = true
                 getInvitations()
             }
@@ -599,6 +600,8 @@ class MainViewModel @Inject constructor(
             getUserMeasures()
         }
     }
+
+    var tutorialComingFromHome: Boolean = true
 
     companion object {
         val TAG = MainViewModel::class.simpleName

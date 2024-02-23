@@ -285,6 +285,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
                 findNavController().navigate(R.id.action_settingFragment_to_pinFragment)
             }
             binding.accMenuItemHelp -> {
+                viewModel.tutorialComingFromHome = false
                 findNavController().navigate(R.id.action_settingFragment_to_tutorialFragment)
             }
             binding.accMenuItemDSP -> {
