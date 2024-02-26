@@ -417,7 +417,10 @@ class MainViewModel @Inject constructor(
             val response = cloudFunctions.acceptInvitation(invitationId, opt)
             if (response.isSuccess) {
                 Log.d(TAG, "HHH acceptInvitation: success")
-                firestoreRepo.updateLegal(isAdmin)
+                if (isAdmin)
+                    firestoreRepo.updateLegal(true, false, false)
+                else
+                    firestoreRepo.updateLegal(false, true, true)
                 gettingInvitationsAfterModifyingOne = true
                 getInvitations()
             }
@@ -599,13 +602,6 @@ class MainViewModel @Inject constructor(
         return firstLogin
     }
 
-    fun getAcceptedPolicy(): Boolean {
-        return SharedPrefUtil(appContext).getBoolean(PREF_ACCEPTED_POLICY, false)
-    }
-
-    fun acceptPolicy() {
-        SharedPrefUtil(appContext).saveBoolean(PREF_ACCEPTED_POLICY, true)
-    }
 
     fun checkNewMeasures() {
         val newMeasures =  SharedPrefUtil(appContext).getBoolean(PREF_NEW_MEASURE, false)

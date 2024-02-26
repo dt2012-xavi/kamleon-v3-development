@@ -280,16 +280,20 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
             }
     }
 
-    suspend fun updateLegal(isAdmin: Boolean): Response<Boolean> {
+    //suspend fun updateLegal(isAdmin: Boolean): Response<Boolean> {
+    suspend fun updateLegal(policyAdmin: Boolean, policyApp: Boolean, consent: Boolean): Response<Boolean> {
         if (uuid == null) {
             return Response.Failure(Exception("User not logged in"))
         }
         return try {
-            val map = if (isAdmin) {
-                mapOf("legal.privacyPolicyAdmin" to true)
-            } else {
-                mapOf("legal.privacyPolicyApp" to true, "legal.healthConsent" to true)
-            }
+            val mutableMap = mutableMapOf<String, Boolean>()
+            if (policyAdmin)
+                mutableMap["legal.privacyPolicyAdmin"] = true
+            if (policyApp)
+                mutableMap["legal.privacyPolicyApp"] = true
+            if (consent)
+                mutableMap["legal.healthConsent"] = true
+            val map = mutableMap.toMap()
             db.collection(USERS_COLLECTION).document(uuid!!)
                 .update(map).await()
             Log.d(TAG, "update legal success")
@@ -321,6 +325,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
             Response.Failure(e)
         }
     }
+
 
     companion object {
         val TAG = FirestoreDataSource::class.simpleName

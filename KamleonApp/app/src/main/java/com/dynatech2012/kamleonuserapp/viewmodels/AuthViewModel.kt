@@ -27,9 +27,11 @@ class AuthViewModel @Inject constructor(
     private val cloudFuctions: CloudFunctions
 ): ViewModel() {
 
-    var isReady = false
+    private val _isReady = MutableLiveData<Boolean>()
+    val isReady: LiveData<Boolean> = _isReady
     var alreadyLogged = false
     var alreadyVerified = false
+    var alreadyPolicy = false
     var alreadySplash = false
 
     var fName: String? = ""
@@ -89,6 +91,15 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun acceptPolicy() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val policyResponse = firestoreRepo.updateLegal(false, true, false)
+            if (policyResponse.isSuccess) {
+                _uiState.postValue(7)
+            }
+        }
+    }
+
     fun login(email: String, pass: String) {
         _uiState.value = 1
         if (!isValidEmail(email)) {
@@ -100,8 +111,17 @@ class AuthViewModel @Inject constructor(
             if (authResult.isSuccess && authResult.dataValue != null)
                 if (!authRepo.isEmailVerified)
                     _uiState.postValue(-5)
-                else
-                    _uiState.postValue(6)
+                else {
+                    val userResponse = firestoreRepo.getUserData()
+                    if (userResponse.isSuccess && userResponse.dataValue?.legal?.privacyPolicyApp == true) {
+                        Log.d(TAG, "login:success: ${authResult.dataValue?.legal}")
+                        _uiState.postValue(7)
+                    }
+                    else {
+                        Log.d(TAG, "login:success: ${authResult.dataValue?.legal}")
+                        _uiState.postValue(6)
+                    }
+                }
             else if (authResult.isFailure) {
                 when (val e = authResult.error) {
                     is com.google.firebase.auth.FirebaseAuthInvalidUserException -> {
@@ -133,14 +153,25 @@ class AuthViewModel @Inject constructor(
     fun resetLogged() {
         alreadyLogged = false
         alreadyVerified = false
-        isReady = false
+        alreadyPolicy = false
+        _isReady.value = false
     }
 
     fun checkLogin() {
         alreadyLogged = authRepo.checkLogged
         alreadyVerified = authRepo.isEmailVerified
-        isReady = true
+        viewModelScope.launch(Dispatchers.IO) {
+            val userResponse = firestoreRepo.getUserData()
+            if (userResponse.isSuccess) {
+                val user = userResponse.dataValue
+                if (user?.legal?.privacyPolicyApp == true)
+                    alreadyPolicy = true
+            }
+            Log.d(TAG, "checkLogin: $alreadyLogged, $alreadyVerified, $alreadyPolicy")
+            _isReady.postValue(true)
+        }
     }
+
 
     private fun isValidEmail(target: CharSequence): Boolean {
         return !TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches()

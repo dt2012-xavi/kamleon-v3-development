@@ -60,7 +60,6 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
     override fun initView() {
         Log.d(TAG, "initView")
         getFirstLogin()
-        checkAcceptedPolicy()
         bindViews()
         //val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_host_fragment_tab) as NavHostFragment
         val navHostFragment = binding.navHostFragmentTab.getFragment<NavHostFragment>()
@@ -134,36 +133,6 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         }
     }
 
-    private fun checkAcceptedPolicy() {
-        val acceptedPolicy = viewModel.getAcceptedPolicy()
-        if (!acceptedPolicy) {
-            showPolicyDialog()
-        }
-    }
-
-    private fun showPolicyDialog() {
-        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        val inflater = this.layoutInflater
-        val dialogView: View = inflater.inflate(R.layout.layout_dialog_policy, null)
-
-        dialog.setView(dialogView)
-        dialog.setCancelable(false)
-        dialogView.findViewById<TextView>(R.id.tv_dialog_policy_desc).setOnClickListener {
-            // Open web policy
-            openWebBrowser(UrlConstants.URL_POLICY)
-        }
-        dialogView.findViewById<TextView>(R.id.tv_dialog_policy_disagree).setOnClickListener {
-            // dismiss dialog
-            finishAffinity(requireActivity())
-        }
-        val logoutDialog = dialog.show()
-        dialogView.findViewById<TextView>(R.id.tv_dialog_policy_agree).setOnClickListener {
-            viewModel.acceptPolicy()
-            // dismiss dialog
-            logoutDialog.dismiss()
-        }
-        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-    }
 
     private fun bindViews()
     {

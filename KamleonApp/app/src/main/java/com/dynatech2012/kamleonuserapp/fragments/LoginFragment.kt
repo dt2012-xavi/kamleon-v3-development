@@ -11,11 +11,13 @@ import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.MainActivity
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
+import com.dynatech2012.kamleonuserapp.constants.UrlConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityLoginBinding
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -86,6 +88,12 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
                 binding.pbLogin.visibility = INVISIBLE
             }
             6 -> {
+                binding.btnSignIn.isEnabled = false
+                binding.btnSignIn.text = ""
+                binding.pbLogin.visibility = VISIBLE
+                showPolicyDialog()
+            }
+            7 -> {
                 binding.btnSignIn.isEnabled = true
                 binding.btnSignIn.text = getString(R.string.login_btn_signin)
                 binding.pbLogin.visibility = INVISIBLE
@@ -127,5 +135,29 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
         dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener {
             logoutDialog.dismiss()
         }
+    }
+
+    private fun showPolicyDialog() {
+        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        val inflater = this.layoutInflater
+        val dialogView: View = inflater.inflate(R.layout.layout_dialog_policy, null)
+
+        dialog.setView(dialogView)
+        dialog.setCancelable(false)
+        dialogView.findViewById<TextView>(R.id.tv_dialog_policy_desc).setOnClickListener {
+            // Open web policy
+            openWebBrowser(UrlConstants.URL_POLICY)
+        }
+        dialogView.findViewById<TextView>(R.id.tv_dialog_policy_disagree).setOnClickListener {
+            // dismiss dialog
+            ActivityCompat.finishAffinity(requireActivity())
+        }
+        val logoutDialog = dialog.show()
+        dialogView.findViewById<TextView>(R.id.tv_dialog_policy_agree).setOnClickListener {
+            viewModel.acceptPolicy()
+            // dismiss dialog
+            logoutDialog.dismiss()
+        }
+        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 }
