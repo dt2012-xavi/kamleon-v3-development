@@ -102,8 +102,8 @@ data class Invitation (
     val isAdmin: Boolean
         get() =
             when (role) {
-                InvitationRole.TEAMSTAFF_USER, InvitationRole.TEAMSTAFF_LECTOR -> true
-                else -> false
+                InvitationRole.TEAMSTAFF_USER, InvitationRole.TEAMSTAFF_LECTOR -> false
+                else -> true
             }
 
     override fun equals(other: Any?): Boolean {

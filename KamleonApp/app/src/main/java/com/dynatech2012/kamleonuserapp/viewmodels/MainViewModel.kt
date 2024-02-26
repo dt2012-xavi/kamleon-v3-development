@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
 import coil.request.ImageRequest
 import com.dynatech2012.kamleonuserapp.constants.Constants
+import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_ACCEPTED_POLICY
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_FIRST_LOGIN
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_NEW_MEASURE
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
@@ -20,9 +21,9 @@ import com.dynatech2012.kamleonuserapp.extensions.addDays
 import com.dynatech2012.kamleonuserapp.extensions.sha256
 import com.dynatech2012.kamleonuserapp.fragments.SettingFragment
 import com.dynatech2012.kamleonuserapp.models.CustomUser
+import com.dynatech2012.kamleonuserapp.models.Event
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.models.Invitation
-import com.dynatech2012.kamleonuserapp.models.InvitationRole
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
 import com.dynatech2012.kamleonuserapp.models.Organization
 import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
@@ -71,8 +72,8 @@ class MainViewModel @Inject constructor(
     private val _userImagePrevUri = MutableLiveData<Uri?>()
     val userImagePrevUri: LiveData<Uri?> = _userImagePrevUri
 
-    private val _userImageUri = MutableLiveData<Uri?>()
-    val userImageUri: LiveData<Uri?> = _userImageUri
+    private val _userImageUri = MutableLiveData<Event<Uri?>>()
+    val userImageUri: LiveData<Event<Uri?>> = _userImageUri
 
     private val _userImageDrawable = MutableLiveData<Drawable?>()
     val userImageDrawable: LiveData<Drawable?> = _userImageDrawable
@@ -209,7 +210,7 @@ class MainViewModel @Inject constructor(
     fun setImageUri(uri: Uri?) {
         _userImagePrevUri.postValue(uri)
         if (uri == null) {
-            _userImageUri.postValue(null)
+            _userImageUri.postValue(Event(null))
         }
         else {
             viewModelScope.launch(Dispatchers.IO) {
@@ -217,7 +218,7 @@ class MainViewModel @Inject constructor(
                 if (response.isSuccess && response.dataValue != null) {
                     getUserData()
                 }
-                _userImageUri.postValue(uri)
+                _userImageUri.postValue(Event(uri))
             }
         }
     }
@@ -382,6 +383,7 @@ class MainViewModel @Inject constructor(
     private var gettingInvitationsAfterModifyingOne = false
     fun resetGettingInvitationsAfterModifyingOne() {
         gettingInvitationsAfterModifyingOne = false
+        _recentInvitationModified.postValue(false)
     }
     fun getInvitations() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -406,9 +408,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun acceptInvitation(invitationId: String, role: InvitationRole, isAdmin: Boolean, optional: Boolean) {
+    fun acceptInvitation(invitation: Invitation, optional: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            val opt = optional && role == InvitationRole.KAMLEON_VIEWER
+            val invitationId = invitation.id
+            val isAdmin = invitation.isAdmin
+            val opt = optional && !isAdmin
+            Log.d(TAG, "HHH acceptInvitation: $invitationId, $opt")
             val response = cloudFunctions.acceptInvitation(invitationId, opt)
             if (response.isSuccess) {
                 Log.d(TAG, "HHH acceptInvitation: success")
@@ -592,6 +597,14 @@ class MainViewModel @Inject constructor(
         val firstLogin = SharedPrefUtil(appContext).getBoolean(PREF_FIRST_LOGIN, true)
         SharedPrefUtil(appContext).saveBoolean(PREF_FIRST_LOGIN, false)
         return firstLogin
+    }
+
+    fun getAcceptedPolicy(): Boolean {
+        return SharedPrefUtil(appContext).getBoolean(PREF_ACCEPTED_POLICY, false)
+    }
+
+    fun acceptPolicy() {
+        SharedPrefUtil(appContext).saveBoolean(PREF_ACCEPTED_POLICY, true)
     }
 
     fun checkNewMeasures() {

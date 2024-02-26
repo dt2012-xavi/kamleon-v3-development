@@ -84,6 +84,11 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
                 binding.btnSignIn.isEnabled = true
                 binding.btnSignIn.text = getString(R.string.login_btn_signin)
                 binding.pbLogin.visibility = INVISIBLE
+            }
+            6 -> {
+                binding.btnSignIn.isEnabled = true
+                binding.btnSignIn.text = getString(R.string.login_btn_signin)
+                binding.pbLogin.visibility = INVISIBLE
                 startActivity(Intent(requireContext(), MainActivity::class.java))
             }
         }
@@ -104,6 +109,10 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
         dialog.setCancelable(false)
         // -3 is email not valid, -2 is password not valid, -1 is firebase error
         dialogView.findViewById<TextView>(R.id.tvDialogTitle).text = getString(R.string.login_alert_title_login_error)
+        dialogView.findViewById<TextView>(R.id.tvDialogTitle).text = when (errorType) {
+            -5 -> getString(R.string.dialog_verify_title)
+            else -> getString(R.string.login_alert_title_login_error)
+        }
         dialogView.findViewById<TextView>(R.id.tvDialogDesc).text = when (errorType) {
             -5 -> getString(R.string.login_alert_description_not_verified_email)
             -4 -> getString(R.string.login_alert_description_not_valid_email)

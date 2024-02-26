@@ -8,7 +8,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -26,10 +25,8 @@ import com.dynatech2012.kamleonuserapp.models.Organization
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
 import com.ozcanalasalvar.datepicker.view.datepicker.DateChangeListener
-import com.ozcanalasalvar.datepicker.view.datepicker.DatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
-import java.time.Period
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Date
@@ -361,8 +358,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         binding.etAccSurName.setText(userData.lastName)
         binding.etAccName.setText(userData.name)
         binding.accMenuItemEmail.setValue(userData.email)
-        binding.prefMenuItemWeight.setValue(getString(R.string.setting_label_user_weight_text, userData.weight.toString()))
-        binding.prefMenuItemHeight.setValue(getString(R.string.setting_label_user_height_text, userData.height.toString()))
+        binding.prefMenuItemWeight.setValue(getString(R.string.setting_label_user_weight_text, (userData.weight ?: "-").toString()))
+        binding.prefMenuItemHeight.setValue(getString(R.string.setting_label_user_height_text, (userData.height ?: "-").toString()))
         binding.prefMenuItemGender.setValue(userData.gender.raw)
         val localDate: LocalDate = userData.dateOfBirth.toInstant().atZone(ZoneId.systemDefault())
             .toLocalDate()

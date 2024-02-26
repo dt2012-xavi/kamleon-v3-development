@@ -7,6 +7,7 @@ import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
 import com.dynatech2012.kamleonuserapp.models.Organization
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
@@ -30,6 +31,7 @@ class CloudFunctions(private val userRepository: UserRepository) {
     // Invitations
     suspend fun getInvitations(): Response<ArrayList<Invitation>> = suspendCoroutine { continuation ->
         Log.d(TAG, "will try to get invitations")
+
         if (email == null) {
             continuation.resume(Response.Failure(Exception("User not logged in")))
             return@suspendCoroutine
@@ -64,7 +66,7 @@ class CloudFunctions(private val userRepository: UserRepository) {
         return changeInvitationStatus(invitationId, InvitationStatus.REJECTED, false)
     }
 
-    private suspend fun changeInvitationStatus(invitationId: String, status: InvitationStatus, optional: Boolean): ResponseNullable<Nothing> {// = suspendCoroutine { continuation ->
+    private suspend fun changeInvitationStatus(invitationId: String, status: InvitationStatus, optional: Boolean?): ResponseNullable<Nothing> {// = suspendCoroutine { continuation ->
         if (uuid == null) {
             /*continuation.resume(ResponseNullable.Failure(Exception("User not logged in")))
             return@suspendCoroutine
@@ -75,8 +77,10 @@ class CloudFunctions(private val userRepository: UserRepository) {
         val body = hashMapOf(
             "invitationID" to invitationId,
             "userID" to uuid,
-            "status" to status.rawValue
+            "status" to status.rawValue,
+            "roster" to (optional ?: false)
         )
+        Log.d(TAG, "will try to change invitation status: $body")
         try {
             val result = functions.getHttpsCallable("changeInvitationStatus").call(body).await()
             val data = result.data as? ArrayList<HashMap<String, Any>>
@@ -136,6 +140,27 @@ class CloudFunctions(private val userRepository: UserRepository) {
             ResponseNullable.Success()
         } catch (e: Exception) {
             Log.d(MainViewModel.TAG, "HHH cloud funct reset password: failure: $e")
+            ResponseNullable.Failure(e)
+        }
+    }
+
+    suspend fun sendVerificationEmail(userId: String, email: String, username: String): ResponseNullable<Nothing> {
+        val body = hashMapOf(
+            "id" to userId,
+            "email" to email,
+            "username" to username
+        )
+        return try {
+            val result = functions.getHttpsCallable("sendEmailVerifyEmail").call(body).await()
+            val data = result.data as? HashMap<String, String>
+            val message = data?.get("message")
+            if (message != "Verify email sent successfully") {
+                //throw Exception("$message")
+            }
+            Log.d(MainViewModel.TAG, "HHH cloud funct verify email: success")
+            ResponseNullable.Success()
+        } catch (e: Exception) {
+            Log.d(MainViewModel.TAG, "HHH cloud funct verify email: failure: $e")
             ResponseNullable.Failure(e)
         }
     }

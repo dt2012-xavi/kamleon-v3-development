@@ -11,8 +11,8 @@ data class CustomUser(
     val lastName: String = "",
     val userStatus: UserStatus = UserStatus.undefined,
     var dateOfBirth: Date = Date(),// = LocalDate.MIN,
-    var height: Float = -1f,
-    var weight: Float = -1f,
+    var height: Float? = null,
+    var weight: Float? = null,
     var gender: Gender = Gender.none,
 
     var address: String = "",

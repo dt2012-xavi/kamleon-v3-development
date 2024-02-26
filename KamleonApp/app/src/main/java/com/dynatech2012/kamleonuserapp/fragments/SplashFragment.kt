@@ -50,7 +50,7 @@ class SplashFragment : BaseFragment<ActivitySplashBinding>() {
         binding.ivSplashGif.load(R.drawable.splash, imageLoader = imageLoader) {
             lifecycleScope.launch {
                 delay(2000)
-                if (viewModel.alreadyLogged) {
+                if (viewModel.alreadyLogged && viewModel.alreadyVerified) {
                     startActivity(Intent(requireContext(), MainActivity::class.java))
                 } else {
                     findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
@@ -65,7 +65,7 @@ class SplashFragment : BaseFragment<ActivitySplashBinding>() {
         if (viewModel.alreadySplash) {
             viewModel.resetLogged()
             viewModel.checkLogin()
-            if (viewModel.alreadyLogged) {
+            if (viewModel.alreadyLogged && viewModel.alreadyVerified) {
                 Log.d(TAG, "already logged")
                 startActivity(Intent(requireContext(), MainActivity::class.java))
             } else {

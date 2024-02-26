@@ -54,7 +54,11 @@
         android:id="@+id/onboardingFragment"
         android:name="com.dynatech2012.kamleonuserapp.fragments.OnboardingFragment"
         android:label="activity_onboarding"
-        tools:layout="@layout/activity_onboarding" />
+        tools:layout="@layout/activity_onboarding" >
+        <action
+            android:id="@+id/action_onboardingFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/registerFragment"

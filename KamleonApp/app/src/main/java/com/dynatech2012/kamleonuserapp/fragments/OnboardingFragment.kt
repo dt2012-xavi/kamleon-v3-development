@@ -1,20 +1,28 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.MainActivity
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityOnboardingBinding
+import com.dynatech2012.kamleonuserapp.extensions.addYears
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import com.ozcanalasalvar.datepicker.view.datapicker.DataPicker
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Date
 import java.util.GregorianCalendar
 
 @AndroidEntryPoint
@@ -63,6 +71,11 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
 
     override fun initView() {
         binding.progressStep.max = OnBoardingStep.values().size
+
+        val fourteenYearsAgo = Date().addYears(-14).time
+        binding.datePicker.setDate(fourteenYearsAgo)
+        binding.datePicker.setMaxxDate(fourteenYearsAgo)
+
         binding.weightPicker.setValueUnit("kg")
         binding.weightPicker.setValueWidth(50)
         binding.weightPicker.setShowDecimal(true)
@@ -150,8 +163,29 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         for (stepCase in OnBoardingStep.values()) {
             containerLayoutFor(stepCase).visibility = if (state == stepCase) View.VISIBLE else View.GONE
         }
+        if (state.step < 2) {
+            binding.tvBottomDesc.text = getString(R.string.onboard_bottom_text)
+            binding.tvBottomDesc.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.kamleon_secondary_grey_60
+                )
+            )
+            binding.tvBottomDesc.isClickable = false
+            binding.tvBottomDesc.visibility = View.VISIBLE
 
-        binding.tvBottomDesc.visibility = if (state.step < 2) View.VISIBLE else View.INVISIBLE
+        } else if (state.step == 2) {
+            binding.tvBottomDesc.isClickable = false
+            binding.tvBottomDesc.visibility = View.INVISIBLE
+        } else {
+            binding.tvBottomDesc.text = getString(R.string.onboard_bottom_later)
+            binding.tvBottomDesc.setTextColor(ContextCompat.getColor(requireContext(), R.color.kamleon_blue))
+            binding.tvBottomDesc.isClickable = true
+            binding.tvBottomDesc.setOnClickListener {
+                viewModel.finishSignup()
+            }
+            binding.tvBottomDesc.visibility = View.VISIBLE
+        }
     }
 
     private fun spinnerDataSource(step: OnBoardingStep) : ArrayList<String> {
@@ -195,8 +229,31 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         Log.d(TAG, "Callback new state received: $state")
         when (state) {
             3, 4 -> { goNextStep(); updateUI() }
-            5 -> startActivity(Intent(requireContext(), MainActivity::class.java))
+            5 -> showVerificationDialog()
             else -> {}
+        }
+    }
+
+    private fun showVerificationDialog() {
+        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        val inflater = this.layoutInflater
+        val dialogView: View = inflater.inflate(R.layout.layout_dialog_email_verification, null)
+
+        dialog.setView(dialogView)
+        dialog.setCancelable(false)
+
+        dialogView.findViewById<TextView>(R.id.tv_dialog_verify_desc).text = getString(R.string.dialog_verify_desc, viewModel.email)
+        val logoutDialog = dialog.show()
+        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        dialogView.findViewById<TextView>(R.id.tv_dialog_verify_ok).setOnClickListener {
+            logoutDialog.dismiss()
+            // Go to login
+            findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)
+        }
+        dialogView.findViewById<TextView>(R.id.tv_dialog_verify_resend).setOnClickListener {
+            logoutDialog.dismiss()
+            viewModel.sendVerificationEmail()
         }
     }
 

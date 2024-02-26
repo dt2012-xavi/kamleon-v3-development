@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dynatech2012.kamleonuserapp.models.Gender
+import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
@@ -22,11 +23,13 @@ import kotlin.coroutines.resume
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRepo: UserRepository,
-    private val firestoreRepo: FirestoreDataSource
+    private val firestoreRepo: FirestoreDataSource,
+    private val cloudFuctions: CloudFunctions
 ): ViewModel() {
 
     var isReady = false
     var alreadyLogged = false
+    var alreadyVerified = false
     var alreadySplash = false
 
     var fName: String? = ""
@@ -34,8 +37,8 @@ class AuthViewModel @Inject constructor(
     var email: String? = ""
     var pass: String? = ""
     var birthday: Date = Date()//LocalDate = LocalDate.MIN
-    var height = -1f
-    var weight = -1f
+    var height: Float? = null
+    var weight: Float? = null
     var gender = Gender.none
 
     private val _uiState = MutableLiveData(0)
@@ -65,8 +68,24 @@ class AuthViewModel @Inject constructor(
     fun finishSignup() {
         viewModelScope.launch(Dispatchers.IO) {
             val registerResult = firestoreRepo.createUserStep2(birthday, height, weight, gender)
-            if (registerResult.isSuccess && registerResult.dataValue != null)
+            if (registerResult.isSuccess && registerResult.dataValue != null) {
+                sendVerificationEmail()
+            }
+        }
+    }
+
+    fun sendVerificationEmail() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val userId = authRepo.uuid ?: return@launch
+            val username = "$fName $lName"
+            if (email == null) {
+                Log.e(TAG, "Email or username is null")
+                return@launch
+            }
+            val verificationResponse = cloudFuctions.sendVerificationEmail(userId, email!!, username)
+            if (verificationResponse.isSuccess) {
                 _uiState.postValue(5)
+            }
         }
     }
 
@@ -82,7 +101,7 @@ class AuthViewModel @Inject constructor(
                 if (!authRepo.isEmailVerified)
                     _uiState.postValue(-5)
                 else
-                    _uiState.postValue(5)
+                    _uiState.postValue(6)
             else if (authResult.isFailure) {
                 when (val e = authResult.error) {
                     is com.google.firebase.auth.FirebaseAuthInvalidUserException -> {
@@ -113,11 +132,13 @@ class AuthViewModel @Inject constructor(
 
     fun resetLogged() {
         alreadyLogged = false
+        alreadyVerified = false
         isReady = false
     }
 
     fun checkLogin() {
         alreadyLogged = authRepo.checkLogged
+        alreadyVerified = authRepo.isEmailVerified
         isReady = true
     }
 

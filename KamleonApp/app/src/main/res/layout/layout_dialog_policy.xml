@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="28dp"
+        android:paddingHorizontal="16dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_modal_dialog">
+
+        <TextView
+            android:id="@+id/tv_dialog_policy_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Kamleon.Headline6"
+            android:paddingHorizontal="32dp"
+            android:text="@string/dialog_policy_title"
+            android:textAlignment="center"
+            android:textColor="@color/color_fa"/>
+
+        <TextView
+            android:id="@+id/tv_dialog_policy_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Kamleon.Body1"
+            android:paddingHorizontal="32dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/dialog_policy_desc"
+            android:textAlignment="center"
+            android:textColor="@color/color_fa"/>
+
+        <TextView
+            android:id="@+id/tv_dialog_policy_agree"
+            android:layout_width="120dp"
+            android:layout_height="36dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_modal_btn_y"
+            android:layout_marginTop="16dp"
+            style="@style/CircularBoldFont"
+            android:textSize="@dimen/ts_16"
+            android:clickable="true"
+            android:text="@string/dialog_policy_agree"
+            android:textAlignment="center"
+            android:textColor="@drawable/color_white_text_button"/>
+
+        <TextView
+            android:id="@+id/tv_dialog_policy_disagree"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Kamleon.Body1"
+            android:paddingHorizontal="32dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/dialog_policy_disagree"
+            android:textAlignment="center"
+            android:textColor="@color/kamleon_blue"/>
+    </LinearLayout>
+</FrameLayout>

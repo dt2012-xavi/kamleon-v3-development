@@ -58,7 +58,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
     }
 
     suspend fun createUserStep2(birthday: Date,
-                                height: Float, weight: Float, gender: Gender
+                                height: Float?, weight: Float?, gender: Gender
     ): Response<CustomUser> {
         uuid?.let { uuid ->
             val doc = db.collection(FirebaseConstants.USERS_COLLECTION).document(uuid)
