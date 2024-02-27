@@ -11,7 +11,6 @@ import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.async
-import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 import java.text.DecimalFormat
@@ -26,12 +25,14 @@ import javax.inject.Inject
  * to manage access to Realtime Database <br></br>
  * It holds a reference to Realtime FirebaseDatabase instance
 </font> */
-class RealtimeRepository @Inject constructor(private val userRepository: UserRepository){
+class RealtimeDataSource @Inject constructor(private val userRepository: UserRepository){
     private val db =  Firebase.database
     private val averagesRef = db.reference.child(REALTIME_COLLECTION_AVERAGES)
 
+    /*
     private var channel1: SendChannel<ArrayList<AverageDailyMeasureData>>? = null
     private var channel2: SendChannel<ArrayList<AverageMonthlyMeasureData>>? = null
+    */
     private val uuid: String?
         get() = if (Constants.DEBUG_MODE) USER_UID_DEBUG else userRepository.uuid
 
@@ -83,14 +84,14 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
                         val map = ref.child(year.toString()).child(month.toString())
                             .child(day.toString()).get().await()
                         val dailyAverage = AverageDailyMeasureData(map, year, monthInt, dayInt)
-                        daysAverages.add(dailyAverage)
+                        return@async daysAverages.add(dailyAverage)
                     } catch (e: Exception) {
                         Log.e(TAG, "Daily average measure with null parameters date: ${day}/${month}/${year}")
-                        Response.Failure(e)
+                        return@async Response.Failure(e)
                     }
                 }
             }.forEach { it.await() }
-            Response.Success(daysAverages)
+            return@coroutineScope Response.Success(daysAverages)
         }
     }
 
@@ -117,30 +118,28 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
                     try {
                         val map = ref.child(year.toString()).child(month.toString()).get().await()
                         val monthAverage = AverageMonthlyMeasureData(map, year, monthInt)
-                        monthsAverages.add(monthAverage)
-
+                        return@async monthsAverages.add(monthAverage)
                     } catch (e: Exception) {
                         Log.e(TAG, "Monthly average measure with null parameters date: ${month}/${year}")
-                        Response.Failure(e)
+                        return@async Response.Failure(e)
                     }
                 }
             }.forEach { it.await() }
-            Response.Success(monthsAverages)
+            return@coroutineScope Response.Success(monthsAverages)
         }
     }
 
 
-
+    /*
     fun closeChannels() {
-        /*
         channel1?.close()
         channel1 = null
         channel2?.close()
         channel2 = null
-        */
     }
+    */
 
     companion object {
-        private val TAG = RealtimeRepository::class.java.simpleName
+        private val TAG = RealtimeDataSource::class.java.simpleName
     }
 }

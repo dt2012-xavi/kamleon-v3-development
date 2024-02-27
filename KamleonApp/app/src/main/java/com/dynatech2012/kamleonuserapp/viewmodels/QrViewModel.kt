@@ -13,7 +13,7 @@ import com.dynatech2012.kamleonuserapp.camera.QRCodeImageAnalyzerMLKitKotlin
 import com.dynatech2012.kamleonuserapp.models.Event
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
-import com.dynatech2012.kamleonuserapp.repositories.RealtimeRepository
+import com.dynatech2012.kamleonuserapp.repositories.RealtimeDataSource
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import com.google.gson.Gson
@@ -27,7 +27,7 @@ import javax.inject.Inject
 class QrViewModel @Inject constructor(
     @ApplicationContext private val appContext: Context,
     private val userRepository: UserRepository,
-    private val realtime: RealtimeRepository,
+    private val realtime: RealtimeDataSource,
     private val analyzer: QRCodeImageAnalyzerMLKitKotlin,
     private val firestoreDataSource: FirestoreDataSource
 ) : ViewModel() {
