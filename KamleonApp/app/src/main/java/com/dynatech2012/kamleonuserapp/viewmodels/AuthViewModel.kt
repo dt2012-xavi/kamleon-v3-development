@@ -7,18 +7,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dynatech2012.kamleonuserapp.fragments.LoginFragment
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
-import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
-import kotlin.coroutines.resume
-
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
@@ -70,6 +68,7 @@ class AuthViewModel @Inject constructor(
     fun finishSignup() {
         viewModelScope.launch(Dispatchers.IO) {
             val registerResult = firestoreRepo.createUserStep2(birthday, height, weight, gender)
+            Log.d(TAG, "login step finish sign up")
             if (registerResult.isSuccess && registerResult.dataValue != null) {
                 sendVerificationEmail()
             }
@@ -84,8 +83,10 @@ class AuthViewModel @Inject constructor(
                 Log.e(TAG, "Email or username is null")
                 return@launch
             }
+            Log.d(TAG, "login step send verif email")
             val verificationResponse = cloudFuctions.sendVerificationEmail(userId, email!!, username)
             if (verificationResponse.isSuccess) {
+                Log.d(TAG, "login step send verif email post 5")
                 _uiState.postValue(5)
             }
         }

@@ -227,6 +227,7 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
 
     private fun onStateReceived(state: Int) {
         Log.d(TAG, "Callback new state received: $state")
+        Log.d(TAG, "login step state received $state")
         when (state) {
             3, 4 -> { goNextStep(); updateUI() }
             5 -> showVerificationDialog()
@@ -245,8 +246,9 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         dialogView.findViewById<TextView>(R.id.tv_dialog_verify_desc).text = getString(R.string.dialog_verify_desc, viewModel.email)
         val logoutDialog = dialog.show()
         logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
+        Log.d(TAG, "login step show verif dialog")
         dialogView.findViewById<TextView>(R.id.tv_dialog_verify_ok).setOnClickListener {
+            Log.d(AuthViewModel.TAG, "login step verif dialog ok")
             logoutDialog.dismiss()
             // Go to login
             findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)

@@ -295,26 +295,26 @@ class MainViewModel @Inject constructor(
                     }
                 }
             }
-            measuresRepository.getUserDailyAverages(userRepository.uuid).collect { avDay ->
-                if (avDay.isSuccess && avDay.dataValue != null) {
-                    Log.d(TAG, "got measures daily finally 2")
-                    avDay.dataValue?.let { dailyMeasures ->
-                        Log.d(TAG, "got measures daily finally 2 size ${dailyMeasures.size}")
-                        dailyLoaded.addAll(dailyMeasures)
-                        _averageDailyMeasures.postValue(dailyLoaded)
-                    }
-                }
-                measuresRepository.getUserMonthlyAverages(userRepository.uuid).collect { avMon ->
-                    if (avMon.isSuccess && avMon.dataValue != null) {
-                        Log.d(TAG, "got measures monthly finally 2")
-                        avMon.dataValue?.let { monthlyMeasures ->
-                            Log.d(TAG, "got measures monthly finally 2 size ${monthlyMeasures.size}")
-                            monthlyLoaded.addAll(monthlyMeasures)
-                            _averageMonthlyMeasures.postValue(monthlyLoaded)
-                        }
-                    }
+            val avDay = measuresRepository.getUserDailyAverages(userRepository.uuid)//.collect { avDay ->
+            if (avDay.isSuccess && avDay.dataValue != null) {
+                Log.d(TAG, "got measures daily finally 2")
+                avDay.dataValue?.let { dailyMeasures ->
+                    Log.d(TAG, "got measures daily finally 2 size ${dailyMeasures.size}")
+                    dailyLoaded.addAll(dailyMeasures)
+                    _averageDailyMeasures.postValue(dailyLoaded)
                 }
             }
+            val avMon = measuresRepository.getUserMonthlyAverages(userRepository.uuid)//.collect { avMon ->
+            if (avMon.isSuccess && avMon.dataValue != null) {
+                Log.d(TAG, "got measures monthly finally 2")
+                avMon.dataValue?.let { monthlyMeasures ->
+                    Log.d(TAG, "got measures monthly finally 2 size ${monthlyMeasures.size}")
+                    monthlyLoaded.addAll(monthlyMeasures)
+                    _averageMonthlyMeasures.postValue(monthlyLoaded)
+                }
+            }
+                //}
+            //}
         /*
         // get all averages from FS
             measuresRepository.getAllUserDailyAverages(userRepository.uuid)

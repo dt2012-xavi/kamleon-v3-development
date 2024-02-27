@@ -3,25 +3,20 @@ package com.dynatech2012.kamleonuserapp.repositories
 import android.util.Log
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.REALTIME_COLLECTION_AVERAGES
-import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.REALTIME_COLLECTION_QR_LOGIN
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.REALTIME_FOLDER_DAILY
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.REALTIME_FOLDER_MONTHLY
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USER_UID_DEBUG
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.SendChannel
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.tasks.await
 import java.text.DecimalFormat
 import java.time.LocalDate
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 /**
  *
@@ -69,50 +64,34 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
      * Edu:<br></br>
      * ------- DAILY AVERAGE MEASURES -------
     </font> */
-    suspend fun getDaysAverages(userId: String?, dayArray: List<LocalDate>)
-    = callbackFlow<Response<ArrayList<AverageDailyMeasureData>>> {
-    //= suspendCoroutine { continuation ->
-        Log.d(TAG, "getMonthAverage")
-        if (userId == null) {
-            //continuation.resume(Response.Failure(Exception()))
-            trySend(Response.Failure(Exception()))
-            return@callbackFlow
-        }
-        val ref = averagesRef.child(userId)
+    suspend fun getDaysAverages(userId: String?, dayArray: List<LocalDate>): Response<ArrayList<AverageDailyMeasureData>> {
+        Log.d(TAG, "getDaysAverage")
+        if (userId == null) return Response.Failure(Exception())
+        val ref = averagesRef.child(userId).child(REALTIME_FOLDER_DAILY)
         Log.d(TAG, "averagesRef = $ref")
         val daysAverages = ArrayList<AverageDailyMeasureData>()
-        dayArray.forEachIndexed { i, dayItem ->
-            val year = dayItem.year
-            val monthInt = dayItem.monthValue
-            val numberFormat = DecimalFormat("00")
-            val month = numberFormat.format(monthInt)
-            val dayInt = dayItem.dayOfMonth
-            val day = numberFormat.format(dayInt)
-            ref.child(REALTIME_FOLDER_DAILY).child(year.toString()).child(month.toString())
-                .child(day.toString()).addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        //Get map of users in dataSnapshot
-                        Log.d(TAG, "getMonthAverage: on data change")
-                        try {
-                            //val b = dataSnapshot.child("averageScore").value.toString()
-                            //Log.d(TAG, "bbbbbbbb d date: ${day}/${month}/${year} averageScore: $b")
-                            val dailyAverage = AverageDailyMeasureData(dataSnapshot, year, monthInt, dayInt)
-                            daysAverages.add(dailyAverage)
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Daily average measure with null parameters date: ${day}/${month}/${year}")
-                        }
-                        if (i == dayArray.size - 1)
-                            //continuation.resume(Response.Success(daysAverages))
-                            trySend(Response.Success(daysAverages))
+        return coroutineScope {
+            dayArray.map { dayItem ->
+                async {
+                    val year = dayItem.year
+                    val monthInt = dayItem.monthValue
+                    val numberFormat = DecimalFormat("00")
+                    val month = numberFormat.format(monthInt)
+                    val dayInt = dayItem.dayOfMonth
+                    val day = numberFormat.format(dayInt)
+                    try {
+                        val map = ref.child(year.toString()).child(month.toString())
+                            .child(day.toString()).get().await()
+                        val dailyAverage = AverageDailyMeasureData(map, year, monthInt, dayInt)
+                        daysAverages.add(dailyAverage)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Daily average measure with null parameters date: ${day}/${month}/${year}")
+                        Response.Failure(e)
                     }
-
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        //handle databaseError
-                        Log.d(TAG, "getMonthAverage: error")
-                    }
-                })
+                }
+            }.forEach { it.await() }
+            Response.Success(daysAverages)
         }
-        awaitClose {  }
     }
 
     /**
@@ -122,48 +101,32 @@ class RealtimeRepository @Inject constructor(private val userRepository: UserRep
      * ------- MONTHLY AVERAGE MEASURES -------
     </font> */
 
-    suspend fun getMonthsAverages(userId: String?, monthArray: List<LocalDate>)
-    = callbackFlow<Response<ArrayList<AverageMonthlyMeasureData>>> {
-    //= suspendCoroutine { continuation ->
+    suspend fun getMonthsAverages(userId: String?, monthArray: List<LocalDate>): Response<ArrayList<AverageMonthlyMeasureData>> {
         Log.d(TAG, "getMonthAverage")
-        if (userId == null) {
-            //continuation.resume(Response.Failure(Exception()))
-            trySend(Response.Failure(Exception()))
-            return@callbackFlow
-        }
-        val ref = averagesRef.child(userId)
+        if (userId == null) return Response.Failure(Exception())
+        val ref = averagesRef.child(userId).child(REALTIME_FOLDER_MONTHLY)
         Log.d(TAG, "averagesRef = $ref")
         val monthsAverages = ArrayList<AverageMonthlyMeasureData>()
-        monthArray.forEachIndexed { i, monthItem ->
-            val year = monthItem.year
-            val monthInt = monthItem.monthValue
-            val numberFormat = DecimalFormat("00")
-            val month = numberFormat.format(monthInt)
-            ref.child(REALTIME_FOLDER_MONTHLY).child(year.toString()).child(month.toString())
-                .addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        //Get map of users in dataSnapshot
-                        Log.d(TAG, "getMonthAverage: on data change")
-                        try {
-                            //val c = dataSnapshot.child("averageScore").value.toString()
-                            //Log.d(TAG, "bbbbbbbb c: date: ${month}/${year} _ averageScore: $c")
-                            val monthAverage = AverageMonthlyMeasureData(dataSnapshot, year, monthInt)
-                            monthsAverages.add(monthAverage)
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Monthly average measure with null parameters date: ${month}/${year}")
-                        }
-                        if (i == monthArray.size - 1)
-                            //continuation.resume(Response.Success(monthsAverages))
-                            trySend(Response.Success(monthsAverages))
-                    }
+        return coroutineScope {
+            monthArray.map { monthItem ->
+                async {
+                val year = monthItem.year
+                val monthInt = monthItem.monthValue
+                val numberFormat = DecimalFormat("00")
+                val month = numberFormat.format(monthInt)
+                    try {
+                        val map = ref.child(year.toString()).child(month.toString()).get().await()
+                        val monthAverage = AverageMonthlyMeasureData(map, year, monthInt)
+                        monthsAverages.add(monthAverage)
 
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        //handle databaseError
-                        Log.d(TAG, "getMonthAverage: error")
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Monthly average measure with null parameters date: ${month}/${year}")
+                        Response.Failure(e)
                     }
-                })
+                }
+            }.forEach { it.await() }
+            Response.Success(monthsAverages)
         }
-        awaitClose {  }
     }
 
 

@@ -4,9 +4,6 @@ import android.util.Log
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
 import com.dynatech2012.kamleonuserapp.database.MeasureData
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.collect
 import java.time.ZoneId
 import java.util.Date
 import javax.inject.Inject
@@ -15,7 +12,8 @@ import javax.inject.Inject
 class MeasuresRepository @Inject constructor(
     private val database: DatabaseDataSource,
     private val firestoreDataSource: FirestoreDataSource,
-    private val realtimeRepository: RealtimeRepository) {
+    private val realtimeRepository: RealtimeRepository
+) {
 
     private var lastDateLong = 0L       // last date in DB
     private var newMeasuresFS = ArrayList<MeasureData>()
@@ -95,21 +93,19 @@ class MeasuresRepository @Inject constructor(
         return response
     }
 
-    suspend fun getUserDailyAverages(userId: String?): Flow<Response<ArrayList<AverageDailyMeasureData>>> = callbackFlow {
-        if (newMeasuresFS.isEmpty()) {
-            trySend(Response.Success(ArrayList()))
-        }
+    suspend fun getUserDailyAverages(userId: String?): Response<ArrayList<AverageDailyMeasureData>> {
+        if (newMeasuresFS.isEmpty()) return Response.Success(ArrayList())
         val dates = newMeasuresFS.map { Date(it.analysisDate).toInstant().atZone(ZoneId.systemDefault()).toLocalDate() }
         val newDays = dates.distinct()
-        realtimeRepository.getDaysAverages(userId, newDays).collect { response ->
-            if (response.isSuccess) {
-                val measures = response.dataValue
-                if (measures?.isNotEmpty() == true) {
-                    Log.d(TAG, "got measures from FS not empty")
-                    saveNewAverageDailyMeasuresToDB(measures)
-                } }
-            trySend(response)
+        val response = realtimeRepository.getDaysAverages(userId, newDays)
+        if (response.isSuccess) {
+            val measures = response.dataValue
+            if (measures?.isNotEmpty() == true) {
+                Log.d(TAG, "got measures from FS not empty")
+                saveNewAverageDailyMeasuresToDB(measures)
+            }
         }
+        return response
     }
     private suspend fun saveNewAverageDailyMeasuresToDB(measureDataList: List<AverageDailyMeasureData?>?) {
         if (measureDataList != null) {
@@ -118,21 +114,18 @@ class MeasuresRepository @Inject constructor(
         }
     }
 
-    suspend fun getUserMonthlyAverages(userId: String?): Flow<Response<ArrayList<AverageMonthlyMeasureData>>> = callbackFlow {
-        if (newMeasuresFS.isEmpty()) {
-            trySend(Response.Success(ArrayList()))
-        }
+    suspend fun getUserMonthlyAverages(userId: String?): Response<ArrayList<AverageMonthlyMeasureData>> {
+        if (newMeasuresFS.isEmpty()) return Response.Success(ArrayList())
         val dates = newMeasuresFS.map { Date(it.analysisDate).toInstant().atZone(ZoneId.systemDefault()).toLocalDate() }
         val newMonths = dates.distinctBy { it.year to it.month }
-        realtimeRepository.getMonthsAverages(userId, newMonths).collect { response ->
-            if (response.isSuccess) {
-                val measures = response.dataValue
-                if (measures?.isNotEmpty() == true) {
-                    Log.d(TAG, "got measures from FS not empty")
-                    saveNewAverageMonthlyMeasuresToDB(measures)
-                } }
-            trySend(response)
-        }
+        val response = realtimeRepository.getMonthsAverages(userId, newMonths)
+        if (response.isSuccess) {
+            val measures = response.dataValue
+            if (measures?.isNotEmpty() == true) {
+                Log.d(TAG, "got measures from FS not empty")
+                saveNewAverageMonthlyMeasuresToDB(measures)
+            } }
+        return response
     }
 
     private suspend fun saveNewAverageMonthlyMeasuresToDB(measureDataList: List<AverageMonthlyMeasureData?>?) {

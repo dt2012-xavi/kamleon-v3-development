@@ -90,6 +90,7 @@ class KamleonInputBox : ConstraintLayout {
     }
 
     fun getEditTextView() : EditText? {
+        editText?.importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO
         return editText
     }
 }

@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
@@ -64,6 +65,12 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
         viewModel.uiState.observe(this, this::startActivity)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.inputBoxEmail.getEditTextView()?.text?.clear()
+        binding.inputBoxPwd.getEditTextView()?.text?.clear()
+    }
+
     private fun startActivity(state: Int) {
         when (state) {
             in Int.MIN_VALUE..-1 -> {
@@ -83,11 +90,13 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
                 binding.pbLogin.visibility = VISIBLE
             }
             5 -> {
+                Log.d(TAG, "login step 5")
                 binding.btnSignIn.isEnabled = true
                 binding.btnSignIn.text = getString(R.string.login_btn_signin)
                 binding.pbLogin.visibility = INVISIBLE
             }
             6 -> {
+                Log.d(TAG, "login step 6")
                 binding.btnSignIn.isEnabled = false
                 binding.btnSignIn.text = ""
                 binding.pbLogin.visibility = VISIBLE
@@ -159,5 +168,9 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
             logoutDialog.dismiss()
         }
         logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    }
+
+    companion object {
+        private const val TAG = "LoginFragment"
     }
 }
