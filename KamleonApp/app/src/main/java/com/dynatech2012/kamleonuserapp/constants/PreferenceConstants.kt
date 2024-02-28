@@ -16,5 +16,6 @@ object PreferenceConstants {
     const val PREF_REALTIMEMONTHLY = "lastDateRealtimeMonthlyChecked"
     const val PREF_USER_ASKED_FOR_PERMISSION = "permissions"
     const val PREF_FIRST_LOGIN = "firstLogin"
+    const val PREF_ACCEPTED_POLICY = "acceptedPolicy"
     const val PREF_NEW_MEASURE = "newMeasure"
 }

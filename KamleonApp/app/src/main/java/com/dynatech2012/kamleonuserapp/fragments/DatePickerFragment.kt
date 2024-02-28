@@ -94,8 +94,14 @@ class DatePickerFragment : BottomSheetDialogFragment() {
 
     private fun setupDataPicker(v: View) {
         pickerV = v.findViewById(R.id.datePicker)
-        pickerV.setDate(dateValue.time)
-        pickerV.setMaxxDate(Date().addYears(-14).time)
+        val birthDate = dateValue.time
+        val fourTeenYearsAgo = Date().addYears(-14).time
+        val initialDate = when {
+            birthDate > fourTeenYearsAgo -> fourTeenYearsAgo
+            else -> birthDate
+        }
+        pickerV.setDate(initialDate)
+        pickerV.setMaxxDate(fourTeenYearsAgo)
         pickerV.setDateChangeListener(dateChangeListener)
         Log.d(TAG, "ACTIONN onDateChanged first date: $dateValue")
         pickerV.setDatePickerTouchListener(object : OnDatePickerTouchListener {

@@ -5,17 +5,20 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.MainActivity
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
+import com.dynatech2012.kamleonuserapp.constants.UrlConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityLoginBinding
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,6 +65,12 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
         viewModel.uiState.observe(this, this::startActivity)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.inputBoxEmail.getEditTextView()?.text?.clear()
+        binding.inputBoxPwd.getEditTextView()?.text?.clear()
+    }
+
     private fun startActivity(state: Int) {
         when (state) {
             in Int.MIN_VALUE..-1 -> {
@@ -81,6 +90,19 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
                 binding.pbLogin.visibility = VISIBLE
             }
             5 -> {
+                Log.d(TAG, "login step 5")
+                binding.btnSignIn.isEnabled = true
+                binding.btnSignIn.text = getString(R.string.login_btn_signin)
+                binding.pbLogin.visibility = INVISIBLE
+            }
+            6 -> {
+                Log.d(TAG, "login step 6")
+                binding.btnSignIn.isEnabled = false
+                binding.btnSignIn.text = ""
+                binding.pbLogin.visibility = VISIBLE
+                showPolicyDialog()
+            }
+            7 -> {
                 binding.btnSignIn.isEnabled = true
                 binding.btnSignIn.text = getString(R.string.login_btn_signin)
                 binding.pbLogin.visibility = INVISIBLE
@@ -104,6 +126,10 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
         dialog.setCancelable(false)
         // -3 is email not valid, -2 is password not valid, -1 is firebase error
         dialogView.findViewById<TextView>(R.id.tvDialogTitle).text = getString(R.string.login_alert_title_login_error)
+        dialogView.findViewById<TextView>(R.id.tvDialogTitle).text = when (errorType) {
+            -5 -> getString(R.string.dialog_verify_title)
+            else -> getString(R.string.login_alert_title_login_error)
+        }
         dialogView.findViewById<TextView>(R.id.tvDialogDesc).text = when (errorType) {
             -5 -> getString(R.string.login_alert_description_not_verified_email)
             -4 -> getString(R.string.login_alert_description_not_valid_email)
@@ -118,5 +144,33 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
         dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener {
             logoutDialog.dismiss()
         }
+    }
+
+    private fun showPolicyDialog() {
+        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        val inflater = this.layoutInflater
+        val dialogView: View = inflater.inflate(R.layout.layout_dialog_policy, null)
+
+        dialog.setView(dialogView)
+        dialog.setCancelable(false)
+        dialogView.findViewById<TextView>(R.id.tv_dialog_policy_desc).setOnClickListener {
+            // Open web policy
+            openWebBrowser(UrlConstants.URL_POLICY)
+        }
+        dialogView.findViewById<TextView>(R.id.tv_dialog_policy_disagree).setOnClickListener {
+            // dismiss dialog
+            ActivityCompat.finishAffinity(requireActivity())
+        }
+        val logoutDialog = dialog.show()
+        dialogView.findViewById<TextView>(R.id.tv_dialog_policy_agree).setOnClickListener {
+            viewModel.acceptPolicy()
+            // dismiss dialog
+            logoutDialog.dismiss()
+        }
+        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    }
+
+    companion object {
+        private const val TAG = "LoginFragment"
     }
 }

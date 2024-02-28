@@ -124,6 +124,9 @@
         <action
             android:id="@+id/action_tutorialFragment_to_tabFragment"
             app:destination="@id/tabFragment" />
+        <action
+            android:id="@+id/action_tutorialFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
     </fragment>
 
 

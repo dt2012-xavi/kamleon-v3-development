@@ -1,7 +1,6 @@
 package com.dynatech2012.kamleonuserapp.adapters
 
-import android.content.Intent
-import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,6 @@ import com.dynatech2012.kamleonuserapp.constants.UrlConstants
 import com.dynatech2012.kamleonuserapp.databinding.LayoutInvitationPendingListItemBinding
 import com.dynatech2012.kamleonuserapp.extensions.formatTime
 import com.dynatech2012.kamleonuserapp.models.Invitation
-import com.dynatech2012.kamleonuserapp.models.InvitationRole
 
 class NewInvitationListAdapter(
     //private var dataList: ArrayList<Invitation>
@@ -86,29 +84,25 @@ class NewInvitationListAdapter(
         fun bind(data: Invitation){
             tvSubtitle.text = data.invitationText
             tvDate.text = data.dateSent.formatTime
-
-            when(data.role)
-            {
-                InvitationRole.KAMLEON_VIEWER -> {
-                    tvPolicy.setOnClickListener {
-                        notiItemListener?.onLinkClick(UrlConstants.URL_POLICY)
-                    }
-                    cbPolicy.setOnCheckedChangeListener { _, isChecked ->
-                        tvConfirm.isEnabled = isChecked && cbConsent.isChecked
-                    }
-                    cbConsent.setOnCheckedChangeListener { _, isChecked ->
-                        tvConfirm.isEnabled = isChecked && cbPolicy.isChecked
-                    }
+            Log.d("InvitationListAdapter", "bind role: ${data.role}")
+            if (!data.isAdmin) {
+                tvPolicy.setOnClickListener {
+                    notiItemListener?.onLinkClick(UrlConstants.URL_POLICY)
                 }
-                else -> {   // Admin
-                    tvPolicy.setOnClickListener {
-                        notiItemListener?.onLinkClick(UrlConstants.URL_POLICY_ADMIN)
-                    }
-                    llConsent.visibility = View.GONE
-                    tvNameConsent.visibility = View.GONE
-                    cbPolicy.setOnCheckedChangeListener { _, isChecked ->
-                        tvConfirm.isEnabled = isChecked
-                    }
+                cbPolicy.setOnCheckedChangeListener { _, isChecked ->
+                    tvConfirm.isEnabled = isChecked && cbConsent.isChecked
+                }
+                cbConsent.setOnCheckedChangeListener { _, isChecked ->
+                    tvConfirm.isEnabled = isChecked && cbPolicy.isChecked
+                }
+            } else {   // Admin
+                tvPolicy.setOnClickListener {
+                    notiItemListener?.onLinkClick(UrlConstants.URL_POLICY_ADMIN)
+                }
+                llConsent.visibility = View.GONE
+                llNameConsent.visibility = View.GONE
+                cbPolicy.setOnCheckedChangeListener { _, isChecked ->
+                    tvConfirm.isEnabled = isChecked
                 }
             }
 

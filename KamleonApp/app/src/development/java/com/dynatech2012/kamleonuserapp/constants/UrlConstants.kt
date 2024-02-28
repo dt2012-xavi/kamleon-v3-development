@@ -1,4 +1,4 @@
-package com.dynatech2012.kamleonuserapp
+package com.dynatech2012.kamleonuserapp.constants
 
 /**
  *
@@ -8,7 +8,7 @@ package com.dynatech2012.kamleonuserapp
  * It has a private constructor to prevent being instantiated
 </font> */
 object UrlConstants {
-    private const val BASE_URL = "https://kamleon-v3-pre.vercel.app/"
+    private const val BASE_URL = "https://kamleon-v3-dev.vercel.app/"
 
     const val URL_CONSENT = "${BASE_URL}legal/consent"
     const val URL_TERMS = "${BASE_URL}legal/terms"

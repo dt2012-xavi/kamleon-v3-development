@@ -105,7 +105,7 @@ class InvitationFragment : BottomSheetDialogFragment() {
             override fun onClick(invitation: Invitation, accepted: Boolean, optional: Boolean) {
                 Log.d(TAG, "onClick")
                 if (accepted)
-                    viewModel.acceptInvitation(invitation.id, invitation.role, optional)
+                    viewModel.acceptInvitation(invitation, optional)
                 else
                     viewModel.rejectInvitation(invitation.id)
                 dismissListener?.onDismissFragment()
@@ -129,12 +129,14 @@ class InvitationFragment : BottomSheetDialogFragment() {
 
         bottomSheet.layoutParams.height = getScreenHeight - 70.px//ViewGroup.LayoutParams.MATCH_PARENT
 
+        /*
         // Collapsed height
         val parent = view?.parent as View
         val params = parent.layoutParams as CoordinatorLayout.LayoutParams
         val behavior = params.behavior
         val bottomSheetBehavior = behavior as BottomSheetBehavior<*>?
         bottomSheetBehavior?.peekHeight = 360.px//view?.measuredHeight ?: 0
+        */
         //bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
 
         // Collapsed height
@@ -144,6 +146,11 @@ class InvitationFragment : BottomSheetDialogFragment() {
         bottomSheet.minimumHeight = (displayMetrics.heightPixels * 0.85).toInt()//180
         //bottomSheet.minimumHeight = (getScreenHeight * 0.85).toInt()//180
         */
+
+
+        Log.d(TAG, "setupBottomSheet")
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        bottomSheetBehavior.peekHeight = 360.px
 
         bottomSheet.setBackgroundColor(Color.TRANSPARENT)
     }

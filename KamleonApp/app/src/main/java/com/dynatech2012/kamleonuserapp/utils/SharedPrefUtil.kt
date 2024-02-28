@@ -2,6 +2,7 @@ package com.dynatech2012.kamleonuserapp.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_ACCEPTED_POLICY
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_DATEFIRESTORE
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_FIRST_LOGIN
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_REALTIMEDAILY
@@ -196,6 +197,7 @@ class SharedPrefUtil(private val mContext: Context) {
         removeKey(PREF_REALTIMEDAILY)
         removeKey(PREF_REALTIMEMONTHLY)
         removeKey(PREF_FIRST_LOGIN)
+        removeKey(PREF_ACCEPTED_POLICY)
     }
 
 

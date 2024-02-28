@@ -50,11 +50,7 @@ class SplashFragment : BaseFragment<ActivitySplashBinding>() {
         binding.ivSplashGif.load(R.drawable.splash, imageLoader = imageLoader) {
             lifecycleScope.launch {
                 delay(2000)
-                if (viewModel.alreadyLogged) {
-                    startActivity(Intent(requireContext(), MainActivity::class.java))
-                } else {
-                    findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
-                }
+                setObservers()
             }
         }
     }
@@ -65,15 +61,23 @@ class SplashFragment : BaseFragment<ActivitySplashBinding>() {
         if (viewModel.alreadySplash) {
             viewModel.resetLogged()
             viewModel.checkLogin()
-            if (viewModel.alreadyLogged) {
-                Log.d(TAG, "already logged")
-                startActivity(Intent(requireContext(), MainActivity::class.java))
-            } else {
-                Log.d(TAG, "not logged, go to login")
-                findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
-            }
+            setObservers()
         }
         viewModel.alreadySplash = true
+    }
+
+    private fun setObservers() {
+        viewModel.isReady.observe(viewLifecycleOwner) {
+            if (it) {
+                if (viewModel.alreadyLogged && viewModel.alreadyVerified && viewModel.alreadyPolicy) {
+                    Log.d(TAG, "already logged")
+                    startActivity(Intent(requireContext(), MainActivity::class.java))
+                } else {
+                    Log.d(TAG, "not logged, go to login")
+                    findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
+                }
+            }
+        }
     }
 
     override fun initEvent() { }

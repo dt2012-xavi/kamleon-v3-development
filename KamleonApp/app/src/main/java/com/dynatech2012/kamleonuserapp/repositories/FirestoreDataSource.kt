@@ -22,6 +22,7 @@ import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -57,7 +58,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
     }
 
     suspend fun createUserStep2(birthday: Date,
-                                height: Float, weight: Float, gender: Gender
+                                height: Float?, weight: Float?, gender: Gender
     ): Response<CustomUser> {
         uuid?.let { uuid ->
             val doc = db.collection(FirebaseConstants.USERS_COLLECTION).document(uuid)
@@ -279,6 +280,30 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
             }
     }
 
+    //suspend fun updateLegal(isAdmin: Boolean): Response<Boolean> {
+    suspend fun updateLegal(policyAdmin: Boolean, policyApp: Boolean, consent: Boolean): Response<Boolean> {
+        if (uuid == null) {
+            return Response.Failure(Exception("User not logged in"))
+        }
+        return try {
+            val mutableMap = mutableMapOf<String, Boolean>()
+            if (policyAdmin)
+                mutableMap["legal.privacyPolicyAdmin"] = true
+            if (policyApp)
+                mutableMap["legal.privacyPolicyApp"] = true
+            if (consent)
+                mutableMap["legal.healthConsent"] = true
+            val map = mutableMap.toMap()
+            db.collection(USERS_COLLECTION).document(uuid!!)
+                .update(map).await()
+            Log.d(TAG, "update legal success")
+            Response.Success(true)
+        } catch (e: Exception) {
+            Log.d(TAG, "update legal exception: $e")
+            Response.Failure(e)
+        }
+    }
+
     suspend fun uploadQrId(qrResponse: QRResponse?): Response<Boolean> {
         if (uuid == null) {
             return Response.Failure(Exception("User not logged in"))
@@ -300,6 +325,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
             Response.Failure(e)
         }
     }
+
 
     companion object {
         val TAG = FirestoreDataSource::class.simpleName

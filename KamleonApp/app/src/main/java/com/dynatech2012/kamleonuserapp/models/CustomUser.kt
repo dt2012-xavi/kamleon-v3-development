@@ -11,8 +11,8 @@ data class CustomUser(
     val lastName: String = "",
     val userStatus: UserStatus = UserStatus.undefined,
     var dateOfBirth: Date = Date(),// = LocalDate.MIN,
-    var height: Float = -1f,
-    var weight: Float = -1f,
+    var height: Float? = null,
+    var weight: Float? = null,
     var gender: Gender = Gender.none,
 
     var address: String = "",
@@ -29,8 +29,11 @@ data class CustomUser(
     var teamsPermissions: Map<String, KamleonPermissions> = mapOf(),
     var token: String? = null,
 
-    var notifications: Map<String, Boolean> = mapOf()
+    var notifications: Map<String, Boolean> = mapOf(),
+    var legal: KamleonLegal = KamleonLegal()
+
     )
+
 
 enum class Gender (val raw: String)
 {
@@ -56,6 +59,12 @@ enum class UserStatus
 {
     active, inactive, undefined
 }
+
+data class KamleonLegal(
+    var privacyPolicyAdmin: Boolean = false,
+    var privacyPolicyApp: Boolean = false,
+    var healthConsent: Boolean = false
+)
 
 data class KamleonPermissions(
     var centerID: String = "",

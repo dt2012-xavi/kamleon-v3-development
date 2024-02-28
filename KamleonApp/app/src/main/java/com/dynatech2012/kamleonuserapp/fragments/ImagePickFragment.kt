@@ -20,6 +20,8 @@ import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.databinding.FragmentImagePickBinding
 import com.dynatech2012.kamleonuserapp.models.CustomUser
+import com.dynatech2012.kamleonuserapp.models.Event
+import com.dynatech2012.kamleonuserapp.models.observeEvent
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 
 class ImagePickFragment : BottomSheetDialogFragment() {
@@ -60,7 +62,11 @@ class ImagePickFragment : BottomSheetDialogFragment() {
 
         viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
         viewModel.userImagePrevUri.observe(viewLifecycleOwner, this::onProfileImagePrevUriChanged)
-        viewModel.userImageUri.observe(viewLifecycleOwner, this::onProfileImageUriChanged)
+        viewModel.userImageUri.observeEvent(viewLifecycleOwner) {
+            Log.d(TAG, "image pick fragment got event")
+            dismissListener?.onDismissFragment()
+            dismiss()
+        }
         viewModel.userData.observe(this, this::onUserDataChanged)
         return v
     }
@@ -118,13 +124,6 @@ class ImagePickFragment : BottomSheetDialogFragment() {
             binding.ivSettingsPickProfileImage.visibility = View.VISIBLE
             binding.ivSettingsPickProfileImage.setImageURI(uri)
         }
-    }
-    private fun onProfileImageUriChanged(uri: Uri?) {
-        Log.d(TAG, "Got image profile update")
-        /*dialog?.setOnCancelListener {  }
-        onCancel(dialog)*/
-        dismissListener?.onDismissFragment()
-        dismiss()
     }
 
     companion object {

@@ -62,6 +62,7 @@
     <string name="onboard_button_start">Start!</string>
     <string name="onboard_button_step">%1$d/6</string>
     <string name="onboard_bottom_text">You can change it later in the App settings</string>
+    <string name="onboard_bottom_later">Skip, I\'ll fill it later</string>
     <string name="onboard_noti_title">Stay updated with your latest sample</string>
     <string name="onboard_noti_sub1">Activate your notifications</string>
     <string name="onboard_noti_sub2">Activate notifications to ensure you\'re always up to date.</string>
@@ -259,7 +260,15 @@
     <string name="dialog_reset_pwd_success_description">We\'ve sent you instructions to reset your password</string>
     <string name="dialog_reset_pwd_error_title">Error</string>
     <string name="dialog_reset_pwd_error_description">User not found</string>
-    
+    <string name="dialog_scan_scanned">QR scanned correctly</string>
+    <string name="dialog_policy_title">Privacy Policy</string>
+    <string name="dialog_policy_desc">Protecting your privacy is crucial. Before using the app, kindly agree to the policy. For more details, refer to the <u>Privacy Policy</u></string>
+    <string name="dialog_policy_agree">Agree</string>
+    <string name="dialog_policy_disagree"><u>Disagree, close the app</u></string>
+    <string name="dialog_verify_title">Verify your Email</string>
+    <string name="dialog_verify_desc">We have sent an email to %1$s\n\nYou need to verify your email to continue. If you have not received the verification email, please check your "Spam" or "Bulk Email" folder. You can also click the resend button below to have another email sent to you.</string>
+    <string name="dialog_verify_resend"><u>Resend verification Email</u></string>
+
     <!-- Error -->
     <string name="error_login">Error login</string>
 

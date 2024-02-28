@@ -100,10 +100,13 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <CheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/cb_invitation_policy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:button="@color/white"
+                android:layout_margin="12dp"
+                android:background="@drawable/checkbox_circular"/>
 
             <TextView
                 android:id="@+id/tv_invitation_policy"
@@ -120,12 +123,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical">
-            <CheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/cb_invitation_consent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="top"/>
-
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:button="@color/white"
+                android:layout_margin="12dp"
+                android:background="@drawable/checkbox_circular"
+                android:layout_gravity="top" />
             <TextView
                 android:id="@+id/tv_invitation_consent"
                 android:layout_width="wrap_content"
@@ -144,12 +149,14 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-        <CheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/cb_invitation_name_consent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="top"/>
-
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:button="@color/white"
+                android:layout_margin="12dp"
+                android:background="@drawable/checkbox_circular"
+                android:layout_gravity="top" />
             <TextView
                 android:id="@+id/tv_invitation_name_consent"
                 android:layout_width="wrap_content"

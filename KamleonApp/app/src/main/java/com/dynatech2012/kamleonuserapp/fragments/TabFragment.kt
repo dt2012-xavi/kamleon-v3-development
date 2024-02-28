@@ -1,16 +1,22 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.fragment.app.activityViewModels
@@ -20,18 +26,22 @@ import androidx.navigation.fragment.NavHostFragment
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.camera.QRCodeFoundListener
+import com.dynatech2012.kamleonuserapp.constants.UrlConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityTabBinding
 import com.dynatech2012.kamleonuserapp.models.QRResponse
+import com.dynatech2012.kamleonuserapp.models.observeEvent
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.viewmodels.QrViewModel
 import com.google.common.util.concurrent.ListenableFuture
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.internal.wait
 import java.util.concurrent.ExecutionException
 
 
 @AndroidEntryPoint
 class TabFragment : BaseFragment<ActivityTabBinding>() {
+    private var qrFragment: ScanIntroFragment? = null
     private val viewModel: MainViewModel by activityViewModels()
     override fun setBinding(): ActivityTabBinding = ActivityTabBinding.inflate(layoutInflater)
 
@@ -45,6 +55,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         override fun onDismissFragment() {
         }
     }
+    private val preview by lazy { Preview.Builder().build() }
 
     override fun initView() {
         Log.d(TAG, "initView")
@@ -104,7 +115,6 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         Log.d(TAG, "got measures -2 oncreateView")
         viewModel.getUserMeasures()
 
-        // Scan
     }
 
     override fun onResume() {
@@ -119,8 +129,10 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
             val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
             val navController = navHostFragment.navController
             navController.navigate(R.id.action_tabFragment_to_tutorialFragment)
+            viewModel.tutorialComingFromHome = true
         }
     }
+
 
     private fun bindViews()
     {
@@ -151,6 +163,11 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
             }
         }
         qrViewModel.qrResponse.observe(viewLifecycleOwner, this::uploadQr)
+        qrViewModel.qrUploaded.observeEvent(viewLifecycleOwner) {
+            Log.d(TAG, "qrScanner, qrUploaded")
+            appendDebugText("QR debug -- uploaded to realtime, showing success dialog")
+            showScannedDialog()
+        }
     }
 
     private fun selectTab(tabIndex: Int) {
@@ -182,8 +199,8 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
 
 
     private fun showQRIntroFragment() {
-        val qrFragment = ScanIntroFragment.newInstance(onDismissScanIntro)
-        qrFragment.show(parentFragmentManager, "QR")
+        qrFragment = ScanIntroFragment.newInstance(onDismissScanIntro)
+        qrFragment?.show(parentFragmentManager, "QR")
     }
 
     companion object {
@@ -247,13 +264,14 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         if (!qrViewModel.cameraStarted) { return }
         val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
         cameraProvider.unbindAll()
+        //cameraProvider.unbind(qrViewModel.imageAnalysis, preview)
         qrViewModel.cameraStarted = false
     }
 
     private fun bindCameraPreview(cameraProvider: ProcessCameraProvider) {
         Log.d(TAG, "qrScanner, bindCameraPreview 1")
         previewView.implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-        val preview = Preview.Builder().build()
+
         val cameraSelector = CameraSelector.Builder()
             .requireLensFacing(CameraSelector.LENS_FACING_BACK)
             .build()
@@ -310,8 +328,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
                 Log.d(TAG, "qrScanner, qrString: ${qrResponse.data}")
                 appendDebugText("QR debug -- uploading to realtime")
                 qrViewModel.uploadQRtoFirestore(qrResponse.data)
-                appendDebugText("QR debug -- uploaded to realtime, going back to home")
-                selectTab(0)
+                //showScannedDialog()
             }
             is Response.Failure -> {
                 Log.e(TAG, "qrScanner, qrString eeror : ${qrResponse.exception}")
@@ -323,5 +340,33 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
 
     private fun appendDebugText(text: String) {
         qrDebugging.text = qrDebugging.text.toString() + "\n" + text
+    }
+
+    private fun showScannedDialog() {
+        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        val inflater = this.layoutInflater
+        val dialogView: View = inflater.inflate(R.layout.layout_dialog_ok, null)
+
+        dialog.setView(dialogView)
+        dialog.setCancelable(false)
+        val logoutDialog = dialog.show()
+        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+
+        val tvTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
+        tvTitle.text = getString(R.string.dialog_scan_scanned)
+
+        val tvDescr = dialogView.findViewById<TextView>(R.id.tvDialogDesc)
+        tvDescr.text = ""
+        dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener {
+            qrFragment?.dismiss()
+            logoutDialog.dismiss()
+            selectTab(0)
+            binding.navHostFragmentTab.visibility = View.VISIBLE
+            val navHostFragment = binding.navHostFragmentTab.getFragment<NavHostFragment>()
+            val navController = navHostFragment.navController
+            navController.popBackStack()
+            navController.navigate(R.id.action_to_homeFragment)
+        }
     }
 }
