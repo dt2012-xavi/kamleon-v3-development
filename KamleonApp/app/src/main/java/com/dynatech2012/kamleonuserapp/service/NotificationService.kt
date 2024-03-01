@@ -31,7 +31,7 @@ import com.google.firebase.messaging.RemoteMessage
 
 class NotificationService : FirebaseMessagingService() {
 
-    private val sharedPrefUtil = SharedPrefUtil(applicationContext)
+    private val sharedPrefUtil by lazy { SharedPrefUtil(applicationContext) }
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         Log.d(TAG, "token app refreshed: $token")

@@ -61,9 +61,12 @@ class AuthViewModel @Inject constructor(
     fun notificationPermissionGranted() {
         _uiState.postValue(3)
     }
+
+    /*
     fun locationPermissionGranted() {
         _uiState.postValue(4)
     }
+    */
 
     fun finishSignup() {
         viewModelScope.launch(Dispatchers.IO) {

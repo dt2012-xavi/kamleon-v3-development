@@ -223,7 +223,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { _: Boolean ->
-            askLocationPermission()
+            savePreferencesUserAskerForPermission()
         }
 
     private fun askNotificationPermission() {
@@ -233,12 +233,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             if (ContextCompat.checkSelfPermission(
                     this, Manifest.permission.POST_NOTIFICATIONS
                 ) == PackageManager.PERMISSION_GRANTED) {
-                askLocationPermission()
+                savePreferencesUserAskerForPermission()
                 return
             }
             else requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
-        else askLocationPermission()
+        else savePreferencesUserAskerForPermission()
     }
     private val requestLocationPermissionLauncher =
         registerForActivityResult(
@@ -266,11 +266,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         }
 
 
+    /*
     private fun askLocationPermission() {
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED) {
-            savePreferencesUserAskerForPermission()
+            savePreferencesUserAskedForPermission()
             return
         }
         else {
@@ -278,6 +279,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             )
         }
     }
+    */
 
     companion object {
         val TAG: String = MainActivity::class.java.simpleName
