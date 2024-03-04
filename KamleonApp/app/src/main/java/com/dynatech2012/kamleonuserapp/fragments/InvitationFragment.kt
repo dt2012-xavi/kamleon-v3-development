@@ -12,7 +12,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.coordinatorlayout.widget.CoordinatorLayout
+import android.widget.Toast
+import androidx.annotation.NonNull
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dynatech2012.kamleonuserapp.R
@@ -21,7 +22,6 @@ import com.dynatech2012.kamleonuserapp.adapters.OldInvitationListAdapter
 import com.dynatech2012.kamleonuserapp.databinding.FragmentInvitationBinding
 import com.dynatech2012.kamleonuserapp.extensions.px
 import com.dynatech2012.kamleonuserapp.models.Invitation
-import com.dynatech2012.kamleonuserapp.models.InvitationRole
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -153,6 +153,16 @@ class InvitationFragment : BottomSheetDialogFragment() {
         bottomSheetBehavior.peekHeight = 360.px
 
         bottomSheet.setBackgroundColor(Color.TRANSPARENT)
+
+        /*bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    bottomSheetBehavior.isDraggable = false
+                }
+            }
+
+            override fun onSlide(@NonNull bottomSheet: View, slideOffset: Float) {}
+        })*/
     }
 
     override fun onCancel(dialog: DialogInterface) {

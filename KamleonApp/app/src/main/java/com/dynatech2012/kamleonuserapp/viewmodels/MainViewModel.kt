@@ -611,6 +611,25 @@ class MainViewModel @Inject constructor(
 
     var tutorialComingFromHome: Boolean = true
 
+
+    private val _trialSent =  MutableLiveData<Boolean>()
+    val trialSent: LiveData<Boolean> = _trialSent
+    fun sendTrialEmail() {
+        val email = userRepository.email
+        if (email == null) {
+            _trialSent.postValue(false)
+            return
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            cloudFunctions.sendTrialEmail(email)
+            _trialSent.postValue(true)
+        }
+    }
+
+    fun resetTrialSent() {
+        _trialSent.postValue(false)
+    }
+
     companion object {
         val TAG = MainViewModel::class.simpleName
     }

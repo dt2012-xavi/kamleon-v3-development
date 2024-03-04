@@ -20,6 +20,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -35,12 +37,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
-    val openDialog = remember { mutableStateOf(false)  }
+fun PremiumView(modifier: Modifier, onClick: () -> Unit, viewModel: MainViewModel = hiltViewModel<MainViewModel>()) {
+    //val openDialog = remember { mutableStateOf(false)  }
+    val openDialog = viewModel.trialSent.observeAsState()
     /*
     val systemUiController = rememberSystemUiController()
     val colorGray = colorResource(id = R.color.kamleon_dark_grey)
@@ -49,6 +55,8 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
             color = colorGray, darkIcons = true)
     })
      */
+
+    val trialSent = viewModel.trialSent.observeAsState()
     Column (
         modifier = modifier
             .fillMaxWidth()
@@ -149,7 +157,8 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
 
             Button(
                 onClick = {
-                    openDialog.value = true
+                    viewModel.sendTrialEmail()
+                    //openDialog.value = true
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -175,13 +184,13 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit) {
         )
 
 
-        if (openDialog.value) {
+        if (openDialog.value == true) {
             AlertView(
                 dialogTitle = stringResource(id = R.string.premium_alert_title),
                 dialogText = stringResource(id = R.string.premium_alert_message),
                 onDismissRequest =
                 {
-                    openDialog.value = false
+                    viewModel.resetTrialSent()
                     onClick()
                 },
             )

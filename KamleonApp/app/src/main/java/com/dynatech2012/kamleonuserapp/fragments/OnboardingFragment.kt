@@ -214,13 +214,14 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
             }
             else -> {}
         }
+        Log.d(TAG, "spinner data source: $aryRet")
 
         return aryRet
     }
 
     private fun setupSpinners() {
         for (onboardState in OnBoardingStep.values()) {
-            if (onboardState.step <= 2) { continue }
+            if (onboardState.step <= OnBoardingStep.BirthDate.step) { continue }
             val picker = spinnerViewFor(onboardState)
 
             Log.e("SPINNER", "Datasource size = " + spinnerDataSource(onboardState).size)

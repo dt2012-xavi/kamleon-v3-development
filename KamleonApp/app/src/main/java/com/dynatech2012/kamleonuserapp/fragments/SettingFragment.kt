@@ -292,7 +292,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
                 openWebBrowser(UrlConstants.URL_TERMS)
             }
             binding.accMenuItemPP -> {
-                openWebBrowser(UrlConstants.URL_POLICY)
+                openWebBrowser(UrlConstants.URL_POLICY_APP)
             }
             binding.prefMenuItemWeight -> {
                 showWeightPicker()

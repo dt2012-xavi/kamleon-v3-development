@@ -165,6 +165,23 @@ class CloudFunctions(private val userRepository: UserRepository) {
         }
     }
 
+    suspend fun sendTrialEmail(email: String): ResponseNullable<Nothing> {
+        val body = hashMapOf("email" to email)
+        return try {
+            val result = functions.getHttpsCallable("sendPremiumInterestEmail").call(body).await()
+            val data = result.data as? HashMap<String, String>
+            val message = data?.get("message")
+            if (message != "Verify email sent successfully") {
+                //throw Exception("$message")
+            }
+            Log.d(MainViewModel.TAG, "HHH cloud funct trial email: success")
+            ResponseNullable.Success()
+        } catch (e: Exception) {
+            Log.d(MainViewModel.TAG, "HHH cloud funct trial email: failure: $e")
+            ResponseNullable.Failure(e)
+        }
+    }
+
     companion object {
         val TAG: String = CloudFunctions::class.java.simpleName
     }

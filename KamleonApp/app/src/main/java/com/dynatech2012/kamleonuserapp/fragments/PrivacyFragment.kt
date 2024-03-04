@@ -82,7 +82,7 @@ class PrivacyFragment : BaseFragment<ActivityPrivacyBinding>() {
         }
         val clickablePolicy: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                openWebBrowser(UrlConstants.URL_POLICY)
+                openWebBrowser(UrlConstants.URL_POLICY_APP)
             }
 
             override fun updateDrawState(ds: TextPaint) {
