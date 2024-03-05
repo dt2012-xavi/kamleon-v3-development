@@ -33,6 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:progressTint="@color/kamleon_blue"
             android:progress="30" />
 
     </RelativeLayout>
@@ -47,27 +48,63 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <Button
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/round_blue_button_height"
-            android:id="@+id/btnNext"
-            android:paddingVertical="0dp"
-            android:background="@drawable/bg_btn_round_blue"
-            android:textAppearance="@style/RoundBlueButtonTextStyle"
-            android:textAllCaps="false"
-            android:text="@string/onboard_button_next"
-            android:textColor="@drawable/color_text_button_blue_round"/>
+            android:layout_height="wrap_content" >
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/round_blue_button_height"
+                android:id="@+id/btnNext"
+                android:paddingVertical="0dp"
+                android:background="@drawable/bg_btn_round_blue"
+                android:textAppearance="@style/RoundBlueButtonTextStyle"
+                android:textAllCaps="false"
+                android:text="@string/onboard_button_next"
+                android:textColor="@drawable/color_text_button_blue_round"/>
 
-        <TextView
-            android:layout_width="wrap_content"
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/pb_onboard_next"
+                android:indeterminate="true"
+                style="@style/Widget.Material3.CircularProgressIndicator.ExtraSmall"
+                android:layout_gravity="center"
+                android:maxHeight="24dp"
+                android:minHeight="24dp"
+                android:indeterminateTint="@color/color_fa"
+                android:visibility="invisible"
+                tools:visibility="visible"
+                android:minWidth="24dp"
+                android:maxWidth="24dp"/>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_gravity="center"
-            android:id="@+id/tvBottomDesc"
-            android:textSize="@dimen/ts_14"
-            style="@style/CircularBookFont"
-            android:textColor="@color/kamleon_secondary_grey_60"
-            android:text="@string/onboard_bottom_text"/>
+            android:layout_marginTop="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:id="@+id/tvBottomDesc"
+                android:textSize="@dimen/ts_14"
+                style="@style/CircularBookFont"
+                android:textColor="@color/kamleon_secondary_grey_60"
+                android:text="@string/onboard_bottom_text"/>
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/pb_onboard_skip"
+                android:indeterminate="true"
+                style="@style/Widget.Material3.CircularProgressIndicator.ExtraSmall"
+                android:layout_gravity="center"
+                android:maxHeight="24dp"
+                android:minHeight="24dp"
+                android:indeterminateTint="@color/kamleon_blue"
+                android:visibility="invisible"
+                tools:visibility="visible"
+                android:minWidth="24dp"
+                android:maxWidth="24dp"/>
+        </FrameLayout>
     </LinearLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -172,7 +209,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_marginTop="10dp"
-                    android:background="@color/transparent"
+                    android:background="@color/color_fa"
                     app:darkModeEnabled="false"
                     app:offset="1"
                     app:textSize="24"
@@ -210,7 +247,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_marginTop="10dp"
-                    android:background="@color/transparent"
+                    android:background="@color/color_fa"
                     app:darkModeEnabled="false"
                     app:offset="1"
                     app:textSize="28"
@@ -246,7 +283,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_marginTop="10dp"
-                    android:background="@color/transparent"
+                    android:background="@color/color_fa"
                     app:darkModeEnabled="false"
                     app:offset="1"
                     app:textSize="28"

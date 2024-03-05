@@ -11,7 +11,6 @@ import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
 import coil.request.ImageRequest
 import com.dynatech2012.kamleonuserapp.constants.Constants
-import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_ACCEPTED_POLICY
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_FIRST_LOGIN
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_NEW_MEASURE
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
@@ -29,7 +28,7 @@ import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.DatabaseDataSource
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.MeasuresRepository
-import com.dynatech2012.kamleonuserapp.repositories.RealtimeRepository
+import com.dynatech2012.kamleonuserapp.repositories.RealtimeDataSource
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import com.dynatech2012.kamleonuserapp.utils.SharedPrefUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,7 +45,7 @@ class MainViewModel @Inject constructor(
     private val firestoreRepo: FirestoreDataSource,
     private val measuresRepository: MeasuresRepository,
     private val databaseRepository: DatabaseDataSource,
-    private val realtime: RealtimeRepository,
+    private val realtime: RealtimeDataSource,
     private val cloudFunctions: CloudFunctions
 ): ViewModel() {
 
@@ -159,7 +158,7 @@ class MainViewModel @Inject constructor(
             firestoreRepo.deleteToken()
             databaseRepository.deleteAllMeasures()
             SharedPrefUtil(appContext).removeUser()
-            measuresRepository.closeChannels()
+            //measuresRepository.closeChannels()
             userRepository.logout()
         }
     }
@@ -611,6 +610,25 @@ class MainViewModel @Inject constructor(
     }
 
     var tutorialComingFromHome: Boolean = true
+
+
+    private val _trialSent =  MutableLiveData<Boolean>()
+    val trialSent: LiveData<Boolean> = _trialSent
+    fun sendTrialEmail() {
+        val email = userRepository.email
+        if (email == null) {
+            _trialSent.postValue(false)
+            return
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            cloudFunctions.sendTrialEmail(email)
+            _trialSent.postValue(true)
+        }
+    }
+
+    fun resetTrialSent() {
+        _trialSent.postValue(false)
+    }
 
     companion object {
         val TAG = MainViewModel::class.simpleName

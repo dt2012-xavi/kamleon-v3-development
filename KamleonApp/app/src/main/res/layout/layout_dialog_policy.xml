@@ -31,6 +31,7 @@
             android:textAppearance="@style/TextAppearance.Kamleon.Body1"
             android:paddingHorizontal="32dp"
             android:layout_marginTop="8dp"
+            android:paddingBottom="2dp"
             android:text="@string/dialog_policy_desc"
             android:textAlignment="center"
             android:textColor="@color/color_fa"/>

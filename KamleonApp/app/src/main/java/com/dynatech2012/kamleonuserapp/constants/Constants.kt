@@ -15,7 +15,7 @@ object Constants {
     const val TAKE_IMAGE = "takeImage"
     const val TAKE_IMAGE_BUNDLE = "takeImageBundle"
 
-    const val GRANT_LOCATION = "location"
+    //const val GRANT_LOCATION = "location"
     const val GRANT_LOCATION_BUNDLE = "locationBundle"
 
     const val GRANT_NOTIFICATION = "notification"

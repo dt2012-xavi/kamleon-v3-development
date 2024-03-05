@@ -61,6 +61,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
         Log.d(TAG, "init activity on resume")
     }
 
+    /*
     private val requestLocationPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -72,6 +73,8 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
                 Log.i("Permission: ", "Denied")
             }
         }
+    */
+
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -84,6 +87,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             }
         }
 
+    /*
     private fun askLocationPermission() {
         when {
             ContextCompat.checkSelfPermission(
@@ -105,6 +109,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             }
         }
     }
+    */
 
     private fun askNotificationPermission() {
         // This is only necessary for API level >= 33 (TIRAMISU)
@@ -126,7 +131,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     override fun setBinding(): ActivityInitBinding = ActivityInitBinding.inflate(layoutInflater)
 
     override fun initView() {
-        supportFragmentManager
+        /*supportFragmentManager
             .setFragmentResultListener(Constants.GRANT_LOCATION, this) { _, bundle ->
                 Log.d(TAG, "result from activity location")
                 val result = bundle.getBoolean(Constants.GRANT_LOCATION_BUNDLE)
@@ -134,6 +139,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
                     askLocationPermission()
                 }
             }
+        */
         supportFragmentManager
             .setFragmentResultListener(Constants.GRANT_NOTIFICATION, this) { _, bundle ->
                 Log.d(TAG, "result from activity notification")

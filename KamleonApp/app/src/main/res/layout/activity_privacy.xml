@@ -58,6 +58,7 @@
                 style="@style/CircularRegularFont"
                 android:textSize="@dimen/ts_16"
                 android:paddingTop="4dp"
+                android:paddingBottom="2dp"
                 android:paddingStart="16dp"/>
         </LinearLayout>
         <LinearLayout
@@ -82,6 +83,7 @@
                 style="@style/CircularRegularFont"
                 android:textSize="@dimen/ts_16"
                 android:paddingTop="4dp"
+                android:paddingBottom="2dp"
                 android:paddingStart="16dp"/>
         </LinearLayout>
         <LinearLayout
@@ -105,6 +107,7 @@
                 android:text="@string/privacy_item1"
                 style="@style/CircularRegularFont"
                 android:paddingTop="4dp"
+                android:paddingBottom="2dp"
                 android:textSize="@dimen/ts_16"
                 android:paddingStart="16dp"/>
         </LinearLayout>
@@ -133,12 +136,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/btnAcceptAll"
-            android:paddingVertical="12dp"
+            android:paddingVertical="10dp"
+            android:layout_marginBottom="12dp"
             android:textAlignment="center"
             android:text="@string/privacy_button_accept_all"
+            android:background="@drawable/bg_btn_round_border"
             android:textColor="@drawable/color_blue_text_button"
             android:clickable="true"
-            android:textAppearance="@style/CircularMediumFont"
+            android:textAppearance="@style/TextAppearance.Kamleon.Bold"
             android:textSize="@dimen/ts_16"/>
 
         <Button

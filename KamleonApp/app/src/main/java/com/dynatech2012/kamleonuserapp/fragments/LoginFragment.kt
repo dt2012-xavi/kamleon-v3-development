@@ -155,7 +155,7 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
         dialog.setCancelable(false)
         dialogView.findViewById<TextView>(R.id.tv_dialog_policy_desc).setOnClickListener {
             // Open web policy
-            openWebBrowser(UrlConstants.URL_POLICY)
+            openWebBrowser(UrlConstants.URL_POLICY_APP)
         }
         dialogView.findViewById<TextView>(R.id.tv_dialog_policy_disagree).setOnClickListener {
             // dismiss dialog

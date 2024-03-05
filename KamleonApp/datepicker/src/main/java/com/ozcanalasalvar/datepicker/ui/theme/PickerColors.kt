@@ -57,11 +57,11 @@ class PickerColors(
     }
 }
 
-val colorLightPrimary = Color(0xFFFFFFFF)
+val colorLightPrimary = Color(0xFFFAFAFA)
 val colorLightTextPrimary = Color(0xFF000000)
 val colorLightTextSecondary = Color(0xFF6C727A)
 val colorLightBackground = Color(0xFFFFFFFF)
-val colorLightOnBackground = Color(0x99FFFFFF)
+val colorLightOnBackground = Color(0x99FAFAFA)
 val colorLightError = Color(0xFFD62222)
 
 val colorDarkPrimary = Color(0xFF221E1E)

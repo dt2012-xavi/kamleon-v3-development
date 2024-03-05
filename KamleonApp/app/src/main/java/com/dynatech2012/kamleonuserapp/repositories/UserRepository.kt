@@ -25,59 +25,51 @@ class UserRepository {
     val isEmailVerified: Boolean
         get() = auth.currentUser?.isEmailVerified ?: true
 
-    suspend fun signup(email: String, pass: String) = suspendCoroutine { continuation ->
-        auth.createUserWithEmailAndPassword(email, pass)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "createUserWithEmail:success")
-                    val user = auth.currentUser
-                    val customUser = CustomUser(email)
-                    continuation.resume(Response.Success(customUser))
-                } else {
-                    Log.e(TAG, "createUserWithEmail:failure", task.exception)
-                    continuation.resume(Response.Failure(task.exception ?: Exception()))
-                }
-            }
+    suspend fun signup(email: String, pass: String): Response<CustomUser> {//= suspendCoroutine { continuation ->
+        return try {
+            auth.createUserWithEmailAndPassword(email, pass).await()
+            Log.d(TAG, "createUserWithEmail:success")
+            val user = auth.currentUser
+            val customUser = CustomUser(email)
+            Response.Success(customUser)
+        } catch (e: Exception) {
+            Log.e(TAG, "createUserWithEmail:failure", e)
+            Response.Failure(e)
+        }
     }
 
-    suspend fun login(email: String, pass: String) = suspendCoroutine { continuation ->
+    suspend fun login(email: String, pass: String): Response<CustomUser> {// = suspendCoroutine { continuation ->
         Log.d(TAG, "Will try  to login: $email _ $pass")
-        auth.signInWithEmailAndPassword(email, pass)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "login:success")
-                    val user = auth.currentUser
-                    val customUser = CustomUser(email)
-                    continuation.resume(Response.Success(customUser))
-                } else {
-                    when (val e = task.exception) {
-                        is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> {
-                            // Pass wrong
-                            Log.e(TAG, "login:failure: $e _ ${e.cause}", e)
-                            continuation.resume(Response.Failure(e))
-                        }
-                        is com.google.firebase.auth.FirebaseAuthInvalidUserException -> {
-                            // user invalid
-                            Log.e(TAG, "login:failure: $e _ ${e.cause}", e)
-                            continuation.resume(Response.Failure(e))
-                        }
-                        else -> {
-                            Log.e(TAG, "login:failure: $e _ ${e?.cause}", e)
-                            continuation.resume(Response.Failure(e ?: Exception()))
-                        }
-                    }
+        try {
+            auth.signInWithEmailAndPassword(email, pass).await()
+            Log.d(TAG, "login:success")
+            val user = auth.currentUser
+            val customUser = CustomUser(email)
+            return Response.Success(customUser)
+        } catch (e: Exception) {
+            when (e) {
+                is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> {
+                    // Pass wrong
+                    Log.e(TAG, "login:failure: $e _ ${e.cause}", e)
+                    return Response.Failure(e)
+                }
+                is com.google.firebase.auth.FirebaseAuthInvalidUserException -> {
+                    // user invalid
+                    Log.e(TAG, "login:failure: $e _ ${e.cause}", e)
+                    return Response.Failure(e)
+                }
+                else -> {
+                    Log.e(TAG, "login:failure: $e _ ${e.cause}", e)
+                    return Response.Failure(e)
                 }
             }
+        }
     }
 
     val checkLogged: Boolean
         get() {
-
             val user = auth.currentUser
             val isLogged = user != null
-
 
             Log.d(TAG, "checkLogged: $isLogged")
             return isLogged

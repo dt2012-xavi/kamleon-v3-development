@@ -27,20 +27,11 @@ import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 
 
-@AndroidEntryPoint
 class NotificationService : FirebaseMessagingService() {
 
-
-    @Inject
-    @ApplicationContext
-    lateinit var context: Context
-
-    private val sharedPrefUtil = SharedPrefUtil(context)
+    private val sharedPrefUtil by lazy { SharedPrefUtil(applicationContext) }
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         Log.d(TAG, "token app refreshed: $token")

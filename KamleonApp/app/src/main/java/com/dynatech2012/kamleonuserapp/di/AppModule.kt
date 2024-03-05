@@ -15,14 +15,12 @@ import com.dynatech2012.kamleonuserapp.repositories.DatabaseDataSource
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.MeasuresRepository
-import com.dynatech2012.kamleonuserapp.repositories.RealtimeRepository
+import com.dynatech2012.kamleonuserapp.repositories.RealtimeDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import java.lang.reflect.Constructor
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
@@ -38,11 +36,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun realtimeRepositoryProvider(userRepository: UserRepository): RealtimeRepository = RealtimeRepository(userRepository)
+    fun realtimeRepositoryProvider(userRepository: UserRepository): RealtimeDataSource = RealtimeDataSource(userRepository)
 
     @Provides
     @Singleton
-    fun measuresRepositoryProvider(databaseDataSource: DatabaseDataSource, firestoreDataSource: FirestoreDataSource, realtimeRepository: RealtimeRepository): MeasuresRepository = MeasuresRepository(databaseDataSource, firestoreDataSource, realtimeRepository)
+    fun measuresRepositoryProvider(databaseDataSource: DatabaseDataSource, firestoreDataSource: FirestoreDataSource, realtimeRepository: RealtimeDataSource): MeasuresRepository = MeasuresRepository(databaseDataSource, firestoreDataSource, realtimeRepository)
     @Provides
     @Singleton
     fun databaseDataSourceProvider(measureDataDao: MeasureDataDao, dailyMeasureDataDao: AverageDailyMeasureDataDao, monthlyMeasureDataDao: AverageMonthlyMeasureDataDao): DatabaseDataSource = DatabaseDataSource(measureDataDao, dailyMeasureDataDao, monthlyMeasureDataDao)

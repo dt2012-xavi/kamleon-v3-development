@@ -14,6 +14,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
+import com.dynatech2012.kamleonuserapp.constants.Constants
+import com.dynatech2012.kamleonuserapp.constants.UrlConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityPrivacyBinding
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,40 +66,55 @@ class PrivacyFragment : BaseFragment<ActivityPrivacyBinding>() {
     private fun privacySpannableString(textFull: String): SpannableString {
         val textTerms = getString(R.string.privacy_word_terms)
         val textPrivacy = getString(R.string.privacy_word_privacy)
+        val textConsent = getString(R.string.privacy_word_consent)
 
         val spannableString = SpannableString(textFull)
         val clickableTerms: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                openWebBrowser("https://termsuse.com")
+                openWebBrowser(UrlConstants.URL_TERMS)
             }
 
             override fun updateDrawState(ds: TextPaint) {
-                ds.isUnderlineText = false
-                ds.color = requireContext().getColor(R.color.kamleon_blue)
+                ds.isUnderlineText = true
+                ds.isFakeBoldText = true
+                //ds.color = requireContext().getColor(R.color.kamleon_blue)
             }
         }
         val clickablePolicy: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                openWebBrowser("https://privacypolicy.com")
+                openWebBrowser(UrlConstants.URL_POLICY_APP)
             }
 
             override fun updateDrawState(ds: TextPaint) {
-                ds.isUnderlineText = false
-                ds.color = requireContext().getColor(R.color.kamleon_blue)
+                ds.isUnderlineText = true
+                ds.isFakeBoldText = true
+                //ds.color = requireContext().getColor(R.color.kamleon_blue)
+            }
+        }
+        val clickableConsent: ClickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                openWebBrowser(UrlConstants.URL_CONSENT)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                ds.isUnderlineText = true
+                ds.isFakeBoldText = true
+                //ds.color = requireContext().getColor(R.color.kamleon_blue)
             }
         }
 
-
         val termsIndex = textFull.indexOf(textTerms)
         val privacyIndex = textFull.indexOf(textPrivacy)
+        val consentIndex = textFull.indexOf(textConsent)
         if (termsIndex >= 0) {
             spannableString.setSpan(clickableTerms, termsIndex, termsIndex + textTerms.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
-
         if (privacyIndex >= 0) {
             spannableString.setSpan(clickablePolicy, privacyIndex, privacyIndex + textPrivacy.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
-
+        if (consentIndex >= 0) {
+            spannableString.setSpan(clickableConsent, consentIndex, consentIndex + textConsent.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
         return spannableString
     }
 

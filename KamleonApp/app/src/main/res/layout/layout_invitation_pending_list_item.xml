@@ -63,7 +63,7 @@
                 android:paddingVertical="4dp"
                 android:gravity="center"
                 android:text="@string/noti_confirm"
-                android:background="@drawable/bg_btn_round_blue"
+                android:background="@drawable/bg_btn_round_blue_grey"
                 android:textAppearance="@drawable/color_blue_text_button"
                 android:enabled="false"
                 android:textSize="@dimen/ts_16"
@@ -114,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:paddingVertical="2dp"
                 android:text="@string/noti_pending_policy"
-                android:textAppearance="@style/TextAppearance.Kamleon.Caption"
+                android:textAppearance="@style/TextAppearance.Kamleon.Body2"
                 android:textColor="?attr/colorOnSurfaceTertiaryInverse" />
         </LinearLayout>
         <LinearLayout
@@ -139,7 +139,7 @@
                 android:gravity="center_vertical"
 
                 android:text="@string/noti_pending_consent"
-                android:textAppearance="@style/TextAppearance.Kamleon.Caption"
+                android:textAppearance="@style/TextAppearance.Kamleon.Body2"
                 android:textColor="?attr/colorOnSurfaceTertiaryInverse" />
         </LinearLayout>
         <LinearLayout
@@ -164,7 +164,7 @@
                 android:paddingVertical="2dp"
                 android:gravity="center_vertical"
                 android:text="@string/noti_pending_name_consent"
-                android:textAppearance="@style/TextAppearance.Kamleon.Caption"
+                android:textAppearance="@style/TextAppearance.Kamleon.Body2"
                 android:textColor="?attr/colorOnSurfaceTertiaryInverse" />
         </LinearLayout>
     </LinearLayout>

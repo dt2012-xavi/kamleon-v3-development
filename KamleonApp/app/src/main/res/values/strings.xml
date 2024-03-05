@@ -46,14 +46,15 @@
     <string name="forgotpwd_or">OR</string>
 
     <!-- Privacy -->
-    <string name="privacy_title">Privacity</string>
-    <string name="privacy_item1">I accept the processing of my personal health data in order to facilitate the functionalities of the Kamleon application. Get more information in the privacy policy.</string>
-    <string name="privacy_item2">I accept the privacy policy and the terms of use.</string>
-    <string name="privacy_item3">I authorize Kamleon to use my personal data (excluding health data) to send me offers of products or services through the Kamleon application or via email.*</string>
+    <string name="privacy_title">Privacy</string>
+    <string name="privacy_item1">I agree to the Privacy Policy.*</string>
+    <string name="privacy_item2">I accept to the Terms and Conditions.*</string>
+    <string name="privacy_item3">I give my consent for the data controller to process my personal data, including health data, for the purpose of structuring and displaying them in the user profile. Please refer to the consent information*</string>
     <string name="privacy_note">*You can revoke your consent at any time by sending a message to <u>info@kamleon.com</u></string>
     <string name="privacy_button_next">Next</string>
-    <string name="privacy_word_terms">terms of use</string>
-    <string name="privacy_word_privacy">privacy policy</string>
+    <string name="privacy_word_terms">Terms and Conditions</string>
+    <string name="privacy_word_privacy">Privacy Policy</string>
+    <string name="privacy_word_consent">consent information</string>
     <string name="privacy_button_accept_all">Accept All</string>
 
     <!-- Onboarding -->

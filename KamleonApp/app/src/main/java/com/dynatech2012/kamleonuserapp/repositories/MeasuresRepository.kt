@@ -11,8 +11,8 @@ import javax.inject.Inject
 
 class MeasuresRepository @Inject constructor(
     private val database: DatabaseDataSource,
-    private val firestoreDataSource: FirestoreDataSource,
-    private val realtimeRepository: RealtimeRepository
+    private val firestore: FirestoreDataSource,
+    private val realtime: RealtimeDataSource
 ) {
 
     private var lastDateLong = 0L       // last date in DB
@@ -38,7 +38,7 @@ class MeasuresRepository @Inject constructor(
 
     suspend fun getUserMeasuresFromFS(userId: String?): Response<ArrayList<MeasureData>> {
         Log.d(TAG, "will try to get measures from FS 1")
-        val response = firestoreDataSource.getUserMeasuresNoPag(userId, lastDateLong, null)
+        val response = firestore.getUserMeasuresNoPag(userId, lastDateLong, null)
         if (response.isSuccess) {
             val measures = response.dataValue
             Log.d(TAG, "got measures from FS 2 size ${measures?.size}")
@@ -97,14 +97,19 @@ class MeasuresRepository @Inject constructor(
         if (newMeasuresFS.isEmpty()) return Response.Success(ArrayList())
         val dates = newMeasuresFS.map { Date(it.analysisDate).toInstant().atZone(ZoneId.systemDefault()).toLocalDate() }
         val newDays = dates.distinct()
-        val response = realtimeRepository.getDaysAverages(userId, newDays)
+        val response = realtime.getDaysAverages(userId, newDays)
         if (response.isSuccess) {
             val measures = response.dataValue
             if (measures?.isNotEmpty() == true) {
                 Log.d(TAG, "got measures from FS not empty")
                 saveNewAverageDailyMeasuresToDB(measures)
-            }
-        }
+                /*
+                val saveJob = coroutineScope { async {
+                       saveNewAverageDailyMeasuresToDB(measures)
+                    } }
+                saveJob.await()
+                */
+            } }
         return response
     }
     private suspend fun saveNewAverageDailyMeasuresToDB(measureDataList: List<AverageDailyMeasureData?>?) {
@@ -118,12 +123,18 @@ class MeasuresRepository @Inject constructor(
         if (newMeasuresFS.isEmpty()) return Response.Success(ArrayList())
         val dates = newMeasuresFS.map { Date(it.analysisDate).toInstant().atZone(ZoneId.systemDefault()).toLocalDate() }
         val newMonths = dates.distinctBy { it.year to it.month }
-        val response = realtimeRepository.getMonthsAverages(userId, newMonths)
+        val response = realtime.getMonthsAverages(userId, newMonths)
         if (response.isSuccess) {
             val measures = response.dataValue
             if (measures?.isNotEmpty() == true) {
                 Log.d(TAG, "got measures from FS not empty")
                 saveNewAverageMonthlyMeasuresToDB(measures)
+                /*
+                val saveJob = coroutineScope { async {
+                       saveNewAverageMonthlyMeasuresToDB(measures)
+                    } }
+                saveJob.await()
+                */
             } }
         return response
     }
@@ -135,20 +146,22 @@ class MeasuresRepository @Inject constructor(
         }
     }
 
+    /*
     fun closeChannels() {
         realtimeRepository.closeChannels()
     }
+    */
 
     /*
     fun getAllUserDailyAverages(userId: String?): Flow<Response<ArrayList<AverageDailyMeasureData>>> = callbackFlow {
-        realtimeRepository.getAllDaysAverages(userId).collect {
+        realtime.getAllDaysAverages(userId).collect {
             insertNewAverageDailyMeasuresToDB(it)
             trySend(Response.Success(it))
         }
         awaitClose {  }
     }
     fun getAllUserMonthlyAverages(userId: String?): Flow<Response<ArrayList<AverageMonthlyMeasureData>>> = callbackFlow {
-        realtimeRepository.getAllMonthsAverages(userId).collect {
+        realtime.getAllMonthsAverages(userId).collect {
             insertNewAverageMonthlyMeasuresToDB(it)
             trySend(Response.Success(it))
         }

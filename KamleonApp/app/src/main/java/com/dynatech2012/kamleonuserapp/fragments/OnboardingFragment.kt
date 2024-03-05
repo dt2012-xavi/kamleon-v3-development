@@ -31,11 +31,11 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
 
     enum class OnBoardingStep(val step: Int) {
         Notification(0),
-        Location(1),
-        BirthDate(2),
-        Height(3),
-        Weight(4),
-        Gender(5);
+        //Location(1),
+        BirthDate(1),
+        Height(2),
+        Weight(3),
+        Gender(4);
     }
 
     override fun setBinding(): ActivityOnboardingBinding = ActivityOnboardingBinding.inflate(layoutInflater)
@@ -44,7 +44,7 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
     private fun containerLayoutFor(step: OnBoardingStep): LinearLayout {
         val layouts = arrayOf(
             binding.layoutNotification,
-            binding.layoutLocation,
+            //binding.layoutLocation,
             binding.layoutBirthday,
             binding.layoutHeight,
             binding.layoutWeight,
@@ -97,11 +97,12 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
                         putBoolean(Constants.GRANT_NOTIFICATION_BUNDLE, true)
                     })
                 }
+                /*
                 OnBoardingStep.Location -> {
                     activity?.supportFragmentManager?.setFragmentResult(Constants.GRANT_LOCATION, Bundle().apply {
                         putBoolean(Constants.GRANT_LOCATION_BUNDLE, true)
                     })
-                }
+                }*/
                 OnBoardingStep.BirthDate -> {
                     val dateSelected = binding.datePicker.getDateSelected()
                     //val localDate = LocalDate.of(dateSelected.year, dateSelected.month, dateSelected.day)
@@ -143,9 +144,11 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
     private fun checkIfGoNextStep() {
         when (state.step) {
             OnBoardingStep.values().size - 1 -> {
+                binding.btnNext.text = ""
+                binding.pbOnboardNext.visibility = View.VISIBLE
                 viewModel.finishSignup()
             }
-            OnBoardingStep.Notification.step, OnBoardingStep.Location.step -> {
+            OnBoardingStep.Notification.step/*, OnBoardingStep.Location.step*/ -> {
                 // Do nothing
             }
             else -> {
@@ -182,6 +185,10 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
             binding.tvBottomDesc.setTextColor(ContextCompat.getColor(requireContext(), R.color.kamleon_blue))
             binding.tvBottomDesc.isClickable = true
             binding.tvBottomDesc.setOnClickListener {
+                binding.tvBottomDesc.visibility = View.INVISIBLE
+                binding.pbOnboardSkip.visibility = View.VISIBLE
+                binding.btnNext.isEnabled = false
+                binding.tvBottomDesc.isEnabled = false
                 viewModel.finishSignup()
             }
             binding.tvBottomDesc.visibility = View.VISIBLE
@@ -192,12 +199,12 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         val aryRet = ArrayList<String>()
         when (step) {
             OnBoardingStep.Height -> {
-                for (height in 160 .. 190) {
+                for (height in 140 .. 230) {
                     aryRet.add("$height")
                 }
             }
             OnBoardingStep.Weight -> {
-                for (weight in 45 .. 120) {
+                for (weight in 30 .. 130) {
                     aryRet.add("$weight")
                 }
             }
@@ -207,13 +214,14 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
             }
             else -> {}
         }
+        Log.d(TAG, "spinner data source: $aryRet")
 
         return aryRet
     }
 
     private fun setupSpinners() {
         for (onboardState in OnBoardingStep.values()) {
-            if (onboardState.step <= 2) { continue }
+            if (onboardState.step <= OnBoardingStep.BirthDate.step) { continue }
             val picker = spinnerViewFor(onboardState)
 
             Log.e("SPINNER", "Datasource size = " + spinnerDataSource(onboardState).size)
@@ -230,7 +238,13 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         Log.d(TAG, "login step state received $state")
         when (state) {
             3, 4 -> { goNextStep(); updateUI() }
-            5 -> showVerificationDialog()
+            5 -> {
+                binding.pbOnboardNext.visibility = View.GONE
+                binding.pbOnboardSkip.visibility = View.GONE
+                binding.btnNext.text = getString(R.string.onboard_button_next)
+                binding.tvBottomDesc.visibility = View.VISIBLE
+                showVerificationDialog()
+            }
             else -> {}
         }
     }
@@ -249,6 +263,10 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         Log.d(TAG, "login step show verif dialog")
         dialogView.findViewById<TextView>(R.id.tv_dialog_verify_ok).setOnClickListener {
             Log.d(AuthViewModel.TAG, "login step verif dialog ok")
+            // Not necessary. Only if navigation fails
+            binding.btnNext.isEnabled = true
+            binding.tvBottomDesc.isEnabled = true
+
             logoutDialog.dismiss()
             // Go to login
             findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)

@@ -72,7 +72,7 @@ class DataPickerFragment : BottomSheetDialogFragment() {
         pickerV = pickerView
         val  aryRet = ArrayList<String>()
         if (dataType == "height") {
-            for (height in 160 .. 190) {
+            for (height in 140 .. 230) {
                 aryRet.add("$height")
             }
             pickerView.setValueUnit("cm")
@@ -81,7 +81,7 @@ class DataPickerFragment : BottomSheetDialogFragment() {
             pickerView.setShowDecimal(true)
             dataValue?.let { pickerView.setValue(it) }
         } else if (dataType == "weight") {
-            for (weight in 45 .. 120) {
+            for (weight in 30 .. 130) {
                 aryRet.add("$weight")
             }
             pickerView.setValueUnit("kg")
