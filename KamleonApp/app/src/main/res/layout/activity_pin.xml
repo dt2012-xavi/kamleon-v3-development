@@ -201,6 +201,19 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:paddingHorizontal="8dp"
+                style="@style/CircularRegularFont"
+                android:id="@+id/tvPinSettings"
+                android:textSize="@dimen/ts_12"
+                android:text="@string/pin_settings"
+                android:clickable="true"
+                android:paddingVertical="8dp"
+                android:textColor="@drawable/color_text_button"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingHorizontal="16dp"
                 style="@style/CircularRegularFont"

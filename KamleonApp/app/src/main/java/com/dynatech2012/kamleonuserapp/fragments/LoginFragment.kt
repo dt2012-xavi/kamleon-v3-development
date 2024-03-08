@@ -29,6 +29,8 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
     override fun setBinding(): ActivityLoginBinding = ActivityLoginBinding.inflate(layoutInflater)
 
     override fun initView() {
+        Log.i(TAG, "init activity login fragment")
+
         binding.btnSignIn.isEnabled = true
 
         binding.inputBoxEmail.getEditTextView()?.imeOptions = EditorInfo.IME_ACTION_NEXT

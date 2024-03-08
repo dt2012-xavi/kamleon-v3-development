@@ -35,6 +35,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Date
 import javax.inject.Inject
 
@@ -47,7 +48,7 @@ class MainViewModel @Inject constructor(
     private val databaseRepository: DatabaseDataSource,
     private val realtime: RealtimeDataSource,
     private val cloudFunctions: CloudFunctions
-): ViewModel() {
+) : ViewModel() {
 
     var graphicType: Int = -1
 
@@ -93,15 +94,14 @@ class MainViewModel @Inject constructor(
                     val request = ImageRequest.Builder(appContext)
                         .data(user.imageUrl)
                         .allowHardware(false)
-                        .size(100,100)
+                        .size(100, 100)
                         .target { drawable ->
                             // Handle the result.
                             _userImageDrawable.postValue(drawable)
                         }
                         .build()
                     val disposable = imageLoader.enqueue(request)
-                }
-                else {
+                } else {
                     _userImageDrawable.postValue(null)
                 }
             }
@@ -153,12 +153,26 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    val logoutStatus = MutableLiveData<Boolean>()
+
     fun logout() {
         viewModelScope.launch(Dispatchers.IO) {
             firestoreRepo.deleteToken()
             databaseRepository.deleteAllMeasures()
             SharedPrefUtil(appContext).removeUser()
             //measuresRepository.closeChannels()
+            withContext(Dispatchers.Main) {
+                userRepository.logoutStatus.observeForever() {
+                    Log.i("", "logout status: $it")
+                    if (it) {
+                        logoutStatus.postValue(true)
+                        userRepository.removeAuthListener()
+                        userRepository.logoutStatus.removeObserver {
+                            Log.d("", "logoutStatus removed")
+                        }
+                    }
+                }
+            }
             userRepository.logout()
         }
     }
@@ -168,8 +182,7 @@ class MainViewModel @Inject constructor(
             val oldPinHash = oldPin.sha256()
             if (oldPinHash != userData.value?.pin) {
                 throw Exception(Constants.UNMATCHING_PIN)
-            }
-            else {
+            } else {
                 val newPinHash = newPin.sha256()
                 val data = hashMapOf<String, Any>("pin" to newPinHash)
                 firestoreRepo.updateUser(data)
@@ -201,8 +214,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun resetUserUpdated()
-    {
+    fun resetUserUpdated() {
         _userUpdated.postValue(false)
     }
 
@@ -210,8 +222,7 @@ class MainViewModel @Inject constructor(
         _userImagePrevUri.postValue(uri)
         if (uri == null) {
             _userImageUri.postValue(Event(null))
-        }
-        else {
+        } else {
             viewModelScope.launch(Dispatchers.IO) {
                 val response = firestoreRepo.updateUserImage(uri)
                 if (response.isSuccess && response.dataValue != null) {
@@ -237,7 +248,8 @@ class MainViewModel @Inject constructor(
             val measuresLoaded = ArrayList<MeasureData>()
             val dailyLoaded = ArrayList<AverageDailyMeasureData>()
             val monthlyLoaded = ArrayList<AverageMonthlyMeasureData>()
-            val responseMeasuresDB = measuresRepository.getUserLastMeasureFromDB()//.collect { lastM ->
+            val responseMeasuresDB =
+                measuresRepository.getUserLastMeasureFromDB()//.collect { lastM ->
             if (responseMeasuresDB.isSuccess && responseMeasuresDB.dataValue != null) {
                 Log.d(TAG, "got measures from DB size: ${responseMeasuresDB.dataValue?.size}")
                 responseMeasuresDB.dataValue?.let { measuresDB ->
@@ -247,15 +259,18 @@ class MainViewModel @Inject constructor(
                     if (measuresDB.size > 0) {
                         Log.d(TAG, "got measures from DB not empty")
                         _lastMeasure.postValue(measuresDB[0])
-                    }
-                    else {
+                    } else {
                         Log.d(TAG, "got measures from DB EMPTY")
                     }
                 }
             }
-            val responseMeasuresFS = measuresRepository.getUserMeasuresFromFS(userRepository.uuid)//.collect { meas ->
+            val responseMeasuresFS =
+                measuresRepository.getUserMeasuresFromFS(userRepository.uuid)//.collect { meas ->
             if (responseMeasuresFS.isSuccess && responseMeasuresFS.dataValue != null) {
-                Log.d(TAG, "got measures from FS success size: ${responseMeasuresFS.dataValue?.size}")
+                Log.d(
+                    TAG,
+                    "got measures from FS success size: ${responseMeasuresFS.dataValue?.size}"
+                )
                 responseMeasuresFS.dataValue?.let { measuresFB ->
                     measuresLoaded.addAll(measuresFB)
                     //_measures.postValue(measuresFB)
@@ -263,9 +278,7 @@ class MainViewModel @Inject constructor(
                     if (measuresFB.size > 0) {
                         Log.d(TAG, "got measures from FS not empty")
                         _lastMeasure.postValue(measuresFB[0])
-                    }
-                    else
-                    {
+                    } else {
                         Log.d(TAG, "got measures from FS EMPTY")
                     }
                 }
@@ -294,7 +307,8 @@ class MainViewModel @Inject constructor(
                     }
                 }
             }
-            val avDay = measuresRepository.getUserDailyAverages(userRepository.uuid)//.collect { avDay ->
+            val avDay =
+                measuresRepository.getUserDailyAverages(userRepository.uuid)//.collect { avDay ->
             if (avDay.isSuccess && avDay.dataValue != null) {
                 Log.d(TAG, "got measures daily finally 2")
                 avDay.dataValue?.let { dailyMeasures ->
@@ -303,7 +317,8 @@ class MainViewModel @Inject constructor(
                     _averageDailyMeasures.postValue(dailyLoaded)
                 }
             }
-            val avMon = measuresRepository.getUserMonthlyAverages(userRepository.uuid)//.collect { avMon ->
+            val avMon =
+                measuresRepository.getUserMonthlyAverages(userRepository.uuid)//.collect { avMon ->
             if (avMon.isSuccess && avMon.dataValue != null) {
                 Log.d(TAG, "got measures monthly finally 2")
                 avMon.dataValue?.let { monthlyMeasures ->
@@ -312,31 +327,65 @@ class MainViewModel @Inject constructor(
                     _averageMonthlyMeasures.postValue(monthlyLoaded)
                 }
             }
-                //}
             //}
-        /*
-        // get all averages from FS
-            measuresRepository.getAllUserDailyAverages(userRepository.uuid)
-                .collect { avDa ->
-                    avDa.dataValue?.let { dailyMeasures ->
-                        Log.d(
-                            TAG,
-                            "got measures all daily finally 2 size ${dailyMeasures.size}"
-                        )
-                        dailyLoaded.addAll(dailyMeasures)
-                        _averageDailyMeasures.postValue(dailyLoaded)
-                    } }
-            measuresRepository.getAllUserMonthlyAverages(userRepository.uuid)
-                .collect { avMon ->
-                    avMon.dataValue?.let { monthlyMeasures ->
-                        Log.d(TAG, "got measures all monthly finally 2 size ${monthlyMeasures.size}")
-                        monthlyLoaded.addAll(monthlyMeasures)
-                        _averageMonthlyMeasures.postValue(monthlyLoaded)
-                    } }
-        */
+            //}
+            /*
+            // get all averages from FS
+                measuresRepository.getAllUserDailyAverages(userRepository.uuid)
+                    .collect { avDa ->
+                        avDa.dataValue?.let { dailyMeasures ->
+                            Log.d(
+                                TAG,
+                                "got measures all daily finally 2 size ${dailyMeasures.size}"
+                            )
+                            dailyLoaded.addAll(dailyMeasures)
+                            _averageDailyMeasures.postValue(dailyLoaded)
+                        } }
+                measuresRepository.getAllUserMonthlyAverages(userRepository.uuid)
+                    .collect { avMon ->
+                        avMon.dataValue?.let { monthlyMeasures ->
+                            Log.d(TAG, "got measures all monthly finally 2 size ${monthlyMeasures.size}")
+                            monthlyLoaded.addAll(monthlyMeasures)
+                            _averageMonthlyMeasures.postValue(monthlyLoaded)
+                        } }
+            */
         }
         SharedPrefUtil(appContext).saveBoolean(PREF_NEW_MEASURE, false)
 
+    }
+
+    private val _resetPwdSuccess = MutableLiveData<Boolean>()
+    val resetPwdSuccess: LiveData<Boolean> = _resetPwdSuccess
+    fun resetPwd() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val userEmail = userRepository.email
+            if (!userEmail.isNullOrEmpty()) {
+                val response = cloudFunctions.resetPwd(userEmail)
+                if (response.isSuccess) {
+                    _resetPwdSuccess.postValue(true)
+                } else {
+                    _resetPwdSuccess.postValue(false)
+                }
+            }
+        }
+    }
+
+    private val _resetPINSuccess = MutableLiveData<Boolean>()
+    val resetPINSuccess: LiveData<Boolean> = _resetPINSuccess
+
+    fun resetPIN() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val userEmail = userRepository.email
+            val userUUid = userRepository.uuid
+            if (!userEmail.isNullOrEmpty() && !userUUid.isNullOrEmpty()) {
+                val response = cloudFunctions.resetPin(userEmail, userUUid)
+                if (response.isSuccess) {
+                    _resetPINSuccess.postValue(true)
+                } else {
+                    _resetPINSuccess.postValue(false)
+                }
+            }
+        }
     }
 
 
@@ -346,7 +395,7 @@ class MainViewModel @Inject constructor(
     private val _newNotificationMeasure =  MutableLiveData<Boolean>()
     val newNotificationMeasure: LiveData<Boolean> = _newNotificationMeasure
     */
-    private val _newNotificationToken =  MutableLiveData<String>()
+    private val _newNotificationToken = MutableLiveData<String>()
     val newNotificationToken: LiveData<String> = _newNotificationToken
     fun updateUserToken() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -354,16 +403,18 @@ class MainViewModel @Inject constructor(
             //_newNotificationToken.postValue(token)
         }
     }
+
     fun onGetNotification() {
         Log.d(TAG, "onGetNotification from viewModel")
         getUserMeasures()
         //_newNotificationMeasure.postValue(true)
     }
+
     fun resetNewNotification() {
         //_newNotificationMeasure.postValue(false)
     }
 
-    private val _newInvitations =  MutableLiveData<Boolean>()
+    private val _newInvitations = MutableLiveData<Boolean>()
     val newInvitations: LiveData<Boolean> = _newInvitations
     fun updateInvitationsCount() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -371,25 +422,28 @@ class MainViewModel @Inject constructor(
             _newInvitations.postValue(invitationsCount > 0)
         }
     }
-    private val _pendingInvitations =  MutableLiveData<ArrayList<Invitation>>()
+
+    private val _pendingInvitations = MutableLiveData<ArrayList<Invitation>>()
     val pendingInvitations: LiveData<ArrayList<Invitation>> = _pendingInvitations
-    private val _oldInvitations =  MutableLiveData<ArrayList<Invitation>>()
+    private val _oldInvitations = MutableLiveData<ArrayList<Invitation>>()
     val oldInvitations: LiveData<ArrayList<Invitation>> = _oldInvitations
-    private val _recentInvitations =  MutableLiveData<ArrayList<Invitation>>()
+    private val _recentInvitations = MutableLiveData<ArrayList<Invitation>>()
     val recentInvitations: LiveData<ArrayList<Invitation>> = _recentInvitations
-    private val _recentInvitationModified =  MutableLiveData<Boolean>()
+    private val _recentInvitationModified = MutableLiveData<Boolean>()
     val recentInvitationModified: LiveData<Boolean> = _recentInvitationModified
     private var gettingInvitationsAfterModifyingOne = false
     fun resetGettingInvitationsAfterModifyingOne() {
         gettingInvitationsAfterModifyingOne = false
         _recentInvitationModified.postValue(false)
     }
+
     fun getInvitations() {
         viewModelScope.launch(Dispatchers.IO) {
             val response = cloudFunctions.getInvitations()
             Log.d(TAG, "HHH getInvitations: ${response.dataValue?.size}")
             val invitations = response.dataValue ?: ArrayList()
-            val pendingInvitations = invitations.filter { it.status == InvitationStatus.SENT } as ArrayList<Invitation>
+            val pendingInvitations =
+                invitations.filter { it.status == InvitationStatus.SENT } as ArrayList<Invitation>
             _pendingInvitations.postValue(pendingInvitations)
             if (gettingInvitationsAfterModifyingOne) {
                 gettingInvitationsAfterModifyingOne = false
@@ -399,7 +453,8 @@ class MainViewModel @Inject constructor(
             Log.d(TAG, "HHH getInvitations pending: ${pendingInvitations.size}")
             val thirtyDaysAgo = Date().addDays(-30)
             _recentInvitations.postValue(invitations.filter { it.status != InvitationStatus.SENT && it.dateSent >= thirtyDaysAgo } as ArrayList<Invitation>?)
-            val oldInvitations = invitations.filter { it.status != InvitationStatus.SENT } as ArrayList<Invitation>
+            val oldInvitations =
+                invitations.filter { it.status != InvitationStatus.SENT } as ArrayList<Invitation>
             //val oldInvitations = invitations.filter { it.status != InvitationStatus.SENT && it.dateSent < thirtyDaysAgo } as ArrayList<Invitation>
             /*val inFake = arrayListOf(Invitation("1", "1", "1", "1", Date(), Date(), Date().addDays(-40), InvitationStatus.SENT, InvitationRole.CENTERSTAFF_ADMIN))
             oldInvitations.addAll(inFake)*/
@@ -422,8 +477,7 @@ class MainViewModel @Inject constructor(
                     firestoreRepo.updateLegal(false, true, true)
                 gettingInvitationsAfterModifyingOne = true
                 getInvitations()
-            }
-            else {
+            } else {
                 Log.d(TAG, "HHH acceptInvitation: failure")
             }
         }
@@ -436,8 +490,7 @@ class MainViewModel @Inject constructor(
                 gettingInvitationsAfterModifyingOne = true
                 Log.d(TAG, "HHH rejectInvitation: success")
                 getInvitations()
-            }
-            else {
+            } else {
                 Log.d(TAG, "HHH rejectInvitation: failure")
             }
         }
@@ -450,12 +503,13 @@ class MainViewModel @Inject constructor(
     }
 
 
-    private val _averageDailyMeasures =  MutableLiveData<ArrayList<AverageDailyMeasureData>>()
-    val averageDailyMeasures: LiveData<ArrayList<AverageDailyMeasureData>> = _averageDailyMeasures
-    private val _averageMonthlyMeasures =  MutableLiveData<ArrayList<AverageMonthlyMeasureData>>()
-    val averageMonthlyMeasures: LiveData<ArrayList<AverageMonthlyMeasureData>> = _averageMonthlyMeasures
-
-
+    private val _averageDailyMeasures = MutableLiveData<ArrayList<AverageDailyMeasureData>>()
+    val averageDailyMeasures: LiveData<ArrayList<AverageDailyMeasureData>> =
+        _averageDailyMeasures
+    private val _averageMonthlyMeasures =
+        MutableLiveData<ArrayList<AverageMonthlyMeasureData>>()
+    val averageMonthlyMeasures: LiveData<ArrayList<AverageMonthlyMeasureData>> =
+        _averageMonthlyMeasures
 
 
     // AVERAGES
@@ -603,7 +657,7 @@ class MainViewModel @Inject constructor(
 
 
     fun checkNewMeasures() {
-        val newMeasures =  SharedPrefUtil(appContext).getBoolean(PREF_NEW_MEASURE, false)
+        val newMeasures = SharedPrefUtil(appContext).getBoolean(PREF_NEW_MEASURE, false)
         if (newMeasures) {
             getUserMeasures()
         }
@@ -612,7 +666,7 @@ class MainViewModel @Inject constructor(
     var tutorialComingFromHome: Boolean = true
 
 
-    private val _trialSent =  MutableLiveData<Boolean>()
+    private val _trialSent = MutableLiveData<Boolean>()
     val trialSent: LiveData<Boolean> = _trialSent
     fun sendTrialEmail() {
         val email = userRepository.email
@@ -634,12 +688,6 @@ class MainViewModel @Inject constructor(
         val TAG = MainViewModel::class.simpleName
     }
 }
-
-
-
-
-
-
 
 
 /*

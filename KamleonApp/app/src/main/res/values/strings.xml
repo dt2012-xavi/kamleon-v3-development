@@ -38,6 +38,7 @@
     <string name="signup_login"><u>Log in</u></string>
 
     <!-- Forgot Pwd -->
+    <string name="forgotpwd_settings"><u>Forgot password?</u></string>
     <string name="forgotpwd_title">Trouble logging in?</string>
     <string name="forgotpwd_desc">Enter your email and we’ll send you a link to get back into your account.</string>
     <string name="forgotpwd_send">Send login link</string>
@@ -142,6 +143,7 @@
     <string name="email_confirm">CONFIRM E-MAIL</string>
 
     <!-- Pin -->
+    <string name="pin_settings"><u>Forgot PIN?</u></string>
     <string name="pin_title">SET A NEW PIN</string>
     <string name="pin_pin">CURRENT PIN</string>
     <string name="pin_new">NEW PIN</string>
@@ -247,6 +249,7 @@
 
 
     <!-- Dialog -->
+    <string name="dialog_saved_text">Your modifications have been saved successfully</string>
     <string name="dialog_ok">Ok</string>
     <string name="dialog_cancel">CANCEL</string>
     <string name="dialog_profile_ready">Now you are a member of the Spinning Team in Dir Diagonal!</string>
@@ -261,6 +264,10 @@
     <string name="dialog_reset_pwd_success_description">We\'ve sent you instructions to reset your password</string>
     <string name="dialog_reset_pwd_error_title">Error</string>
     <string name="dialog_reset_pwd_error_description">User not found</string>
+    <string name="dialog_reset_pin_success_title">Email Sent</string>
+    <string name="dialog_reset_pin_success_description">We\'ve sent you instructions to reset your PIN</string>
+    <string name="dialog_reset_pin_error_title">Error</string>
+    <string name="dialog_reset_pin_error_description">User not found</string>
     <string name="dialog_scan_scanned">QR scanned correctly</string>
     <string name="dialog_policy_title">Privacy Policy</string>
     <string name="dialog_policy_desc">Protecting your privacy is crucial. Before using the app, kindly agree to the policy. For more details, refer to the <u>Privacy Policy</u></string>

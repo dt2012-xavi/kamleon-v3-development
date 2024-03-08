@@ -126,6 +126,8 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
                 else ->
                     requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
+        }else{
+            viewModel.notificationPermissionGranted()
         }
     }
     override fun setBinding(): ActivityInitBinding = ActivityInitBinding.inflate(layoutInflater)
@@ -142,8 +144,9 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
         */
         supportFragmentManager
             .setFragmentResultListener(Constants.GRANT_NOTIFICATION, this) { _, bundle ->
-                Log.d(TAG, "result from activity notification")
+                Log.d(TAG, "result from activity notification - ${bundle.getBoolean(Constants.GRANT_NOTIFICATION_BUNDLE)}")
                 val result = bundle.getBoolean(Constants.GRANT_NOTIFICATION_BUNDLE)
+
                 if (result) {
                     askNotificationPermission()
                 }

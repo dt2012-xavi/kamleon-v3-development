@@ -12,6 +12,7 @@ import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.database.AveragesData
 import com.dynatech2012.kamleonuserapp.databinding.LayoutKmlnLabelItemBinding
 import com.dynatech2012.kamleonuserapp.extensions.formatTime
+import com.dynatech2012.kamleonuserapp.extensions.formatTimeForPopup
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import java.time.Instant
 import java.util.Date
@@ -34,7 +35,7 @@ class KmlnLabelAdapter : ListAdapter<AveragesData, KmlnLabelAdapter.ViewHolder>(
         private var tvValue = binding.tvGraphicsLabelItemValue
         fun bind(item: AveragesData) {
             val date = Date(item.timestamp)
-            tvTimestamp.text = date.formatTime
+            tvTimestamp.text = date.formatTimeForPopup
             val isPrecise = item.isPrecise
             Log.d("KmlnLabelAdapter", "bar isPrecise: $isPrecise _ ${date.formatTime}")
             // TODO: delete "adapterPosition == 0 &&" -> DONE

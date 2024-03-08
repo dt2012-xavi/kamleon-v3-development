@@ -1,6 +1,13 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.text.InputType
+import android.text.SpannableString
+import android.text.style.UnderlineSpan
+import android.view.View
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
@@ -22,6 +29,11 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
     }
 
     override fun initEvent() {
+
+        binding.tvPwdSettings.setOnClickListener {
+            viewModel.resetPwd()
+        }
+
         binding.btnNavClose.setOnClickListener { findNavController().popBackStack() }
         binding.imageViewEye.isClickable = true
         binding.imageViewEye.setOnClickListener {
@@ -68,6 +80,41 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
 
     private fun initObservers() {
         viewModel.userUpdated.observe(this, this::startActivity)
+
+        viewModel.resetPwdSuccess.observe(this) {
+            if (it) showSuccessDialog()
+            else showErrorDialog()
+        }
+    }
+
+    private fun showSuccessDialog() {
+        val title = getString(R.string.dialog_reset_pwd_success_title)
+        val message = getString(R.string.dialog_reset_pwd_success_description)
+        showReadyDialog(title, message)
+    }
+
+    private fun showErrorDialog() {
+        val title = getString(R.string.dialog_reset_pwd_error_title)
+        val message = getString(R.string.dialog_reset_pwd_error_description)
+        showReadyDialog(title, message)
+    }
+
+    private fun showReadyDialog(title: String, message: String) {
+        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        val inflater = this.layoutInflater
+        val dialogView: View = inflater.inflate(R.layout.layout_dialog_ok, null)
+
+        dialog.setView(dialogView)
+        dialog.setCancelable(false)
+        // -3 is email not valid, -2 is password not valid, -1 is firebase error
+        dialogView.findViewById<TextView>(R.id.tvDialogTitle).text = title
+        dialogView.findViewById<TextView>(R.id.tvDialogDesc).text = message
+        val logoutDialog = dialog.show()
+        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener {
+            logoutDialog.dismiss()
+        }
     }
 
     private fun startActivity(updated: Boolean) {

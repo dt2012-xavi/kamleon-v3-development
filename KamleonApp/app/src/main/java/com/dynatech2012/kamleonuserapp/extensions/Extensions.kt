@@ -190,6 +190,47 @@ val Date.isLastWeek: Boolean
         return calendar.after(sevenDaysAgo)
     }
 
+
+val Date.formatTimeForPopup: String
+    get() {
+        val date = this
+        // If it's today, display the time (e.g., "19:00").
+        if (date.isToday) {
+            val dateFormater = SimpleDateFormat("HH:mm", Locale.US)
+            val stringDate =  dateFormater.format(date)
+            return "$stringDate"
+        }
+        // If it's yesterday, display "Yesterday".
+        else if (date.isYesterday) {
+            val dateFormater = SimpleDateFormat("HH:mm", Locale.US)
+            val stringDate = dateFormater.format(date)
+            return "$stringDate"
+        }
+        // If it's within the last week, display the day name (e.g., "Tuesday").
+        else if (date.isLastWeek) {
+            Log.d(Invitation.TAG, "invitationTime: isLastWeek: $date")
+            val dateFormater = SimpleDateFormat("EEEE 'at' HH:mm", Locale.US)
+            return dateFormater.format(date)
+        }
+        // If it's more than one week ago, display the full date.
+        else {
+            Log.d(Invitation.TAG, "invitationTime: is old: $date")
+            val day = date.day()
+            val daySuffix = if (day in 11..13) {
+                "th"
+            } else when (day % 10) {
+                1 -> "st"
+                2 -> "nd"
+                3 -> "rd"
+                else -> "th"
+            }
+            val dateFormater = SimpleDateFormat("d'$daySuffix' MMMM yyyy", Locale.US)
+            return dateFormater.format(date)
+        }
+
+    }
+
+
 val Date.formatTime: String
     get() {
         val date = this

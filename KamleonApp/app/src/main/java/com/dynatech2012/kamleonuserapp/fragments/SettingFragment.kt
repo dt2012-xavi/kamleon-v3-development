@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -14,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.activities.InitActivity
 import com.dynatech2012.kamleonuserapp.adapters.OrganizationsListAdapter
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.constants.UrlConstants
@@ -35,7 +37,9 @@ import java.util.GregorianCalendar
 @AndroidEntryPoint
 class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     SettingMenuItemView.SettingMenuItemViewListener, DateChangeListener {
-    override fun setBinding(): ActivitySettingBinding = ActivitySettingBinding.inflate(layoutInflater)
+    override fun setBinding(): ActivitySettingBinding =
+        ActivitySettingBinding.inflate(layoutInflater)
+
     private var dateFragment: DatePickerFragment? = null
     private var isSettingAccount: Boolean = true
     private val viewModel: MainViewModel by activityViewModels()
@@ -153,7 +157,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
 
         binding.tvDelete.setOnClickListener {
-            val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
+            val navHostFragment =
+                requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
             val navController = navHostFragment.navController
             navController.navigate(R.id.action_settingFragment_to_deleteFragment)
         }
@@ -185,6 +190,22 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
     }
 
+    private fun showSavedDialog() {
+        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        val inflater = this.layoutInflater
+        val dialogView: View = inflater.inflate(R.layout.layout_dialog_ok, null)
+
+        dialog.setView(dialogView)
+        dialog.setCancelable(false)
+        val savedDialog = dialog.show()
+        savedDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialogView.findViewById<TextView>(R.id.tvDialogDesc).setText(R.string.dialog_saved_text)
+        dialogView.findViewById<TextView>(R.id.tvBtnOk).setText(R.string.dialog_ok)
+        dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener {
+            savedDialog.dismiss()
+        }
+    }
+
     private fun showLogoutDialog() {
         val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         val inflater = this.layoutInflater
@@ -197,10 +218,24 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         dialogView.findViewById<TextView>(R.id.tvDialogDesc).setText(R.string.dialog_logout_msg)
         dialogView.findViewById<TextView>(R.id.tvBtnY).setText(R.string.dialog_logout_y)
         dialogView.findViewById<TextView>(R.id.tvBtnY).setOnClickListener {
+            Log.i(TAG, "logout 1")
+            //viewModel.logoutStatus.observe(viewLifecycleOwner, {
+            //    if (it) {
+            //        logoutDialog.dismiss()
+            //        activity?.startActivity(Intent(requireContext(), InitActivity::class.java))
+            //        activity?.finish()
+            //    }
+            //}
+            viewModel.logoutStatus.observe(viewLifecycleOwner) {
+                if (it) {
+                    Log.i(TAG, "logout 2")
+                    logoutDialog.dismiss()
+                    Log.i(TAG, "logout 3")
+                    activity?.startActivity(Intent(requireContext(), InitActivity::class.java))
+                    activity?.finish()
+                }
+            }
             viewModel.logout()
-            logoutDialog.dismiss()
-            //activity?.startActivity(Intent(requireContext(), InitActivity::class.java))
-            activity?.finish()
         }
 
         dialogView.findViewById<TextView>(R.id.tvBtnN).setText(R.string.dialog_logout_n)
@@ -278,31 +313,40 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             binding.accMenuItemPwd -> {
                 findNavController().navigate(R.id.action_settingFragment_to_pwdFragment)
             }
+
             binding.accMenuItemPin -> {
                 findNavController().navigate(R.id.action_settingFragment_to_pinFragment)
             }
+
             binding.accMenuItemHelp -> {
                 viewModel.tutorialComingFromHome = false
                 findNavController().navigate(R.id.action_settingFragment_to_tutorialFragment)
             }
+
             binding.accMenuItemDSP -> {
                 openWebBrowser(UrlConstants.URL_CONSENT)
             }
+
             binding.accMenuItemTOS -> {
                 openWebBrowser(UrlConstants.URL_TERMS)
             }
+
             binding.accMenuItemPP -> {
                 openWebBrowser(UrlConstants.URL_POLICY_APP)
             }
+
             binding.prefMenuItemWeight -> {
                 showWeightPicker()
             }
+
             binding.prefMenuItemHeight -> {
                 showHeightPicker()
             }
+
             binding.prefMenuItemGender -> {
                 showGenderPicker()
             }
+
             binding.prefMenuItemBirth -> {
                 showDatePicker()
             }
@@ -310,8 +354,10 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     }
 
     private fun showDatePicker() {
-        dateFragment = DatePickerFragment.newInstance(onDismissDatePicker, this,
-            viewModel.userData.value?.dateOfBirth!!)
+        dateFragment = DatePickerFragment.newInstance(
+            onDismissDatePicker, this,
+            viewModel.userData.value?.dateOfBirth!!
+        )
         dateFragment?.show(parentFragmentManager, "DatePicker")
     }
 
@@ -352,14 +398,29 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
     private fun onUserDataChanged(userData: CustomUser) {
         Log.d(TAG, "on user data changed")
-        val initials = getString(R.string.user_name_initials, userData.name.substring(0, 1).uppercase(), userData.lastName.substring(0, 1).uppercase())
+        val initials = getString(
+            R.string.user_name_initials,
+            userData.name.substring(0, 1).uppercase(),
+            userData.lastName.substring(0, 1).uppercase()
+        )
         binding.tvSettingProfileName.text = initials
-        binding.tvProfileName.text = getString(R.string.setting_display_name, userData.name, userData.lastName)
+        binding.tvProfileName.text =
+            getString(R.string.setting_display_name, userData.name, userData.lastName)
         binding.etAccSurName.setText(userData.lastName)
         binding.etAccName.setText(userData.name)
         binding.accMenuItemEmail.setValue(userData.email)
-        binding.prefMenuItemWeight.setValue(getString(R.string.setting_label_user_weight_text, (userData.weight ?: "-").toString()))
-        binding.prefMenuItemHeight.setValue(getString(R.string.setting_label_user_height_text, (userData.height ?: "-").toString()))
+        binding.prefMenuItemWeight.setValue(
+            getString(
+                R.string.setting_label_user_weight_text,
+                (userData.weight ?: "-").toString()
+            )
+        )
+        binding.prefMenuItemHeight.setValue(
+            getString(
+                R.string.setting_label_user_height_text,
+                (userData.height ?: "-").toString()
+            )
+        )
         binding.prefMenuItemGender.setValue(userData.gender.raw)
         val localDate: LocalDate = userData.dateOfBirth.toInstant().atZone(ZoneId.systemDefault())
             .toLocalDate()
@@ -367,7 +428,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         val formattedDate = localDate.format(formatter)
         Log.d(TAG, "formatted birth date: $formattedDate")
         binding.prefMenuItemBirth.setValue(formattedDate)
-        binding.smNotiSwitch.getSwitchComp()?.isChecked = userData.notifications["analytics"] ?: true
+        binding.smNotiSwitch.getSwitchComp()?.isChecked =
+            userData.notifications["analytics"] ?: true
     }
 
     private fun onUserProfilesChanged(organizations: ArrayList<Organization>) {
@@ -376,16 +438,14 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             binding.llSettingAccountInfoSingle.visibility = View.GONE
             binding.llSettingAccountInfoMultiple.visibility = View.GONE
             return
-        }
-        else if (organizations.size == 1) {
+        } else if (organizations.size == 1) {
             binding.llSettingAccountInfoMultiple.visibility = View.GONE
             binding.tvSettingAccountOrg.text = organizations[0].organizationName
             binding.tvSettingAccountCenter.text = organizations[0].centerName
             binding.tvSettingAccountTeam.text = organizations[0].teamName
             binding.llSettingAccountInfoSingle.visibility = View.VISIBLE
             return
-        }
-        else {
+        } else {
             binding.llSettingAccountInfoSingle.visibility = View.GONE
             val adapter = binding.rvSettingOrganizations.adapter as OrganizationsListAdapter
             adapter.submitList(organizations.toList())
@@ -394,10 +454,9 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     }
 
     private fun onUserDataUpdated(updated: Boolean) {
-        if (updated)
-        {
+        if (updated) {
             viewModel.resetUserUpdated()
-            //showReadyDialog()
+            showSavedDialog()
         }
     }
 
@@ -412,8 +471,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         binding.ivSettProfile.visibility = View.VISIBLE
     }
 
-    private fun updateUserData()
-    {
+    private fun updateUserData() {
         val data = hashMapOf<String, Any>()
         data["lastName"] = binding.etAccSurName.text.toString()
         data["name"] = binding.etAccName.text.toString()
@@ -437,7 +495,10 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         val isDateAllowed = dateSelected <= fourteenYAgo
         dateFragment?.enableSaveButton(isDateAllowed)
         if (!isDateAllowed) {
-            Log.d(DatePickerFragment.TAG, "ggg onDateChanged too young: $dateSelected, $fourteenYAgo")
+            Log.d(
+                DatePickerFragment.TAG,
+                "ggg onDateChanged too young: $dateSelected, $fourteenYAgo"
+            )
             showDateNotAllowedDialog()
         }
     }

@@ -7,7 +7,6 @@ import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
 import com.dynatech2012.kamleonuserapp.models.Organization
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
@@ -29,36 +28,40 @@ class CloudFunctions(private val userRepository: UserRepository) {
         get() = userRepository.email
 
     // Invitations
-    suspend fun getInvitations(): Response<ArrayList<Invitation>> = suspendCoroutine { continuation ->
-        Log.d(TAG, "will try to get invitations")
+    suspend fun getInvitations(): Response<ArrayList<Invitation>> =
+        suspendCoroutine { continuation ->
+            Log.d(TAG, "will try to get invitations")
 
-        if (email == null) {
-            continuation.resume(Response.Failure(Exception("User not logged in")))
-            return@suspendCoroutine
-        }
-        val body = hashMapOf(
-            "email" to email
-        )
-        functions.getHttpsCallable("getInvitationsForUser").call(body)
-            .addOnSuccessListener { result ->
-                val data = result?.data as? ArrayList<HashMap<String, Any>> ?: ArrayList()
-                val invitations = ArrayList<Invitation>()
-                data.forEach {
-                    Log.d(TAG, "get invitations complete: $it")
-                    val inv = Invitation(it)
-                    invitations.add(inv)
+            if (email == null) {
+                continuation.resume(Response.Failure(Exception("User not logged in")))
+                return@suspendCoroutine
+            }
+            val body = hashMapOf(
+                "email" to email
+            )
+            functions.getHttpsCallable("getInvitationsForUser").call(body)
+                .addOnSuccessListener { result ->
+                    val data = result?.data as? ArrayList<HashMap<String, Any>> ?: ArrayList()
+                    val invitations = ArrayList<Invitation>()
+                    data.forEach {
+                        Log.d(TAG, "get invitations complete: $it")
+                        val inv = Invitation(it)
+                        invitations.add(inv)
+                    }
+                    Log.d(TAG, "get invitations: $invitations")
+                    invitations.sortByDescending { it.dateSent }
+                    continuation.resume(Response.Success(invitations))
                 }
-                Log.d(TAG, "get invitations: $invitations")
-                invitations.sortByDescending { it.dateSent }
-                continuation.resume(Response.Success(invitations))
-            }
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "get invitations error: ", exception)
-                continuation.resume(Response.Failure(exception))
-            }
-    }
+                .addOnFailureListener { exception ->
+                    Log.e(TAG, "get invitations error: ", exception)
+                    continuation.resume(Response.Failure(exception))
+                }
+        }
 
-    suspend fun acceptInvitation(invitationId: String, optional: Boolean): ResponseNullable<Nothing> {
+    suspend fun acceptInvitation(
+        invitationId: String,
+        optional: Boolean
+    ): ResponseNullable<Nothing> {
         return changeInvitationStatus(invitationId, InvitationStatus.ACCEPTED, optional)
     }
 
@@ -66,7 +69,11 @@ class CloudFunctions(private val userRepository: UserRepository) {
         return changeInvitationStatus(invitationId, InvitationStatus.REJECTED, false)
     }
 
-    private suspend fun changeInvitationStatus(invitationId: String, status: InvitationStatus, optional: Boolean?): ResponseNullable<Nothing> {// = suspendCoroutine { continuation ->
+    private suspend fun changeInvitationStatus(
+        invitationId: String,
+        status: InvitationStatus,
+        optional: Boolean?
+    ): ResponseNullable<Nothing> {// = suspendCoroutine { continuation ->
         if (uuid == null) {
             /*continuation.resume(ResponseNullable.Failure(Exception("User not logged in")))
             return@suspendCoroutine
@@ -100,32 +107,33 @@ class CloudFunctions(private val userRepository: UserRepository) {
     }
 
     // User profiles
-    suspend fun getUserProfiles(): Response<ArrayList<Organization>> = suspendCoroutine { continuation ->
-        Log.d(TAG, "will try to get user profiles")
-        if (uuid == null) {
-            continuation.resume(Response.Failure(Exception("User not logged in")))
-            return@suspendCoroutine
-        }
-        val body = hashMapOf(
-            "id" to uuid
-        )
-        functions.getHttpsCallable("getUserProfiles").call(body)
-            .addOnSuccessListener { result ->
-                val data = result?.data as? ArrayList<HashMap<String, Any>> ?: ArrayList()
-                Log.d(TAG, "get user profiles complete: $data")
-                val organizations = ArrayList<Organization>()
-                data.forEach {
-                    val organization = Organization(it)
-                    organizations.add(organization)
+    suspend fun getUserProfiles(): Response<ArrayList<Organization>> =
+        suspendCoroutine { continuation ->
+            Log.d(TAG, "will try to get user profiles")
+            if (uuid == null) {
+                continuation.resume(Response.Failure(Exception("User not logged in")))
+                return@suspendCoroutine
+            }
+            val body = hashMapOf(
+                "id" to uuid
+            )
+            functions.getHttpsCallable("getUserProfiles").call(body)
+                .addOnSuccessListener { result ->
+                    val data = result?.data as? ArrayList<HashMap<String, Any>> ?: ArrayList()
+                    Log.d(TAG, "get user profiles complete: $data")
+                    val organizations = ArrayList<Organization>()
+                    data.forEach {
+                        val organization = Organization(it)
+                        organizations.add(organization)
+                    }
+                    Log.d(TAG, "get user profiles: $organizations")
+                    continuation.resume(Response.Success(organizations))
                 }
-                Log.d(TAG, "get user profiles: $organizations")
-                continuation.resume(Response.Success(organizations))
-            }
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "get user profiles error: ", exception)
-                continuation.resume(Response.Failure(exception))
-            }
-    }
+                .addOnFailureListener { exception ->
+                    Log.e(TAG, "get user profiles error: ", exception)
+                    continuation.resume(Response.Failure(exception))
+                }
+        }
 
     suspend fun resetPwd(email: String): ResponseNullable<Nothing> {
         val body = hashMapOf("email" to email)
@@ -144,7 +152,31 @@ class CloudFunctions(private val userRepository: UserRepository) {
         }
     }
 
-    suspend fun sendVerificationEmail(userId: String, email: String, username: String): ResponseNullable<Nothing> {
+    suspend fun resetPin(email: String, userId: String): ResponseNullable<Nothing> {
+        val body = hashMapOf(
+            "email" to email,
+            "id" to userId
+        )
+        return try {
+            val result = functions.getHttpsCallable("sendPINEmail").call(body).await()
+            val data = result.data as? HashMap<String, String>
+            val message = data?.get("message")
+            if (message != "Reset PIN email sent successfully") {
+                throw Exception("$message")
+            }
+            Log.d(MainViewModel.TAG, "HHH cloud funct reset pin: success")
+            ResponseNullable.Success()
+        } catch (e: Exception) {
+            Log.d(MainViewModel.TAG, "HHH cloud funct reset pin: failure: $e")
+            ResponseNullable.Failure(e)
+        }
+    }
+
+    suspend fun sendVerificationEmail(
+        userId: String,
+        email: String,
+        username: String
+    ): ResponseNullable<Nothing> {
         val body = hashMapOf(
             "id" to userId,
             "email" to email,

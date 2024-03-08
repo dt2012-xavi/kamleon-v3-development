@@ -1,15 +1,16 @@
 package com.dynatech2012.kamleonuserapp.repositories
 
 import android.util.Log
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import androidx.lifecycle.MutableLiveData
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.installations.InstallationTokenResult
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
-import kotlin.Exception
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -25,7 +26,10 @@ class UserRepository {
     val isEmailVerified: Boolean
         get() = auth.currentUser?.isEmailVerified ?: true
 
-    suspend fun signup(email: String, pass: String): Response<CustomUser> {//= suspendCoroutine { continuation ->
+    suspend fun signup(
+        email: String,
+        pass: String
+    ): Response<CustomUser> {//= suspendCoroutine { continuation ->
         return try {
             auth.createUserWithEmailAndPassword(email, pass).await()
             Log.d(TAG, "createUserWithEmail:success")
@@ -38,7 +42,10 @@ class UserRepository {
         }
     }
 
-    suspend fun login(email: String, pass: String): Response<CustomUser> {// = suspendCoroutine { continuation ->
+    suspend fun login(
+        email: String,
+        pass: String
+    ): Response<CustomUser> {// = suspendCoroutine { continuation ->
         Log.d(TAG, "Will try  to login: $email _ $pass")
         try {
             auth.signInWithEmailAndPassword(email, pass).await()
@@ -53,11 +60,13 @@ class UserRepository {
                     Log.e(TAG, "login:failure: $e _ ${e.cause}", e)
                     return Response.Failure(e)
                 }
+
                 is com.google.firebase.auth.FirebaseAuthInvalidUserException -> {
                     // user invalid
                     Log.e(TAG, "login:failure: $e _ ${e.cause}", e)
                     return Response.Failure(e)
                 }
+
                 else -> {
                     Log.e(TAG, "login:failure: $e _ ${e.cause}", e)
                     return Response.Failure(e)
@@ -69,30 +78,41 @@ class UserRepository {
     val checkLogged: Boolean
         get() {
             val user = auth.currentUser
+            Log.i(TAG, "checkLogged here: $user")
             val isLogged = user != null
 
             Log.d(TAG, "checkLogged: $isLogged")
             return isLogged
         }
 
+    suspend fun signOutSuspend() = suspendCoroutine<Unit> { continuation ->
+        auth.signOut()
+        continuation.resume(Unit)
+    }
+
+    val logoutStatus = MutableLiveData<Boolean>()
+
+    val authStateListener = FirebaseAuth.AuthStateListener {
+        if (it.currentUser == null) {
+            FirebaseInstallations.getInstance().getToken(true)
+                .addOnCompleteListener { task: Task<InstallationTokenResult> ->
+                    Log.d(TAG, "User is signed out")
+                    val tokenS = task.result
+                    val tokenS2 = tokenS.token
+                    logoutStatus.postValue(true)
+                }
+        }
+    }
+
+    fun removeAuthListener(){
+        auth.removeAuthStateListener(authStateListener)
+    }
+
     fun logout() {
         // Resets Instance ID and revokes all tokens.
-        FirebaseInstallations.getInstance().getToken(true)
-            .addOnCompleteListener { task: Task<InstallationTokenResult> ->
-                val tokenS = task.result
-                val tokenS2 = tokenS.token
-                Log.d(TAG, "token app: $tokenS")
-            }
-        auth.addAuthStateListener {
-            if (auth.currentUser != null) {
-                logged = true
-                Log.d(TAG, "User is signed in.")
-            } else {
-                logged = false
-                Log.d(TAG, "No user is signed in.")
-            }
-        }
+        auth.addAuthStateListener(authStateListener)
         auth.signOut()
+        //auth.removeAuthStateListener(authStateListener)
     }
 
     suspend fun changeEmail(currentPwd: String, newEmail: String) {
