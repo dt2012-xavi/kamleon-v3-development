@@ -31,6 +31,7 @@ class MeasuresRepository @Inject constructor(
             }
             else {
                 Log.w(TAG, "got measures from DB EMPTY")
+                lastDateLong = 0L
             }
         }
         return response
