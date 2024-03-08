@@ -211,7 +211,7 @@
     <string name="noti_see_all"><u>See all notifications</u></string>
     <string name="noti_see_all_arrow">></string>
     <string name="noti_pending_policy">I agree to the <u><b>Privacy Policy.</b></u>*</string>
-    <string name="noti_pending_consent">I give my consent for the data controller to process my personal data, including health data, for the purpose of structuring and displaying them in the user profile. Please refer to the <u>consent information.</u>*</string>
+    <string name="noti_pending_consent">I give my consent for the data controller to process my personal data, including health data, for the purpose of structuring and displaying them in the user profile. Please refer to the <u>consent information.</u>*\n\nFor more information on the processing of personal data carried out by the data controller, please refer to the privacy policy.</string>
     <string name="noti_pending_name_consent">I give my consent to display the initials of my name or, if provided, my profile picture on the urinal screen for login purposes.</string>
 
 
