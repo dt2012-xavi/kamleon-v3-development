@@ -3,6 +3,7 @@ package com.dynatech2012.kamleonuserapp.fragments
 import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.FragmentTutorialBinding
@@ -45,7 +46,7 @@ class TutorialFragment : BaseFragment<FragmentTutorialBinding>() {
             if (viewModel.tutorialComingFromHome)
                 navController.navigate(R.id.action_tutorialFragment_to_tabFragment)
             else
-                navController.navigate(R.id.action_tutorialFragment_to_settingFragment)
+                findNavController().popBackStack()
         }
     }
 
@@ -59,7 +60,7 @@ class TutorialFragment : BaseFragment<FragmentTutorialBinding>() {
                 if (viewModel.tutorialComingFromHome)
                     navController.navigate(R.id.action_tutorialFragment_to_tabFragment)
                 else
-                    navController.navigate(R.id.action_tutorialFragment_to_settingFragment)
+                    findNavController().popBackStack()
             }
             else -> {
                 goNextStep()

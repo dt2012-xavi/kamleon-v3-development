@@ -1,6 +1,5 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -13,13 +12,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
-import com.dynatech2012.kamleonuserapp.activities.MainActivity
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityOnboardingBinding
 import com.dynatech2012.kamleonuserapp.extensions.addYears
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
+import com.google.android.material.snackbar.Snackbar
 import com.ozcanalasalvar.datepicker.view.datapicker.DataPicker
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
@@ -30,27 +29,28 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
     private val viewModel: AuthViewModel by activityViewModels()
 
     enum class OnBoardingStep(val step: Int) {
-        Notification(0),
+        BirthDate(0),
+        Notification(1),
+
         //Location(1),
-        BirthDate(1),
         Height(2),
         Weight(3),
         Gender(4);
     }
 
-    override fun setBinding(): ActivityOnboardingBinding = ActivityOnboardingBinding.inflate(layoutInflater)
+    override fun setBinding(): ActivityOnboardingBinding =
+        ActivityOnboardingBinding.inflate(layoutInflater)
 
-    private var state: OnBoardingStep = OnBoardingStep.Notification
+    private var state: OnBoardingStep = OnBoardingStep.BirthDate
     private fun containerLayoutFor(step: OnBoardingStep): LinearLayout {
         val layouts = arrayOf(
+            binding.layoutBirthday,
             binding.layoutNotification,
             //binding.layoutLocation,
-            binding.layoutBirthday,
             binding.layoutHeight,
             binding.layoutWeight,
             binding.layoutGender,
         )
-
         return layouts[step.step]
     }
 
@@ -59,12 +59,15 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
             OnBoardingStep.Height -> {
                 binding.heightPicker
             }
+
             OnBoardingStep.Weight -> {
                 binding.weightPicker
             }
+
             OnBoardingStep.Gender -> {
                 binding.genderPicker
             }
+
             else -> binding.heightPicker
         }
     }
@@ -93,9 +96,11 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         binding.btnNext.setOnClickListener {
             when (state) {
                 OnBoardingStep.Notification -> {
-                    activity?.supportFragmentManager?.setFragmentResult(Constants.GRANT_NOTIFICATION, Bundle().apply {
-                        putBoolean(Constants.GRANT_NOTIFICATION_BUNDLE, true)
-                    })
+                    activity?.supportFragmentManager?.setFragmentResult(
+                        Constants.GRANT_NOTIFICATION,
+                        Bundle().apply {
+                            putBoolean(Constants.GRANT_NOTIFICATION_BUNDLE, true)
+                        })
                 }
                 /*
                 OnBoardingStep.Location -> {
@@ -106,21 +111,29 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
                 OnBoardingStep.BirthDate -> {
                     val dateSelected = binding.datePicker.getDateSelected()
                     //val localDate = LocalDate.of(dateSelected.year, dateSelected.month, dateSelected.day)
-                    val date = GregorianCalendar(dateSelected.year, dateSelected.month - 1, dateSelected.day).time
+                    val date = GregorianCalendar(
+                        dateSelected.year,
+                        dateSelected.month - 1,
+                        dateSelected.day
+                    ).time
                     viewModel.birthday = date
+                    viewModel.signup()
                 }
+
                 OnBoardingStep.Height -> {
                     Log.d(TAG, "picker height: ${binding.heightPicker.getSelectedValue()}")
                     binding.heightPicker.getSelectedValue()?.let {
                         viewModel.height = it.toFloat()
                     }
                 }
+
                 OnBoardingStep.Weight -> {
                     Log.d(TAG, "picker weight: ${binding.weightPicker.getSelectedValue()}")
                     binding.weightPicker.getSelectedValue()?.let {
                         viewModel.weight = it.toFloat()
                     }
                 }
+
                 OnBoardingStep.Gender -> {
                     Log.d(TAG, "picker gender: ${binding.genderPicker.getSelectedValue()}")
                     val genderPicked = binding.genderPicker.getSelectedValue()
@@ -132,12 +145,31 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         }
 
         binding.btnNavBack.setOnClickListener {
-            if (state.step == 0) { findNavController().popBackStack() }
-            else {
+            Log.i(TAG, "Back button clicked with step: ${state.step}")
+            if (state.step == 0) {
+                findNavController().popBackStack()
+            } else {
                 state = OnBoardingStep.values()[state.step - 1]
             }
 
             updateUI()
+        }
+
+        viewModel.uiState.observe(this, this::startActivity)
+
+    }
+
+    private fun startActivity(state: Int) {
+        Log.d(
+            PrivacyFragment.TAG,
+            "register Callback privacy - $state"
+        ) //TODO display user errors and navigate to register fragment to display them and the user to fix them
+        if (state == 2) {
+            checkIfGoNextStep()
+        } else if (state == -1) {
+            //show snackbar with error
+            Snackbar.make(binding.root, R.string.signup_error_server_error, Snackbar.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -148,70 +180,91 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
                 binding.pbOnboardNext.visibility = View.VISIBLE
                 viewModel.finishSignup()
             }
+
             OnBoardingStep.Notification.step/*, OnBoardingStep.Location.step*/ -> {
                 // Do nothing
             }
+
             else -> {
                 goNextStep()
             }
         }
         updateUI()
     }
+
     private fun goNextStep() {
         state = OnBoardingStep.values()[state.step + 1]
     }
 
     private fun updateUI() {
-        binding.progressStep.progress = state.step + 1
-        for (stepCase in OnBoardingStep.values()) {
-            containerLayoutFor(stepCase).visibility = if (state == stepCase) View.VISIBLE else View.GONE
-        }
-        if (state.step < 2) {
+
+        if (state.step == 0 || state.step == 1) {
+            //binding.progressStep.visibility = View.INVISIBLE
             binding.tvBottomDesc.text = getString(R.string.onboard_bottom_text)
+            binding.tvBottomDesc.visibility = View.VISIBLE
+            binding.tvBottomDesc.isClickable = false
             binding.tvBottomDesc.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
                     R.color.kamleon_secondary_grey_60
                 )
             )
-            binding.tvBottomDesc.isClickable = false
-            binding.tvBottomDesc.visibility = View.VISIBLE
-
-        } else if (state.step == 2) {
-            binding.tvBottomDesc.isClickable = false
-            binding.tvBottomDesc.visibility = View.INVISIBLE
-        } else {
+        } else if (state.step > 1) {
             binding.tvBottomDesc.text = getString(R.string.onboard_bottom_later)
-            binding.tvBottomDesc.setTextColor(ContextCompat.getColor(requireContext(), R.color.kamleon_blue))
+            binding.tvBottomDesc.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.kamleon_blue
+                )
+            )
             binding.tvBottomDesc.isClickable = true
             binding.tvBottomDesc.setOnClickListener {
                 binding.tvBottomDesc.visibility = View.INVISIBLE
                 binding.pbOnboardSkip.visibility = View.VISIBLE
                 binding.btnNext.isEnabled = false
                 binding.tvBottomDesc.isEnabled = false
-                viewModel.finishSignup()
+                if (state.step == 2 || state.step == 3) {
+                    if(state.step == 2) {
+                        viewModel.height = 0f
+                    } else {
+                        viewModel.weight = 0f
+                    }
+                    checkIfGoNextStep()
+                } else {
+                    viewModel.finishSignup()
+                }
             }
             binding.tvBottomDesc.visibility = View.VISIBLE
         }
+        binding.progressStep.progress = state.step + 1
+
+        for (stepCase in OnBoardingStep.values()) {
+            containerLayoutFor(stepCase).visibility =
+                if (state == stepCase) View.VISIBLE else View.GONE
+        }
+
     }
 
-    private fun spinnerDataSource(step: OnBoardingStep) : ArrayList<String> {
+    private fun spinnerDataSource(step: OnBoardingStep): ArrayList<String> {
         val aryRet = ArrayList<String>()
         when (step) {
             OnBoardingStep.Height -> {
-                for (height in 140 .. 230) {
+                for (height in 140..230) {
                     aryRet.add("$height")
                 }
             }
+
             OnBoardingStep.Weight -> {
-                for (weight in 30 .. 130) {
+                for (weight in 30..130) {
                     aryRet.add("$weight")
                 }
             }
+
             OnBoardingStep.Gender -> {
                 val arrRes = Gender.values().map { it.raw }
                 aryRet.addAll(arrRes)
             }
+
             else -> {}
         }
         Log.d(TAG, "spinner data source: $aryRet")
@@ -221,7 +274,9 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
 
     private fun setupSpinners() {
         for (onboardState in OnBoardingStep.values()) {
-            if (onboardState.step <= OnBoardingStep.BirthDate.step) { continue }
+            if (onboardState.step <= OnBoardingStep.BirthDate.step) {
+                continue
+            }
             val picker = spinnerViewFor(onboardState)
 
             Log.e("SPINNER", "Datasource size = " + spinnerDataSource(onboardState).size)
@@ -237,7 +292,10 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         Log.d(TAG, "Callback new state received: $state")
         Log.d(TAG, "login step state received $state")
         when (state) {
-            3, 4 -> { goNextStep(); updateUI() }
+            3, 4 -> {
+                goNextStep(); updateUI()
+            }
+
             5 -> {
                 binding.pbOnboardNext.visibility = View.GONE
                 binding.pbOnboardSkip.visibility = View.GONE
@@ -245,6 +303,7 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
                 binding.tvBottomDesc.visibility = View.VISIBLE
                 showVerificationDialog()
             }
+
             else -> {}
         }
     }
@@ -257,7 +316,8 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         dialog.setView(dialogView)
         dialog.setCancelable(false)
 
-        dialogView.findViewById<TextView>(R.id.tv_dialog_verify_desc).text = getString(R.string.dialog_verify_desc, viewModel.email)
+        dialogView.findViewById<TextView>(R.id.tv_dialog_verify_desc).text =
+            getString(R.string.dialog_verify_desc, viewModel.email)
         val logoutDialog = dialog.show()
         logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         Log.d(TAG, "login step show verif dialog")

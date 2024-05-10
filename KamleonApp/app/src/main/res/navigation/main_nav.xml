@@ -9,7 +9,7 @@
         android:id="@+id/tabFragment"
         android:name="com.dynatech2012.kamleonuserapp.fragments.TabFragment"
         android:label="activity_tab"
-        tools:layout="@layout/activity_tab" >
+        tools:layout="@layout/activity_tab">
         <action
             android:id="@+id/action_tabFragment_to_analyticFragment"
             app:destination="@id/analyticFragment" />
@@ -49,7 +49,7 @@
         android:id="@+id/graphicsFragment"
         android:name="com.dynatech2012.kamleonuserapp.fragments.GraphicsFragment"
         android:label="activity_graphics"
-        tools:layout="@layout/activity_graphics" >
+        tools:layout="@layout/activity_graphics">
         <action
             android:id="@+id/action_graphicsFragment_to_settingFragment"
             app:destination="@id/settingFragment" />
@@ -59,7 +59,7 @@
         android:id="@+id/settingFragment"
         android:name="com.dynatech2012.kamleonuserapp.fragments.SettingFragment"
         android:label="activity_setting"
-        tools:layout="@layout/activity_setting" >
+        tools:layout="@layout/activity_setting">
         <action
             android:id="@+id/action_settingFragment_to_emailFragment"
             app:destination="@id/emailFragment" />
@@ -75,13 +75,17 @@
         <action
             android:id="@+id/action_settingFragment_to_tutorialFragment"
             app:destination="@id/tutorialFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_helpFragment"
+            app:destination="@id/helpFragment" />
+
     </fragment>
 
     <fragment
         android:id="@+id/emailFragment"
         android:name="com.dynatech2012.kamleonuserapp.fragments.EmailFragment"
         android:label="activity_email"
-        tools:layout="@layout/activity_email" >
+        tools:layout="@layout/activity_email">
         <action
             android:id="@+id/action_emailFragment_to_onboardingFragment"
             app:destination="@id/onboardingFragment" />
@@ -95,7 +99,7 @@
         android:id="@+id/pinFragment"
         android:name="com.dynatech2012.kamleonuserapp.fragments.PinFragment"
         android:label="activity_pin"
-        tools:layout="@layout/activity_pin" >
+        tools:layout="@layout/activity_pin">
         <action
             android:id="@+id/action_pinFragment_to_privacyFragment"
             app:destination="@id/privacyFragment" />
@@ -107,7 +111,7 @@
         android:id="@+id/pwdFragment"
         android:name="com.dynatech2012.kamleonuserapp.fragments.PwdFragment"
         android:label="activity_pwd"
-        tools:layout="@layout/activity_pwd" >
+        tools:layout="@layout/activity_pwd">
         <action
             android:id="@+id/action_pwdFragment_to_privacyFragment"
             app:destination="@id/privacyFragment" />
@@ -117,16 +121,31 @@
     </fragment>
 
     <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.dynatech2012.kamleonuserapp.fragments.HelpFragment"
+        android:label="activity_help"
+        tools:layout="@layout/activity_help">
+
+        <action
+            android:id="@+id/action_helpFragment_to_onBoardingFragment"
+            app:destination="@id/tutorialFragment"
+            app:popUpTo="@id/helpFragment"
+            app:popUpToInclusive="false" />
+
+    </fragment>
+
+    <fragment
         android:id="@+id/tutorialFragment"
         android:name="com.dynatech2012.kamleonuserapp.fragments.TutorialFragment"
         android:label="fragment_tutorial"
-        tools:layout="@layout/fragment_tutorial" >
+        tools:layout="@layout/fragment_tutorial">
         <action
             android:id="@+id/action_tutorialFragment_to_tabFragment"
             app:destination="@id/tabFragment" />
         <action
             android:id="@+id/action_tutorialFragment_to_settingFragment"
             app:destination="@id/settingFragment" />
+
     </fragment>
 
 

@@ -319,8 +319,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             }
 
             binding.accMenuItemHelp -> {
-                viewModel.tutorialComingFromHome = false
-                findNavController().navigate(R.id.action_settingFragment_to_tutorialFragment)
+                //viewModel.tutorialComingFromHome = false
+                findNavController().navigate(R.id.action_settingFragment_to_helpFragment)
             }
 
             binding.accMenuItemDSP -> {

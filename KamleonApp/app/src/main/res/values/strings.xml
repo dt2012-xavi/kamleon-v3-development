@@ -36,6 +36,11 @@
     <string name="signup_btn_create_account">Create account</string>
     <string name="signup_have_account">Do you already have an account?</string>
     <string name="signup_login"><u>Log in</u></string>
+    <string name="signup_error_empty_fields">Please enter your first name and last name</string>
+    <string name="signup_error_password">Password must be at least 6 characters long</string>
+    <string name="signup_error_email_pattern">Please use a valid email</string>
+    <string name="signup_error_email_used">This email is already in use</string>
+    <string name="signup_error_server_error">There was a problem with the signup, please try again</string>
 
     <!-- Forgot Pwd -->
     <string name="forgotpwd_settings"><u>Forgot password?</u></string>
@@ -50,7 +55,7 @@
     <string name="privacy_title">Privacy</string>
     <string name="privacy_item1">I agree to the Privacy Policy.*</string>
     <string name="privacy_item2">I accept to the Terms and Conditions.*</string>
-    <string name="privacy_item3">I give my consent for the data controller to process my personal data, including health data, for the purpose of structuring and displaying them in the user profile. Please refer to the consent information*</string>
+    <string name="privacy_item3">I give my consent for the data controller to process my personal data, including health data, for the purpose of structuring and displaying them in the user profile. Please refer to the consent information*\n\n\nFor more information on the processing of personal data carried out by the data controller, please refer to the privacy policy.</string>
     <string name="privacy_note">*You can revoke your consent at any time by sending a message to <u>info@kamleon.com</u></string>
     <string name="privacy_button_next">Next</string>
     <string name="privacy_word_terms">Terms and Conditions</string>
@@ -250,7 +255,7 @@
 
     <!-- Dialog -->
     <string name="dialog_saved_text">Your modifications have been saved successfully</string>
-    <string name="dialog_ok">Ok</string>
+    <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">CANCEL</string>
     <string name="dialog_profile_ready">Now you are a member of the Spinning Team in Dir Diagonal!</string>
     <string name="dialog_logout_msg">Are you sure you want to log out of your account?</string>
@@ -317,7 +322,7 @@
     <string name="recommendation_analytics_e_3_title">Natural Sodium Beverages.</string>
     <string name="recommendation_analytics_e_3_title_short">Natural Sodium Beverages.</string>
     <string name="recommendation_analytics_e_title">Electrolytes tip</string>
-    <string name="recommendation_analytics_h_1_subtitle">Hydration is key to optimal health, yet over 55%% of the population falls short on daily intake ! Drinking enough water maintains bodily functions, aids digestion, and supports nutrient absorption. It enhances skin health, boosts energy levels, and helps regulate body temperature. Stay hydrated to promote cognitive function, improve mood, and support overall well-being. Remember, water is the elixir of life – sip it throughout the day for a healthier you!</string>
+    <string name="recommendation_analytics_h_1_subtitle">Hydration is key to optimal health, yet over 55% of the population falls short on daily intake ! Drinking enough water maintains bodily functions, aids digestion, and supports nutrient absorption. It enhances skin health, boosts energy levels, and helps regulate body temperature. Stay hydrated to promote cognitive function, improve mood, and support overall well-being. Remember, water is the elixir of life – sip it throughout the day for a healthier you!</string>
     <string name="recommendation_analytics_h_1_title">Hydration is essential for our daily lives.</string>
     <string name="recommendation_analytics_h_1_title_short">Hydration is essential.</string>
     <string name="recommendation_analytics_h_2_subtitle">Skimmed milk is a hydration powerhouse, offering a range of benefits. Rich in protein, it supports muscle health and helps in tissue repair. The calcium content promotes strong bones and teeth. Additionally, skimmed milk is low in saturated fats, making it a heart-healthy choice. With a perfect balance of nutrients, it not only nourishes the body but also provides essential hydration for overall well-being.</string>
@@ -356,6 +361,13 @@
     <string name="error_camera_permission_denied">Permission denied</string>
     <string name="error_start_camera">Error starting camera</string>
 
+    <!-- Help -->
+    <string name="help_title">HELP</string>
+    <string name="help_appguide">APP GUIDE</string>
+    <string name="help_appguide_subtitle">Learn how to navigate and utilize our app\'s features effectively.</string>
+    <string name="help_contact">CONTACT KAMLEON</string>
+    <string name="help_contact_subtitle">Get in touch with Kamleon for support, inquiries, or feedback.</string>
+    <string name="help_error_mail">No email app found</string>
 
     <string name="default_value">--</string>
     <string name="user_name_initials">%1$s%2$s</string>

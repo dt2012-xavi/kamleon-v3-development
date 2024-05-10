@@ -8,21 +8,17 @@ import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_COLLECT
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_TOKEN
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.kANALYSIS_TYPE_URINE
 import com.dynatech2012.kamleonuserapp.database.MeasureData
-import com.dynatech2012.kamleonuserapp.extensions.addDays
-import com.dynatech2012.kamleonuserapp.extensions.addHours
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
+import com.dynatech2012.kamleonuserapp.models.KamleonLegal
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.models.RawMeasureData
 import com.dynatech2012.kamleonuserapp.models.UserStatus
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -44,11 +40,20 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
     private val uuid: String?
         get() = if (Constants.DEBUG_MODE) FirebaseConstants.USER_UID_DEBUG else userRepository.uuid
 
-    suspend fun createUserStep1(email: String, fName: String, lName: String
+    suspend fun createUserStep1(
+        email: String, fName: String, lName: String, birthday: Date, healthConsent: Boolean, appPrivacy: Boolean
     ): Response<CustomUser> {
         uuid?.let { uuid ->
-            val doc = db.collection(FirebaseConstants.USERS_COLLECTION).document(uuid)
-            user = CustomUser(uuid, email, fName, lName, UserStatus.active)
+            val doc = db.collection(USERS_COLLECTION).document(uuid)
+            user = CustomUser(
+                uuid,
+                email,
+                fName,
+                lName,
+                UserStatus.active,
+                dateOfBirth = birthday,
+                legal = KamleonLegal(healthConsent = healthConsent, privacyPolicyApp = appPrivacy)
+            )
             doc.set(user).await()
             Firebase.auth.currentUser?.let {
                 return Response.Success(user)
@@ -57,14 +62,19 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
         return Response.Failure(Exception())
     }
 
-    suspend fun createUserStep2(birthday: Date,
-                                height: Float?, weight: Float?, gender: Gender
+    suspend fun createUserStep2(
+        height: Float?, weight: Float?, gender: Gender
     ): Response<CustomUser> {
         uuid?.let { uuid ->
-            val doc = db.collection(FirebaseConstants.USERS_COLLECTION).document(uuid)
-            doc.update(hashMapOf("dateOfBirth" to birthday, "height" to height, "weight" to weight, "gender" to gender) as Map<String, Any>).await()
+            val doc = db.collection(USERS_COLLECTION).document(uuid)
+            doc.update(
+                hashMapOf(
+                    "height" to height,
+                    "weight" to weight,
+                    "gender" to gender
+                ) as Map<String, Any>
+            ).await()
             Firebase.auth.currentUser?.let {
-                user.dateOfBirth = birthday
                 user.height = height
                 user.weight = weight
                 user.gender = gender
@@ -76,7 +86,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
 
     suspend fun updateUser(data: HashMap<String, Any>): Response<Boolean> {
         uuid?.let { uuid ->
-            val doc = db.collection(FirebaseConstants.USERS_COLLECTION).document(uuid)
+            val doc = db.collection(USERS_COLLECTION).document(uuid)
             doc.update(data).await()
             return Response.Success(true)
         }
@@ -87,7 +97,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
         if (uuid == null) {
             return Response.Failure(Exception("User not logged in"))
         }
-        val doc = db.collection(FirebaseConstants.USERS_COLLECTION).document(uuid!!)
+        val doc = db.collection(USERS_COLLECTION).document(uuid!!)
         doc.get().await().toObject<CustomUser>()?.let { u ->
             user = u
             Log.d(TAG, "getUserData token: ${u.token}")
@@ -98,7 +108,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
 
     suspend fun updateUserImage(uri: Uri): Response<Boolean> {
         uuid?.let { uuid ->
-            val doc = db.collection(FirebaseConstants.USERS_COLLECTION).document(uuid)
+            val doc = db.collection(USERS_COLLECTION).document(uuid)
             val ref = storage.reference.child("users/$uuid/profile.jpeg")
             ref.putFile(uri).await()
             val url = ref.downloadUrl.await()
@@ -110,7 +120,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
 
     suspend fun removeUserImage(): Response<Boolean> {
         uuid?.let { uuid ->
-            val doc = db.collection(FirebaseConstants.USERS_COLLECTION).document(uuid)
+            val doc = db.collection(USERS_COLLECTION).document(uuid)
             val ref = storage.reference.child("users/$uuid/profile.jpeg")
             ref.delete().await()
             doc.update(hashMapOf("imageUrl" to "") as Map<String, Any>).await()
@@ -122,7 +132,12 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
     suspend fun getUserLastMeasure(userId: String?): Response<ArrayList<MeasureData>> {
         return getUserMeasuresNoPag(userId, null, 1)
     }
-    suspend fun getUserMeasuresNoPag(userId: String?, lastDate: Long?, limit: Long?): Response<ArrayList<MeasureData>> = suspendCoroutine { continuation ->
+
+    suspend fun getUserMeasuresNoPag(
+        userId: String?,
+        lastDate: Long?,
+        limit: Long?
+    ): Response<ArrayList<MeasureData>> = suspendCoroutine { continuation ->
         val query: Query = db.collection(FirebaseConstants.MEASURES_COLLECTION)
         val date = Date(lastDate?.plus(1) ?: 0)
         val timestamp = com.google.firebase.Timestamp(date)
@@ -140,13 +155,18 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
         task.get()
             .addOnSuccessListener { snapshot ->
                 Log.d(TAG, "got measures from FS size: ${snapshot.documents.size}")
-                val measuresRaw: List<RawMeasureData> = snapshot.toObjects(RawMeasureData::class.java)
+                val measuresRaw: List<RawMeasureData> =
+                    snapshot.toObjects(RawMeasureData::class.java)
                 Log.d(TAG, "got measures from FS parsed size: ${measuresRaw.size}")
-                val measures: ArrayList<MeasureData> = ArrayList(measuresRaw.map { MeasureData(it) })
+                val measures: ArrayList<MeasureData> =
+                    ArrayList(measuresRaw.map { MeasureData(it) })
 
                 for (m in measuresRaw) {
                     if (m.analysisDate?.time in 170714827041..1707148270379) {
-                        Log.d(TAG, "got measures dates: $m _ prec: ${m.precision} _ isPrec: _ date: ${m.analysisDate}")
+                        Log.d(
+                            TAG,
+                            "got measures dates: $m _ prec: ${m.precision} _ isPrec: _ date: ${m.analysisDate}"
+                        )
                     }
                 }
                 /*
@@ -159,7 +179,10 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
 
                  */
 
-                Log.d(TAG, "got measures from FS 23 converted to MeasureData size: ${measures.size}")
+                Log.d(
+                    TAG,
+                    "got measures from FS 23 converted to MeasureData size: ${measures.size}"
+                )
                 continuation.resume(Response.Success(measures))
             }
             .addOnFailureListener { e ->
@@ -168,7 +191,11 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
             }
     }
 
-    fun getUserMeasures(userId: String?, lastDate: Long?, limit: Int): Flow<Response<ArrayList<MeasureData>>> = flow {
+    fun getUserMeasures(
+        userId: String?,
+        lastDate: Long?,
+        limit: Int
+    ): Flow<Response<ArrayList<MeasureData>>> = flow {
         var lastPageSize = limit
         var countDebug = 0
         val query: Query = db.collection(FirebaseConstants.MEASURES_COLLECTION)
@@ -226,7 +253,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
     // Invitations
 
     suspend fun getNewInvitations(): Int {
-        val doc = db.collection(FirebaseConstants.USERS_COLLECTION)
+        val doc = db.collection(USERS_COLLECTION)
             .whereEqualTo("email", userRepository.email)
             .whereEqualTo("status", InvitationStatus.SENT.rawValue)
             .count()
@@ -281,7 +308,11 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
     }
 
     //suspend fun updateLegal(isAdmin: Boolean): Response<Boolean> {
-    suspend fun updateLegal(policyAdmin: Boolean, policyApp: Boolean, consent: Boolean): Response<Boolean> {
+    suspend fun updateLegal(
+        policyAdmin: Boolean,
+        policyApp: Boolean,
+        consent: Boolean
+    ): Response<Boolean> {
         if (uuid == null) {
             return Response.Failure(Exception("User not logged in"))
         }

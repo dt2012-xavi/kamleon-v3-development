@@ -300,7 +300,8 @@
                 android:layout_marginTop="32dp"
                 android:orientation="vertical"
                 android:paddingHorizontal="@dimen/setting_category_padding"
-                android:visibility="gone">
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <TextView
                     android:layout_width="wrap_content"

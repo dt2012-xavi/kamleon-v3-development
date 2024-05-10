@@ -3,12 +3,12 @@
 
 
     <item android:state_enabled="false"
-        android:drawable="@drawable/bg_btn_round_border_normal"/>
+        android:drawable="@drawable/bg_btn_round_border_normal_nostroke"/>
     <item android:state_pressed="true"
-        android:drawable="@drawable/bg_btn_round_border_pressed"/>
+        android:drawable="@drawable/bg_btn_round_border_pressed_nostroke"/>
     <item android:state_focused="true"
-        android:drawable="@drawable/bg_btn_round_border_normal"/>
+        android:drawable="@drawable/bg_btn_round_border_normal_nostroke"/>
     <item android:state_enabled="true"
-        android:drawable="@drawable/bg_btn_round_border_normal"/>
-    <item android:drawable="@drawable/bg_btn_round_border_normal"/>
+        android:drawable="@drawable/bg_btn_round_border_normal_nostroke"/>
+    <item android:drawable="@drawable/bg_btn_round_border_normal_nostroke"/>
 </selector>

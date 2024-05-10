@@ -97,7 +97,7 @@
                         android:background="@null"
                         android:inputType="numberPassword"
                         android:imeOptions="actionDone"
-                        android:text="123456"/>
+                        tools:text="123456"/>
                     <ImageView
                         android:layout_width="@dimen/input_text_box_eye_width"
                         android:layout_height="10dp"

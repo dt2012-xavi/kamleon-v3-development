@@ -63,7 +63,8 @@ enum class UserStatus
 data class KamleonLegal(
     var privacyPolicyAdmin: Boolean = false,
     var privacyPolicyApp: Boolean = false,
-    var healthConsent: Boolean = false
+    var healthConsent: Boolean = false,
+    var privacyPolicyWeb: Boolean = false,
 )
 
 data class KamleonPermissions(

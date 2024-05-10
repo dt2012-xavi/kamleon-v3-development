@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dynatech2012.kamleonuserapp.fragments.LoginFragment
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
@@ -22,8 +21,9 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val authRepo: UserRepository,
     private val firestoreRepo: FirestoreDataSource,
-    private val cloudFuctions: CloudFunctions
-): ViewModel() {
+    private val cloudFuctions: CloudFunctions,
+    private val userRepository: UserRepository
+) : ViewModel() {
 
     private val _isReady = MutableLiveData<Boolean>()
     val isReady: LiveData<Boolean> = _isReady
@@ -49,11 +49,71 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             if (email != null && pass != null && fName != null && lName != null) {
                 val authResult = authRepo.signup(email!!, pass!!)
-                if (authResult.isSuccess && authResult.dataValue != null)
+                Log.d(TAG, "register auth result: $authResult")
+                if (authResult.isSuccess && authResult.dataValue != null) {
                     _uiState.postValue(1)
-                val registerResult = firestoreRepo.createUserStep1(email!!, fName!!, lName!!)
-                if (registerResult.isSuccess && registerResult.dataValue != null)
-                    _uiState.postValue(2)
+                    val registerResult =
+                        firestoreRepo.createUserStep1(
+                            email!!,
+                            fName!!,
+                            lName!!,
+                            birthday,
+                            healthConsent = true,
+                            appPrivacy = true
+                        )
+                    if (registerResult.isSuccess && registerResult.dataValue != null) {
+                        _uiState.postValue(2)
+                    } else {
+                        _uiState.postValue(-1)
+                    }
+                } else {
+                    _uiState.postValue(-1)
+                }
+            } else {
+                _uiState.postValue(-1)
+            }
+        }
+    }
+
+    private val _registerInputs = MutableLiveData(-1)
+    val registerInputs: LiveData<Int> = _registerInputs
+
+    fun resetRegisterInputs() {
+        _registerInputs.value = -1
+    }
+
+    fun checkRegisterInputs() {
+        //check every input
+        if (fName.isNullOrEmpty()) { //first name is empty or null
+            _registerInputs.postValue(0)
+            return
+        }
+        if (lName.isNullOrEmpty()) { //last name is empty or null
+            _registerInputs.postValue(1)
+            return
+        }
+        if (email.isNullOrEmpty()) { //email is empty or null
+            _registerInputs.postValue(2)
+            return
+        }
+        //check if an email is valid email
+        if (!isValidEmail(email!!)) {
+            _registerInputs.postValue(3)
+            return
+        }
+        //check if password is at least 6 characters
+        if (pass.isNullOrEmpty() || pass!!.length < 6) {
+            _registerInputs.postValue(4)
+            return
+        }
+        //check if email is already used
+        viewModelScope.launch(Dispatchers.IO) {
+            val emailUsed = userRepository.isEmailUsed(email!!)
+            if (emailUsed) {
+                _registerInputs.postValue(5)
+                return@launch
+            } else {
+                _registerInputs.postValue(6)
             }
         }
     }
@@ -70,7 +130,7 @@ class AuthViewModel @Inject constructor(
 
     fun finishSignup() {
         viewModelScope.launch(Dispatchers.IO) {
-            val registerResult = firestoreRepo.createUserStep2(birthday, height, weight, gender)
+            val registerResult = firestoreRepo.createUserStep2(height, weight, gender)
             Log.d(TAG, "login step finish sign up")
             if (registerResult.isSuccess && registerResult.dataValue != null) {
                 sendVerificationEmail()
@@ -87,7 +147,8 @@ class AuthViewModel @Inject constructor(
                 return@launch
             }
             Log.d(TAG, "login step send verif email")
-            val verificationResponse = cloudFuctions.sendVerificationEmail(userId, email!!, username)
+            val verificationResponse =
+                cloudFuctions.sendVerificationEmail(userId, email!!, username)
             if (verificationResponse.isSuccess) {
                 Log.d(TAG, "login step send verif email post 5")
                 _uiState.postValue(5)
@@ -120,8 +181,7 @@ class AuthViewModel @Inject constructor(
                     if (userResponse.isSuccess && userResponse.dataValue?.legal?.privacyPolicyApp == true) {
                         Log.d(TAG, "login:success: ${authResult.dataValue?.legal}")
                         _uiState.postValue(7)
-                    }
-                    else {
+                    } else {
                         Log.d(TAG, "login:success: ${authResult.dataValue?.legal}")
                         _uiState.postValue(6)
                     }
@@ -133,18 +193,19 @@ class AuthViewModel @Inject constructor(
                         Log.e(UserRepository.TAG, "login:failure: $e _ ${e.cause}", e)
                         _uiState.postValue(-3)
                     }
+
                     is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> {
                         // Pass wrong
                         Log.e(UserRepository.TAG, "login:failure: $e _ ${e.cause}", e)
                         _uiState.postValue(-2)
                     }
+
                     else -> {
                         Log.e(UserRepository.TAG, "login:failure: $e _ ${e?.cause}", e)
                         _uiState.postValue(-1)
                     }
                 }
-            }
-            else {
+            } else {
                 _uiState.postValue(0)
             }
         }

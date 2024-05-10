@@ -26,6 +26,11 @@ class UserRepository {
     val isEmailVerified: Boolean
         get() = auth.currentUser?.isEmailVerified ?: true
 
+    suspend fun isEmailUsed(email: String): Boolean {
+        val user = auth.fetchSignInMethodsForEmail(email).await()
+        return user.signInMethods?.isNotEmpty() ?: false
+    }
+
     suspend fun signup(
         email: String,
         pass: String

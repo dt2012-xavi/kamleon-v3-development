@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.views.cards
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,8 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -19,8 +18,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -38,13 +34,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun PremiumView(modifier: Modifier, onClick: () -> Unit, viewModel: MainViewModel = hiltViewModel<MainViewModel>()) {
+fun PremiumView(
+    modifier: Modifier,
+    onClick: () -> Unit,
+    viewModel: MainViewModel = hiltViewModel<MainViewModel>()
+) {
     //val openDialog = remember { mutableStateOf(false)  }
     val openDialog = viewModel.trialSent.observeAsState()
     /*
@@ -57,7 +55,9 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit, viewModel: MainViewMode
      */
 
     val trialSent = viewModel.trialSent.observeAsState()
-    Column (
+    val clickedState = remember { mutableStateOf(false) }
+
+    Column(
         modifier = modifier
             .fillMaxWidth()
             .background(
@@ -72,13 +72,13 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit, viewModel: MainViewMode
 
                     )
             )
-            //.safeDrawingPadding()
-    ){
-        Row (
+        //.safeDrawingPadding()
+    ) {
+        Row(
             //modifier = Modifier
-                //.safeDrawingPadding()
+            //.safeDrawingPadding()
             //verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             Image(
                 modifier = Modifier
                     .padding(
@@ -88,11 +88,13 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit, viewModel: MainViewMode
                     )
                     .height(36.dp),
                 painter = painterResource(
-                id = R.drawable.kamleon),
+                    id = R.drawable.kamleon
+                ),
                 contentDescription = ""
             )
-            Spacer(modifier = Modifier
-                .weight(1f)
+            Spacer(
+                modifier = Modifier
+                    .weight(1f)
             )
             Image(
                 modifier = Modifier
@@ -108,28 +110,31 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit, viewModel: MainViewMode
                 contentDescription = ""
             )
         }
-        Column (modifier = Modifier
-            /*
-            .background(
-                color = colorResource(id = R.color.color_red)
-            )
-            */
-            .padding(horizontal = 32.dp)
-            .padding(bottom = 32.dp, top = 24.dp)
-        ){
+        Column(
+            modifier = Modifier
+                /*
+                .background(
+                    color = colorResource(id = R.color.color_red)
+                )
+                */
+                .padding(horizontal = 32.dp)
+                .padding(bottom = 32.dp, top = 24.dp)
+        ) {
             Text(
                 modifier = Modifier
                     .padding(bottom = 4.dp),
                 text = stringResource(id = R.string.premium_landpage_title),
                 fontSize = dimensionResource(R.dimen.ts_24).value.sp,
                 fontWeight = FontWeight.Bold,
-                color = colorResource(id = R.color.kamleon_dark_grey))
+                color = colorResource(id = R.color.kamleon_dark_grey)
+            )
             Text(
                 modifier = Modifier
                     .padding(bottom = 30.dp),
                 text = stringResource(id = R.string.premium_landpage_subtitle),
                 fontSize = dimensionResource(R.dimen.ts_14).value.sp,
-                color = colorResource(id = R.color.kamleon_dark_grey))
+                color = colorResource(id = R.color.kamleon_dark_grey)
+            )
             PremiumListItemView(
                 title = stringResource(id = R.string.premium_landpage_title1),
                 subtitle = stringResource(id = R.string.premium_landpage_subtitle1)
@@ -158,8 +163,9 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit, viewModel: MainViewMode
             Button(
                 onClick = {
                     viewModel.sendTrialEmail()
-                    //openDialog.value = true
+                    clickedState.value = true
                 },
+                enabled = !clickedState.value,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp),
@@ -168,7 +174,7 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit, viewModel: MainViewMode
                     containerColor = colorResource(id = R.color.kamleon_blue),
                     contentColor = colorResource(id = R.color.color_fa),
                     disabledContainerColor = colorResource(id = R.color.kamleon_secondary_grey_40),
-                    disabledContentColor = colorResource(id = R.color.kamleon_secondary_grey_40),
+                    disabledContentColor = colorResource(id = R.color.kamleon_blue),
                 )
             ) {
                 Text(
@@ -179,8 +185,9 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit, viewModel: MainViewMode
             }
         }
 
-        Spacer(modifier = Modifier
-            .weight(1f)
+        Spacer(
+            modifier = Modifier
+                .weight(1f)
         )
 
 
@@ -188,11 +195,14 @@ fun PremiumView(modifier: Modifier, onClick: () -> Unit, viewModel: MainViewMode
             AlertView(
                 dialogTitle = stringResource(id = R.string.premium_alert_title),
                 dialogText = stringResource(id = R.string.premium_alert_message),
+
                 onDismissRequest =
-                {
+                {},
+                buttonText = stringResource(id = R.string.dialog_ok),
+                onButtonClick = {
                     viewModel.resetTrialSent()
                     onClick()
-                },
+                }
             )
         }
     }
@@ -210,23 +220,27 @@ fun PremiumListItemView(title: String, subtitle: String) {
             modifier = Modifier
                 .size(36.dp),
             painter = painterResource(
-                id = R.drawable.ic_check_24),
+                id = R.drawable.ic_check_24
+            ),
             contentDescription = "",
             colorFilter = ColorFilter.tint(color = colorResource(id = R.color.kamleon_blue))
         )
-                    Spacer(modifier = Modifier
-            .width(10.dp)
+        Spacer(
+            modifier = Modifier
+                .width(10.dp)
         )
         Column {
             Text(
                 text = title,
                 fontSize = dimensionResource(R.dimen.ts_14).value.sp,
                 fontWeight = FontWeight.Bold,
-                color = colorResource(id = R.color.kamleon_dark_grey))
+                color = colorResource(id = R.color.kamleon_dark_grey)
+            )
             Text(
                 text = subtitle,
                 fontSize = dimensionResource(R.dimen.ts_12).value.sp,
-                color = colorResource(id = R.color.kamleon_dark_grey))
+                color = colorResource(id = R.color.kamleon_dark_grey)
+            )
         }
     }
 }

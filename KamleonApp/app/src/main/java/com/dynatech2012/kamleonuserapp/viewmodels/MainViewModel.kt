@@ -669,6 +669,7 @@ class MainViewModel @Inject constructor(
     private val _trialSent = MutableLiveData<Boolean>()
     val trialSent: LiveData<Boolean> = _trialSent
     fun sendTrialEmail() {
+        Log.d(TAG, "sendTrialEmail")
         val email = userRepository.email
         if (email == null) {
             _trialSent.postValue(false)

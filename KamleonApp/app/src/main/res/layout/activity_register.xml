@@ -6,83 +6,125 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface"
     tools:context=".fragments.RegisterFragment">
+
     <LinearLayout
+        android:id="@+id/signupScreenHeaderLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginTop="90dp"
-        android:id="@+id/signupScreenHeaderLayout"
         android:gravity="center"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/img_logo"/>
+            android:src="@drawable/img_logo" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/signup_title"
             android:textAppearance="@style/TextAppearance.Kamleon.Headline6"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/kamleon_dark_grey"
-            android:text="@string/signup_title"/>
+            android:textColor="@color/kamleon_dark_grey" />
+
         <TextView
+            style="@style/CircularRegularFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/CircularRegularFont"
-            android:textAlignment="center"
             android:layout_marginTop="8dp"
-            android:textColor="@color/kamleon_dark_grey"
             android:text="@string/signup_desc"
-            android:textSize="@dimen/ts_16"/>
+            android:textAlignment="center"
+            android:textColor="@color/kamleon_dark_grey"
+            android:textSize="@dimen/ts_16" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:orientation="vertical"
         android:paddingHorizontal="44dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signupScreenHeaderLayout">
 
         <com.dynatech2012.kamleonuserapp.views.KamleonInputBox
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/input_text_box_height"
             android:id="@+id/inputBoxFName"
-            app:placeholder="@string/placeholder_first_name"/>
-
-        <com.dynatech2012.kamleonuserapp.views.KamleonInputBox
             android:layout_width="match_parent"
             android:layout_height="@dimen/input_text_box_height"
+            app:placeholder="@string/placeholder_first_name" />
+
+        <com.dynatech2012.kamleonuserapp.views.KamleonInputBox
             android:id="@+id/inputBoxLName"
-            android:layout_marginTop="12dp"
-            app:placeholder="@string/placeholder_last_name"/>
-
-        <com.dynatech2012.kamleonuserapp.views.KamleonInputBox
             android:layout_width="match_parent"
             android:layout_height="@dimen/input_text_box_height"
+            android:layout_marginTop="12dp"
+            app:placeholder="@string/placeholder_last_name" />
+
+        <com.dynatech2012.kamleonuserapp.views.KamleonInputBox
             android:id="@+id/inputBoxEmail"
-            android:layout_marginTop="12dp"
-            app:placeholder="@string/placeholder_email"/>
-
-        <com.dynatech2012.kamleonuserapp.views.KamleonInputBox
             android:layout_width="match_parent"
             android:layout_height="@dimen/input_text_box_height"
+            android:layout_marginTop="12dp"
+            app:placeholder="@string/placeholder_email" />
+
+        <com.dynatech2012.kamleonuserapp.views.KamleonInputBox
             android:id="@+id/inputBoxPwd"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/input_text_box_height"
             android:layout_marginTop="12dp"
             app:placeholder="@string/placeholder_password"
-            app:secureInput="true"/>
+            app:secureInput="true" />
+
         <com.dynatech2012.kamleonuserapp.views.KamleonInputBox
+            android:id="@+id/inputBoxPwdRepeat"
             android:layout_width="match_parent"
             android:layout_height="@dimen/input_text_box_height"
-            android:id="@+id/inputBoxPwdRepeat"
             android:layout_marginTop="12dp"
             app:placeholder="@string/placeholder_password_repeat"
-            app:secureInput="true"/>
+            app:secureInput="true" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/errorLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:paddingStart="8dp">
+
+            <ImageView
+                android:id="@+id/ivError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
+                android:src="@drawable/app_icon_error"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tvError"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvError"
+                style="@style/CircularBookFont"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:textColor="@color/kmln_red"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivError"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/signup_have_account" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </LinearLayout>
 
     <LinearLayout
@@ -91,41 +133,44 @@
         android:orientation="vertical"
         android:paddingHorizontal="44dp"
         android:paddingBottom="40dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
+            android:id="@+id/btnCreateAccount"
             android:layout_width="match_parent"
             android:layout_height="@dimen/round_blue_button_height"
-            android:id="@+id/btnCreateAccount"
             android:background="@drawable/bg_btn_round_blue"
             android:paddingVertical="0dp"
-            android:textAppearance="@style/RoundBlueButtonTextStyle"
-            android:textAllCaps="false"
             android:text="@string/signup_btn_create_account"
-            android:textColor="@drawable/color_text_button_blue_round"/>
+            android:textAllCaps="false"
+            android:textAppearance="@style/RoundBlueButtonTextStyle"
+            android:textColor="@drawable/color_text_button_blue_round" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_gravity="center"
+            android:layout_marginTop="16dp"
             android:orientation="horizontal">
+
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 style="@style/CircularBookFont"
-                android:textColor="@color/kamleon_secondary_grey_60"
-                android:text="@string/signup_have_account"/>
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/signup_have_account"
+                android:textColor="@color/kamleon_secondary_grey_60" />
+
+            <TextView
                 android:id="@+id/tvToLogin"
-                android:clickable="true"
                 style="@style/CircularBookFont"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
                 android:paddingHorizontal="10dp"
-                android:textColor="@color/kamleon_blue"
-                android:text="@string/signup_login"/>
+                android:text="@string/signup_login"
+                android:textColor="@color/kamleon_blue" />
 
         </LinearLayout>
     </LinearLayout>

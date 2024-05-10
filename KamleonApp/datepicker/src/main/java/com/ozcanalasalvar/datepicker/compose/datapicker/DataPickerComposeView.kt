@@ -2,10 +2,14 @@ package com.ozcanalasalvar.datepicker.compose.datapicker
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.AbstractComposeView
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
 import com.ozcanalasalvar.datepicker.view.datapicker.DataChangeListener
 
 class DataPickerComposeView @JvmOverloads constructor(
@@ -16,7 +20,7 @@ class DataPickerComposeView @JvmOverloads constructor(
     private val offsetState = mutableStateOf(0)
 
     private val selectorEffectEnabledState = mutableStateOf(true)
-    private val textSizeState = mutableStateOf(17)
+    private val textSizeState = mutableStateOf(0)
     private val textBoldState = mutableStateOf(false)
     private val darkModeEnabledState = mutableStateOf(true)
     private val valueUnitState = mutableStateOf("")
@@ -26,6 +30,8 @@ class DataPickerComposeView @JvmOverloads constructor(
     private val valuesSourceState = mutableStateOf(arrayListOf("value1", "value2"))
     private val valueWidthState = mutableStateOf(250)
     private val showDecimalState = mutableStateOf(false)
+
+
 
     var offset: Int
         get() = offsetState.value
@@ -41,6 +47,7 @@ class DataPickerComposeView @JvmOverloads constructor(
     var textSize: Int
         get() = textSizeState.value
         set(value) {
+            Log.i("PICKER", "set textSize: $value")
             textSizeState.value = value
         }
 
@@ -97,6 +104,7 @@ class DataPickerComposeView @JvmOverloads constructor(
 
     @Composable
     override fun Content() {
+
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         WheelDataPicker(
             offset = offsetState.value,

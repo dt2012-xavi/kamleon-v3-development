@@ -14,7 +14,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
-import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.UrlConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityPrivacyBinding
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
@@ -23,16 +22,26 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class PrivacyFragment : BaseFragment<ActivityPrivacyBinding>() {
     private val viewModel: AuthViewModel by activityViewModels()
-    override fun setBinding(): ActivityPrivacyBinding = ActivityPrivacyBinding.inflate(layoutInflater)
+    override fun setBinding(): ActivityPrivacyBinding =
+        ActivityPrivacyBinding.inflate(layoutInflater)
 
     private var acceptState = arrayOf(false, false, false)
 
-    private fun privacyItemIcons(): Array<ImageView> { return arrayOf(binding.ivPrivacy1, binding.ivPrivacy2, binding.ivPrivacy3) }
-    private fun privacyItemTextViews(): Array<TextView> { return arrayOf(binding.tvPrivacy1, binding.tvPrivacy2, binding.tvPrivacy3) }
-    private fun privacyItemLayouts(): Array<LinearLayout> { return arrayOf(binding.privacyLayout1, binding.privacyLayout2, binding.privacyLayout3) }
+    private fun privacyItemIcons(): Array<ImageView> {
+        return arrayOf(binding.ivPrivacy1, binding.ivPrivacy2, binding.ivPrivacy3)
+    }
+
+    private fun privacyItemTextViews(): Array<TextView> {
+        return arrayOf(binding.tvPrivacy1, binding.tvPrivacy2, binding.tvPrivacy3)
+    }
+
+    private fun privacyItemLayouts(): Array<LinearLayout> {
+        return arrayOf(binding.privacyLayout1, binding.privacyLayout2, binding.privacyLayout3)
+    }
 
     override fun initView() {
-        val privacyItemStrRes = arrayOf(R.string.privacy_item1, R.string.privacy_item2, R.string.privacy_item3)
+        val privacyItemStrRes =
+            arrayOf(R.string.privacy_item1, R.string.privacy_item2, R.string.privacy_item3)
         for (itemIndex in 0 until privacyItemLayouts().size) {
             privacyItemIcons()[itemIndex].setImageResource(R.drawable.icn_circular_uncheck)
 
@@ -41,7 +50,10 @@ class PrivacyFragment : BaseFragment<ActivityPrivacyBinding>() {
             }
 
             val spannableString = privacySpannableString(getString(privacyItemStrRes[itemIndex]))
-            privacyItemTextViews()[itemIndex].setText(spannableString, TextView.BufferType.SPANNABLE)
+            privacyItemTextViews()[itemIndex].setText(
+                spannableString,
+                TextView.BufferType.SPANNABLE
+            )
 
             privacyItemTextViews()[itemIndex].movementMethod = LinkMovementMethod.getInstance()
         }
@@ -59,7 +71,8 @@ class PrivacyFragment : BaseFragment<ActivityPrivacyBinding>() {
         }
         binding.btnNext.setOnClickListener {
             Log.d(TAG, "Btn clicked")
-            viewModel.signup()
+            //viewModel.signup()
+            findNavController().navigate(R.id.action_privacyFragment_to_onboardingFragment)
         }
     }
 
@@ -107,13 +120,28 @@ class PrivacyFragment : BaseFragment<ActivityPrivacyBinding>() {
         val privacyIndex = textFull.indexOf(textPrivacy)
         val consentIndex = textFull.indexOf(textConsent)
         if (termsIndex >= 0) {
-            spannableString.setSpan(clickableTerms, termsIndex, termsIndex + textTerms.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(
+                clickableTerms,
+                termsIndex,
+                termsIndex + textTerms.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
         if (privacyIndex >= 0) {
-            spannableString.setSpan(clickablePolicy, privacyIndex, privacyIndex + textPrivacy.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(
+                clickablePolicy,
+                privacyIndex,
+                privacyIndex + textPrivacy.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
         if (consentIndex >= 0) {
-            spannableString.setSpan(clickableConsent, consentIndex, consentIndex + textConsent.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(
+                clickableConsent,
+                consentIndex,
+                consentIndex + textConsent.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
         return spannableString
     }
@@ -127,7 +155,8 @@ class PrivacyFragment : BaseFragment<ActivityPrivacyBinding>() {
         for (index in 0 until privacyItemLayouts().size) {
             privacyItemIcons()[index].setImageResource(if (acceptState[index]) R.drawable.icn_circular_check else R.drawable.icn_circular_uncheck)
         }
-        binding.btnAcceptAll.visibility = if (acceptState.contains(false)) View.VISIBLE else View.INVISIBLE
+        binding.btnAcceptAll.visibility =
+            if (acceptState.contains(false)) View.VISIBLE else View.INVISIBLE
         binding.btnNext.isEnabled = (acceptState[0] && acceptState[1] && acceptState[2])
     }
 
@@ -136,10 +165,15 @@ class PrivacyFragment : BaseFragment<ActivityPrivacyBinding>() {
     }
 
     private fun startActivity(state: Int) {
-        Log.d(TAG, "Callback privacy")
-        if (state == 2)
+        Log.d(
+            TAG,
+            "register Callback privacy - $state"
+        ) //TODO display user errors and navigate to register fragment to display them and the user to fix them
+        if (state == 2) {
             findNavController().navigate(R.id.action_privacyFragment_to_onboardingFragment)
+        }
     }
+
     companion object {
         val TAG = PrivacyFragment::class.simpleName
     }

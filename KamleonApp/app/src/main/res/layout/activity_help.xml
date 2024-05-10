@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".fragments.HelpFragment">
+
+    <RelativeLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_sett_bell"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="@dimen/margin_horizontal_header"
+            android:layout_marginTop="@dimen/margin_top_header"
+            android:layout_marginBottom="@dimen/margin_bottom_header"
+            android:elevation="8dp"
+            app:cardCornerRadius="18dp">
+
+            <ImageView
+                android:id="@+id/btnNavClose"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                android:paddingEnd="3dp"
+                android:src="@drawable/ic_arrow_back_ios_new_24"
+                tools:ignore="RtlSymmetry" />
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/margin_horizontal_header"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutHeader">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/help_title"
+            android:textAppearance="@style/TextAppearance.Kamleon.Bold"
+            android:textColor="@color/text_color_category"
+            android:textSize="@dimen/ts_14" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingVertical="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_setting_list_shadow"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp">
+
+                <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
+                    android:id="@+id/menuAppGuide"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_menu_item_height"
+                    app:settingRightArrow="true"
+                    app:settingRightSwitch="false"
+                    app:settingTypeLabel="@string/help_appguide"
+                    app:settingTypeValue="" />
+
+            </LinearLayout>
+
+            <TextView
+                style="@style/CircularBoldFont"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:paddingHorizontal="8dp"
+                android:text="@string/help_appguide_subtitle"
+                android:textColor="@color/kamleon_secondary_grey_50"
+                android:textSize="@dimen/ts_12" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_setting_list_shadow"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp">
+
+                <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
+                    android:id="@+id/menuContact"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_menu_item_height"
+                    app:settingRightArrow="true"
+                    app:settingRightSwitch="false"
+                    app:settingTypeLabel="@string/help_contact"
+                    app:settingTypeValue="" />
+
+            </LinearLayout>
+
+            <TextView
+                style="@style/CircularBoldFont"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:paddingHorizontal="8dp"
+                android:text="@string/help_contact_subtitle"
+                android:textColor="@color/kamleon_secondary_grey_50"
+                android:textSize="@dimen/ts_12" />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

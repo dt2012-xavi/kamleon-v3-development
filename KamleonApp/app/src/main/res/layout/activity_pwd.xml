@@ -8,32 +8,32 @@
     tools:context=".fragments.PwdFragment">
 
     <RelativeLayout
+        android:id="@+id/layoutHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/layoutHeader"
         android:background="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cv_sett_bell"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:layout_marginStart="@dimen/margin_horizontal_header"
             android:layout_marginTop="@dimen/margin_top_header"
             android:layout_marginBottom="@dimen/margin_bottom_header"
-            android:layout_marginStart="@dimen/margin_horizontal_header"
-            app:cardCornerRadius="18dp"
-            android:id="@+id/cv_sett_bell"
-            android:elevation="8dp">
+            android:elevation="8dp"
+            app:cardCornerRadius="18dp">
 
             <ImageView
+                android:id="@+id/btnNavClose"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:paddingEnd="3dp"
-                android:src="@drawable/ic_arrow_back_ios_new_24"
-                android:id="@+id/btnNavClose"
                 android:layout_gravity="center"
                 android:importantForAccessibility="no"
+                android:paddingEnd="3dp"
+                android:src="@drawable/ic_arrow_back_ios_new_24"
                 tools:ignore="RtlSymmetry" />
         </androidx.cardview.widget.CardView>
 
@@ -43,69 +43,71 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:paddingHorizontal="@dimen/margin_horizontal_header"
-        app:layout_constraintTop_toBottomOf="@id/layoutHeader"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="vertical">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutHeader">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:textColor="@color/text_color_category"
-            android:textAppearance="@style/TextAppearance.Kamleon.Bold"
             android:text="@string/pwd_title"
-            android:textSize="@dimen/ts_14"/>
+            android:textAppearance="@style/TextAppearance.Kamleon.Bold"
+            android:textColor="@color/text_color_category"
+            android:textSize="@dimen/ts_14" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="8dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingVertical="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
+                android:background="@drawable/bg_setting_list_shadow"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingHorizontal="16dp"
-                android:background="@drawable/bg_setting_list_shadow">
+                android:paddingHorizontal="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:paddingVertical="4dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingVertical="4dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/kamleon_dark_grey"
                         android:text="@string/pwd_password"
                         android:textAppearance="@style/TextAppearance.Kamleon.Bold"
-                        android:textSize="@dimen/ts_14"/>
+                        android:textColor="@color/kamleon_dark_grey"
+                        android:textSize="@dimen/ts_14" />
+
                     <EditText
+                        android:id="@+id/etPwd"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/etPwd"
                         android:layout_weight="1"
-                        android:textAlignment="textEnd"
-                        android:textSize="@dimen/ts_14"
-                        android:textColor="@color/kamleon_secondary_grey_70"
                         android:background="@null"
-                        android:inputType="textPassword"
                         android:imeOptions="actionDone"
-                        android:text="pwd"/>
+                        android:inputType="textPassword"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/kamleon_secondary_grey_70"
+                        android:textSize="@dimen/ts_14"
+                        tools:text="pwd" />
+
                     <ImageView
+                        android:id="@+id/imageViewEye"
                         android:layout_width="@dimen/input_text_box_eye_width"
                         android:layout_height="10dp"
                         android:layout_marginStart="12dp"
                         android:clickable="true"
-                        android:id="@+id/imageViewEye"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/icn_eye_off"/>
+                        android:src="@drawable/icn_eye_off" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -113,126 +115,132 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginTop="16dp"
-                android:paddingHorizontal="16dp"
                 android:background="@drawable/bg_setting_list_shadow"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
                 android:paddingVertical="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="4dp"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingVertical="4dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/kamleon_dark_grey"
                         android:text="@string/pwd_new"
                         android:textAppearance="@style/TextAppearance.Kamleon.Bold"
-                        android:textSize="@dimen/ts_14"/>
+                        android:textColor="@color/kamleon_dark_grey"
+                        android:textSize="@dimen/ts_14" />
+
                     <EditText
+                        android:id="@+id/etPwdNew"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/etPwdNew"
                         android:layout_weight="1"
-                        android:textAlignment="textEnd"
-                        android:textSize="@dimen/ts_14"
-                        android:textColor="@color/kamleon_secondary_grey_70"
                         android:background="@null"
-                        android:inputType="textPassword"
                         android:imeOptions="actionDone"
-                        android:text=""/>
+                        android:inputType="textPassword"
+                        android:text=""
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/kamleon_secondary_grey_70"
+                        android:textSize="@dimen/ts_14" />
+
                     <ImageView
+                        android:id="@+id/iv_pwd_new_eye"
                         android:layout_width="@dimen/input_text_box_eye_width"
                         android:layout_height="10dp"
                         android:layout_marginStart="12dp"
                         android:clickable="true"
-                        android:id="@+id/iv_pwd_new_eye"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/icn_eye_off"/>
+                        android:src="@drawable/icn_eye_off" />
                 </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
                     android:layout_marginHorizontal="@dimen/setting_item_padding_h"
                     android:layout_marginVertical="4dp"
                     android:background="@color/kamleon_secondary_grey_40" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="4dp"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingVertical="4dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/kamleon_dark_grey"
                         android:text="@string/pwd_confirm"
                         android:textAppearance="@style/TextAppearance.Kamleon.Bold"
-                        android:textSize="@dimen/ts_14"/>
+                        android:textColor="@color/kamleon_dark_grey"
+                        android:textSize="@dimen/ts_14" />
+
                     <EditText
+                        android:id="@+id/etPwdConf"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/etPwdConf"
                         android:layout_weight="1"
-                        android:textAlignment="textEnd"
-                        android:textSize="@dimen/ts_14"
-                        android:textColor="@color/kamleon_secondary_grey_70"
                         android:background="@null"
-                        android:inputType="textPassword"
                         android:imeOptions="actionDone"
-                        android:text=""/>
+                        android:inputType="textPassword"
+                        android:text=""
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/kamleon_secondary_grey_70"
+                        android:textSize="@dimen/ts_14" />
+
                     <ImageView
+                        android:id="@+id/iv_pwd_confirm_eye"
                         android:layout_width="@dimen/input_text_box_eye_width"
                         android:layout_height="10dp"
                         android:layout_marginStart="12dp"
                         android:clickable="true"
-                        android:id="@+id/iv_pwd_confirm_eye"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/icn_eye_off"/>
+                        android:src="@drawable/icn_eye_off" />
                 </LinearLayout>
 
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tvPwdSettings"
+                style="@style/CircularRegularFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:paddingHorizontal="8dp"
-                style="@style/CircularRegularFont"
-                android:id="@+id/tvPwdSettings"
-                android:textSize="@dimen/ts_12"
-                android:text="@string/login_forgot_pwd"
                 android:clickable="true"
+                android:paddingHorizontal="8dp"
                 android:paddingVertical="8dp"
-                android:textColor="@drawable/color_text_button"/>
+                android:text="@string/login_forgot_pwd"
+                android:textColor="@drawable/color_text_button"
+                android:textSize="@dimen/ts_12" />
 
             <TextView
+                style="@style/CircularRegularFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingHorizontal="16dp"
-                style="@style/CircularRegularFont"
-                android:textColor="@color/kamleon_dark_grey_50"
                 android:text="@string/pwd_desc"
-                android:textSize="@dimen/ts_12"/>
+                android:textColor="@color/kamleon_dark_grey_50"
+                android:textSize="@dimen/ts_12" />
 
             <Button
+                android:id="@+id/btnSave"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/round_blue_button_height"
-                android:background="@drawable/bg_btn_round_blue"
                 android:layout_marginTop="20dp"
+                android:background="@drawable/bg_btn_round_blue"
+                android:enabled="false"
                 android:paddingVertical="0dp"
-                android:textAllCaps="false"
-                android:id="@+id/btnSave"
                 android:text="@string/setting_button_save"
+                android:textAllCaps="false"
                 android:textAppearance="@style/RoundBlueButtonTextStyle"
-                android:textColor="@drawable/color_text_button_blue_round"
-                android:enabled="false"/>
+                android:textColor="@drawable/color_text_button_blue_round" />
         </LinearLayout>
     </LinearLayout>
 

@@ -1,6 +1,5 @@
 package com.ozcanalasalvar.datepicker.compose.datapicker
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -34,8 +33,8 @@ import com.ozcanalasalvar.datepicker.ui.theme.colorLightPrimary
 import com.ozcanalasalvar.datepicker.ui.theme.colorLightTextPrimary
 import com.ozcanalasalvar.datepicker.ui.theme.darkPallet
 import com.ozcanalasalvar.datepicker.ui.theme.lightPallet
-import com.ozcanalasalvar.wheelview.WheelView
 import com.ozcanalasalvar.wheelview.SelectorOptions
+import com.ozcanalasalvar.wheelview.WheelView
 
 
 @Composable
@@ -54,7 +53,13 @@ fun WheelDataPicker(
 ) {
 
     var selectedValue by remember { mutableStateOf(startValue.split(".")[0]) }
-    var selectedDecimal by remember { mutableStateOf(if (startValue.contains(".")) startValue.split(".")[1] else "" ) }
+    var selectedDecimal by remember {
+        mutableStateOf(
+            if (startValue.contains(".")) startValue.split(
+                "."
+            )[1] else ""
+        )
+    }
     val decimalValues = mutableListOf<Int>().apply {
         for (decimalValue in IntRange(0, 9)) {
             add(decimalValue)
@@ -79,7 +84,7 @@ fun WheelDataPicker(
         contentAlignment = Alignment.Center
     ) {
 
-        val height=( fontSize + 10) .dp
+        val height = (fontSize + 10).dp
 
 
         Row(
@@ -98,7 +103,10 @@ fun WheelDataPicker(
                 itemCount = values.size,
                 rowOffset = offset,
                 isEndless = false,
-                selectorOption = SelectorOptions().copy(selectEffectEnabled = selectorEffectEnabled, enabled = false),
+                selectorOption = SelectorOptions().copy(
+                    selectEffectEnabled = selectorEffectEnabled,
+                    enabled = false
+                ),
                 onFocusItem = {
                     selectedValue = values[it]
                 },
@@ -200,7 +208,7 @@ fun WheelDataPicker(
                 ),
         ) {}
 
-        SelectorView(darkModeEnabled= darkModeEnabled, offset = offset)
+        SelectorView(darkModeEnabled = darkModeEnabled, offset = offset)
 
     }
 }

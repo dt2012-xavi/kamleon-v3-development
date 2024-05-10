@@ -3,6 +3,7 @@ package com.dynatech2012.kamleonuserapp.fragments
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -16,17 +17,27 @@ import dagger.hilt.android.AndroidEntryPoint
 class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
     private val viewModel: AuthViewModel by activityViewModels()
 
-    override fun setBinding(): ActivityRegisterBinding = ActivityRegisterBinding.inflate(layoutInflater)
+    override fun setBinding(): ActivityRegisterBinding =
+        ActivityRegisterBinding.inflate(layoutInflater)
+
     private val inputWatcher = object : TextWatcher {
-        override fun afterTextChanged(s: Editable) { }
-        override fun beforeTextChanged(s: CharSequence, start: Int,
-                                       count: Int, after: Int) { }
-        override fun onTextChanged(s: CharSequence, start: Int,
-                                   before: Int, count: Int) {
+        override fun afterTextChanged(s: Editable) {}
+        override fun beforeTextChanged(
+            s: CharSequence, start: Int,
+            count: Int, after: Int
+        ) {
+        }
+
+        override fun onTextChanged(
+            s: CharSequence, start: Int,
+            before: Int, count: Int
+        ) {
             updateButtonState()
-        } }
+        }
+    }
+
     override fun initView() {
-        Log.d(TAG, "cxcxcx on init view")
+        Log.d(TAG, "cxcxcx on init view registerFragment")
         binding.btnCreateAccount.isEnabled = false
         binding.inputBoxFName.getEditTextView()?.imeOptions = EditorInfo.IME_ACTION_NEXT
         binding.inputBoxLName.getEditTextView()?.imeOptions = EditorInfo.IME_ACTION_NEXT
@@ -38,6 +49,9 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
         binding.inputBoxEmail.getEditTextView()?.addTextChangedListener(inputWatcher)
         binding.inputBoxPwd.getEditTextView()?.addTextChangedListener(inputWatcher)
         binding.inputBoxPwdRepeat.getEditTextView()?.addTextChangedListener(inputWatcher)
+
+        binding.tvError.text = ""
+        binding.errorLayout.visibility = View.GONE
     }
 
     override fun initEvent() {
@@ -46,11 +60,40 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
             viewModel.lName = binding.inputBoxLName.getEditTextView()?.text.toString()
             viewModel.email = binding.inputBoxEmail.getEditTextView()?.text.toString()
             viewModel.pass = binding.inputBoxPwd.getEditTextView()?.text.toString()
-            startPrivacy()
+            //first check about the
+            viewModel.checkRegisterInputs()
+            //startPrivacy()
         }
 
         binding.tvToLogin.setOnClickListener {
             findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+        }
+
+        viewModel.resetRegisterInputs()
+        viewModel.registerInputs.observe(this) {
+            Log.i(TAG, "cxcxcx register registerInputs: $it")
+            when (it) {
+                6 -> {
+                    binding.errorLayout.visibility = View.GONE
+                    startPrivacy()
+                }
+                0, 1 -> {
+                    binding.errorLayout.visibility = View.VISIBLE
+                    binding.tvError.text = (getString(R.string.signup_error_empty_fields))
+                }
+                2, 3 -> {
+                    binding.errorLayout.visibility = View.VISIBLE
+                    binding.tvError.text = (getString(R.string.signup_error_email_pattern))
+                }
+                4 -> {
+                    binding.errorLayout.visibility = View.VISIBLE
+                    binding.tvError.text = (getString(R.string.signup_error_password))
+                }
+                5 -> {
+                    binding.errorLayout.visibility = View.VISIBLE
+                    binding.tvError.text = (getString(R.string.signup_error_email_used))
+                }
+            }
         }
     }
 
@@ -76,6 +119,7 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
     */
 
     private fun startPrivacy() {
+        Log.i(TAG,"cxcxcx startPrivacy from register fragment")
         findNavController().navigate(R.id.action_registerFragment_to_privacyFragment)
     }
 

@@ -286,7 +286,7 @@
                     android:background="@color/color_fa"
                     app:darkModeEnabled="false"
                     app:offset="1"
-                    app:textSize="28"
+                    app:textSize="26"
                     app:textBold="true"
                     />
             </RelativeLayout>
