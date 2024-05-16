@@ -169,7 +169,7 @@ class PrivacyFragment : BaseFragment<ActivityPrivacyBinding>() {
             TAG,
             "register Callback privacy - $state"
         ) //TODO display user errors and navigate to register fragment to display them and the user to fix them
-        if (state == 2) {
+        if (state == 3) /*before 2*/ {
             findNavController().navigate(R.id.action_privacyFragment_to_onboardingFragment)
         }
     }

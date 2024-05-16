@@ -63,6 +63,7 @@ class AuthViewModel @Inject constructor(
                         )
                     if (registerResult.isSuccess && registerResult.dataValue != null) {
                         _uiState.postValue(2)
+                        sendVerificationEmail()
                     } else {
                         _uiState.postValue(-1)
                     }
@@ -119,7 +120,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun notificationPermissionGranted() {
-        _uiState.postValue(3)
+        _uiState.postValue(4)
     }
 
     /*
@@ -133,7 +134,7 @@ class AuthViewModel @Inject constructor(
             val registerResult = firestoreRepo.createUserStep2(height, weight, gender)
             Log.d(TAG, "login step finish sign up")
             if (registerResult.isSuccess && registerResult.dataValue != null) {
-                sendVerificationEmail()
+                _uiState.postValue(5)
             }
         }
     }
@@ -150,8 +151,8 @@ class AuthViewModel @Inject constructor(
             val verificationResponse =
                 cloudFuctions.sendVerificationEmail(userId, email!!, username)
             if (verificationResponse.isSuccess) {
-                Log.d(TAG, "login step send verif email post 5")
-                _uiState.postValue(5)
+                Log.d(TAG, "login step send verif email post 3 (before 5)")
+                _uiState.postValue(3)
             }
         }
     }

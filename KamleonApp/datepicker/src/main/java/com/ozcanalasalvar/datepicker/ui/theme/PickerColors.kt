@@ -70,6 +70,7 @@ val colorDarkTextSecondary = Color(0xFFFFFFFF)
 val colorDarkBackground = Color(0xFF221E1E)
 val colorDarkOnBackground = Color(0x99221E1E)
 val colorDarkError = Color(0xFFD62222)
+val colorBlue = Color(0xFF398EFF)
 
 fun lightColors(
     primary: Color = colorLightPrimary,

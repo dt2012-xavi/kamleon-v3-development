@@ -164,7 +164,7 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
             PrivacyFragment.TAG,
             "register Callback privacy - $state"
         ) //TODO display user errors and navigate to register fragment to display them and the user to fix them
-        if (state == 2) {
+        if (state == 3) {
             checkIfGoNextStep()
         } else if (state == -1) {
             //show snackbar with error
@@ -292,7 +292,7 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         Log.d(TAG, "Callback new state received: $state")
         Log.d(TAG, "login step state received $state")
         when (state) {
-            3, 4 -> {
+            4 -> {
                 goNextStep(); updateUI()
             }
 

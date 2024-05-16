@@ -2,8 +2,10 @@ package com.dynatech2012.kamleonuserapp.fragments
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.text.Editable
 import android.text.InputType
 import android.text.SpannableString
+import android.text.TextWatcher
 import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.TextView
@@ -57,7 +59,31 @@ class PinFragment : BaseFragment<ActivityPinBinding>() {
         binding.btnSave.setOnClickListener {
             viewModel.changePin(binding.etPin.text.toString(), binding.etPin.text.toString())
         }
+
+        binding.etPin.addTextChangedListener(pinTextWatcher)
+        binding.etPinNew.addTextChangedListener(pinTextWatcher)
+        binding.etPinNew.addTextChangedListener(pinTextWatcher)
+        binding.etPinConf.addTextChangedListener(pinTextWatcher)
     }
+
+    private val pinTextWatcher = object : TextWatcher {
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+        override fun afterTextChanged(s: Editable?) {
+            binding.btnSave.isEnabled = pinValidated
+        }
+    }
+
+    private val pinValidated: Boolean
+        get() = binding.etPin.text.toString().length == 6
+                && binding.etPinNew.text.toString().length == 6
+                && binding.etPinConf.text.toString().length == 6
+                // pin new and confirm must be the same
+                && binding.etPinNew.text.toString() == binding.etPinConf.text.toString()
+                // all pins must be numbers
+                && binding.etPin.text.toString().matches(Regex("\\d+"))
+                && binding.etPinNew.text.toString().matches(Regex("\\d+"))
+                && binding.etPinConf.text.toString().matches(Regex("\\d+"))
 
     private fun updateInputMode() {
         binding.imageViewEye.setImageResource(if (secureInputCurrent) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open)

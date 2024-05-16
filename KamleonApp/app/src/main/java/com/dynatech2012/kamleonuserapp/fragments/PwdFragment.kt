@@ -2,8 +2,10 @@ package com.dynatech2012.kamleonuserapp.fragments
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.text.Editable
 import android.text.InputType
 import android.text.SpannableString
+import android.text.TextWatcher
 import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.TextView
@@ -52,10 +54,26 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
         }
         binding.btnSave.setOnClickListener {
             // TODO: old pass needed to reauthenticate
-            val oldPwd = ""
+            val oldPwd = binding.etPwd.text.toString()
             viewModel.changePwd(oldPwd, binding.etPwd.text.toString())
         }
+        binding.etPwd.addTextChangedListener(passTextWatcher)
+        binding.etPwdNew.addTextChangedListener(passTextWatcher)
+        binding.etPwdConf.addTextChangedListener(passTextWatcher)
     }
+
+    private val passTextWatcher = object : TextWatcher {
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+        override fun afterTextChanged(s: Editable?) {
+            binding.btnSave.isEnabled = passValidated
+        }
+    }
+
+    private val passValidated: Boolean
+        get() = binding.etPwd.text.toString().isNotEmpty()
+                && binding.etPwdNew.text.toString().isNotEmpty()
+                && binding.etPwdConf.text.toString().isNotEmpty()
 
     private fun updateInputMode() {
         binding.imageViewEye.setImageResource(if (secureInputCurrent) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open)

@@ -37,10 +37,13 @@ import com.ozcanalasalvar.datepicker.utils.withDay
 import com.ozcanalasalvar.datepicker.utils.withMonth
 import com.ozcanalasalvar.datepicker.utils.withYear
 import com.ozcanalasalvar.datepicker.model.Date
+import com.ozcanalasalvar.datepicker.ui.theme.colorBlue
+import com.ozcanalasalvar.datepicker.ui.theme.colorDarkError
 import com.ozcanalasalvar.datepicker.ui.theme.colorDarkPrimary
 import com.ozcanalasalvar.datepicker.ui.theme.colorDarkTextPrimary
 import com.ozcanalasalvar.datepicker.ui.theme.colorLightPrimary
 import com.ozcanalasalvar.datepicker.ui.theme.colorLightTextPrimary
+import com.ozcanalasalvar.datepicker.ui.theme.colorLightTextSecondary
 import com.ozcanalasalvar.datepicker.ui.theme.darkPallet
 import com.ozcanalasalvar.datepicker.ui.theme.lightPallet
 import com.ozcanalasalvar.datepicker.utils.DateUtils
@@ -53,7 +56,7 @@ import java.util.Locale
 @Composable
 fun WheelDatePicker(
     modifier: Modifier = Modifier,
-    offset: Int = 4,
+    offset: Int = 8,
     yearsRange: IntRange = IntRange(1923, 2121),
     startDate: Date = Date(DateUtils.getCurrentTime()),
     //toDate: Date = Date(DateUtils.getCurrentTime()),
@@ -115,7 +118,7 @@ fun WheelDatePicker(
             val maxIndexDay = maxDay - 1
             Log.d("TAG", "ssss maxDate: $maxDate _ maxIndexMonth: $maxIndexMonth")
             Log.d("TAG", "ssss maxDate: $maxDate _ maxIndexDay: $maxIndexDay")
-            WheelView(modifier = Modifier.weight(7f),
+            WheelView(modifier = Modifier.weight(7f),//.background(color = colorDarkError),
                 itemSize = DpSize(150.dp, height),
                 selection = maxOf(months.indexOf(selectedDate.month), 0),
                 maxIndex = maxIndexMonth,
@@ -130,7 +133,7 @@ fun WheelDatePicker(
                     Text(
                         text = DateFormatSymbols(Locale.US).months[months[it]],
                         textAlign = TextAlign.Start,
-                        modifier = Modifier.width(120.dp),
+                        modifier = Modifier.width(150.dp),//.background(color = colorLightTextSecondary),
                         fontSize = fontSize.sp,
                         fontWeight = FontWeight.Bold,
                         color = if (darkModeEnabled) colorDarkTextPrimary else colorLightTextPrimary
@@ -138,7 +141,7 @@ fun WheelDatePicker(
                 })
 
             key(days.size) {
-                WheelView(modifier = Modifier.weight(2f),
+                WheelView(modifier = Modifier.weight(2f),//.background(color = colorLightTextSecondary),
                     itemSize = DpSize(150.dp, height),
                     selection = maxOf(days.indexOf(selectedDate.day), 0),
                     maxIndex = maxDay - 1,
@@ -152,7 +155,7 @@ fun WheelDatePicker(
                         Text(
                             text = days[it].toString(),
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.width(50.dp),
+                            modifier = Modifier.width(50.dp),//.background(color = colorBlue),
                             fontSize = fontSize.sp,
                             fontWeight = FontWeight.Bold,
                             color = if (darkModeEnabled) colorDarkTextPrimary else colorLightTextPrimary
@@ -160,7 +163,7 @@ fun WheelDatePicker(
                     })
             }
 
-            WheelView(modifier = Modifier.weight(3f),
+            WheelView(modifier = Modifier.weight(3f),//.background(color = colorBlue),
                 itemSize = DpSize(150.dp, height),
                 selection = years.indexOf(selectedDate.year),
                 itemCount = years.size,
@@ -174,7 +177,7 @@ fun WheelDatePicker(
                     Text(
                         text = years[it].toString(),
                         textAlign = TextAlign.End,
-                        modifier = Modifier.width(100.dp),
+                        modifier = Modifier.width(100.dp),//.background(color = colorDarkError),
                         fontSize = fontSize.sp,
                         fontWeight = FontWeight.Bold,
                         color = if (darkModeEnabled) colorDarkTextPrimary else colorLightTextPrimary
@@ -205,5 +208,15 @@ fun WheelDatePicker(
 @Preview
 @Composable
 fun DatePickerPreview() {
-    WheelDatePicker(onDateChanged = { _, _, _, _ -> })
+    WheelDatePicker(
+        offset = 4,
+        yearsRange = IntRange(1923, 2121),
+        startDate = Date(DateUtils.getCurrentTime()),
+        maxDate = Date(DateUtils.getCurrentTime()),
+        //toDate = toDateState.value,
+        selectorEffectEnabled = true,
+        textSize = 17,
+        textBold = true,
+        darkModeEnabled = false,
+        onDateChanged = { _, _, _, _ -> })
 }

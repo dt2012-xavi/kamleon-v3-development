@@ -29,7 +29,7 @@ class DatePickerComposeView @JvmOverloads constructor(
 ) : AbstractComposeView(context, attrs, defStyle) {
 
 
-    private val offsetState = mutableStateOf(4)
+    private val offsetState = mutableStateOf(8)
     private val yearsRangeState = mutableStateOf(IntRange(1923, 2121))
     private val startDateState = mutableStateOf(Date(DateUtils.getCurrentTime()))
     private val toDateState = mutableStateOf(Date(DateUtils.getCurrentTime()))

@@ -3,7 +3,9 @@ package com.dynatech2012.kamleonuserapp.viewmodels
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.text.TextWatcher
 import android.util.Log
+import android.widget.EditText
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
