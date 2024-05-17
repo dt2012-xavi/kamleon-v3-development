@@ -15,6 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.models.Gender
+import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.ozcanalasalvar.datepicker.view.datapicker.DataPicker
 
@@ -140,11 +141,12 @@ class DataPickerFragment : BottomSheetDialogFragment() {
 
     }
 
-    private fun onUserDataUpdated(updated: Boolean) {
-        if (updated)
-        {
+    private fun onUserDataUpdated(response: Response<Unit>?) {
+        if (response == null) return
+
+        viewModel.resetUserUpdated()
+        if (response.isSuccess)
             dismiss()
-        }
     }
 
     companion object {

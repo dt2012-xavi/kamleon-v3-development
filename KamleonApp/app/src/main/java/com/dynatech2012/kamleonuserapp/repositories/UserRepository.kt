@@ -120,30 +120,42 @@ class UserRepository {
         //auth.removeAuthStateListener(authStateListener)
     }
 
-    suspend fun changeEmail(currentPwd: String, newEmail: String) {
-        val oldEmail = auth.currentUser?.email
-        if (oldEmail != null) {
-            val credential = EmailAuthProvider
-                .getCredential(oldEmail, currentPwd)
+    suspend fun changeEmail(currentPwd: String, newEmail: String): Response<Unit> {
+        val oldEmail = auth.currentUser?.email ?: return Response.Failure(Exception("No email"))
+        return try {
+            val credential = EmailAuthProvider.getCredential(oldEmail, currentPwd)
             // Prompt the user to re-provide their sign-in credentials
             auth.currentUser?.reauthenticate(credential)?.await()
             auth.currentUser?.updateEmail(newEmail)?.await()
+            Response.Success(Unit)
+        }
+        catch (e: Exception) {
+            Response.Failure(e)
         }
     }
 
-    suspend fun changePwd(oldPwd: String, newPwd: String) {
-        val oldEmail = auth.currentUser?.email
-        if (oldEmail != null) {
-            val credential = EmailAuthProvider
-                .getCredential(oldEmail, oldPwd)
-            // Prompt the user to re-provide their sign-in credentials
+    suspend fun changePwd(oldPwd: String, newPwd: String): Response<Unit> {
+        val oldEmail = auth.currentUser?.email ?: return Response.Failure(Exception("No email"))
+        val credential = EmailAuthProvider
+            .getCredential(oldEmail, oldPwd)
+        // Prompt the user to re-provide their sign-in credentials
+        return try {
             auth.currentUser?.reauthenticate(credential)?.await()
             auth.currentUser?.updatePassword(newPwd)?.await()
+            Response.Success(Unit)
+        } catch (e: Exception) {
+            Response.Failure(e)
         }
     }
 
-    suspend fun deleteUser() {
-        auth.currentUser?.delete()?.await()
+    suspend fun deleteUser(): Response<Unit> {
+        val user = auth.currentUser ?: return Response.Failure(Exception("No user"))
+        return try {
+            user.delete().await()
+            Response.Success(Unit)
+        } catch (e: Exception) {
+            Response.Failure(e)
+        }
     }
 
     companion object {

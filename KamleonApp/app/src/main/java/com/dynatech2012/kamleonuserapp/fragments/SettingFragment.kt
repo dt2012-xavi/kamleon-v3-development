@@ -24,6 +24,7 @@ import com.dynatech2012.kamleonuserapp.extensions.addYears
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.Organization
+import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
 import com.ozcanalasalvar.datepicker.view.datepicker.DateChangeListener
@@ -453,11 +454,11 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
     }
 
-    private fun onUserDataUpdated(updated: Boolean) {
-        if (updated) {
-            viewModel.resetUserUpdated()
+    private fun onUserDataUpdated(response: Response<Unit>?) {
+        if (response == null) return
+        if (response.isSuccess)
             showSavedDialog()
-        }
+        viewModel.resetUserUpdated()
     }
 
     private fun onUserImageChanged(drawable: Drawable?) {

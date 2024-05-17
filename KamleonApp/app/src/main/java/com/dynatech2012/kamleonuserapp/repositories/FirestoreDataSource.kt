@@ -84,13 +84,17 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
         return Response.Failure(Exception())
     }
 
-    suspend fun updateUser(data: HashMap<String, Any>): Response<Boolean> {
-        uuid?.let { uuid ->
-            val doc = db.collection(USERS_COLLECTION).document(uuid)
-            doc.update(data).await()
-            return Response.Success(true)
+    suspend fun updateUser(data: HashMap<String, Any>): Response<Unit> {
+        if (uuid == null) {
+            return Response.Failure(Exception("User not logged in"))
         }
-        return Response.Failure(Exception())
+        val doc = db.collection(USERS_COLLECTION).document(uuid!!)
+        return try {
+            doc.update(data).await()
+            Response.Success(Unit)
+        } catch (e: Exception) {
+            Response.Failure(e)
+        }
     }
 
     suspend fun getUserData(): Response<CustomUser> {

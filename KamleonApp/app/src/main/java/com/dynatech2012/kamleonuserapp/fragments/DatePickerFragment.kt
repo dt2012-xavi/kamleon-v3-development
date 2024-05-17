@@ -17,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.extensions.addYears
+import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.ozcanalasalvar.datepicker.view.datepicker.DateChangeListener
@@ -140,11 +141,12 @@ class DatePickerFragment : BottomSheetDialogFragment() {
     private fun initObservers() {
         viewModel.userUpdated.observe(this, this::onUserDateUpdated)
     }
-    private fun onUserDateUpdated(updated: Boolean) {
-        if (updated)
-        {
+    private fun onUserDateUpdated(response: Response<Unit>?) {
+        if (response == null) return
+
+        viewModel.resetUserUpdated()
+        if (response.isSuccess)
             dismiss()
-        }
     }
 
     companion object {

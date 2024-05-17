@@ -31,6 +31,7 @@ import com.dynatech2012.kamleonuserapp.repositories.DatabaseDataSource
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.MeasuresRepository
 import com.dynatech2012.kamleonuserapp.repositories.RealtimeDataSource
+import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import com.dynatech2012.kamleonuserapp.utils.SharedPrefUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -67,8 +68,8 @@ class MainViewModel @Inject constructor(
     val userData: LiveData<CustomUser> = _userData
     private val _userProfiles = MutableLiveData<ArrayList<Organization>>()
     val userProfiles: LiveData<ArrayList<Organization>> = _userProfiles
-    private val _userUpdated = MutableLiveData<Boolean>()
-    val userUpdated: LiveData<Boolean> = _userUpdated
+    private val _userUpdated = MutableLiveData<Response<Unit>?>()
+    val userUpdated: LiveData<Response<Unit>?> = _userUpdated
 
     private val _userImagePrevUri = MutableLiveData<Uri?>()
     val userImagePrevUri: LiveData<Uri?> = _userImagePrevUri
@@ -118,12 +119,12 @@ class MainViewModel @Inject constructor(
 
     fun updateUserData(data: HashMap<String, Any>) {
         viewModelScope.launch(Dispatchers.IO) {
-            val userResult = firestoreRepo.updateUser(data)
-            if (userResult.isSuccess && userResult.dataValue != null) {
+            val response = firestoreRepo.updateUser(data)
+            if (response.isSuccess && response.dataValue != null) {
                 getUserData()
-                _userUpdated.postValue(userResult.dataValue)
-                Log.d(TAG, "user data changed")
             }
+            _userUpdated.postValue(response)
+            Log.d(TAG, "user data changed")
         }
     }
 
@@ -183,12 +184,15 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val oldPinHash = oldPin.sha256()
             if (oldPinHash != userData.value?.pin) {
-                throw Exception(Constants.UNMATCHING_PIN)
+                val exception = Exception(Constants.UNMATCHING_PIN)
+                val response = Response.Failure(exception)
+                _userUpdated.postValue(response)
             } else {
                 val newPinHash = newPin.sha256()
                 val data = hashMapOf<String, Any>("pin" to newPinHash)
-                firestoreRepo.updateUser(data)
-                _userUpdated.postValue(true)
+                val response = firestoreRepo.updateUser(data)
+                //_userUpdated.postValue(true)
+                _userUpdated.postValue(response)
             }
         }
     }
@@ -197,27 +201,30 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             userRepository.changeEmail(currentPwd, newEmail)
             val data = hashMapOf<String, Any>("email" to newEmail)
-            firestoreRepo.updateUser(data)
-            _userUpdated.postValue(true)
+            val response = firestoreRepo.updateUser(data)
+            //_userUpdated.postValue(true)
+            _userUpdated.postValue(response)
         }
     }
 
     fun changePwd(oldPwd: String, newPwd: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            userRepository.changePwd(oldPwd, newPwd)
-            _userUpdated.postValue(true)
+            val response = userRepository.changePwd(oldPwd, newPwd)
+            //_userUpdated.postValue(true)
+            _userUpdated.postValue(response)
         }
     }
 
     fun deleteUser() {
         viewModelScope.launch(Dispatchers.IO) {
-            userRepository.deleteUser()
-            _userUpdated.postValue(true)
+            val response = userRepository.deleteUser()
+            //_userUpdated.postValue(true)
+            _userUpdated.postValue(response)
         }
     }
 
     fun resetUserUpdated() {
-        _userUpdated.postValue(false)
+        _userUpdated.postValue(null)
     }
 
     fun setImageUri(uri: Uri?) {

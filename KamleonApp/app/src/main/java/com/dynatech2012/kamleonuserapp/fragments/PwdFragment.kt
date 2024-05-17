@@ -4,9 +4,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.text.Editable
 import android.text.InputType
-import android.text.SpannableString
 import android.text.TextWatcher
-import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -15,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.ActivityPwdBinding
+import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -97,7 +96,7 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
     }
 
     private fun initObservers() {
-        viewModel.userUpdated.observe(this, this::startActivity)
+        viewModel.userUpdated.observe(this, this::onPwdUpdated)
 
         viewModel.resetPwdSuccess.observe(this) {
             if (it) showSuccessDialog()
@@ -135,9 +134,9 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
         }
     }
 
-    private fun startActivity(updated: Boolean) {
-        if (updated) {
-            viewModel.resetUserUpdated()
-        }
+    private fun onPwdUpdated(response: Response<Unit>?) {
+        if (response == null) return
+
+        viewModel.resetUserUpdated()
     }
 }

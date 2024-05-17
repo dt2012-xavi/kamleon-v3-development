@@ -4,6 +4,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.ActivityDeleteBinding
+import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,12 +22,12 @@ class DeleteFragment : BaseFragment<ActivityDeleteBinding>() {
     }
 
     private fun initObservers() {
-        viewModel.userUpdated.observe(this, this::startActivity)
+        viewModel.userUpdated.observe(this, this::onUserDeleted)
     }
 
-    private fun startActivity(updated: Boolean) {
-        if (updated) {
-            viewModel.resetUserUpdated()
-        }
+    private fun onUserDeleted(response: Response<Unit>?) {
+        if (response == null) return
+
+        viewModel.resetUserUpdated()
     }
 }
