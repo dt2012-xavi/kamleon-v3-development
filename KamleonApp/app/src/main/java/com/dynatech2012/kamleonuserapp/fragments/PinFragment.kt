@@ -147,7 +147,18 @@ class PinFragment : BaseFragment<ActivityPinBinding>() {
 
     private fun onPinUpdated(response: Response<Unit>?) {
         if (response == null) return
-
+        when (response) {
+            is Response.Success -> {
+                binding.etPin.text.clear()
+                binding.etPinNew.text.clear()
+                binding.etPinConf.text.clear()
+                showSuccessDialog()
+            }
+            is Response.Failure -> {
+                showErrorDialog()
+            }
+            else -> { }
+        }
         viewModel.resetUserUpdated()
     }
 }

@@ -136,7 +136,18 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
 
     private fun onPwdUpdated(response: Response<Unit>?) {
         if (response == null) return
-
+        when (response) {
+            is Response.Success -> {
+                binding.etPwd.text.clear()
+                binding.etPwdNew.text.clear()
+                binding.etPwdConf.text.clear()
+                showSuccessDialog()
+            }
+            is Response.Failure -> {
+                showErrorDialog()
+            }
+            else -> { }
+        }
         viewModel.resetUserUpdated()
     }
 }
