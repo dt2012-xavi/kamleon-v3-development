@@ -88,6 +88,8 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
         if (uuid == null) {
             return Response.Failure(Exception("User not logged in"))
         }
+        Log.i("PIN","--->> UUID user collection: $uuid")
+        Log.i("PIN","--->> data: $data")
         val doc = db.collection(USERS_COLLECTION).document(uuid!!)
         return try {
             doc.update(data).await()

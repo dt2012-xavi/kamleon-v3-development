@@ -185,6 +185,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
+            tools:visibility="visible"
             android:paddingHorizontal="18dp"
             android:id="@+id/layoutBirthday"
             android:paddingBottom="80dp"

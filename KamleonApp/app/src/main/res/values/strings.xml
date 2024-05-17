@@ -155,6 +155,13 @@
     <string name="pin_confirm">CONFIRM PIN</string>
 
     <string name="pin_desc">The PIN is the personalized code that you enter on the screen before starting your experience.\n\n<b>Set Up Your PIN:</b>\n1. Enter a six digits numeric code of your choice.\n2. Confirm and start your secure journey!</string>
+    <string name="pin_error_title">Error</string>
+    <string name="pin_error_dontmatch">New PIN and Confirm PIN do not match</string>
+    <string name="pin_error_pin">Current PIN is not valid</string>
+
+    <string name="pwd_error_title">Error</string>
+    <string name="pwd_error_dontmatch">New password and confirm password do not match</string>
+    <string name="pwd_error_generic">There was an error updating your password</string>
 
     <!-- Change Pass -->
     <string name="pwd_title">SET A NEW PASSWORD</string>
@@ -265,14 +272,14 @@
     <string name="dialog_deactive_y">Deactivate</string>
     <string name="dialog_deactive_n">Cancel</string>
     <string name="dialog_profile_date_not_allowed">You have to be at least 14 years old</string>
-    <string name="dialog_reset_pwd_success_title">Email Sent</string>
-    <string name="dialog_reset_pwd_success_description">We\'ve sent you instructions to reset your password</string>
+    <string name="dialog_reset_pwd_success_title">Success</string>
+    <string name="dialog_reset_pwd_success_description">You\’ve successfully changed your password</string>
     <string name="dialog_reset_pwd_error_title">Error</string>
     <string name="dialog_reset_pwd_error_description">User not found</string>
-    <string name="dialog_reset_pin_success_title">Email Sent</string>
-    <string name="dialog_reset_pin_success_description">We\'ve sent you instructions to reset your PIN</string>
+    <string name="dialog_reset_pin_success_title">Success</string>
+    <string name="dialog_reset_pin_success_description">You\'ve successfully changed your PIN</string>
     <string name="dialog_reset_pin_error_title">Error</string>
-    <string name="dialog_reset_pin_error_description">User not found</string>
+    <string name="dialog_reset_pin_error_description">There was an error changing your PIN</string>
     <string name="dialog_scan_scanned">QR scanned correctly</string>
     <string name="dialog_policy_title">Privacy Policy</string>
     <string name="dialog_policy_desc">Protecting your privacy is crucial. Before using the app, kindly agree to the policy. For more details, refer to the <u>Privacy Policy</u></string>

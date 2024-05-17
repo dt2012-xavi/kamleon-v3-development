@@ -3,9 +3,7 @@ package com.dynatech2012.kamleonuserapp.viewmodels
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.text.TextWatcher
 import android.util.Log
-import android.widget.EditText
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -183,14 +181,19 @@ class MainViewModel @Inject constructor(
     fun changePin(oldPin: String, newPin: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val oldPinHash = oldPin.sha256()
+            Log.i("PIN", "--->> oldPinHash: $oldPinHash")
+
             if (oldPinHash != userData.value?.pin) {
+                Log.i("PIN", "--->> no the same pin as the original: ${userData.value?.pin}")
                 val exception = Exception(Constants.UNMATCHING_PIN)
                 val response = Response.Failure(exception)
                 _userUpdated.postValue(response)
             } else {
                 val newPinHash = newPin.sha256()
+                Log.i("PIN", "--->> newPinHash: $newPinHash")
                 val data = hashMapOf<String, Any>("pin" to newPinHash)
                 val response = firestoreRepo.updateUser(data)
+                Log.i("PIN", "--->> response from update: $response")
                 //_userUpdated.postValue(true)
                 _userUpdated.postValue(response)
             }

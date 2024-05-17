@@ -14,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
+import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityPinBinding
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
@@ -40,7 +41,6 @@ class PinFragment : BaseFragment<ActivityPinBinding>() {
             viewModel.resetPIN()
         }
 
-
         binding.btnNavClose.setOnClickListener { findNavController().popBackStack() }
         binding.imageViewEye.isClickable = true
         binding.imageViewEye.setOnClickListener {
@@ -58,7 +58,11 @@ class PinFragment : BaseFragment<ActivityPinBinding>() {
             updateInputMode()
         }
         binding.btnSave.setOnClickListener {
-            viewModel.changePin(binding.etPin.text.toString(), binding.etPin.text.toString())
+            if ((binding.etPinConf.text.toString() != binding.etPinNew.text.toString())) {
+                showErrorDialog(R.string.pin_error_title, R.string.pin_error_dontmatch)
+                return@setOnClickListener
+            }
+            viewModel.changePin(binding.etPin.text.toString(), binding.etPinNew.text.toString())
         }
 
         binding.etPin.addTextChangedListener(pinTextWatcher)
@@ -68,8 +72,8 @@ class PinFragment : BaseFragment<ActivityPinBinding>() {
     }
 
     private val pinTextWatcher = object : TextWatcher {
-        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         override fun afterTextChanged(s: Editable?) {
             binding.btnSave.isEnabled = pinValidated
         }
@@ -89,21 +93,27 @@ class PinFragment : BaseFragment<ActivityPinBinding>() {
     private fun updateInputMode() {
         binding.imageViewEye.setImageResource(if (secureInputCurrent) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open)
         if (secureInputCurrent) {
-            binding.etPin.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
+            binding.etPin.inputType =
+                InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
         } else {
-            binding.etPin.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            binding.etPin.inputType =
+                InputType.TYPE_CLASS_NUMBER or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         }
         binding.ivPinNewEye.setImageResource(if (secureInputNew) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open)
         if (secureInputNew) {
-            binding.etPinNew.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
+            binding.etPinNew.inputType =
+                InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
         } else {
-            binding.etPinNew.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            binding.etPinNew.inputType =
+                InputType.TYPE_CLASS_NUMBER or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         }
         binding.ivPinConfirmEye.setImageResource(if (secureInputConfirm) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open)
         if (secureInputConfirm) {
-            binding.etPinConf.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
+            binding.etPinConf.inputType =
+                InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD
         } else {
-            binding.etPinConf.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            binding.etPinConf.inputType =
+                InputType.TYPE_CLASS_NUMBER or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         }
     }
 
@@ -111,7 +121,9 @@ class PinFragment : BaseFragment<ActivityPinBinding>() {
         viewModel.userUpdated.observe(this, this::onPinUpdated)
         viewModel.resetPINSuccess.observe(this) {
             if (it) showSuccessDialog()
-            else showErrorDialog()
+            else {
+                showErrorDialog(R.string.pin_error_title, R.string.dialog_reset_pin_error_description)
+            }
         }
     }
 
@@ -121,9 +133,9 @@ class PinFragment : BaseFragment<ActivityPinBinding>() {
         showReadyDialog(title, message)
     }
 
-    private fun showErrorDialog() {
-        val title = getString(R.string.dialog_reset_pin_error_title)
-        val message = getString(R.string.dialog_reset_pin_error_description)
+    private fun showErrorDialog(titleResource: Int, messageResource: Int) {
+        val title = getString(titleResource)
+        val message = getString(messageResource)
         showReadyDialog(title, message)
     }
 
@@ -155,9 +167,12 @@ class PinFragment : BaseFragment<ActivityPinBinding>() {
                 showSuccessDialog()
             }
             is Response.Failure -> {
-                showErrorDialog()
+                if(response.errorMessage == Constants.UNMATCHING_PIN)
+                    showErrorDialog(R.string.pin_error_title, R.string.pin_error_pin)
+                else
+                    showErrorDialog(R.string.pin_error_title, R.string.dialog_reset_pin_error_description)
             }
-            else -> { }
+            else -> {}
         }
         viewModel.resetUserUpdated()
     }

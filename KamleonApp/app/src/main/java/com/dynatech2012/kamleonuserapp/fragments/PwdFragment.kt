@@ -54,7 +54,11 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
         binding.btnSave.setOnClickListener {
             // TODO: old pass needed to reauthenticate
             val oldPwd = binding.etPwd.text.toString()
-            viewModel.changePwd(oldPwd, binding.etPwd.text.toString())
+            if (binding.etPwdNew.text.toString() != binding.etPwdConf.text.toString()) {
+                showErrorDialog(R.string.pwd_error_title, R.string.pwd_error_dontmatch)
+                return@setOnClickListener
+            }
+            viewModel.changePwd(oldPwd, binding.etPwdNew.text.toString())
         }
         binding.etPwd.addTextChangedListener(passTextWatcher)
         binding.etPwdNew.addTextChangedListener(passTextWatcher)
@@ -62,8 +66,8 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
     }
 
     private val passTextWatcher = object : TextWatcher {
-        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         override fun afterTextChanged(s: Editable?) {
             binding.btnSave.isEnabled = passValidated
         }
@@ -77,21 +81,27 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
     private fun updateInputMode() {
         binding.imageViewEye.setImageResource(if (secureInputCurrent) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open)
         if (secureInputCurrent) {
-            binding.etPwd.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            binding.etPwd.inputType =
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         } else {
-            binding.etPwd.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            binding.etPwd.inputType =
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         }
         binding.ivPwdNewEye.setImageResource(if (secureInputNew) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open)
         if (secureInputNew) {
-            binding.etPwdNew.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            binding.etPwdNew.inputType =
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         } else {
-            binding.etPwdNew.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            binding.etPwdNew.inputType =
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         }
         binding.ivPwdConfirmEye.setImageResource(if (secureInputConfirm) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open)
         if (secureInputConfirm) {
-            binding.etPwdConf.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            binding.etPwdConf.inputType =
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         } else {
-            binding.etPwdConf.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            binding.etPwdConf.inputType =
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         }
     }
 
@@ -100,7 +110,7 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
 
         viewModel.resetPwdSuccess.observe(this) {
             if (it) showSuccessDialog()
-            else showErrorDialog()
+            else showErrorDialog(R.string.pwd_error_title, R.string.pwd_error_generic)
         }
     }
 
@@ -110,9 +120,18 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
         showReadyDialog(title, message)
     }
 
-    private fun showErrorDialog() {
-        val title = getString(R.string.dialog_reset_pwd_error_title)
-        val message = getString(R.string.dialog_reset_pwd_error_description)
+    private fun showErrorDialog(
+        titleResource: Int,
+        messageResource: Int,
+        messageString: String? = ""
+    ) {
+        val title = getString(titleResource)
+        var message = ""
+        message = if (!messageString.isNullOrEmpty()) {
+            messageString
+        } else {
+            getString(messageResource)
+        }
         showReadyDialog(title, message)
     }
 
@@ -143,10 +162,12 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
                 binding.etPwdConf.text.clear()
                 showSuccessDialog()
             }
+
             is Response.Failure -> {
-                showErrorDialog()
+                showErrorDialog(R.string.pwd_error_title, 0, response.errorMessage ?: "")
             }
-            else -> { }
+
+            else -> {}
         }
         viewModel.resetUserUpdated()
     }

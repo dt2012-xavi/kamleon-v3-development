@@ -92,6 +92,25 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         initObservers()
     }
 
+    private fun resetView() {
+        val fourteenYearsAgo = Date().addYears(-14).time
+        binding.datePicker.setDate(fourteenYearsAgo)
+        binding.datePicker.setMaxxDate(fourteenYearsAgo)
+
+        binding.weightPicker.setValueUnit("kg")
+        binding.weightPicker.setValueWidth(50)
+        binding.weightPicker.setShowDecimal(true)
+
+        binding.heightPicker.setValueUnit("cm")
+        binding.heightPicker.setValueWidth(74)
+        binding.heightPicker.setShowDecimal(true)
+
+        viewModel.gender = Gender.none
+        viewModel.height = 0f
+        viewModel.weight = 0f
+        viewModel.birthday = Date()
+    }
+
     override fun initEvent() {
         binding.btnNext.setOnClickListener {
             when (state) {
@@ -151,7 +170,6 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
             } else {
                 state = OnBoardingStep.values()[state.step - 1]
             }
-
             updateUI()
         }
 
@@ -163,7 +181,8 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         Log.d(
             PrivacyFragment.TAG,
             "register Callback privacy - $state"
-        ) //TODO display user errors and navigate to register fragment to display them and the user to fix them
+        )
+        //TODO display user errors and navigate to register fragment to display them and the user to fix them
         if (state == 3) {
             checkIfGoNextStep()
         } else if (state == -1) {
@@ -175,7 +194,9 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
 
     private fun checkIfGoNextStep() {
         when (state.step) {
+
             OnBoardingStep.values().size - 1 -> {
+                Log.i("REGISTER","--->>> Step here to check:  ${OnBoardingStep.values().size}")
                 binding.btnNext.text = ""
                 binding.pbOnboardNext.visibility = View.VISIBLE
                 viewModel.finishSignup()
@@ -183,9 +204,12 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
 
             OnBoardingStep.Notification.step/*, OnBoardingStep.Location.step*/ -> {
                 // Do nothing
+                Log.i("REGISTER","--->>> Notification step to check")
             }
 
             else -> {
+                Log.i("REGISTER","--->>> Else to check")
+
                 goNextStep()
             }
         }
@@ -197,6 +221,7 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
     }
 
     private fun updateUI() {
+        Log.i("REGISTER", "--->>> UPDATE UI Step here:  ${state.step}")
 
         if (state.step == 0 || state.step == 1) {
             //binding.progressStep.visibility = View.INVISIBLE
@@ -210,6 +235,7 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
                 )
             )
         } else if (state.step > 1) {
+
             binding.tvBottomDesc.text = getString(R.string.onboard_bottom_later)
             binding.tvBottomDesc.setTextColor(
                 ContextCompat.getColor(
@@ -219,21 +245,35 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
             )
             binding.tvBottomDesc.isClickable = true
             binding.tvBottomDesc.setOnClickListener {
+
                 binding.tvBottomDesc.visibility = View.INVISIBLE
                 binding.pbOnboardSkip.visibility = View.VISIBLE
                 binding.btnNext.isEnabled = false
                 binding.tvBottomDesc.isEnabled = false
-                if (state.step == 2 || state.step == 3) {
-                    if(state.step == 2) {
-                        viewModel.height = 0f
-                    } else {
-                        viewModel.weight = 0f
+                Log.i("REGISTER", "--->>> Step here when on click:  ${state.step}")
+
+                if (state.step == 2 || state.step == 3 || state.step == 4) {
+                    when (state.step) {
+                        2 -> {
+                            viewModel.height = 0f
+                        }
+
+                        3 -> {
+                            viewModel.weight = 0f
+                        }
+
+                        4 -> {
+                            viewModel.gender = Gender.none
+                        }
                     }
                     checkIfGoNextStep()
                 } else {
                     viewModel.finishSignup()
                 }
             }
+            binding.pbOnboardSkip.visibility = View.INVISIBLE
+            binding.btnNext.isEnabled = true
+            binding.tvBottomDesc.isEnabled = true
             binding.tvBottomDesc.visibility = View.VISIBLE
         }
         binding.progressStep.progress = state.step + 1
@@ -293,7 +333,8 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         Log.d(TAG, "login step state received $state")
         when (state) {
             4 -> {
-                goNextStep(); updateUI()
+                goNextStep()
+                updateUI()
             }
 
             5 -> {
@@ -327,7 +368,12 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
             binding.btnNext.isEnabled = true
             binding.tvBottomDesc.isEnabled = true
 
+            state = OnBoardingStep.BirthDate
+            resetView()
+            updateUI()
+
             logoutDialog.dismiss()
+
             // Go to login
             findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)
         }

@@ -410,16 +410,42 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         binding.etAccSurName.setText(userData.lastName)
         binding.etAccName.setText(userData.name)
         binding.accMenuItemEmail.setValue(userData.email)
+        val weightString = when (userData.weight) {
+            null -> {
+                "-"
+            }
+
+            0f -> {
+                "-"
+            }
+
+            else -> {
+                userData.weight.toString()
+            }
+        }
         binding.prefMenuItemWeight.setValue(
             getString(
                 R.string.setting_label_user_weight_text,
-                (userData.weight ?: "-").toString()
+                weightString
             )
         )
+        val heightString = when (userData.height) {
+            null -> {
+                "-"
+            }
+
+            0f -> {
+                "-"
+            }
+
+            else -> {
+                userData.height.toString()
+            }
+        }
         binding.prefMenuItemHeight.setValue(
             getString(
                 R.string.setting_label_user_height_text,
-                (userData.height ?: "-").toString()
+                heightString
             )
         )
         binding.prefMenuItemGender.setValue(userData.gender.raw)
