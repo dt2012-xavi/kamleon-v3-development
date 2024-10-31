@@ -94,13 +94,13 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
         cvHy.subtitle = when (score) {
             null -> getString(R.string.analytic_no_data)
             in 0..30 -> getString(R.string.analytic_severely_dehydrated)
-            in 31..64 -> getString(R.string.analytic_dehydrated)
-            in 65..90 -> getString(R.string.analytic_hydrated)
+            in 31..65 -> getString(R.string.analytic_dehydrated)
+            in 66..90 -> getString(R.string.analytic_hydrated)
             else -> getString(R.string.analytic_very_hydrated)
         }
         cvHy.description = when (score) {
             null -> ""
-            in 0..64 -> getString(R.string.analytic_hydratation_under)
+            in 0..65 -> getString(R.string.analytic_hydratation_under)
             else -> getString(R.string.analytic_hydratation_above)
         }
         cvHy.onClick = { openGraphView(0) }
@@ -110,13 +110,13 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
         cvEl.subtitle = when (el) {
             null -> getString(R.string.analytic_no_data)
             in 0..4 -> getString(R.string.analytic_elec_hypo)
-            in 5..19 -> getString(R.string.analytic_elec_normal)
+            in 5..20 -> getString(R.string.analytic_elec_normal)
             else -> getString(R.string.analytic_elec_hyper)
         }
         cvEl.description = when (el) {
             null -> ""
             in 0..4 -> getString(R.string.analytic_elec_under)
-            in 5..19 -> getString(R.string.analytic_elec_optimal)
+            in 5..20 -> getString(R.string.analytic_elec_optimal)
             else -> getString(R.string.analytic_elec_above)
         }
         cvEl.onClick = { openGraphView(1) }
@@ -129,7 +129,7 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
         cvVol.subtitle = when (volOnlyIfPrecise) {
             null -> getString(R.string.analytic_volume_insuff_title)
             in 0..149 -> getString(R.string.analytic_volume_low)
-            in 150..249 -> getString(R.string.analytic_volume_medium)
+            in 150..250 -> getString(R.string.analytic_volume_medium)
             else -> getString(R.string.analytic_volume_high)
         }
         cvVol.description = when (volOnlyIfPrecise) {

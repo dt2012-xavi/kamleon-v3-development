@@ -3,6 +3,8 @@ package com.dynatech2012.kamleonuserapp.fragments
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
+import com.dynatech2012.kamleonuserapp.constants.UrlConstants.URL_DEACTIVATE
+import com.dynatech2012.kamleonuserapp.constants.UrlConstants.URL_DELETE
 import com.dynatech2012.kamleonuserapp.databinding.ActivityDeleteBinding
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
@@ -14,7 +16,13 @@ class DeleteFragment : BaseFragment<ActivityDeleteBinding>() {
     override fun setBinding(): ActivityDeleteBinding = ActivityDeleteBinding.inflate(layoutInflater)
 
     override fun initView() {
+        initListeners()
         initObservers()
+    }
+
+    private fun initListeners() {
+        binding.prefMenuItemDelete.setOnClickListener { openWebBrowser(URL_DELETE) }
+        binding.prefMenuItemDesactive.setOnClickListener { openWebBrowser(URL_DEACTIVATE) }
     }
 
     override fun initEvent() {

@@ -10,10 +10,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -186,8 +189,6 @@ fun RecommendationDetailView(modifier: Modifier, recommendation: Recommendation,
         if (showBottomSheet && recommendation.showModal) {
             ModalBottomSheet(
                 modifier = Modifier,
-                    //.wrapContentHeight(),
-                    //.fillMaxSize(),
                 onDismissRequest = {
                     showBottomSheet = false
                     key2 = true
@@ -195,23 +196,27 @@ fun RecommendationDetailView(modifier: Modifier, recommendation: Recommendation,
                 sheetState = sheetState,
                 shape = RoundedCornerShape(12.dp),
                 dragHandle = {},
-                windowInsets = WindowInsets(0, 0, 0, 0),
-                )
-            {
-                // Sheet content
-                PremiumModalView(
-                    modifier = Modifier,
-                    //.wrapContentHeight(),
+                // WindowInsets parameter removed
+            ) {
+                Box(
+                    modifier = Modifier.windowInsetsPadding(
+                        WindowInsets.safeDrawing.only(
+                            WindowInsetsSides.Top + WindowInsetsSides.Horizontal
+                        )
+                    )
                 ) {
-                    showBottomSheetPremium = true
+                    PremiumModalView(
+                        modifier = Modifier,
+                    ) {
+                        showBottomSheetPremium = true
+                    }
                 }
             }
         }
 
         if (showBottomSheetPremium) {
             ModalBottomSheet(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 onDismissRequest = {
                     showBottomSheetPremium = false
                 },
@@ -219,22 +224,27 @@ fun RecommendationDetailView(modifier: Modifier, recommendation: Recommendation,
                 shape = BottomSheetDefaults.ExpandedShape,
                 dragHandle = {},
                 containerColor = colorResource(id = R.color.kamleon_dark_grey),
-                windowInsets = WindowInsets(0, 0, 0, 0),
+                // WindowInsets parameter removed
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .windowInsetsPadding(
+                            WindowInsets.safeDrawing.only(
+                                WindowInsetsSides.Top + WindowInsetsSides.Horizontal
+                            )
+                        )
                 ) {
-                // Sheet content
-                Box(Modifier.safeDrawingPadding()) {
                     PremiumView(
-                        modifier = Modifier
-                            .fillMaxSize(),
+                        modifier = Modifier.fillMaxSize(),
                         onClick = {
                             scope.launch {
                                 sheetStatePremium.hide()
-                            }
-                                .invokeOnCompletion {
-                                    if (!sheetStatePremium.isVisible) {
-                                        showBottomSheetPremium = false
-                                    }
+                            }.invokeOnCompletion {
+                                if (!sheetStatePremium.isVisible) {
+                                    showBottomSheetPremium = false
                                 }
+                            }
                         }
                     )
                 }
