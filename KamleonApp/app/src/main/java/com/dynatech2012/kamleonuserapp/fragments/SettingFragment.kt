@@ -200,6 +200,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         dialog.setCancelable(false)
         val savedDialog = dialog.show()
         savedDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialogView.findViewById<TextView>(R.id.tvDialogTitle).visibility = View.GONE
         dialogView.findViewById<TextView>(R.id.tvDialogDesc).setText(R.string.dialog_saved_text)
         dialogView.findViewById<TextView>(R.id.tvBtnOk).setText(R.string.dialog_ok)
         dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener {
@@ -271,7 +272,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         dialog.setCancelable(false)
         val logoutDialog = dialog.show()
         logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
+        dialogView.findViewById<TextView>(R.id.tvDialogTitle).visibility = View.GONE
         val tvDescr = dialogView.findViewById<TextView>(R.id.tvDialogDesc)
         tvDescr.text = getString(R.string.dialog_profile_date_not_allowed)
         val tvOk = dialogView.findViewById<TextView>(R.id.tvBtnOk)

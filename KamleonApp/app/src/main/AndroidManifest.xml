@@ -52,10 +52,12 @@
             android:name=".activities.MainActivity"
             android:exported="false"
             android:label="@string/title_activity_main"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.KamleonApp.Light" />
         <activity
             android:name=".activities.InitActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.KamleonApp.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

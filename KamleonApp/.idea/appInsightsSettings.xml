@@ -8,13 +8,8 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="air.com.fysbee.Harmony" />
+                  <option name="appId" value="com.dt2012.wesharecare" />
                 </ConnectionSetting>
-              </option>
-              <option name="failureTypes">
-                <list>
-                  <option value="FATAL" />
-                </list>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
               <option name="timeIntervalDays" value="SEVEN_DAYS" />
@@ -28,9 +23,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.dynatech2012.kamleonuserapp" />
-                  <option name="mobileSdkAppId" value="1:395348046776:android:704a72eeef142d6668954d" />
-                  <option name="projectId" value="kamleon-development" />
-                  <option name="projectNumber" value="395348046776" />
+                  <option name="mobileSdkAppId" value="1:779039759270:android:436d64340d5fbe408f4d67" />
+                  <option name="projectId" value="kamleon-preproduction" />
+                  <option name="projectNumber" value="779039759270" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
