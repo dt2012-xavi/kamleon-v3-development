@@ -84,6 +84,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun checkRegisterInputs() {
+        Log.d(TAG, "checkRegisterInputs: $fName, $lName, $email, $pass")
         //check every input
         if (fName.isNullOrEmpty()) { //first name is empty or null
             _registerInputs.postValue(0)

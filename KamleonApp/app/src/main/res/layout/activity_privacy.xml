@@ -19,11 +19,13 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="120dp"
+        app:layout_constraintBottom_toTopOf="@id/layoutBottomButtonContainer"
+        app:layout_constraintVertical_bias="0"
+        android:layout_marginTop="90dp"
         android:paddingHorizontal="36dp"
         android:orientation="vertical">
 
@@ -104,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/tvPrivacy3"
                 android:textColor="@color/kamleon_secondary_grey_70"
-                android:text="@string/privacy_item1"
+                android:text="@string/privacy_item3"
                 style="@style/CircularRegularFont"
                 android:paddingTop="4dp"
                 android:paddingBottom="2dp"
@@ -112,9 +114,12 @@
                 android:paddingStart="16dp"/>
         </LinearLayout>
         <TextView
+            android:id="@+id/tvPrivacyNote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/privacy_note"
+            android:linksClickable="true"
+            android:paddingVertical="4dp"
             style="@style/CircularRegularFont"
             android:textColor="@color/kamleon_secondary_grey_50"
             android:layout_marginTop="24dp"
@@ -123,6 +128,7 @@
     </LinearLayout>
 
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"

@@ -56,9 +56,13 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
 
     override fun initEvent() {
         binding.btnCreateAccount.setOnClickListener {
-            viewModel.fName = binding.inputBoxFName.getEditTextView()?.text.toString()
-            viewModel.lName = binding.inputBoxLName.getEditTextView()?.text.toString()
-            viewModel.email = binding.inputBoxEmail.getEditTextView()?.text.toString()
+            Log.d(TAG, "cxcxcx onClick create account with email: ${binding.inputBoxEmail.getEditTextView()?.text.toString()}|")
+            Log.d(TAG, "cxcxcx onClick create account with password: ${binding.inputBoxPwd.getEditTextView()?.text.toString()}|")
+            Log.d(TAG, "cxcxcx onClick create account with first name: ${binding.inputBoxFName.getEditTextView()?.text.toString()}|")
+            Log.d(TAG, "cxcxcx onClick create account with last name: ${binding.inputBoxLName.getEditTextView()?.text.toString()}|")
+            viewModel.fName = binding.inputBoxFName.getEditTextView()?.text.toString().trim()
+            viewModel.lName = binding.inputBoxLName.getEditTextView()?.text.toString().trim()
+            viewModel.email = binding.inputBoxEmail.getEditTextView()?.text.toString().trim()
             viewModel.pass = binding.inputBoxPwd.getEditTextView()?.text.toString()
             //first check about the
             viewModel.checkRegisterInputs()

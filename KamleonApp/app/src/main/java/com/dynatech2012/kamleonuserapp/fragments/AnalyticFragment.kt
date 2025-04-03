@@ -93,14 +93,14 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
         cvHy.value = score
         cvHy.subtitle = when (score) {
             null -> getString(R.string.analytic_no_data)
-            in 0..30 -> getString(R.string.analytic_severely_dehydrated)
-            in 31..65 -> getString(R.string.analytic_dehydrated)
-            in 66..90 -> getString(R.string.analytic_hydrated)
+            in 0..33 -> getString(R.string.analytic_severely_dehydrated)
+            in 34..66 -> getString(R.string.analytic_dehydrated)
+            in 67..90 -> getString(R.string.analytic_hydrated)
             else -> getString(R.string.analytic_very_hydrated)
         }
         cvHy.description = when (score) {
             null -> ""
-            in 0..65 -> getString(R.string.analytic_hydratation_under)
+            in 0..66 -> getString(R.string.analytic_hydratation_under)
             else -> getString(R.string.analytic_hydratation_above)
         }
         cvHy.onClick = { openGraphView(0) }
@@ -110,13 +110,13 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
         cvEl.subtitle = when (el) {
             null -> getString(R.string.analytic_no_data)
             in 0..4 -> getString(R.string.analytic_elec_hypo)
-            in 5..20 -> getString(R.string.analytic_elec_normal)
+            in 5..25 -> getString(R.string.analytic_elec_normal)
             else -> getString(R.string.analytic_elec_hyper)
         }
         cvEl.description = when (el) {
             null -> ""
             in 0..4 -> getString(R.string.analytic_elec_under)
-            in 5..20 -> getString(R.string.analytic_elec_optimal)
+            in 5..25 -> getString(R.string.analytic_elec_optimal)
             else -> getString(R.string.analytic_elec_above)
         }
         cvEl.onClick = { openGraphView(1) }

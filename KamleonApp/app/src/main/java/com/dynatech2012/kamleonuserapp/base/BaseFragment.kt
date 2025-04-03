@@ -64,4 +64,11 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(with))
         startActivity(browserIntent)
     }
+
+    fun openEmailTo(with: String) {
+        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:$with")
+        }
+        startActivity(emailIntent)
+    }
 }

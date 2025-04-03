@@ -5,11 +5,13 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.util.Linkify
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
@@ -58,6 +60,32 @@ class PrivacyFragment : BaseFragment<ActivityPrivacyBinding>() {
             privacyItemTextViews()[itemIndex].movementMethod = LinkMovementMethod.getInstance()
         }
         updatePrivacyItemViews()
+
+        val contactSpannableString = SpannableString(
+            getString(R.string.privacy_note)
+        )
+        val clickableContactSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                openEmailTo("info@kamleon.com")
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                ds.isUnderlineText = true
+                ds.isFakeBoldText = true
+            }
+        }
+        val startIndex = contactSpannableString.indexOf("info@kamleon.com")
+        val endIndex = startIndex + "info@kamleon.com".length
+        contactSpannableString.setSpan(
+            clickableContactSpan,
+            startIndex,
+            endIndex,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        binding.tvPrivacyNote.text = contactSpannableString
+        binding.tvPrivacyNote.movementMethod = LinkMovementMethod.getInstance()
+
+
         initObservers()
     }
 
