@@ -1,6 +1,7 @@
 package com.dynatech2012.kamleonuserapp.viewmodels
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import android.util.Size
 import androidx.camera.core.ImageAnalysis
@@ -22,6 +23,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 @HiltViewModel
 class QrViewModel @Inject constructor(
@@ -37,6 +39,7 @@ class QrViewModel @Inject constructor(
 
     private var _qrUploaded: MutableLiveData<Event<Boolean>> = MutableLiveData()
     val qrUploaded: LiveData<Event<Boolean>> = _qrUploaded
+
     fun uploadQRtoFirestore(qrResponse: QRResponse?) {
         viewModelScope.launch {
             firestoreDataSource.uploadQrId(qrResponse)
@@ -69,8 +72,10 @@ class QrViewModel @Inject constructor(
                 // {"unitId": "1000", "sessionId": "1708532818789", "data": {}}
                 if (qrString is Response.Success) {
                     Log.d(TAG, "qqqq4: ${qrString.data}")
-                    val gson = Gson()
-                    val qrResponse = gson.fromJson(qrString.data, QRResponse::class.java)
+                    //val gson = Gson()
+                    //val qrResponse = gson.fromJson(qrString.data, QRResponse::class.java)
+                    val qrResponse = parseQrString(qrString.data)
+                    Log.d(TAG, "qqqq5: $qrResponse")
                     _qrResponse.postValue(Response.Success(qrResponse))
                 }
             }
@@ -80,6 +85,18 @@ class QrViewModel @Inject constructor(
                 _qrDebug.postValue(qrDebug)
             }
         }
+    }
+
+    fun parseQrString(qrString: String): QRResponse {
+        val uri = qrString.toUri()
+        val unitId = uri.getQueryParameter("unitId")
+        val sessionId = uri.getQueryParameter("sessionId")
+
+        if (unitId.isNullOrEmpty() || sessionId.isNullOrEmpty()) {
+            throw IllegalArgumentException("unitId or sessionId missing in QR string")
+        }
+
+        return QRResponse(unitId = unitId, sessionId = sessionId)
     }
 
     fun stopAnalyzing() {

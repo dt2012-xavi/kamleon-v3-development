@@ -34,9 +34,9 @@ class SplashFragment : BaseFragment<ActivitySplashBinding>() {
     override fun setBinding(): ActivitySplashBinding = ActivitySplashBinding.inflate(layoutInflater)
 
     override fun initView() {
-        Log.d(TAG, "init activity splash fragment")
-        viewModel.resetLogged()
-        viewModel.checkLogin()
+        Log.d(TAG, "XXX init activity splash fragment")
+        //viewModel.resetLogged()
+        //viewModel.checkLogin()
 
         val imageLoader = ImageLoader.Builder(binding.root.context)
             .components {
@@ -47,37 +47,51 @@ class SplashFragment : BaseFragment<ActivitySplashBinding>() {
                 }
             }
             .build()
+
         binding.ivSplashGif.load(R.drawable.splash, imageLoader = imageLoader) {
             lifecycleScope.launch {
                 delay(2000)
-                setObservers()
+                viewModel.signalSplashDurationCompleted()
             }
         }
+
+        //setObservers()
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "init activity splash on resume")
-        if (viewModel.alreadySplash) {
-            viewModel.resetLogged()
-            viewModel.checkLogin()
+        Log.d(TAG, "XXX init activity splash on resume")
+        //if (viewModel.alreadySplash) {
+        //    viewModel.resetLogged()
+        //    viewModel.checkLogin()
+
+        //}
+        //viewModel.alreadySplash = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        removeObservers()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden) {
+            removeObservers()
+        } else {
             setObservers()
         }
-        viewModel.alreadySplash = true
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        removeObservers()
+    }
+
+    private fun removeObservers() {
     }
 
     private fun setObservers() {
-        viewModel.isReady.observe(viewLifecycleOwner) {
-            if (it) {
-                if (viewModel.alreadyLogged && viewModel.alreadyVerified && viewModel.alreadyPolicy) {
-                    Log.d(TAG, "already logged")
-                    startActivity(Intent(requireContext(), MainActivity::class.java))
-                } else {
-                    Log.d(TAG, "not logged, go to login")
-                    findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
-                }
-            }
-        }
     }
 
     override fun initEvent() { }

@@ -8,35 +8,82 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.fragment.NavHostFragment
 import com.dynatech2012.kamleonuserapp.base.BaseActivity
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.PUSH_NOTIFICATION
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityMainBinding
 import com.dynatech2012.kamleonuserapp.extensions.px
+import com.dynatech2012.kamleonuserapp.models.QRResponse
+import com.dynatech2012.kamleonuserapp.models.observeEvent
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
+import com.dynatech2012.kamleonuserapp.viewmodels.QrViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>() {
+
     private val viewModel: MainViewModel by viewModels()
+    private val qrViewModel: QrViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(TAG, "XXX init activity main")
+        handleIntent(intent)
+        initObservers()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        Log.d(TAG, "XXX init activity main on new intent")
+        setIntent(intent) // Update the intent
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        Log.d(TAG, "XXX handleIntent called with action: ${intent.action}")
+
+        //TODO get the logic 
+
+        val unitId = intent.getStringExtra("unitId")
+        val sessionId = intent.getStringExtra("sessionId")
+        if (!unitId.isNullOrEmpty() && !sessionId.isNullOrEmpty()) {
+            Log.d(TAG, "XXX Received unitId: $unitId, sessionId: $sessionId")
+            // Use the parameters as needed
+            val qrResponse = QRResponse(
+                unitId = unitId,
+                sessionId = sessionId
+            )
+            qrViewModel.uploadQRtoFirestore(qrResponse)
+        } else {
+            Log.d(TAG, "XXX No unitId/sessionId in intent")
+        }
+    }
+
     override fun setBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
 
     override fun initView() {
@@ -44,8 +91,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             val galleryUri = it
             viewModel.setImageUri(galleryUri)
         }
-
-
         supportFragmentManager
             .setFragmentResultListener(Constants.PICK_IMAGE, this) { _, bundle ->
                 Log.d(TAG, "result from activity pick")
@@ -62,9 +107,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                     takePicture()
                 }
             }
-        initObservers()
-
-
         // TODO: trying to disable swipe navigation gesture
         /*
         binding.root.apply {
@@ -107,8 +149,37 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
          */
         setupFirebaseMessagingReceiver()
         viewModel.updateUserToken()
+
+        qrViewModel.qrUploaded.observeEvent(this) { success ->
+            if (success) {
+                Log.d(TAG, "QR Upload successful, showing popup.")
+                showScannedDialog()
+            } else {
+                Log.d(TAG, "QR Upload event received with false, or re-observed.")
+                Toast.makeText(this, "Processing QR...", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
+    private fun showScannedDialog() {
+        val dialog: AlertDialog.Builder = AlertDialog.Builder(this)
+        val inflater = this.layoutInflater
+        val dialogView: View = inflater.inflate(com.dynatech2012.kamleonuserapp.R.layout.layout_dialog_ok, null)
+
+        dialog.setView(dialogView)
+        dialog.setCancelable(false)
+        val logoutDialog = dialog.show()
+        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val tvTitle = dialogView.findViewById<TextView>(com.dynatech2012.kamleonuserapp.R.id.tvDialogTitle)
+        tvTitle.text = getString(com.dynatech2012.kamleonuserapp.R.string.dialog_scan_scanned)
+
+        val tvDescr = dialogView.findViewById<TextView>(com.dynatech2012.kamleonuserapp.R.id.tvDialogDesc)
+        tvDescr.text = ""
+        dialogView.findViewById<TextView>(com.dynatech2012.kamleonuserapp.R.id.tvBtnOk).setOnClickListener {
+            logoutDialog.dismiss()
+        }
+    }
 
     private var firebaseMessagingReceiver: BroadcastReceiver? = null
 
@@ -119,13 +190,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                     Log.d(TAG, "onGetNotification from Main Activity")
                     // what happens when a notification is received while the user is in this activity
                     viewModel.onGetNotification()
-                } } } }
+                }
+            }
+        }
+    }
 
     override fun initEvent() {
 
     }
 
     private lateinit var currentImageUri: Uri
+
     private fun takePicture() {
         /*
         if (Build.VERSION.SDK_INT >= 30) {
@@ -140,8 +215,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         }*/
         //val root = File(getExternalStorageDirectory()/*cacheDir*/, "my_images")
-        val root = File(getExternalFilesDir(
-            Environment.DIRECTORY_PICTURES), "my_images")
+        val root = File(
+            getExternalFilesDir(
+                Environment.DIRECTORY_PICTURES
+            ), "my_images"
+        )
         //val root = File(filesDir/*cacheDir*/, "my_images")
         // Create request to write to media storage
         if (!root.mkdirs()) {
@@ -153,16 +231,21 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         /*val sdImageMainDirectory = File.createTempFile ("img_${System.currentTimeMillis()}", ".jpg", getExternalStorageDirectory()).apply {
             createNewFile()
         }*/
-        currentImageUri = FileProvider.getUriForFile(this, /*applicationContext?.packageName + ".fileprovider"*/"com.dynatech2012.kamleonuserapp.fileprovider", sdImageMainDirectory)
+        currentImageUri = FileProvider.getUriForFile(
+            this, /*applicationContext?.packageName + ".fileprovider"*/
+            "com.dynatech2012.kamleonuserapp.fileprovider",
+            sdImageMainDirectory
+        )
         checkCameraPermission()
     }
 
-    private val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
-        if (success) {
-            // The image was saved into the given Uri -> do something with it
-            viewModel.setImageUri(currentImageUri)
+    private val takePicture =
+        registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
+            if (success) {
+                // The image was saved into the given Uri -> do something with it
+                viewModel.setImageUri(currentImageUri)
+            }
         }
-    }
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -191,8 +274,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 Manifest.permission.CAMERA
             ) -> {
                 requestPermissionLauncher.launch(
-                        Manifest.permission.CAMERA
-                    ) }
+                    Manifest.permission.CAMERA
+                )
+            }
 
             else -> {
                 requestPermissionLauncher.launch(
@@ -204,6 +288,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     override fun onResume() {
         super.onResume()
+        Log.d(TAG, "XXX init activity main on resume")
         LocalBroadcastManager.getInstance(this).registerReceiver(
             firebaseMessagingReceiver!!,
             IntentFilter(PUSH_NOTIFICATION)
@@ -228,14 +313,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
                     this, Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED) {
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
                 savePreferencesUserAskerForPermission()
                 return
-            }
-            else requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        }
-        else savePreferencesUserAskerForPermission()
+            } else requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else savePreferencesUserAskerForPermission()
     }
+
     private val requestLocationPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -280,7 +365,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     companion object {
         val TAG: String = MainActivity::class.java.simpleName
     }
-
 
     private var exclusionRects: MutableList<Rect> = ArrayList()
 

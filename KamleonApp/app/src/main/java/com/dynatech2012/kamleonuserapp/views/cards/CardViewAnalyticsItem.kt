@@ -326,8 +326,8 @@ fun ElecView(electrolytes: Int?) {
             painter = painterResource(id =
                 when (electrolytes) {
                     null -> R.drawable.pb_electrolytes_grey
-                    in 0..4 -> R.drawable.pb_electrolytes_blue
-                    in 5..19 -> R.drawable.pb_electrolytes_orange
+                    in 0..4 -> R.drawable.pb_electrolytes_red
+                    in 5..25 -> R.drawable.pb_electrolytes_blue
                     else -> R.drawable.pb_electrolytes_red
                 }
             ),
@@ -382,7 +382,7 @@ fun VolumeView(volume: Int?, isPrecise: Boolean) {
     ) {
         VolumeProgressIndicator(
             currentValue = volume,
-            maxValue = 250,
+            maxValue = 300,
             isPrecise = isPrecise,
             color = colorResource(id = R.color.kamleon_blue),
             modifier = Modifier

@@ -94,7 +94,7 @@ class QRCodeImageAnalyzerMLKitKotlin :
                             Log.d(TAG, "qrScanner ML: barcode: $rawValue")
                             val valueType = barcode.valueType
                             // See API reference for complete list of supported types
-                            if (rawValue != null && valueType == Barcode.TYPE_TEXT) {
+                            if (rawValue != null && valueType == Barcode.TYPE_URL) {
                                 _qrStingFlow.value = Response.Success(rawValue)
                                 _qrDebugFlow.value = Response.Success("QR debug -- ML analyzer: success with value: $rawValue")
                                 //listener.onQRCodeFound(rawValue)

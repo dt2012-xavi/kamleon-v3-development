@@ -249,7 +249,7 @@
     <string name="analytic_elec_above">Your electrolyte levels are above the optimal range.</string>
 
     <string name="analytic_volume_insuff_title">Insufficient</string>
-    <string name="analytic_volume_low">Low volume</string>
+    <string name="analytic_volume_low">Insufficient volume</string>
     <string name="analytic_volume_medium">Average</string>
     <string name="analytic_volume_high">High volume</string>
 

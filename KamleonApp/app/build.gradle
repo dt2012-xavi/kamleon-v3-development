@@ -14,8 +14,8 @@ android {
         applicationId "com.dynatech2012.kamleonuserapp"
         minSdk 26
         targetSdk 34
-        versionCode 2016
-        versionName "1.0.12"
+        versionCode 2020
+        versionName "1.0.14"
 
         resValue "string", "app_version", "${versionName}"
 
@@ -36,22 +36,36 @@ android {
     }
     flavorDimensions += "environment"
     productFlavors {
+        internal{
+            dimension "environment"
+            resValue "string", "app_name", "Kamleon-INT"
+            versionNameSuffix "-int"
+            resValue "string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}"
+            def appLinkHost = "kamleon-v3-internal.vercel.app"
+            manifestPlaceholders = [appLinkHost: appLinkHost]
+        }
         development {
             dimension "environment"
             resValue "string", "app_name", "Kamleon-DEV"
             versionNameSuffix "-dev"
             resValue "string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}"
+            def appLinkHost = "dev.kamleon.app"
+            manifestPlaceholders = [appLinkHost: appLinkHost]
         }
         prod {
             dimension "environment"
             resValue "string", "app_name", "Kamleon"
             resValue "string", "app_version", "${defaultConfig.versionName}"
+            def appLinkHost = "kamleon.app"
+            manifestPlaceholders = [appLinkHost: appLinkHost]
         }
         stagging {
             dimension "environment"
             resValue "string", "app_name", "Kamleon-PRE"
             versionNameSuffix "-pre"
             resValue "string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}"
+            def appLinkHost = "pre.kamleon.app"
+            manifestPlaceholders = [appLinkHost: appLinkHost]
         }
     }
     compileOptions {

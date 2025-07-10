@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dynatech2012.kamleonuserapp.R
 
@@ -38,7 +39,7 @@ fun VolumeProgressIndicator(
         !isPrecise -> 1f
         currentValue == null -> 0f
         currentValue < 150 -> 0.3f
-        currentValue < 250 -> 0.6f
+        currentValue <= 250 -> 0.6f
         else -> 1f
     }
     val finalColor = if (isPrecise) color
@@ -77,7 +78,7 @@ fun VolumeProgressIndicator(
                 drawCircularProgressIndicator(startAngle, sweep, finalColor, stroke)
             }
 
-            if (currentValue >= 250f) {
+            if (currentValue > 250f) {
                 val startAngle = 315f + diff//325f
                 val sweep: Float = 90f - diff//80f
                 drawCircularProgressIndicator(startAngle, sweep, finalColor, stroke)
@@ -106,6 +107,22 @@ private fun DrawScope.drawCircularProgressIndicator(
         style = stroke
     )
 }
+
+//create a preview for the volume progress indicator
+@Preview
+@Composable
+fun VolumeProgressIndicatorPreview() {
+    VolumeProgressIndicator(
+        currentValue = 30,
+        isPrecise = false,
+        maxValue = 300,
+        color = colorResource(id = R.color.kamleon_blue),
+        modifier = Modifier
+            .size(100.dp)
+            .alpha(1f)
+    )
+}
+
 
 // Diameter of the indicator circle
 private val CircularIndicatorDiameter = 100.dp

@@ -32,6 +32,9 @@ class AuthViewModel @Inject constructor(
     var alreadyPolicy = false
     var alreadySplash = false
 
+    var unitId: String? = null
+    var sessionId: String? = null
+
     var fName: String? = ""
     var lName: String? = ""
     var email: String? = ""
@@ -43,6 +46,18 @@ class AuthViewModel @Inject constructor(
 
     private val _uiState = MutableLiveData(0)
     val uiState: LiveData<Int> = _uiState
+
+    val splashDurationCompleted = MutableLiveData<Boolean>()
+    var appInitializationStarted = false // To prevent re-initialization
+
+    fun signalSplashDurationCompleted() {
+        splashDurationCompleted.postValue(true)
+    }
+
+    fun resetSplashStateForInit() {
+        splashDurationCompleted.value = false // Or null
+        appInitializationStarted = false
+    }
 
     fun signup() {
         Log.d(TAG, "Sign up state ${uiState.value}")
@@ -218,9 +233,12 @@ class AuthViewModel @Inject constructor(
     }
 
     fun resetLogged() {
+        Log.d(TAG, "XXX resetLogged: resetting authViewModel")
         alreadyLogged = false
         alreadyVerified = false
         alreadyPolicy = false
+        unitId = null
+        sessionId = null
         _isReady.value = false
     }
 
