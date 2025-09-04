@@ -7,8 +7,8 @@ import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
 import com.dynatech2012.kamleonuserapp.models.Organization
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
-import com.google.firebase.functions.ktx.functions
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.functions.functions
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine

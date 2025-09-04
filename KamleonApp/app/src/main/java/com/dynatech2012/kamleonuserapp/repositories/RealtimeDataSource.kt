@@ -8,8 +8,8 @@ import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.REALTIME_FOLD
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USER_UID_DEBUG
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.database.database
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await

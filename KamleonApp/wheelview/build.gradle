@@ -1,12 +1,13 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose'
     id 'maven-publish'
 }
 
 android {
     namespace 'com.ozcanalasalvar.wheelview'
-    compileSdk 34
+    compileSdkVersion 36
 
     defaultConfig {
         minSdk 21

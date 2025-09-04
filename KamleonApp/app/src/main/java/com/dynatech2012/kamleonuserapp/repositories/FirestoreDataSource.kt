@@ -15,15 +15,16 @@ import com.dynatech2012.kamleonuserapp.models.KamleonLegal
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.models.RawMeasureData
 import com.dynatech2012.kamleonuserapp.models.UserStatus
-import com.google.firebase.auth.ktx.auth
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+
 import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.toObject
 import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.storage.ktx.storage
+import com.google.firebase.storage.storage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await

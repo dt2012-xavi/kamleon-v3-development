@@ -1,15 +1,16 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose'
     id 'maven-publish'
 }
 
 android {
     namespace 'com.ozcanalasalvar.library'
     defaultConfig {
-        compileSdk 33
+        compileSdkVersion 36
         minSdkVersion 26
-        targetSdkVersion 33
+        targetSdkVersion 36
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
