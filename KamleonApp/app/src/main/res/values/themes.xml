@@ -1,29 +1,15 @@
 <resources>
-    <!-- Base application theme. -->
-    <style name="Theme.KamleonApp" parent="Theme.Material3.Light.NoActionBar">
-        <!-- Customize your light theme here. -->
+    <!-- Base application theme -->
+    <style name="Theme.KamleonApp" parent="Theme.Material3.Dark.NoActionBar">
         <item name="colorPrimary">@color/kamleon_blue</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:statusBarColor">@color/kamleon_dark_grey</item>
-    </style>
-<!--    <item name="android:textViewStyle">@style/Circular</item>-->
-
-
-    <style name="Theme.KamleonApp.Splash" parent="Theme.KamleonApp">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="colorSurface">@color/white</item>
-        <item name="windowSplashScreenBackground">@android:color/transparent</item>
-        <item name="windowSplashScreenAnimationDuration">50</item>
-        <item name="postSplashScreenTheme">@style/Theme.KamleonApp.Light</item>
-    </style>
-
-    <style name="Theme.KamleonApp.Light">
-        <item name="android:statusBarColor">@color/kamleon_dark_grey</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <!-- Add other shared color and text attributes here as needed -->
         <item name="colorSurface">@color/white</item>
         <item name="colorSurfaceInverse">@color/kamleon_dark_grey</item>
         <item name="android:colorBackground">@color/color_fa</item>
-
         <item name="colorOnSurface">@color/kamleon_dark_grey</item>
         <item name="colorOnSurfaceSecondary">@color/kamleon_secondary_grey_40</item>
         <item name="colorOnSurfaceTertiary">@color/kamleon_secondary_grey_40</item>
@@ -32,10 +18,8 @@
         <item name="colorOnSurfaceInverse">@color/color_fa</item>
         <item name="colorOnSurfaceSecondaryInverse">@color/kamleon_secondary_grey_50</item>
         <item name="colorOnSurfaceTertiaryInverse">@color/kamleon_secondary_grey_40</item>
-
         <item name="android:textColor">@color/debug_red</item>
         <item name="android:textViewStyle">@style/TextAppearance.Kamleon</item>
-
         <item name="titleTextColor">@color/kamleon_dark_grey</item>
         <item name="android:textColorPrimary">@color/kamleon_dark_grey</item>
         <item name="android:textColorSecondary">@color/kamleon_secondary_grey_40</item>
@@ -47,9 +31,7 @@
         <item name="android:textColorTertiaryInverse">@color/color_fa_40</item>
         <item name="android:textColorLinkInverse">@color/color_fa_40</item>
         <item name="android:textColorHintInverse">@color/color_fa_40</item>
-
         <item name="android:color">@color/color_fa</item>
-
         <item name="textAppearanceHeadline3">@style/TextAppearance.Kamleon.Headline3</item>
         <item name="textAppearanceHeadline4">@style/TextAppearance.Kamleon.Headline4</item>
         <item name="textAppearanceBody1">@style/TextAppearance.Kamleon.Body1</item>
@@ -57,7 +39,13 @@
         <item name="textAppearanceButton">@style/TextAppearance.Kamleon.Button</item>
     </style>
 
-    <style name="Theme.KamleonApp.Light.StatusBlue">
-        <item name="android:statusBarColor">@color/kamleon_blue_dark</item>
+    <!-- Splash screen theme (only override what's needed) -->
+    <style name="Theme.KamleonApp.Splash" parent="Theme.KamleonApp">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="windowSplashScreenBackground">@android:color/transparent</item>
+        <item name="windowSplashScreenAnimationDuration">50</item>
+
     </style>
 </resources>

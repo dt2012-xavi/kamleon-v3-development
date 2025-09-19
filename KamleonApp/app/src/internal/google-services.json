@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "326728006945",
+    "firebase_url": "https://kamleon-internal-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "kamleon-internal",
+    "storage_bucket": "kamleon-internal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326728006945:android:63ef60da8ee119090ed260",
+        "android_client_info": {
+          "package_name": "com.dynatech2012.kamleonuserapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhS-zd6KHepw7Czvfy_g4j6t2FnfijADA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -116,8 +116,8 @@ fun CardViewHomeItemHome(recommType: RecommendationType, measure: MeasureData?, 
     val systemUiController = rememberSystemUiController()
     val colorGray = colorResource(id = R.color.kamleon_dark_grey)
     LaunchedEffect(key1 = "changeStatusBar", block = {
-        systemUiController.setSystemBarsColor(
-            color = colorGray)
+        //systemUiController.setSystemBarsColor(
+        //    color = colorGray)
     })
     RecommendationCardView(
         recommendation = recommendation,
