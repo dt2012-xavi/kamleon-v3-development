@@ -7,6 +7,7 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy
 import com.dynatech2012.kamleonuserapp.repositories.Response
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -44,17 +45,19 @@ class QRCodeImageAnalyzerMLKitKotlin :
                 _qrDebugFlow.value = Response.Success("QR debug -- ML analyzer will scan image")
                 mlKit.scanBarcodesByImage(image, imageProxy, mediaImage)
             } else {
-                Log.d(TAG, "qrScanner ML: fail: mediaImage == null")
+                DebugLog.d(TAG) { "qrScanner ML: fail: mediaImage == null" }
                 val e: Exception = NullPointerException("mediaImage = null")
                 _qrDebugFlow.value = Response.Success("QR debug -- ML analyzer error: media image is null")
                 _qrStingFlow.value = Response.Failure(e)
+                imageProxy.close()
                 //listener.onQRCodeException(e)
             }
         } else {
-            Log.e("QRCodeAnalyzer", "qrScanner ML: fail: Expected YUV, now = ${imageProxy.format}")
+            DebugLog.e("QRCodeAnalyzer") { "qrScanner ML: fail: Expected YUV, now = ${imageProxy.format}" }
             val e: Exception = IllegalStateException("Expected YUV format = ${imageProxy.format}")
             _qrDebugFlow.value = Response.Success("QR debug -- ML analyzer error:Expected YUV, now = ${imageProxy.format}")
             _qrStingFlow.value = Response.Failure(e)
+            imageProxy.close()
             //listener.onQRCodeException(e)
         }
     }
@@ -91,7 +94,7 @@ class QRCodeImageAnalyzerMLKitKotlin :
                         // Task completed successfully
                         for (barcode in barcodes) {
                             val rawValue = barcode.rawValue
-                            Log.d(TAG, "qrScanner ML: barcode: $rawValue")
+                            DebugLog.d(TAG) { "qrScanner ML: barcode: $rawValue" }
                             val valueType = barcode.valueType
                             // See API reference for complete list of supported types
                             if (rawValue != null && valueType == Barcode.TYPE_URL) {
@@ -101,7 +104,7 @@ class QRCodeImageAnalyzerMLKitKotlin :
                             } else {
                                 val e: Exception =
                                     IllegalStateException("Unexpected value: $valueType")
-                                Log.d(TAG, "qrScanner ML: failure with exception: $e")
+                                DebugLog.d(TAG) { "qrScanner ML: failure with exception: $e" }
                                 _qrDebugFlow.value = Response.Success("QR debug -- ML analyzer: error: $e")
                                 _qrStingFlow.value = Response.Failure(e)
                                 //listener.onQRCodeException(e)
@@ -111,7 +114,7 @@ class QRCodeImageAnalyzerMLKitKotlin :
                 }
                 .addOnFailureListener { e: Exception ->
                     // Task failed with an exception
-                    Log.d(TAG, "qrScanner ML: failure processing image: $e")
+                    DebugLog.d(TAG) { "qrScanner ML: failure processing image: $e" }
                     _qrDebugFlow.value = Response.Success("QR debug -- ML analyzer: success with value: $e")
                     _qrStingFlow.value = Response.Failure(e)
                     //listener.onQRCodeException(e)
@@ -124,4 +127,3 @@ class QRCodeImageAnalyzerMLKitKotlin :
         }
     }
 }
-

@@ -18,6 +18,7 @@ import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityInitBinding
 import com.dynatech2012.kamleonuserapp.fragments.SplashFragment
 import com.dynatech2012.kamleonuserapp.fragments.SplashFragment.Companion
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,24 +27,24 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     private val viewModel: AuthViewModel by viewModels()
 
     private fun handleIntent(intent: Intent) {
-        Log.d(TAG, "XXX init activity handle intent")
+        DebugLog.d(TAG) { "XXX init activity handle intent" }
         viewModel.resetLogged()
 
         val data = intent.data
-        Log.d(TAG, "XXX init activity handle intent data: $data")
-        Log.d(TAG, "XXX init activity handle intent action: ${intent.action}")
-        Log.d(TAG, "XXX init activity handle intent type: ${data?.path}")
-        Log.d(TAG, "XXX init activity handle intent query: ${data?.query}")
+        DebugLog.d(TAG) { "XXX init activity handle intent data: $data" }
+        DebugLog.d(TAG) { "XXX init activity handle intent action: ${intent.action}" }
+        DebugLog.d(TAG) { "XXX init activity handle intent type: ${data?.path}" }
+        DebugLog.d(TAG) { "XXX init activity handle intent query: ${data?.query}" }
         // Check if the intent is a deeplink and has the expected path
         val isNull = data == null
         val isPathScan = data?.path == "/scan"
-        Log.d(TAG, "XXX init activity handle intent isNull: $isNull, isPathScan: $isPathScan")
+        DebugLog.d(TAG) { "XXX init activity handle intent isNull: $isNull, isPathScan: $isPathScan" }
         if (data != null && data.path == "/scan") {
-            Log.d(TAG, "XXX Deeplink detected with path: ${data.path}")
+            DebugLog.d(TAG) { "XXX Deeplink detected with path: ${data.path}" }
             val unitId = data.getQueryParameter("unitId")
             val sessionId = data.getQueryParameter("sessionId")
             if (!unitId.isNullOrEmpty() && !sessionId.isNullOrEmpty()) {
-                Log.d(TAG, "XXX Deeplink params found: unitId=$unitId, sessionId=$sessionId")
+                DebugLog.d(TAG) { "XXX Deeplink params found: unitId=$unitId, sessionId=$sessionId" }
                 viewModel.unitId = unitId
                 viewModel.sessionId = sessionId
             }

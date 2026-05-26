@@ -3,6 +3,7 @@ package com.dynatech2012.kamleonuserapp.repositories
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.dynatech2012.kamleonuserapp.models.CustomUser
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
@@ -51,7 +52,7 @@ class UserRepository {
         email: String,
         pass: String
     ): Response<CustomUser> {// = suspendCoroutine { continuation ->
-        Log.d(TAG, "Will try  to login: $email _ $pass")
+        DebugLog.d(TAG) { "Will try  to login: $email _ $pass" }
         try {
             auth.signInWithEmailAndPassword(email, pass).await()
             Log.d(TAG, "login:success")
@@ -83,7 +84,7 @@ class UserRepository {
     val checkLogged: Boolean
         get() {
             val user = auth.currentUser
-            Log.i(TAG, "checkLogged here: $user")
+            DebugLog.i(TAG) { "checkLogged here: $user" }
             val isLogged = user != null
 
             Log.d(TAG, "checkLogged: $isLogged")

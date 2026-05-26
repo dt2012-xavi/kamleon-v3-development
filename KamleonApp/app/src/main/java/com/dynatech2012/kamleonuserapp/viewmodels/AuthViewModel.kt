@@ -11,6 +11,7 @@ import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -99,7 +100,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun checkRegisterInputs() {
-        Log.d(TAG, "checkRegisterInputs: $fName, $lName, $email, $pass")
+        DebugLog.d(TAG) { "checkRegisterInputs: $fName, $lName, $email, $pass" }
         //check every input
         if (fName.isNullOrEmpty()) { //first name is empty or null
             _registerInputs.postValue(0)

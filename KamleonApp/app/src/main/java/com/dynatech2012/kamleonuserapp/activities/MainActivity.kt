@@ -38,6 +38,7 @@ import com.dynatech2012.kamleonuserapp.databinding.ActivityMainBinding
 import com.dynatech2012.kamleonuserapp.extensions.px
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.models.observeEvent
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.viewmodels.QrViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,14 +66,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun handleIntent(intent: Intent) {
-        Log.d(TAG, "XXX handleIntent called with action: ${intent.action}")
+        DebugLog.d(TAG) { "XXX handleIntent called with action: ${intent.action}" }
 
         //TODO get the logic 
 
         val unitId = intent.getStringExtra("unitId")
         val sessionId = intent.getStringExtra("sessionId")
         if (!unitId.isNullOrEmpty() && !sessionId.isNullOrEmpty()) {
-            Log.d(TAG, "XXX Received unitId: $unitId, sessionId: $sessionId")
+            DebugLog.d(TAG) { "XXX Received unitId: $unitId, sessionId: $sessionId" }
             // Use the parameters as needed
             val qrResponse = QRResponse(
                 unitId = unitId,
@@ -80,7 +81,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             )
             qrViewModel.uploadQRtoFirestore(qrResponse)
         } else {
-            Log.d(TAG, "XXX No unitId/sessionId in intent")
+            DebugLog.d(TAG) { "XXX No unitId/sessionId in intent" }
         }
     }
 

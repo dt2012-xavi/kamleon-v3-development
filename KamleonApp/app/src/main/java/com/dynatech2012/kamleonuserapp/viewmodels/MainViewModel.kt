@@ -31,6 +31,7 @@ import com.dynatech2012.kamleonuserapp.repositories.MeasuresRepository
 import com.dynatech2012.kamleonuserapp.repositories.RealtimeDataSource
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.utils.SharedPrefUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -181,19 +182,19 @@ class MainViewModel @Inject constructor(
     fun changePin(oldPin: String, newPin: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val oldPinHash = oldPin.sha256()
-            Log.i("PIN", "--->> oldPinHash: $oldPinHash")
+            DebugLog.i("PIN") { "--->> oldPinHash: $oldPinHash" }
 
             if (oldPinHash != userData.value?.pin) {
-                Log.i("PIN", "--->> no the same pin as the original: ${userData.value?.pin}")
+                DebugLog.i("PIN") { "--->> no the same pin as the original: ${userData.value?.pin}" }
                 val exception = Exception(Constants.UNMATCHING_PIN)
                 val response = Response.Failure(exception)
                 _userUpdated.postValue(response)
             } else {
                 val newPinHash = newPin.sha256()
-                Log.i("PIN", "--->> newPinHash: $newPinHash")
+                DebugLog.i("PIN") { "--->> newPinHash: $newPinHash" }
                 val data = hashMapOf<String, Any>("pin" to newPinHash)
                 val response = firestoreRepo.updateUser(data)
-                Log.i("PIN", "--->> response from update: $response")
+                DebugLog.i("PIN") { "--->> response from update: $response" }
                 //_userUpdated.postValue(true)
                 _userUpdated.postValue(response)
             }

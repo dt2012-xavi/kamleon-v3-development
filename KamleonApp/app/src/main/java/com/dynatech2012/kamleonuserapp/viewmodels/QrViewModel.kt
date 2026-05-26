@@ -17,6 +17,7 @@ import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.RealtimeDataSource
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -63,19 +64,19 @@ class QrViewModel @Inject constructor(
             ContextCompat.getMainExecutor(appContext),
             analyzer
         )
-        Log.d(TAG, "qqqq1")
+        DebugLog.d(TAG) { "qqqq1" }
         val ioDispatcher = Dispatchers.IO
         viewModelScope.launch(ioDispatcher) {
             analyzer.qrStingFlow.collect { qrString ->
-                Log.d(TAG, "qqqq3 status: $qrString")
+                DebugLog.d(TAG) { "qqqq3 status: $qrString" }
                 // qr example
                 // {"unitId": "1000", "sessionId": "1708532818789", "data": {}}
                 if (qrString is Response.Success) {
-                    Log.d(TAG, "qqqq4: ${qrString.data}")
+                    DebugLog.d(TAG) { "qqqq4: ${qrString.data}" }
                     //val gson = Gson()
                     //val qrResponse = gson.fromJson(qrString.data, QRResponse::class.java)
                     val qrResponse = parseQrString(qrString.data)
-                    Log.d(TAG, "qqqq5: $qrResponse")
+                    DebugLog.d(TAG) { "qqqq5: $qrResponse" }
                     _qrResponse.postValue(Response.Success(qrResponse))
                 }
             }
@@ -100,13 +101,13 @@ class QrViewModel @Inject constructor(
     }
 
     fun stopAnalyzing() {
-        Log.d(TAG, "qqqq5 qrScanner: resetting qrString to null")
+        DebugLog.d(TAG) { "qqqq5 qrScanner: resetting qrString to null" }
         analyzer.stopAnalyzing()
         //_qrString.value = null
     }
 
     fun startAnalyzing() {
-        Log.d(TAG, "qqqq5 qrScanner: resetting qrString to null")
+        DebugLog.d(TAG) { "qqqq5 qrScanner: resetting qrString to null" }
         analyzer.startAnalyzing()
         //_qrString.value = null
     }

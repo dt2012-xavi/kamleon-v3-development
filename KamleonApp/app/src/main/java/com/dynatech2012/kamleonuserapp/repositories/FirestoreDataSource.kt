@@ -15,6 +15,7 @@ import com.dynatech2012.kamleonuserapp.models.KamleonLegal
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.models.RawMeasureData
 import com.dynatech2012.kamleonuserapp.models.UserStatus
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
@@ -89,8 +90,8 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
         if (uuid == null) {
             return Response.Failure(Exception("User not logged in"))
         }
-        Log.i("PIN","--->> UUID user collection: $uuid")
-        Log.i("PIN","--->> data: $data")
+        DebugLog.i("PIN") { "--->> UUID user collection: $uuid" }
+        DebugLog.i("PIN") { "--->> data: $data" }
         val doc = db.collection(USERS_COLLECTION).document(uuid!!)
         return try {
             doc.update(data).await()
@@ -107,7 +108,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
         val doc = db.collection(USERS_COLLECTION).document(uuid!!)
         doc.get().await().toObject<CustomUser>()?.let { u ->
             user = u
-            Log.d(TAG, "getUserData token: ${u.token}")
+            DebugLog.d(TAG) { "getUserData token: ${u.token}" }
             return Response.Success(u)
         }
         return Response.Failure(Exception("User parsing error"))
@@ -284,7 +285,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
                 } else {
                     // Get new FCM registration token
                     val token = task1.result
-                    Log.d(TAG, "updateToken token: $token")
+                    DebugLog.d(TAG) { "updateToken token: $token" }
                     db.collection(USERS_COLLECTION).document(uuid!!)
                         .update(USERS_TOKEN, token)
                         .addOnCompleteListener { task2 ->

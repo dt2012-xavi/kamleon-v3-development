@@ -31,6 +31,7 @@ import com.dynatech2012.kamleonuserapp.databinding.ActivityTabBinding
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.models.observeEvent
 import com.dynatech2012.kamleonuserapp.repositories.Response
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.viewmodels.QrViewModel
 import com.google.common.util.concurrent.ListenableFuture
@@ -325,13 +326,13 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
     private fun uploadQr(qrResponse: Response<QRResponse>) {
         when (qrResponse) {
             is Response.Success -> {
-                Log.d(TAG, "qrScanner, qrString: ${qrResponse.data}")
+                DebugLog.d(TAG) { "qrScanner, qrString: ${qrResponse.data}" }
                 appendDebugText("QR debug -- uploading to realtime")
                 qrViewModel.uploadQRtoFirestore(qrResponse.data)
                 //showScannedDialog()
             }
             is Response.Failure -> {
-                Log.e(TAG, "qrScanner, qrString eeror : ${qrResponse.exception}")
+                DebugLog.e(TAG) { "qrScanner, qrString eeror : ${qrResponse.exception}" }
                 appendDebugText("QR debug FROM ANALYZER error -- ${qrResponse.exception}")
             }
             else -> { }

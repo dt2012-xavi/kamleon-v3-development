@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.ActivityRegisterBinding
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -56,10 +57,10 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
 
     override fun initEvent() {
         binding.btnCreateAccount.setOnClickListener {
-            Log.d(TAG, "cxcxcx onClick create account with email: ${binding.inputBoxEmail.getEditTextView()?.text.toString()}|")
-            Log.d(TAG, "cxcxcx onClick create account with password: ${binding.inputBoxPwd.getEditTextView()?.text.toString()}|")
-            Log.d(TAG, "cxcxcx onClick create account with first name: ${binding.inputBoxFName.getEditTextView()?.text.toString()}|")
-            Log.d(TAG, "cxcxcx onClick create account with last name: ${binding.inputBoxLName.getEditTextView()?.text.toString()}|")
+            DebugLog.d(TAG) { "cxcxcx onClick create account with email: ${binding.inputBoxEmail.getEditTextView()?.text.toString()}|" }
+            DebugLog.d(TAG) { "cxcxcx onClick create account with password: ${binding.inputBoxPwd.getEditTextView()?.text.toString()}|" }
+            DebugLog.d(TAG) { "cxcxcx onClick create account with first name: ${binding.inputBoxFName.getEditTextView()?.text.toString()}|" }
+            DebugLog.d(TAG) { "cxcxcx onClick create account with last name: ${binding.inputBoxLName.getEditTextView()?.text.toString()}|" }
             viewModel.fName = binding.inputBoxFName.getEditTextView()?.text.toString().trim()
             viewModel.lName = binding.inputBoxLName.getEditTextView()?.text.toString().trim()
             viewModel.email = binding.inputBoxEmail.getEditTextView()?.text.toString().trim()
@@ -75,7 +76,7 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
 
         viewModel.resetRegisterInputs()
         viewModel.registerInputs.observe(this) {
-            Log.i(TAG, "cxcxcx register registerInputs: $it")
+            DebugLog.i(TAG) { "cxcxcx register registerInputs: $it" }
             when (it) {
                 6 -> {
                     binding.errorLayout.visibility = View.GONE
