@@ -20,7 +20,7 @@ jarsigner -verify app/build/outputs/bundle/prodRelease/app-prod-release.aab
 keytool -printcert -jarfile app/build/outputs/bundle/prodRelease/app-prod-release.aab
 ```
 
-Comprueba que `jarsigner` indique `jar verified` y que la huella SHA-256 de `keytool` coincida con la indicada arriba y con Play Console. Comprueba también el manifest fusionado de `prodRelease` y `app/build/outputs/bundle/prodRelease/output-metadata.json`: `applicationId` `com.dynatech2012.kamleonuserapp`, host `kamleon.app`, `minSdk` 30, `targetSdk` 36, `versionCode` 2028 y `versionName` 1.0.15 para esta entrega. Incrementa código y nombre de versión en futuras publicaciones.
+Comprueba que `jarsigner` indique `jar verified` y que la huella SHA-256 de `keytool` coincida con la indicada arriba y con Play Console. Comprueba también el manifest fusionado `app/build/intermediates/merged_manifests/prodRelease/processProdReleaseManifest/AndroidManifest.xml`: paquete `com.dynatech2012.kamleonuserapp`, host `kamleon.app`, `minSdk` 30, `targetSdk` 36, `versionCode` 2028 y `versionName` 1.0.15 para esta entrega. `app/build/intermediates/bundle_ide_model/prodRelease/produceProdReleaseBundleIdeListingFile/output-metadata.json` identifica el AAB generado. Incrementa código y nombre de versión en futuras publicaciones.
 
 Antes de subirlo, prueba en un dispositivo Android 11 o posterior el arranque, login, lectura de QR, deep link `/scan`, notificaciones y el flujo principal de medidas. No había un dispositivo conectado durante la preparación de esta entrega.
 
