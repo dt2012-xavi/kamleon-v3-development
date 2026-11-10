@@ -27,7 +27,7 @@ Comandos utiles por flavor:
 ```bash
 ./gradlew :app:assembleInternalDebug
 ./gradlew :app:assembleDevelopmentDebug
-./gradlew :app:assembleStaggingDebug
+./gradlew :app:assemblePreProductionDebug
 ./gradlew :app:assembleProdDebug
 ./gradlew :app:installDevelopmentDebug
 ./gradlew :app:connectedDevelopmentDebugAndroidTest
@@ -35,7 +35,7 @@ Comandos utiles por flavor:
 
 Notas:
 
-- El flavor de preproduccion se llama literalmente `stagging`, no `staging`.
+- El flavor de preproduccion se llama `preProduction`.
 - Para cambios pequenos de app, valida al menos `:app:assembleDevelopmentDebug` o el flavor afectado.
 - Para cambios en repositorios, ViewModels, Room o logica compartida, ejecuta tambien el unit test del flavor correspondiente.
 - Para cambios de UI/navegacion/permisos/camara/notificaciones, considera una prueba manual o `connected...AndroidTest` con dispositivo/emulador disponible.
@@ -61,7 +61,7 @@ Hay una dimension `environment` con estos flavors:
 - `internal`: app name `Kamleon-INT`, host `kamleon-v3-internal.vercel.app`, suffix `-int`.
 - `development`: app name `Kamleon-DEV`, host `dev.kamleon.app`, suffix `-dev`.
 - `prod`: app name `Kamleon`, host `kamleon.app`.
-- `stagging`: app name `Kamleon-PRE`, host `pre.kamleon.app`, suffix `-pre`.
+- `preProduction`: app name `Kamleon-PRE`, host `pre.kamleon.app`, suffix `-pre`.
 
 Cuando cambies URLs legales, app links, Firebase o constantes de entorno, revisa todos los `UrlConstants.kt` y los `manifestPlaceholders` del flavor afectado.
 
@@ -101,7 +101,7 @@ Cuando cambies URLs legales, app links, Firebase o constantes de entorno, revisa
 
 - Antes de editar, revisa el contexto local con `rg` y archivos cercanos; sigue el estilo existente aunque no sea perfecto.
 - Mantener cambios pequenos y enfocados. No refactorizar pantallas grandes mientras se corrige un bug puntual.
-- No tocar artefactos generados como `app/development/`, `app/prod/`, `app/stagging/`, `build/`, `.gradle/` o `.idea/` salvo peticion explicita.
+- No tocar artefactos generados como `app/development/`, `app/prod/`, `app/preProduction/`, `build/`, `.gradle/` o `.idea/` salvo peticion explicita.
 - No modificar `google-services.json`, `local.properties`, certificados, artefactos de release o configuracion Firebase sin confirmacion clara.
 - El repo puede estar sucio; no revertir cambios ajenos. Comprueba `git status --short --branch` antes y despues de cambios importantes.
 - Preferir `rg`/`rg --files` para busquedas.

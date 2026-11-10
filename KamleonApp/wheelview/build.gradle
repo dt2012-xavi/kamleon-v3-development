@@ -34,9 +34,6 @@ android {
         compose true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.5.7'
-    }
 }
 
 publishing {
@@ -52,11 +49,12 @@ publishing {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "androidx.compose.ui:ui:1.7.4"
-    implementation "androidx.compose.material3:material3:1.3.0"
-    implementation "androidx.compose.ui:ui-tooling-preview:1.7.4"
+    implementation platform(libs.compose.bom)
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
 
 
     testImplementation 'junit:junit:4.13.2'
