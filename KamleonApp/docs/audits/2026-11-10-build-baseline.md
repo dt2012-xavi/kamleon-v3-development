@@ -46,4 +46,10 @@ No se ejecutaron pruebas instrumentadas ni manuales de cámara/QR/notificaciones
 
 - AGP **8.13.2**, Kotlin **2.2.21**, Gradle wrapper **8.14.6**, JDK **17**, `compileSdk`/`targetSdk` **36**. Son revisiones de mantenimiento dentro de las ramas ya usadas. AGP 8.13 admite API 36.1 como máximo. El salto a AGP 9/Android 37 se separa porque afecta al plugin Hilt, al procesamiento de anotaciones y a las dependencias Compose/Navigation recientes.
 - Gradle 8.14.6 corrige vulnerabilidades de la comunicación cliente/daemon y de resolución de repositorios presentes en 8.14.3. Se regeneró el wrapper con su propia tarea y se fijó el SHA-256 oficial de la distribución binaria.
-- `.gitlab-ci.yml` se colocó en la raíz Git, fuera de `KamleonApp/`. Usa una imagen Android SDK 36/JDK 17 con fecha fija, ejecuta cuatro builds debug, tests y lint en merge requests y en la rama predeterminada. GitLab CI Lint del proyecto respondió `valid: true` sin errores ni avisos. La ejecución real en runner y la opción **Pipelines must succeed** deben comprobarse tras publicar la rama.
+- `.gitlab-ci.yml` se colocó en la raíz Git, fuera de `KamleonApp/`. Usa una imagen Android SDK 36/JDK 17 con fecha fija, ejecuta cuatro builds debug, tests y lint en merge requests y en la rama predeterminada. GitLab CI Lint del proyecto respondió `valid: true` sin errores ni avisos. El primer pipeline real terminó en verde (924 segundos), con dos informes JUnit y lint adjuntos. Se activó **Pipelines must succeed** en el proyecto.
+
+## Firma local de producción (tarea 7)
+
+- El AAB de producción anterior en el checkout original está firmado con certificado SHA-256 `A2:44:20:A3:28:9C:E0:84:DD:86:1D:C3:C2:DE:FA:12:A1:00:00:9D:54:77:99:BC:5D:FC:36:9C:EC:93:DC:2B` (comprobado con `keytool -printcert -jarfile`). Se debe contrastar con el certificado de **clave de subida** en Play Console.
+- Se añadió `signing.properties.example`, se ignora `signing.properties` y `prodRelease` falla pronto si falta el archivo local. Los cuatro builds debug, tests y lint siguen en verde sin credenciales.
+- La generación de un nuevo AAB firmado queda pendiente de identificar la clave local correcta y cargar sus contraseñas en `signing.properties` sin exponerlas en Git o en el chat. Las pruebas manuales en dispositivo también siguen pendientes.

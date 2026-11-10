@@ -1,0 +1,6 @@
+# Copy this file to signing.properties and fill in the values locally.
+# signing.properties is ignored by Git and must never be uploaded.
+storeFile=/absolute/path/to/upload-key.jks
+storePassword=replace-locally
+keyAlias=replace-locally
+keyPassword=replace-locally

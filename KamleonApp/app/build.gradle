@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
@@ -6,6 +8,18 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
+}
+
+def localSigningFile = rootProject.file('signing.properties')
+def localSigning = new Properties()
+if (localSigningFile.isFile()) {
+    localSigningFile.withInputStream { localSigning.load(it) }
+    def missingSigningKeys = ['storeFile', 'storePassword', 'keyAlias', 'keyPassword'].findAll {
+        !localSigning.getProperty(it)?.trim()
+    }
+    if (!missingSigningKeys.isEmpty()) {
+        throw new GradleException("Missing signing.properties fields: ${missingSigningKeys.join(', ')}")
+    }
 }
 
 android {
@@ -30,6 +44,16 @@ android {
         viewBinding true
         compose true
         buildConfig true
+    }
+    signingConfigs {
+        if (localSigningFile.isFile()) {
+            upload {
+                storeFile file(localSigning.getProperty('storeFile'))
+                storePassword localSigning.getProperty('storePassword')
+                keyAlias localSigning.getProperty('keyAlias')
+                keyPassword localSigning.getProperty('keyPassword')
+            }
+        }
     }
     buildTypes {
         release {
@@ -57,6 +81,9 @@ android {
         }
         prod {
             dimension "environment"
+            if (localSigningFile.isFile()) {
+                signingConfig signingConfigs.upload
+            }
             resValue "string", "app_name", "Kamleon"
             resValue "string", "app_version", "${defaultConfig.versionName}"
             def appLinkHost = "kamleon.app"
@@ -81,6 +108,14 @@ android {
     packaging {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+
+tasks.matching { it.name == 'preProdReleaseBuild' }.configureEach {
+    doFirst {
+        if (!localSigningFile.isFile()) {
+            throw new GradleException('Create local signing.properties before building prodRelease. See docs/runbooks/android-release.md.')
         }
     }
 }
