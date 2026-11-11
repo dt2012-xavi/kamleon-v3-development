@@ -1,13 +1,13 @@
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
-    id 'org.jetbrains.kotlin.plugin.compose'
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     id 'maven-publish'
 }
 
 android {
     namespace = 'com.ozcanalasalvar.wheelview'
-    compileSdk = 36
+    compileSdk = libs.versions.androidCompileSdk.get().toInteger()
 
     defaultConfig {
         minSdk = 21
@@ -39,10 +39,10 @@ android {
 publishing {
     publications {
         release(MavenPublication) {
-            groupId 'com.ozcanalasalvar'
-            artifactId 'wheelview'
-            version '1.0.0-alpha08'
-            artifact("$buildDir/outputs/aar/wheelview-release.aar")
+            groupId = 'com.ozcanalasalvar'
+            artifactId = 'wheelview'
+            version = '1.0.0-alpha08'
+            artifact(layout.buildDirectory.file('outputs/aar/wheelview-release.aar'))
         }
     }
 }
@@ -52,9 +52,9 @@ dependencies {
     implementation libs.appcompat
     implementation libs.constraintlayout
     implementation platform(libs.compose.bom)
-    implementation 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.material3:material3'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation libs.compose.ui.core
+    implementation libs.compose.material3
+    implementation libs.compose.ui.tooling.preview
 
 
     testImplementation libs.junit
