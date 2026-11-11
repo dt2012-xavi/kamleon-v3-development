@@ -40,6 +40,13 @@ android {
             useSupportLibrary = true
         }
     }
+    lint {
+        baseline = file("lint-baseline.xml")
+        abortOnError = true
+        warningsAsErrors = true
+        checkDependencies = true
+        checkTestSources = true
+    }
     buildFeatures {
         viewBinding = true
         compose = true
