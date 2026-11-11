@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,7 +36,6 @@ import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.models.Recommendation
 import com.dynatech2012.kamleonuserapp.models.RecommendationType
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -113,12 +111,6 @@ fun CardViewHomeItemHome(recommType: RecommendationType, measure: MeasureData?, 
         recommendation.titleShort = recommendation.getHydrationTitle(measure)
         recommendation.text = recommendation.getHydrationSubtitle(measure)
     }
-    val systemUiController = rememberSystemUiController()
-    val colorGray = colorResource(id = R.color.kamleon_dark_grey)
-    LaunchedEffect(key1 = "changeStatusBar", block = {
-        //systemUiController.setSystemBarsColor(
-        //    color = colorGray)
-    })
     RecommendationCardView(
         recommendation = recommendation,
         modifier = Modifier,

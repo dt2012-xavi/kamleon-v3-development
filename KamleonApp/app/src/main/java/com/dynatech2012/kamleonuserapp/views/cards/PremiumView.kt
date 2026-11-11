@@ -45,15 +45,6 @@ fun PremiumView(
 ) {
     //val openDialog = remember { mutableStateOf(false)  }
     val openDialog = viewModel.trialSent.observeAsState()
-    /*
-    val systemUiController = rememberSystemUiController()
-    val colorGray = colorResource(id = R.color.kamleon_dark_grey)
-    LaunchedEffect(key1 = "changeStatusBar", block = {
-        systemUiController.setSystemBarsColor(
-            color = colorGray, darkIcons = true)
-    })
-     */
-
     val trialSent = viewModel.trialSent.observeAsState()
     val clickedState = remember { mutableStateOf(false) }
 

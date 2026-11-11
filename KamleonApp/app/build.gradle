@@ -155,7 +155,6 @@ tasks.matching {
 dependencies {
     // Compose
     implementation libs.compose.material3
-    implementation libs.accompanist.systemuicontroller
 
     implementation libs.hilt.android
     implementation libs.lifecycle.runtime.ktx

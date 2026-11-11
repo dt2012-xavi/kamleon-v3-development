@@ -9,10 +9,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
+import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.MainActivity
 
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
@@ -23,11 +26,20 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        configureSystemBars()
         binding = setBinding()
 
         setContentView(binding.root)
         initView()
         initEvent()
+    }
+
+    private fun configureSystemBars() {
+        val style = SystemBarStyle.dark(getColor(R.color.kamleon_dark_grey))
+        enableEdgeToEdge(
+            statusBarStyle = style,
+            navigationBarStyle = style,
+        )
     }
 
     fun getSupportedFragManager() : FragmentManager? {

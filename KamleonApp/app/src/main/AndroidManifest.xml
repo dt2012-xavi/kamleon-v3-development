@@ -42,13 +42,15 @@
             android:launchMode="singleTop"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.KamleonApp"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.InitActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.KamleonApp.Splash">
+            android:theme="@style/Theme.KamleonApp.Splash"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
