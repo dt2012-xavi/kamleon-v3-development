@@ -233,8 +233,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             createNewFile()
         }*/
         currentImageUri = FileProvider.getUriForFile(
-            this, /*applicationContext?.packageName + ".fileprovider"*/
-            "com.dynatech2012.kamleonuserapp.fileprovider",
+            this,
+            "$packageName.fileprovider",
             sdImageMainDirectory
         )
         checkCameraPermission()

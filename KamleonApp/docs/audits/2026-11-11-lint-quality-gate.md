@@ -17,12 +17,12 @@ No regenerar el baseline para hacer pasar una regresión. Corregir el código o 
 - Baseline inicial: 450 entradas; tras completar el catálogo queda en 444 (436 errores y 8 hints). Se retiran seis UseTomlInstead resueltos y una entrada OldTargetApi ya no emitida al centralizar el SDK; se añade el aviso de versión del KAPT ya existente, previsto para la migración. Ver [cierre del catálogo](2026-11-11-catalog-completion.md). Inicialmente se reportaban 442 errores y 8 hints. La mayor parte son advertencias promovidas a error; la cifra no representa 442 fallos de compilación.
 - Tras migrar Room/Hilt a KSP, se elimina la entrada obsoleta de KAPT: quedan 443 entradas (435 errores y 8 hints), sin incidencias nuevas. Ver [migración KSP](2026-11-11-ksp-migration.md).
 - Revisión de IDs: sin LintError, SecurityException, UnsafeProtectedBroadcastReceiver, ExportedService, ExportedReceiver ni entradas de FileProvider/file_paths.
-- Esto no sustituye la revisión de seguridad pendiente del manifest/FileProvider.
+- Tras el saneamiento del manifest se retira ScopedStorage resuelto: quedan 442 entradas (434 errores y 8 hints), sin incidencias nuevas. Ver [manifest y FileProvider](2026-11-11-manifest-hardening.md); las pruebas instrumentadas siguen pendientes de dispositivo.
 
 ## Deuda prioritaria visible
 
 - MutableCollectionMutableState: datepicker/DataPickerComposeView usa mutableStateOf con ArrayList. Revisar cómo actualiza y expone values para garantizar recomposición, preservando la API pública; requiere corrección y prueba funcional separadas. Queda registrada en el baseline histórico, no resuelta.
-- ScopedStorage: WRITE_EXTERNAL_STORAGE obsoleto; su retirada corresponde al bloque de manifest.
+- ScopedStorage: resuelto al retirar WRITE_EXTERNAL_STORAGE en el bloque de manifest.
 - QueryPermissionsNeeded: revisar resolveActivity y visibilidad de paquetes en HelpFragment.
 - ExtraText: dos recursos XML contienen un carácter > sobrante.
 - Accesibilidad: ContentDescription, LabelFor y ClickableViewAccessibility.

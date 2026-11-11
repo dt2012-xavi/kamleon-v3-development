@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-<!--    <external-files-path name="my_images" path="images/" />-->
-    <external-files-path name="my_images" path="images/" />
-    <cache-path name="my_images" path="images/" />
-    <files-path name="my_images" path="images/" />
-    <root-path name="root" path="." />
+    <external-files-path
+        name="profile_images"
+        path="Pictures/my_images/" />
 </paths>
