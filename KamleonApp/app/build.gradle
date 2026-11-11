@@ -12,15 +12,19 @@ plugins {
 
 def localSigningFile = rootProject.file('signing.properties')
 def localSigning = new Properties()
+def localSigningReadFailed = false
 if (localSigningFile.isFile()) {
-    localSigningFile.withInputStream { localSigning.load(it) }
-    def missingSigningKeys = ['storeFile', 'storePassword', 'keyAlias', 'keyPassword'].findAll {
-        !localSigning.getProperty(it)?.trim()
-    }
-    if (!missingSigningKeys.isEmpty()) {
-        throw new GradleException("Missing signing.properties fields: ${missingSigningKeys.join(', ')}")
+    try {
+        localSigningFile.withInputStream { localSigning.load(it) }
+    } catch (IOException | IllegalArgumentException ignored) {
+        localSigningReadFailed = true
     }
 }
+def missingSigningKeys = ['storeFile', 'storePassword', 'keyAlias', 'keyPassword'].findAll {
+    !localSigning.getProperty(it)?.trim()
+}
+def localSigningConfigured = localSigningFile.isFile() &&
+        !localSigningReadFailed && missingSigningKeys.isEmpty()
 
 android {
     namespace = 'com.dynatech2012.kamleonuserapp'
@@ -53,7 +57,7 @@ android {
         buildConfig = true
     }
     signingConfigs {
-        if (localSigningFile.isFile()) {
+        if (localSigningConfigured) {
             upload {
                 storeFile = file(localSigning.getProperty('storeFile'))
                 storePassword = localSigning.getProperty('storePassword')
@@ -88,7 +92,7 @@ android {
         }
         prod {
             dimension = "environment"
-            if (localSigningFile.isFile()) {
+            if (localSigningConfigured) {
                 signingConfig = signingConfigs.upload
             }
             resValue "string", "app_name", "Kamleon"
@@ -124,10 +128,22 @@ def validateProdReleaseSigning = tasks.register('validateProdReleaseSigning') {
         if (!localSigningFile.isFile()) {
             throw new GradleException('Create local signing.properties before building prodRelease. See docs/runbooks/android-release.md.')
         }
+        if (localSigningReadFailed) {
+            throw new GradleException('Cannot read signing.properties. Check its permissions and properties syntax.')
+        }
+        if (!missingSigningKeys.isEmpty()) {
+            throw new GradleException("Missing signing.properties fields: ${missingSigningKeys.join(', ')}")
+        }
+        def uploadStoreFile = file(localSigning.getProperty('storeFile'))
+        if (!uploadStoreFile.isFile() || !uploadStoreFile.canRead()) {
+            throw new GradleException('The upload keystore must be an existing readable file. Check storeFile in signing.properties.')
+        }
     }
 }
 
-tasks.matching { it.name in ['assembleProdRelease', 'bundleProdRelease'] }.configureEach {
+tasks.matching {
+    it.name in ['preProdReleaseBuild', 'validateSigningProdRelease', 'assembleProdRelease', 'bundleProdRelease']
+}.configureEach {
     dependsOn validateProdReleaseSigning
 }
 

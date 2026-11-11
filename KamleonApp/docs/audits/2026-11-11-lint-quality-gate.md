@@ -10,7 +10,8 @@ No regenerar el baseline para hacer pasar una regresión. Corregir el código o 
 
 ## Estado observado
 
-- El fallo interno FIR histórico no se reprodujo: lintAnalyzeDevelopmentDebugAndroidTest y lintDevelopmentDebug pasaron antes de modificar los tests. No se atribuye su desaparición a un cambio de package.
+- En la recuperación inicial, el fallo interno FIR histórico no se reprodujo: lintAnalyzeDevelopmentDebugAndroidTest y lintDevelopmentDebug pasaron antes de modificar los tests. No se atribuye su desaparición a un cambio de package.
+- En una verificación posterior combinando builds development/prod y lint, reapareció un error interno de lint en DebugLogTest: FileNotFoundException de una fuente Hilt generada de prodDebug. La repetición independiente con `./gradlew --no-daemon :app:lintDevelopmentDebug --console=plain` pasó sin incidencias nuevas. Usar esta invocación aislada para las comprobaciones de lint mientras se investiga la interacción multivariante; una ejecución aislada correcta no demuestra que el bug del analizador esté corregido.
 - Reemplazado ExampleInstrumentedTest, que esperaba el application ID equivocado, por AppContextTest con el package real.
 - Retirado ExampleUnitTest (aritmética de plantilla). Se conserva DebugLogTest.
 - Baseline inicial: 450 entradas, reportadas con la política estricta como 442 errores y 8 hints. La mayor parte son advertencias promovidas a error; la cifra no representa 442 fallos de compilación.

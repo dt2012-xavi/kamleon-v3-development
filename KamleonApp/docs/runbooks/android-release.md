@@ -8,7 +8,9 @@ La CI de GitLab comprueba los cuatro entornos, pero no recibe la clave de subida
 2. Rellena `storeFile` con la ruta **absoluta** del keystore de subida, `keyAlias`, `storePassword` y `keyPassword`. No pongas estos datos en comandos, tickets, GitLab ni este documento. Restringe los permisos del archivo a tu usuario (`chmod 600 signing.properties`).
 3. Hay varias claves locales con nombre Kamleon. Usa la clave cuyo certificado público coincida con el AAB de producción ya firmado. Su SHA-256 es `A2:44:20:A3:28:9C:E0:84:DD:86:1D:C3:C2:DE:FA:12:A1:00:00:9D:54:77:99:BC:5D:FC:36:9C:EC:93:DC:2B`. Comprueba además en **Play Console > Configuración > Integridad de la app > Certificado de clave de subida** que esta es la huella esperada. No confundas la clave de subida con la clave de firma que gestiona Google Play.
 
-Si falta `signing.properties`, `bundleProdRelease` falla antes de generar un AAB de producción sin firma. Solo el flavor `prod` usa esta configuración; los builds debug y los otros entornos no necesitan la clave.
+Los builds debug y los otros entornos no necesitan la clave: pueden configurarse aunque `signing.properties` falte, esté incompleto o tenga sintaxis inválida. La tarea `validateProdReleaseSigning`, conectada también a `preProdReleaseBuild`, comprueba para prod release que el archivo pueda leerse, que estén las cuatro propiedades y que el keystore exista y sea legible. Los errores muestran nombres de campos, nunca sus valores. La validación de contraseñas, alias y contenido criptográfico la realiza después el proceso de firma de AGP; esta comprobación previa no la sustituye.
+
+`assembleProdRelease` y `bundleProdRelease` dependen de esta validación. Así, una configuración incompleta bloquea prod release antes de generar el artefacto. Un dry-run solo muestra el grafo; no ejecuta ni demuestra la validez de la firma.
 
 ## 2. Generar y verificar
 
