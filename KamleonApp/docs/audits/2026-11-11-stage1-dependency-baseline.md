@@ -58,4 +58,10 @@ La expectativa del plan de que todas las versiones resueltas permanezcan iguales
 - Pendiente la comprobación interactiva del escáner en emulador; el QR real válido sigue siendo verificación externa previa a publicación.
 - Las correcciones funcionales QR-01/QR-02 están documentadas en [QR follow-up](2026-11-11-qr-follow-up.md).
 
+## Verificación conjunta final
+
+El 2026-11-11 pasan los cuatro debug de app, las dos librerías, la suite unitaria actual (1 test) y la compilación de AndroidTest. Los tres runtime classpaths conservan las familias de la tabla; desaparecen Location/ZXing/Extensions/Accompanist. Camera Video permanece transitiva, Vision Common explícita. KAPT se sustituye por KSP con esquemas Room equivalentes, sin migración de datos.
+
+Lint aislado pasa con baseline 434 errores históricos y 8 hints, sin nuevas incidencias. La revisión detecta que CI debe separar esa invocación del build multivariante; se corrige y se valida la secuencia local. Ver [revisión final y límites externos](2026-11-11-stage1-final-review.md). Los resultados de dos tests de tareas anteriores describen su momento histórico; el ejemplo aritmético se retiró después.
+
 

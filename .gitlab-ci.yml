@@ -26,7 +26,8 @@ android_verify:
     - cd KamleonApp
     - java -version
   script:
-    - ./gradlew :app:assembleInternalDebug :app:assembleDevelopmentDebug :app:assemblePreProductionDebug :app:assembleProdDebug :app:testDevelopmentDebugUnitTest :app:lintDevelopmentDebug --no-daemon --console=plain
+    - ./gradlew :app:assembleInternalDebug :app:assembleDevelopmentDebug :app:assemblePreProductionDebug :app:assembleProdDebug :app:testDevelopmentDebugUnitTest --no-daemon --console=plain
+    - ./gradlew --no-daemon :app:lintDevelopmentDebug --console=plain
   artifacts:
     when: always
     expire_in: 7 days

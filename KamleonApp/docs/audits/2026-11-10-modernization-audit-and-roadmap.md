@@ -8,6 +8,12 @@ El árbol ya estaba modificado: `app/build.gradle` tiene un cambio local de `ver
 
 Línea base ejecutada el 2026-11-10: `./gradlew :app:assembleDevelopmentDebug :app:testDevelopmentDebugUnitTest :app:lintDevelopmentDebug --console=plain` terminó correctamente. Lint informó 431 advertencias y 0 errores; destacan 117 recursos sin uso y 30 avisos de dependencias. Gradle avisa de funciones obsoletas incompatibles con Gradle 9. No se ejecutaron pruebas instrumentadas ni builds de otros flavors.
 
+## Actualización de seguimiento — 2026-11-11
+
+La tabla siguiente conserva la evidencia histórica inicial. La etapa de sostenibilidad ha centralizado el catálogo, retirado dependencias muertas/KAPT/Accompanist, limitado FileProvider, retirado permisos legacy y desactivado backup con exclusiones cloud/D2D. Los cuatro debug, ambas librerías, el test unitario y la compilación instrumentada pasan; lint usa una invocación aislada y un baseline fijo. CI se ajusta a esa receta.
+
+La revisión y las limitaciones actuales están en [cierre técnico de etapa 1](2026-11-11-stage1-final-review.md). QR-01/QR-02, logs sensibles, logout, autorización/backend y pruebas físicas siguen pendientes. El cierre del build no certifica esos flujos ni habilita publicación. AGP/API 37 siguen en una etapa separada.
+
 ## Hallazgos priorizados
 
 | Prioridad | Evidencia actual | Riesgo / acción |
