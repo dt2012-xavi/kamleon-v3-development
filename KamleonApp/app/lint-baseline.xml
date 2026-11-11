@@ -344,17 +344,6 @@
 
     <issue
         id="NewerVersionAvailable"
-        message="A newer version of org.jetbrains.kotlin.kapt than 2.2.21 is available: 2.4.21"
-        errorLine1="kotlin = &quot;2.2.21&quot;"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="5"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
         message="A newer version of com.google.dagger.hilt.android than 2.58 is available: 2.60.1"
         errorLine1="hilt = &quot;2.58&quot;"
         errorLine2="       ~~~~~~">

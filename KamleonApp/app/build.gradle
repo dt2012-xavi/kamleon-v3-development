@@ -4,10 +4,15 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 def localSigningFile = rootProject.file('signing.properties')
@@ -165,7 +170,7 @@ dependencies {
     androidTestImplementation libs.compose.ui.test.junit4
     debugImplementation libs.compose.ui.tooling.core
     debugImplementation libs.compose.ui.test.manifest
-    kapt libs.hilt.compiler
+    ksp libs.hilt.compiler
     implementation libs.hilt.navigation.compose
     implementation libs.compose.runtime.livedata
 
@@ -204,7 +209,7 @@ dependencies {
 
     // Room
     implementation libs.room.runtime
-    kapt libs.room.compiler
+    ksp libs.room.compiler
     implementation libs.room.ktx
 
     // Gson

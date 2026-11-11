@@ -1,0 +1,280 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "97a14ad8add07ba429e534e38a22d857",
+    "entities": [
+      {
+        "tableName": "MeasureData",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `isNew` INTEGER NOT NULL, `analysisDate` INTEGER NOT NULL, `gS_lastUpdateAnalysis` INTEGER NOT NULL, `measEventDuration` INTEGER NOT NULL, `volTime` INTEGER NOT NULL, `cond` INTEGER NOT NULL, `weight` INTEGER NOT NULL, `usg` INTEGER NOT NULL, `score` INTEGER NOT NULL, `colorChart` INTEGER NOT NULL, `humidity` INTEGER NOT NULL, `gS_ColorChart` INTEGER NOT NULL, `gS_USG` INTEGER NOT NULL, `gS_Volume` INTEGER NOT NULL, `weightTime` INTEGER NOT NULL, `vol` REAL NOT NULL, `msCond` REAL NOT NULL, `temp` REAL NOT NULL, `centerID` TEXT, `deviceID` TEXT, `orgID` TEXT, `userID` TEXT, `teamID` TEXT, `waterReference` TEXT, `measType` TEXT, `usgModel` TEXT, `volModel` TEXT, `condModel` TEXT, `waterDetectModel` TEXT, `waterDetect` TEXT, `gS_Chemist` TEXT, `gS_Observation` TEXT, `type` TEXT, `precision` TEXT, `xyz` TEXT, `minxyz` TEXT, `maxxyz` TEXT, `stdxyz` TEXT, `waterXYZ` TEXT, `colorUrineRGB` TEXT, `a11Band` TEXT, `min11Band` TEXT, `max11Band` TEXT, `std11Band` TEXT, `water11Band` TEXT, `timestamp` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isNew",
+            "columnName": "isNew",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "analysisDate",
+            "columnName": "analysisDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gS_lastUpdateAnalysis",
+            "columnName": "gS_lastUpdateAnalysis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "measEventDuration",
+            "columnName": "measEventDuration",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "volTime",
+            "columnName": "volTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cond",
+            "columnName": "cond",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weight",
+            "columnName": "weight",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "usg",
+            "columnName": "usg",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score",
+            "columnName": "score",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "colorChart",
+            "columnName": "colorChart",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "humidity",
+            "columnName": "humidity",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gS_ColorChart",
+            "columnName": "gS_ColorChart",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gS_USG",
+            "columnName": "gS_USG",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gS_Volume",
+            "columnName": "gS_Volume",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weightTime",
+            "columnName": "weightTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vol",
+            "columnName": "vol",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "msCond",
+            "columnName": "msCond",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temp",
+            "columnName": "temp",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "centerID",
+            "columnName": "centerID",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "deviceID",
+            "columnName": "deviceID",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "orgID",
+            "columnName": "orgID",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "userID",
+            "columnName": "userID",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "teamID",
+            "columnName": "teamID",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "waterReference",
+            "columnName": "waterReference",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "measType",
+            "columnName": "measType",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "usgModel",
+            "columnName": "usgModel",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "volModel",
+            "columnName": "volModel",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "condModel",
+            "columnName": "condModel",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "waterDetectModel",
+            "columnName": "waterDetectModel",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "waterDetect",
+            "columnName": "waterDetect",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "gS_Chemist",
+            "columnName": "gS_Chemist",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "gS_Observation",
+            "columnName": "gS_Observation",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "precision",
+            "columnName": "precision",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "xyz",
+            "columnName": "xyz",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "minxyz",
+            "columnName": "minxyz",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "maxxyz",
+            "columnName": "maxxyz",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "stdxyz",
+            "columnName": "stdxyz",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "waterXYZ",
+            "columnName": "waterXYZ",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "colorUrineRGB",
+            "columnName": "colorUrineRGB",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "a11Band",
+            "columnName": "a11Band",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "min11Band",
+            "columnName": "min11Band",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "max11Band",
+            "columnName": "max11Band",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "std11Band",
+            "columnName": "std11Band",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "water11Band",
+            "columnName": "water11Band",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '97a14ad8add07ba429e534e38a22d857')"
+    ]
+  }
+}

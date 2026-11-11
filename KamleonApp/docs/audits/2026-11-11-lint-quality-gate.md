@@ -15,6 +15,7 @@ No regenerar el baseline para hacer pasar una regresión. Corregir el código o 
 - Reemplazado ExampleInstrumentedTest, que esperaba el application ID equivocado, por AppContextTest con el package real.
 - Retirado ExampleUnitTest (aritmética de plantilla). Se conserva DebugLogTest.
 - Baseline inicial: 450 entradas; tras completar el catálogo queda en 444 (436 errores y 8 hints). Se retiran seis UseTomlInstead resueltos y una entrada OldTargetApi ya no emitida al centralizar el SDK; se añade el aviso de versión del KAPT ya existente, previsto para la migración. Ver [cierre del catálogo](2026-11-11-catalog-completion.md). Inicialmente se reportaban 442 errores y 8 hints. La mayor parte son advertencias promovidas a error; la cifra no representa 442 fallos de compilación.
+- Tras migrar Room/Hilt a KSP, se elimina la entrada obsoleta de KAPT: quedan 443 entradas (435 errores y 8 hints), sin incidencias nuevas. Ver [migración KSP](2026-11-11-ksp-migration.md).
 - Revisión de IDs: sin LintError, SecurityException, UnsafeProtectedBroadcastReceiver, ExportedService, ExportedReceiver ni entradas de FileProvider/file_paths.
 - Esto no sustituye la revisión de seguridad pendiente del manifest/FileProvider.
 
