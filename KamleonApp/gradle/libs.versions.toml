@@ -25,8 +25,6 @@ espresso = "3.7.0"
 gson = "2.13.2"
 mlkitVision = "17.3.0"
 mlkitBarcode = "17.3.0"
-zxing = "3.5.3"
-playServicesLocation = "21.3.0"
 circleimageview = "3.1.0"
 coreSplashscreen = "1.2.0"
 
@@ -59,16 +57,12 @@ espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref =
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 mlkit-vision-common = { module = "com.google.mlkit:vision-common", version.ref = "mlkitVision" }
 mlkit-barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "mlkitBarcode" }
-zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
-play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraX" }
 camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraX" }
 camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraX" }
-camera-video = { module = "androidx.camera:camera-video", version.ref = "cameraX" }
 camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraX" }
-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "cameraX" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

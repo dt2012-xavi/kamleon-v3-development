@@ -25,7 +25,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.NavHostFragment
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
-import com.dynatech2012.kamleonuserapp.camera.QRCodeFoundListener
 import com.dynatech2012.kamleonuserapp.constants.UrlConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityTabBinding
 import com.dynatech2012.kamleonuserapp.models.QRResponse
@@ -49,7 +48,6 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
     private val qrViewModel: QrViewModel by viewModels()
     private lateinit var previewView: PreviewView
     private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
-    private var qrListener: QRCodeFoundListener? = null
     lateinit var qrDebugging: TextView
 
     private val onDismissScanIntro = object : BottomFragmentDismissListener {
@@ -280,39 +278,6 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         preview.setSurfaceProvider(previewView.surfaceProvider)
         Log.d(TAG, "qrScanner, bindCameraPreview 2")
         appendDebugText("QR debug -- starting surface provider set")
-        // Callback when result from analyzing image is returned
-        /*
-        qrListener = object : QRCodeFoundListener {
-            var qrFound = false
-            override fun onQRCodeFound(qrCode: String) {
-                // Sometimes it is called multiple times
-                if (view != null && !qrFound) {
-                    appendDebugText("QR debug -- qr found")
-                    Log.d(TAG,"qrScanner, getView != null")
-                    qrFound = true
-                    uploadQr(qrCode)
-                } else {
-                    appendDebugText("QR debug -- qr found but view is null")
-                    Log.e(TAG, "qrScanner, getView == null")
-                }
-            }
-
-            override fun onQRCodeException(e: Exception?) {
-                appendDebugText("QR debug -- scan qr exception: $e")
-                Log.e(TAG, "qrScanner, qrCode EXCEPTION: ", e)
-            }
-
-            override fun onQRCodeNotFound(e: Exception?) {
-                appendDebugText("QR debug -- scan qr not found exception: $e")
-                Log.e(TAG, "qrScanner, qrCode NOT FOUND, exception: ", e)
-            }
-        }
-        */
-
-        // Create QRCode analyzer to analyze image
-        //imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), new QRCodeImageAnalyzerKotlin(qrListener));
-        //imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), new QRCodeImageAnalyzer(qrListener));
-        //imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(requireContext()), new QRCodeImageAnalyzerMLKit(qrListener));
         qrViewModel.startScanner()
         appendDebugText("QR debug -- scan qr started")
         qrViewModel.startAnalyzing()

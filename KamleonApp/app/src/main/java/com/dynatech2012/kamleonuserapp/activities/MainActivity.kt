@@ -322,13 +322,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         } else savePreferencesUserAskerForPermission()
     }
 
-    private val requestLocationPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { _: Boolean ->
-            savePreferencesUserAskerForPermission()
-        }
-
     private fun savePreferencesUserAskerForPermission() {
         val sharedPref: SharedPreferences = getSharedPreferences(
             "Shared Prefs", Context.MODE_PRIVATE
@@ -348,20 +341,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         }
 
 
-    /*
-    private fun askLocationPermission() {
-        if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED) {
-            savePreferencesUserAskedForPermission()
-            return
-        }
-        else {
-            requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        }
-    }
-    */
+
 
     companion object {
         val TAG: String = MainActivity::class.java.simpleName

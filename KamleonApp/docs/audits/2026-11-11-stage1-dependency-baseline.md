@@ -45,3 +45,17 @@ La expectativa del plan de que todas las versiones resueltas permanezcan iguales
 - git diff --check: exit 0.
 - Aviso de entorno: herramientas SDK con lector XML v3 frente a metadatos XML v4. No impide estos builds; revisar Command-line Tools durante la actualización del entorno.
 
+## Tarea 2: dependencias sin uso
+
+- Eliminados QRCodeImageAnalyzerKotlin y QRCodeFoundListener, así como los callbacks comentados y la propiedad sin uso de TabFragment. El analizador ML Kit activo y su wiring permanecen intactos.
+- Retirados launchers/comentarios muertos de ubicación de InitActivity/MainActivity. El permiso del manifest se revisará en la tarea 3.
+- Retiradas declaraciones y aliases de play-services-location, ZXing, camera-video y camera-extensions.
+- Conservada vision-common 17.3.0 explícita por el uso directo de InputImage.
+- Runtime development posterior: sin play-services-location, com.google.zxing ni camera-extensions. camera-video 1.6.2 permanece transitiva desde camera-view.
+- Firebase BoM 34.19.0, Hilt 2.58, Room 2.8.5, Compose BoM 2026.06.00 y ML Kit Barcode 17.3.0 conservan sus versiones.
+- Verificación: assembleInternalDebug, assembleDevelopmentDebug, assemblePreProductionDebug, assembleProdDebug y testDevelopmentDebugUnitTest terminaron con exit 0; dos tests, cero fallos.
+- Sin referencias de producción a las clases borradas o APIs retiradas; git diff --check pasa.
+- Pendiente la comprobación interactiva del escáner en emulador; el QR real válido sigue siendo verificación externa previa a publicación.
+- Las correcciones funcionales QR-01/QR-02 están documentadas en [QR follow-up](2026-11-11-qr-follow-up.md).
+
+

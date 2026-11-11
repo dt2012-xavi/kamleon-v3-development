@@ -112,20 +112,6 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
         clearNavigationObservers()
     }
 
-    /*
-    private val requestLocationPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                Log.i("Permission: ", "Granted")
-                viewModel.locationPermissionGranted()
-            } else {
-                Log.i("Permission: ", "Denied")
-            }
-        }
-    */
-
     private fun observeSplashCompletion() {
         Log.d(TAG, "XXX init activity observing splash completion")
         viewModel.splashDurationCompleted.observe(this) { completed ->
@@ -188,30 +174,6 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             }
         }
 
-    /*
-    private fun askLocationPermission() {
-        when {
-            ContextCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                viewModel.locationPermissionGranted()
-                return
-            }
-
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                this, Manifest.permission.ACCESS_COARSE_LOCATION
-            ) -> {
-                requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION
-                ) }
-
-            else -> {
-                requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            }
-        }
-    }
-    */
-
     private fun askNotificationPermission() {
         // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -237,15 +199,6 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     override fun setBinding(): ActivityInitBinding = ActivityInitBinding.inflate(layoutInflater)
 
     override fun initView() {
-        /*supportFragmentManager
-            .setFragmentResultListener(Constants.GRANT_LOCATION, this) { _, bundle ->
-                Log.d(TAG, "result from activity location")
-                val result = bundle.getBoolean(Constants.GRANT_LOCATION_BUNDLE)
-                if (result) {
-                    askLocationPermission()
-                }
-            }
-        */
         supportFragmentManager
             .setFragmentResultListener(Constants.GRANT_NOTIFICATION, this) { _, bundle ->
                 Log.d(
