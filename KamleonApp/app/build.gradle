@@ -1,5 +1,5 @@
-// Configuración del APK y sus entornos. Versiones compartidas: gradle/libs.versions.toml.
-// Decisiones y verificaciones: docs/runbooks/android-build-and-manifest.md.
+// APK and environment configuration. Shared versions: gradle/libs.versions.toml.
+// Decisions and validation: docs/runbooks/android-build-and-manifest.md.
 import java.util.Properties
 
 plugins {
@@ -13,13 +13,13 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
 }
 
-// Room exporta esquemas versionados en app/schemas; conservarlos al cambiar entidades.
+// Room exports versioned schemas to app/schemas; preserve them when changing entities.
 room {
     schemaDirectory("$projectDir/schemas")
 }
 
-// Firma local opcional al configurar el proyecto; prodRelease la exige en su tarea de validación.
-// No versionar propiedades ni keystores. Procedimiento: docs/runbooks/android-release.md.
+// Local signing is optional during configuration; the prodRelease validation task requires it.
+// Never commit signing properties or keystores. See docs/runbooks/android-release.md.
 def localSigningFile = rootProject.file('signing.properties')
 def localSigning = new Properties()
 def localSigningReadFailed = false
@@ -54,8 +54,8 @@ android {
             useSupportLibrary = true
         }
     }
-    // Baseline fijo de deuda histórica: corregir incidencias nuevas, no regenerarlo para ocultarlas.
-    // Ejecutar lint aislado del build multivariante; ver la receta de CI.
+    // Fixed baseline for existing debt: fix new issues instead of regenerating it to hide them.
+    // Run lint separately from multivariant builds; see the CI recipe.
     lint {
         baseline = file("lint-baseline.xml")
         abortOnError = true
@@ -79,14 +79,14 @@ android {
         }
     }
     buildTypes {
-        // R8 sigue desactivado: las reglas proguard no implican ofuscación/minificación activa.
+        // R8 remains disabled: declaring ProGuard rules does not enable obfuscation/minification.
         release {
             minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    // Los cuatro entornos comparten applicationId (se reemplazan al instalar).
-    // El host del app link se inyecta en el manifest; revisar también UrlConstants por flavor.
+    // All four environments share an applicationId (installing one replaces the others).
+    // The app link host is injected into the manifest; also review each flavor's UrlConstants.
     flavorDimensions += "environment"
     productFlavors {
         internal{
@@ -138,8 +138,8 @@ android {
     }
 }
 
-// Validación estructural previa al empaquetado prodRelease, sin imprimir valores sensibles.
-// No sustituye la validación criptográfica del certificado ni las comprobaciones de AGP.
+// Structural validation before prodRelease packaging, without printing sensitive values.
+// This does not replace cryptographic certificate validation or AGP checks.
 def validateProdReleaseSigning = tasks.register('validateProdReleaseSigning') {
     doLast {
         if (!localSigningFile.isFile()) {
@@ -165,8 +165,8 @@ tasks.matching {
 }
 
 dependencies {
-    // Versiones de Compose y Firebase alineadas con sus BoM; no añadir versiones por artefacto.
-    // Room/Hilt generan código con KSP: no volver a añadir KAPT/annotationProcessor.
+    // Align Compose and Firebase versions through their BoMs; avoid per-artifact versions.
+    // Room/Hilt generate code through KSP: do not reintroduce KAPT/annotationProcessor.
     // Compose
     implementation libs.compose.material3
 

@@ -1,7 +1,7 @@
-// Registro común de plugins; cada módulo aplica solo los que necesita.
-// Las versiones viven en gradle/libs.versions.toml. "apply false" evita
-// aplicar plugins Android/Firebase al proyecto raíz, que no produce un APK.
-// Repositorios y módulos: settings.gradle. Guía: docs/runbooks/android-build-and-manifest.md.
+// Shared plugin registry; each module applies only the plugins it needs.
+// Versions are defined in gradle/libs.versions.toml. "apply false" keeps
+// Android/Firebase plugins off the root project, which does not produce an APK.
+// Repositories/modules: settings.gradle. Guide: docs/runbooks/android-build-and-manifest.md.
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false

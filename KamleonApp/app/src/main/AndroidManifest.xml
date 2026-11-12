@@ -2,10 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Decisiones y matriz de revisión: docs/runbooks/android-build-and-manifest.md.
-         CAMERA y POST_NOTIFICATIONS requieren gestionar permisos en runtime. -->
+    <!-- Decisions and review matrix: docs/runbooks/android-build-and-manifest.md.
+         CAMERA and POST_NOTIFICATIONS require runtime permission handling. -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <!-- Cámara opcional para instalación: el resto de la app puede usarse sin escáner/cámara. -->
+    <!-- Camera hardware is optional for installation; other features can work without scanning/photos. -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -16,9 +16,9 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- Datos de sesión y medidas: backup desactivado con exclusiones cloud/D2D explícitas.
-         hardwareAccelerated habilita renderizado GPU; no soluciona errores de memoria.
-         largeHeap se conserva como deuda hasta medir consumo y bitmaps. -->
+    <!-- Session and measurement data: backups disabled with explicit cloud/D2D exclusions.
+         hardwareAccelerated enables GPU rendering; it does not fix memory errors.
+         largeHeap remains as technical debt pending memory and bitmap measurements. -->
     <application
         android:name=".application.MyApplication"
         android:allowBackup="false"
@@ -32,8 +32,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KamleonApp"
         tools:targetApi="31">
-        <!-- tools:targetApi orienta las herramientas; el targetSdk real se define en Gradle. -->
-        <!-- Valores por defecto de FCM cuando el mensaje no proporciona icono/color/canal. -->
+        <!-- tools:targetApi guides tooling; the actual targetSdk is defined in Gradle. -->
+        <!-- FCM defaults when a message does not specify an icon, color or channel. -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/app_icon_foreground" />
@@ -43,12 +43,12 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/channel_id" />
-        <!-- Ambas actividades: portrait es una restricción temporal de la UI actual.
-             API 36 en pantallas grandes puede ignorarla: restaurar estado y probar resize/rotación.
-             No añadir configChanges para ocultar recreaciones.
-             singleTop reutiliza solo la instancia superior; onNewIntent debe consumir cada evento.
-             adjustResize se conserva junto con el manejo de insets de BaseActivity/tema. -->
-        <!-- MainActivity es interna; las entradas externas pasan por InitActivity. -->
+        <!-- Both activities: portrait is a temporary constraint of the current UI.
+             API 36 may ignore it on large screens: restore state and test resizing/rotation.
+             Do not add configChanges to hide activity recreation.
+             singleTop only reuses the top instance; onNewIntent must consume each event.
+             Keep adjustResize alongside inset handling in BaseActivity/the theme. -->
+        <!-- MainActivity is internal; external entry points go through InitActivity. -->
         <activity
             android:name=".activities.MainActivity"
             android:exported="false"
@@ -57,8 +57,8 @@
             android:theme="@style/Theme.KamleonApp"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
-        <!-- Launcher y app links públicos; el filtro no sustituye validar la URI en código.
-             Splash es el tema de arranque actual: revisar su translucidez con el flujo de login. -->
+        <!-- Public launcher/app links; the filter does not replace URI validation in code.
+             Splash is the current startup theme: review translucency with the login flow. -->
         <activity
             android:name=".activities.InitActivity"
             android:exported="true"
@@ -82,8 +82,8 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <!-- Compartir solo Pictures/my_images mediante grants temporales; ver xml/file_paths.
-             La authority debe coincidir con packageName + ".fileprovider" en MainActivity. -->
+        <!-- Share only Pictures/my_images through temporary grants; see xml/file_paths.
+             The authority must match packageName + ".fileprovider" in MainActivity. -->
         <provider
             android:name=".provider.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -93,7 +93,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <!-- Servicio de recepción FCM privado; no convertirlo en un servicio exportado. -->
+        <!-- Private FCM receiver service; do not expose it as an exported service. -->
         <service
             android:name=".service.NotificationService"
             android:exported="false">
