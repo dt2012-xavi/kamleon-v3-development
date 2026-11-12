@@ -1,3 +1,5 @@
+// Configuración del APK y sus entornos. Versiones compartidas: gradle/libs.versions.toml.
+// Decisiones y verificaciones: docs/runbooks/android-build-and-manifest.md.
 import java.util.Properties
 
 plugins {
@@ -11,10 +13,13 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
 }
 
+// Room exporta esquemas versionados en app/schemas; conservarlos al cambiar entidades.
 room {
     schemaDirectory("$projectDir/schemas")
 }
 
+// Firma local opcional al configurar el proyecto; prodRelease la exige en su tarea de validación.
+// No versionar propiedades ni keystores. Procedimiento: docs/runbooks/android-release.md.
 def localSigningFile = rootProject.file('signing.properties')
 def localSigning = new Properties()
 def localSigningReadFailed = false
@@ -49,6 +54,8 @@ android {
             useSupportLibrary = true
         }
     }
+    // Baseline fijo de deuda histórica: corregir incidencias nuevas, no regenerarlo para ocultarlas.
+    // Ejecutar lint aislado del build multivariante; ver la receta de CI.
     lint {
         baseline = file("lint-baseline.xml")
         abortOnError = true
@@ -72,11 +79,14 @@ android {
         }
     }
     buildTypes {
+        // R8 sigue desactivado: las reglas proguard no implican ofuscación/minificación activa.
         release {
             minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    // Los cuatro entornos comparten applicationId (se reemplazan al instalar).
+    // El host del app link se inyecta en el manifest; revisar también UrlConstants por flavor.
     flavorDimensions += "environment"
     productFlavors {
         internal{
@@ -128,6 +138,8 @@ android {
     }
 }
 
+// Validación estructural previa al empaquetado prodRelease, sin imprimir valores sensibles.
+// No sustituye la validación criptográfica del certificado ni las comprobaciones de AGP.
 def validateProdReleaseSigning = tasks.register('validateProdReleaseSigning') {
     doLast {
         if (!localSigningFile.isFile()) {
@@ -153,6 +165,8 @@ tasks.matching {
 }
 
 dependencies {
+    // Versiones de Compose y Firebase alineadas con sus BoM; no añadir versiones por artefacto.
+    // Room/Hilt generan código con KSP: no volver a añadir KAPT/annotationProcessor.
     // Compose
     implementation libs.compose.material3
 

@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Decisiones y matriz de revisión: docs/runbooks/android-build-and-manifest.md.
+         CAMERA y POST_NOTIFICATIONS requieren gestionar permisos en runtime. -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Cámara opcional para instalación: el resto de la app puede usarse sin escáner/cámara. -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -13,6 +16,9 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- Datos de sesión y medidas: backup desactivado con exclusiones cloud/D2D explícitas.
+         hardwareAccelerated habilita renderizado GPU; no soluciona errores de memoria.
+         largeHeap se conserva como deuda hasta medir consumo y bitmaps. -->
     <application
         android:name=".application.MyApplication"
         android:allowBackup="false"
@@ -26,6 +32,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KamleonApp"
         tools:targetApi="31">
+        <!-- tools:targetApi orienta las herramientas; el targetSdk real se define en Gradle. -->
+        <!-- Valores por defecto de FCM cuando el mensaje no proporciona icono/color/canal. -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/app_icon_foreground" />
@@ -35,7 +43,12 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/channel_id" />
-        <!-- hardwareAccelerated & largeHeap to avoid out of memory -->
+        <!-- Ambas actividades: portrait es una restricción temporal de la UI actual.
+             API 36 en pantallas grandes puede ignorarla: restaurar estado y probar resize/rotación.
+             No añadir configChanges para ocultar recreaciones.
+             singleTop reutiliza solo la instancia superior; onNewIntent debe consumir cada evento.
+             adjustResize se conserva junto con el manejo de insets de BaseActivity/tema. -->
+        <!-- MainActivity es interna; las entradas externas pasan por InitActivity. -->
         <activity
             android:name=".activities.MainActivity"
             android:exported="false"
@@ -44,6 +57,8 @@
             android:theme="@style/Theme.KamleonApp"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
+        <!-- Launcher y app links públicos; el filtro no sustituye validar la URI en código.
+             Splash es el tema de arranque actual: revisar su translucidez con el flujo de login. -->
         <activity
             android:name=".activities.InitActivity"
             android:exported="true"
@@ -67,6 +82,8 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
+        <!-- Compartir solo Pictures/my_images mediante grants temporales; ver xml/file_paths.
+             La authority debe coincidir con packageName + ".fileprovider" en MainActivity. -->
         <provider
             android:name=".provider.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -76,6 +93,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <!-- Servicio de recepción FCM privado; no convertirlo en un servicio exportado. -->
         <service
             android:name=".service.NotificationService"
             android:exported="false">
