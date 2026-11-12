@@ -3,10 +3,10 @@
 ## Implementación
 
 - BaseActivity configura enableEdgeToEdge de AndroidX Activity antes de inflar el binding y setContentView.
-- Status/navigation usan SystemBarStyle.dark con kamleon_dark_grey: iconos claros independientemente del tema.
+- Status/navigation usan `SystemBarStyle.light(TRANSPARENT, TRANSPARENT)` (cambio del 2026-11-12): barras transparentes con iconos oscuros, de modo que se ve el fondo de la activity y no hay corte visual. Solo tema claro; el modo oscuro futuro necesitará `SystemBarStyle.auto`. (Antes: `SystemBarStyle.dark` con kamleon_dark_grey.)
 - InitActivity y MainActivity heredan esa configuración. AppTheme conserva únicamente el esquema Material y la tipografía; se eliminan los controladores y efectos vacíos de ViewPager/PremiumView.
 - Se retiran dependencia, alias y versión de Accompanist. Se mantienen las versiones actuales de Activity/Core y el resto del catálogo.
-- Se conserva el manejo XML de insets existente (fitsSystemWindows del tema); no se añade padding Compose que pueda duplicarlo.
+- Los insets de las pantallas XML los aplica `android:fitsSystemWindows="true"` en la raíz de `activity_init.xml` y `activity_main.xml`; no se añade padding Compose que pueda duplicarlo. (Ver corrección de bandas más abajo.)
 - Ambas actividades declaran adjustResize para los formularios XML. No se encontraron TextField/OutlinedTextField/BasicTextField Compose en producción.
 
 ## Alcance y límites
@@ -27,3 +27,17 @@ Pendiente en emulador/dispositivo antes de publicar: Init/Main en claro/oscuro, 
 - Sincronización Gradle de Android Studio: correcta.
 - Inspección IDE: sin avisos en las nuevas llamadas de AndroidX; se conserva deuda previa ajena en BaseActivity.
 - Revisión visual y pruebas runtime pendientes; no se afirma una suite instrumentada ejecutada ni una comprobación RED/GREEN de la UI.
+
+## Corrección: bandas oscuras desplazadas (2026-11-12)
+
+Verificado en dispositivo real (SM-A556B, Android 16, navegación por tres botones): con `android:fitsSystemWindows=true` en `Theme.KamleonApp`, la plataforma aplicaba ese valor por defecto a todas las vistas, incluida la capa interna que dibuja el fondo de las barras. Esa capa recibía padding de una altura de barra y el scrim de `SystemBarStyle.dark(kamleon_dark_grey)` se pintaba dentro de la app (y=89–178 px arriba y y=2070–2205 px abajo) en vez de bajo las barras reales; además tapaba la parte inferior del contenido.
+
+Cambio: se elimina `android:fitsSystemWindows` del tema y se declara solo en las raíces de `activity_init.xml` y `activity_main.xml`. Resultado verificado en la pantalla de login: barras oscuras en su posición real con iconos claros y contenido completo entre ellas.
+
+Pendiente: verificar `MainActivity` (recibe el mismo atributo pero no se ha podido abrir sin sesión), teclado abierto con `adjustResize`, diálogos/hojas y modo gestos.
+
+## Login: teclado y foco (2026-11-12)
+
+- `KamleonInputBox` ya no sobreescribe `KeyboardActions`: "Siguiente" mueve el foco al campo siguiente y "Hecho" cierra el teclado, igual que los EditText del XML (que no lanzaban el login con "Hecho").
+- `LoginScreen` hace scroll: con espacio suficiente el botón queda anclado abajo como en el XML; con el teclado abierto el contenido se desplaza y el botón queda bajo el formulario en lugar de tapar los inputs.
+- Verificado en dispositivo (SM-A556B): barras continuas, botón bajo el formulario con el teclado, Siguiente → contraseña, Hecho cierra el teclado.

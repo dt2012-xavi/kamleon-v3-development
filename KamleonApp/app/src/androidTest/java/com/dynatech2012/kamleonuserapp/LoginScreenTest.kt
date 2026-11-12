@@ -7,7 +7,7 @@ import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.performImeAction
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.fragments.LoginScreen
@@ -44,7 +44,7 @@ class LoginScreenTest {
         composeRule.onNodeWithTag("login_sign_in").assertIsNotEnabled()
         composeRule.onNodeWithTag("login_password").performTextInput("secret123")
         composeRule.onNodeWithTag("login_sign_in").assertIsEnabled()
-        composeRule.onNodeWithTag("login_password").performImeAction()
+        composeRule.onNodeWithTag("login_sign_in").performClick()
         composeRule.runOnIdle {
             assertEquals("test@example.com" to "secret123", submitted)
         }
