@@ -22,6 +22,11 @@
     <dimen name="ts_40">40sp</dimen>
     <dimen name="ts_45">45sp</dimen>
 
+    <dimen name="auth_horizontal_padding">24dp</dimen>
+    <dimen name="auth_top_padding">64dp</dimen>
+    <dimen name="auth_field_spacing">12dp</dimen>
+    <dimen name="auth_section_spacing">32dp</dimen>
+    <dimen name="auth_button_height">52dp</dimen>
     <dimen name="round_blue_button_text_size">16sp</dimen>
 
     <dimen name="round_blue_button_height">36dp</dimen>

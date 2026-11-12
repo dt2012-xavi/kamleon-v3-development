@@ -1,122 +1,93 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.text.Editable
-import android.text.TextWatcher
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
-import android.view.inputmethod.EditorInfo
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.app.ActivityCompat
+import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.InitActivity
-import com.dynatech2012.kamleonuserapp.base.BaseFragment
+import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.constants.UrlConstants
-import com.dynatech2012.kamleonuserapp.databinding.ActivityLoginBinding
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class LoginFragment : BaseFragment<ActivityLoginBinding>() {
+class LoginFragment : Fragment() {
     private val viewModel: AuthViewModel by activityViewModels()
-    override fun setBinding(): ActivityLoginBinding = ActivityLoginBinding.inflate(layoutInflater)
 
-    override fun initView() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         Timber.d("Login form displayed")
+        (view as ComposeView).setContent {
+            var email by rememberSaveable { mutableStateOf("") }
+            var password by remember { mutableStateOf("") }
+            val state by viewModel.uiState.observeAsState(0)
 
-        binding.btnSignIn.isEnabled = true
-
-        binding.inputBoxEmail.getEditTextView()?.imeOptions = EditorInfo.IME_ACTION_NEXT
-        binding.inputBoxPwd.getEditTextView()?.imeOptions = EditorInfo.IME_ACTION_DONE
-
-        val inputWatcher = object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {}
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                updateButtonState()
+            AppTheme(useDarkTheme = false) {
+                LoginScreen(
+                    email = email,
+                    password = password,
+                    isLoading = state == 1 || state == 6,
+                    onEmailChange = { email = it },
+                    onPasswordChange = { password = it },
+                    onSignIn = { viewModel.login(email, password) },
+                    onForgotPassword = {
+                        findNavController().navigate(R.id.action_loginFragment_to_forgotPwdFragment)
+                    },
+                    onRegister = {
+                        findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+                    }
+                )
             }
         }
-        binding.inputBoxEmail.getEditTextView()?.addTextChangedListener(inputWatcher)
-        binding.inputBoxPwd.getEditTextView()?.addTextChangedListener(inputWatcher)
-
-        initObservers()
-    }
-
-    override fun initEvent() {
-        binding.btnSignIn.setOnClickListener {
-            viewModel.login(binding.inputBoxEmail.getEditTextView()?.text.toString(),
-                binding.inputBoxPwd.getEditTextView()?.text.toString())
-        }
-
-        binding.btnToSignUp.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
-        }
-        binding.tvForgotPwd.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_forgotPwdFragment)
-        }
-    }
-
-    private fun initObservers() {
         viewModel.uiState.observe(viewLifecycleOwner, this::handleState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding.inputBoxEmail.getEditTextView()?.text?.clear()
-        binding.inputBoxPwd.getEditTextView()?.text?.clear()
     }
 
     private fun handleState(state: Int) {
         when (state) {
             in Int.MIN_VALUE..-1 -> {
                 showReadyDialog(state)
-                showIdle()
                 if (state == -7) viewModel.resetUiState()
             }
-            0, 5 -> showIdle()
-            1 -> showLoading()
             3 -> Snackbar.make(requireView(), R.string.verification_email_sent, Snackbar.LENGTH_SHORT).show()
-            6 -> {
-                showLoading()
-                showPolicyDialog()
-            }
-            7 -> {
-                showIdle()
-                (requireActivity() as InitActivity).openMain()
-            }
+            5 -> Timber.d("Registration step completed; login available")
+            6 -> showPolicyDialog()
+            7 -> (requireActivity() as InitActivity).openMain()
             8 -> {
-                showIdle()
                 viewModel.resetUiState()
                 if (findNavController().currentDestination?.id == R.id.loginFragment) {
                     findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
                 }
             }
         }
-    }
-
-    private fun showIdle() {
-        binding.btnSignIn.isEnabled = true
-        binding.btnSignIn.text = getString(R.string.login_btn_signin)
-        binding.pbLogin.visibility = INVISIBLE
-    }
-
-    private fun showLoading() {
-        binding.btnSignIn.isEnabled = false
-        binding.btnSignIn.text = ""
-        binding.pbLogin.visibility = VISIBLE
-    }
-
-    private fun updateButtonState() {
-        val hasValidInput = binding.inputBoxEmail.getEditTextView()?.text.toString().isNotBlank()
-                            && binding.inputBoxPwd.getEditTextView()?.text.toString().isNotBlank()
-        binding.btnSignIn.isEnabled = hasValidInput
     }
 
     private fun showReadyDialog(errorType: Int) {
@@ -167,7 +138,7 @@ class LoginFragment : BaseFragment<ActivityLoginBinding>() {
             .setCancelable(false)
             .show()
         dialogView.findViewById<TextView>(R.id.tv_dialog_policy_desc).setOnClickListener {
-            openWebBrowser(UrlConstants.URL_POLICY_APP)
+            startActivity(Intent(Intent.ACTION_VIEW, UrlConstants.URL_POLICY_APP.toUri()))
         }
         dialogView.findViewById<TextView>(R.id.tv_dialog_policy_disagree).setOnClickListener {
             ActivityCompat.finishAffinity(requireActivity())
