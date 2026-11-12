@@ -151,12 +151,12 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         qrViewModel.qrDebug.observe(viewLifecycleOwner) {
             when (it) {
                 is Response.Success -> {
-                    Log.d(TAG, "qrScanner, qrDebug: ${it.data}")
-                    appendDebugText("QR debug FROM ANALYZER -- ${it.data}")
+                    DebugLog.d(TAG) { "QR analyzer status received" }
+                    appendDebugText("QR analyzer status received")
                 }
                 is Response.Failure -> {
-                    Log.e(TAG, "qrScanner, qrDebug: ${it.exception}")
-                    appendDebugText("QR debug FROM ANALYZER -- ${it.exception}")
+                    DebugLog.e(TAG) { "QR analyzer failed" }
+                    appendDebugText("QR analyzer failed")
                 }
                 else -> { }
             }
@@ -291,14 +291,14 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
     private fun uploadQr(qrResponse: Response<QRResponse>) {
         when (qrResponse) {
             is Response.Success -> {
-                DebugLog.d(TAG) { "qrScanner, qrString: ${qrResponse.data}" }
+                DebugLog.d(TAG) { "QR parsed; starting upload" }
                 appendDebugText("QR debug -- uploading to realtime")
                 qrViewModel.uploadQRtoFirestore(qrResponse.data)
                 //showScannedDialog()
             }
             is Response.Failure -> {
-                DebugLog.e(TAG) { "qrScanner, qrString eeror : ${qrResponse.exception}" }
-                appendDebugText("QR debug FROM ANALYZER error -- ${qrResponse.exception}")
+                DebugLog.e(TAG) { "QR parsing failed" }
+                appendDebugText("QR parsing failed")
             }
             else -> { }
         }

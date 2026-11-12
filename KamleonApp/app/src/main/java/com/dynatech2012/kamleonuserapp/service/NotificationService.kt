@@ -35,7 +35,7 @@ class NotificationService : FirebaseMessagingService() {
     private val sharedPrefUtil by lazy { SharedPrefUtil(applicationContext) }
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        DebugLog.d(TAG) { "token app refreshed: $token" }
+        DebugLog.d(TAG) { "FCM registration token refreshed" }
         val userId: String? = sharedPrefUtil.getString(PREF_USER_ID, null)
         if (userId != null) {
             val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -44,7 +44,7 @@ class NotificationService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        DebugLog.d(TAG) { "Notification Received: ${remoteMessage.data}" }
+        DebugLog.d(TAG) { "FCM message received" }
         createNotificationChannel(applicationContext, applicationContext.getString(
             R.string.channel_id
         ), "Analytics Notifications")

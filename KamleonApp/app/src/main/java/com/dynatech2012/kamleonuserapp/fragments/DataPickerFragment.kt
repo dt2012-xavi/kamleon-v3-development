@@ -78,7 +78,7 @@ class DataPickerFragment : BottomSheetDialogFragment() {
             }
             pickerView.setValueUnit("cm")
             pickerView.setValueWidth(70)
-            Log.d("DataPickerFragment", "helooo pre $dataValue")
+            Log.d("DataPickerFragment", "Height picker initialized")
             pickerView.setShowDecimal(true)
             dataValue?.let { pickerView.setValue(it) }
         } else if (dataType == "weight") {

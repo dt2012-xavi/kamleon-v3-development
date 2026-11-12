@@ -1,12 +1,11 @@
 package com.dynatech2012.kamleonuserapp.repositories
 
-import android.util.Log
+import timber.log.Timber
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants
 import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
 import com.dynatech2012.kamleonuserapp.models.Organization
-import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.functions.functions
 import kotlinx.coroutines.tasks.await
@@ -30,7 +29,7 @@ class CloudFunctions(private val userRepository: UserRepository) {
     // Invitations
     suspend fun getInvitations(): Response<ArrayList<Invitation>> =
         suspendCoroutine { continuation ->
-            Log.d(TAG, "will try to get invitations")
+            Timber.d("Loading invitations")
 
             if (email == null) {
                 continuation.resume(Response.Failure(Exception("User not logged in")))
@@ -44,16 +43,16 @@ class CloudFunctions(private val userRepository: UserRepository) {
                     val data = result?.data as? ArrayList<HashMap<String, Any>> ?: ArrayList()
                     val invitations = ArrayList<Invitation>()
                     data.forEach {
-                        Log.d(TAG, "get invitations complete: $it")
+
                         val inv = Invitation(it)
                         invitations.add(inv)
                     }
-                    Log.d(TAG, "get invitations: $invitations")
+                    Timber.d("Invitations loaded: count=%s", invitations.size)
                     invitations.sortByDescending { it.dateSent }
                     continuation.resume(Response.Success(invitations))
                 }
                 .addOnFailureListener { exception ->
-                    Log.e(TAG, "get invitations error: ", exception)
+                    Timber.w("Loading invitations failed: %s", exception.javaClass.simpleName)
                     continuation.resume(Response.Failure(exception))
                 }
         }
@@ -87,7 +86,7 @@ class CloudFunctions(private val userRepository: UserRepository) {
             "status" to status.rawValue,
             "roster" to (optional ?: false)
         )
-        Log.d(TAG, "will try to change invitation status: $body")
+        Timber.d("Changing invitation status")
         try {
             val result = functions.getHttpsCallable("changeInvitationStatus").call(body).await()
             val data = result.data as? ArrayList<HashMap<String, Any>>
@@ -96,11 +95,11 @@ class CloudFunctions(private val userRepository: UserRepository) {
                 val inv = Invitation(it)
                 invitations.add(inv)
             }
-            Log.d(MainViewModel.TAG, "HHH cloud funct change invitation: success")
+            Timber.d("Invitation status changed")
             //continuation.resume(ResponseNullable.Success())
             return ResponseNullable.Success()
         } catch (e: Exception) {
-            Log.d(MainViewModel.TAG, "HHH cloud funct change invitation: failure: $e")
+            Timber.w("Changing invitation status failed: %s", e.javaClass.simpleName)
             //continuation.resume(ResponseNullable.Failure(e))
             return ResponseNullable.Failure(e)
         }
@@ -109,7 +108,7 @@ class CloudFunctions(private val userRepository: UserRepository) {
     // User profiles
     suspend fun getUserProfiles(): Response<ArrayList<Organization>> =
         suspendCoroutine { continuation ->
-            Log.d(TAG, "will try to get user profiles")
+            Timber.d("Loading user profiles")
             if (uuid == null) {
                 continuation.resume(Response.Failure(Exception("User not logged in")))
                 return@suspendCoroutine
@@ -120,17 +119,17 @@ class CloudFunctions(private val userRepository: UserRepository) {
             functions.getHttpsCallable("getUserProfiles").call(body)
                 .addOnSuccessListener { result ->
                     val data = result?.data as? ArrayList<HashMap<String, Any>> ?: ArrayList()
-                    Log.d(TAG, "get user profiles complete: $data")
+
                     val organizations = ArrayList<Organization>()
                     data.forEach {
                         val organization = Organization(it)
                         organizations.add(organization)
                     }
-                    Log.d(TAG, "get user profiles: $organizations")
+                    Timber.d("User profiles loaded: count=%s", organizations.size)
                     continuation.resume(Response.Success(organizations))
                 }
                 .addOnFailureListener { exception ->
-                    Log.e(TAG, "get user profiles error: ", exception)
+                    Timber.w("Loading user profiles failed: %s", exception.javaClass.simpleName)
                     continuation.resume(Response.Failure(exception))
                 }
         }
@@ -144,10 +143,10 @@ class CloudFunctions(private val userRepository: UserRepository) {
             if (message != "Reset Password email sent successfully") {
                 throw Exception("$message")
             }
-            Log.d(MainViewModel.TAG, "HHH cloud funct reset password: success")
+            Timber.d("Password reset email requested successfully")
             ResponseNullable.Success()
         } catch (e: Exception) {
-            Log.d(MainViewModel.TAG, "HHH cloud funct reset password: failure: $e")
+            Timber.w("Password reset email request failed: %s", e.javaClass.simpleName)
             ResponseNullable.Failure(e)
         }
     }
@@ -164,10 +163,10 @@ class CloudFunctions(private val userRepository: UserRepository) {
             if (message != "Reset PIN email sent successfully") {
                 throw Exception("$message")
             }
-            Log.d(MainViewModel.TAG, "HHH cloud funct reset pin: success")
+            Timber.d("PIN reset email requested successfully")
             ResponseNullable.Success()
         } catch (e: Exception) {
-            Log.d(MainViewModel.TAG, "HHH cloud funct reset pin: failure: $e")
+            Timber.w("PIN reset email request failed: %s", e.javaClass.simpleName)
             ResponseNullable.Failure(e)
         }
     }
@@ -189,10 +188,10 @@ class CloudFunctions(private val userRepository: UserRepository) {
             if (message != "Verify email sent successfully") {
                 //throw Exception("$message")
             }
-            Log.d(MainViewModel.TAG, "HHH cloud funct verify email: success")
+            Timber.d("Verification email requested successfully")
             ResponseNullable.Success()
         } catch (e: Exception) {
-            Log.d(MainViewModel.TAG, "HHH cloud funct verify email: failure: $e")
+            Timber.w("Verification email request failed: %s", e.javaClass.simpleName)
             ResponseNullable.Failure(e)
         }
     }
@@ -206,10 +205,10 @@ class CloudFunctions(private val userRepository: UserRepository) {
             if (message != "Verify email sent successfully") {
                 //throw Exception("$message")
             }
-            Log.d(MainViewModel.TAG, "HHH cloud funct trial email: success")
+            Timber.d("Trial email requested successfully")
             ResponseNullable.Success()
         } catch (e: Exception) {
-            Log.d(MainViewModel.TAG, "HHH cloud funct trial email: failure: $e")
+            Timber.w("Trial email request failed: %s", e.javaClass.simpleName)
             ResponseNullable.Failure(e)
         }
     }

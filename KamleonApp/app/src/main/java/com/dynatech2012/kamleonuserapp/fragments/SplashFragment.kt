@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
+import timber.log.Timber
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
@@ -34,7 +34,7 @@ class SplashFragment : BaseFragment<ActivitySplashBinding>() {
     override fun setBinding(): ActivitySplashBinding = ActivitySplashBinding.inflate(layoutInflater)
 
     override fun initView() {
-        Log.d(TAG, "XXX init activity splash fragment")
+        Timber.d("Splash screen displayed")
         //viewModel.resetLogged()
         //viewModel.checkLogin()
 
@@ -60,7 +60,7 @@ class SplashFragment : BaseFragment<ActivitySplashBinding>() {
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "XXX init activity splash on resume")
+        Timber.d("Splash screen resumed")
         //if (viewModel.alreadySplash) {
         //    viewModel.resetLogged()
         //    viewModel.checkLogin()

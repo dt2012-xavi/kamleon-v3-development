@@ -112,7 +112,7 @@ class MainViewModel @Inject constructor(
                 val userProfiles = userProfilesResult.dataValue!!
                 _userProfiles.postValue(userProfiles)
             }
-            Log.d(TAG, "user data changed got user ${userResult.dataValue}")
+            DebugLog.d(TAG) { "User profile refresh completed" }
         }
     }
 
@@ -182,19 +182,19 @@ class MainViewModel @Inject constructor(
     fun changePin(oldPin: String, newPin: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val oldPinHash = oldPin.sha256()
-            DebugLog.i("PIN") { "--->> oldPinHash: $oldPinHash" }
+            DebugLog.i("PIN") { "PIN change requested" }
 
             if (oldPinHash != userData.value?.pin) {
-                DebugLog.i("PIN") { "--->> no the same pin as the original: ${userData.value?.pin}" }
+                DebugLog.i("PIN") { "PIN change rejected: current PIN mismatch" }
                 val exception = Exception(Constants.UNMATCHING_PIN)
                 val response = Response.Failure(exception)
                 _userUpdated.postValue(response)
             } else {
                 val newPinHash = newPin.sha256()
-                DebugLog.i("PIN") { "--->> newPinHash: $newPinHash" }
+                DebugLog.i("PIN") { "PIN change accepted; updating profile" }
                 val data = hashMapOf<String, Any>("pin" to newPinHash)
                 val response = firestoreRepo.updateUser(data)
-                DebugLog.i("PIN") { "--->> response from update: $response" }
+                DebugLog.i("PIN") { "PIN update completed: success=${response.isSuccess}" }
                 //_userUpdated.postValue(true)
                 _userUpdated.postValue(response)
             }
@@ -480,7 +480,7 @@ class MainViewModel @Inject constructor(
             val invitationId = invitation.id
             val isAdmin = invitation.isAdmin
             val opt = optional && !isAdmin
-            Log.d(TAG, "HHH acceptInvitation: $invitationId, $opt")
+            DebugLog.d(TAG) { "Accepting invitation" }
             val response = cloudFunctions.acceptInvitation(invitationId, opt)
             if (response.isSuccess) {
                 Log.d(TAG, "HHH acceptInvitation: success")

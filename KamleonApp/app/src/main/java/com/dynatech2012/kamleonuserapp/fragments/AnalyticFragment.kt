@@ -87,7 +87,7 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
     }
 
     private fun onLastMeasureChanged(measureData: MeasureData?) {
-        Log.d(TAG, "onLastMeasureChanged is precise?: $measureData is precise: ${measureData?.isPrecise}")
+        Log.d(TAG, "Latest measure changed")
         val cvHy = binding.cvAnalyticHydration
         val score = if (measureData?.isPrecise == false) null else measureData?.score
         cvHy.value = score

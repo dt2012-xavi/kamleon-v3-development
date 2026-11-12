@@ -11,6 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import timber.log.Timber
 
 @HiltViewModel
 class ForgotPwdViewModel @Inject constructor(
@@ -22,8 +23,10 @@ class ForgotPwdViewModel @Inject constructor(
     private val _resetPwdSuccess = MutableLiveData<Boolean>()
     val resetPwdSuccess: LiveData<Boolean> = _resetPwdSuccess
     fun resetPwd(email: String) {
+        Timber.d("Password reset requested")
         viewModelScope.launch(Dispatchers.IO) {
             val response = cloudFunctions.resetPwd(email)
+            Timber.d("Password reset request completed: success=%s", response.isSuccess)
             if (response.isSuccess) {
                 _resetPwdSuccess.postValue(true)
             } else {

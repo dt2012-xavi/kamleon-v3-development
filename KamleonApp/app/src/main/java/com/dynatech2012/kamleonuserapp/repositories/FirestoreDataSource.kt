@@ -149,7 +149,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
         val query: Query = db.collection(FirebaseConstants.MEASURES_COLLECTION)
         val date = Date(lastDate?.plus(1) ?: 0)
         val timestamp = com.google.firebase.Timestamp(date)
-        Log.d(TAG, "got measures from FS last date: $date")
+        DebugLog.d(TAG) { "Fetching measurements from Firestore" }
         val task = query
             .whereEqualTo(FirebaseConstants.kUSERID_FIELD, userId)
             .whereEqualTo(FirebaseConstants.kANALYSIS_TYPE, kANALYSIS_TYPE_URINE)
@@ -169,14 +169,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
                 val measures: ArrayList<MeasureData> =
                     ArrayList(measuresRaw.map { MeasureData(it) })
 
-                for (m in measuresRaw) {
-                    if (m.analysisDate?.time in 170714827041..1707148270379) {
-                        Log.d(
-                            TAG,
-                            "got measures dates: $m _ prec: ${m.precision} _ isPrec: _ date: ${m.analysisDate}"
-                        )
-                    }
-                }
+
                 /*
                 for (m in measures) {
                     val date = Date(m.analysisDate)
@@ -195,7 +188,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
             }
             .addOnFailureListener { e ->
                 continuation.resume(Response.Failure(e))
-                Log.e(TAG, "got measures from FS error: ${e.message}")
+                DebugLog.e(TAG) { "Fetching measurements failed: ${e.javaClass.simpleName}" }
             }
     }
 
@@ -207,7 +200,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
         var lastPageSize = limit
         var countDebug = 0
         val query: Query = db.collection(FirebaseConstants.MEASURES_COLLECTION)
-        Log.d(TAG, "got measures 2 last date: $lastDate")
+        DebugLog.d(TAG) { "Fetching paged measurements" }
         val date = lastDate ?: 0
         var lastVisible: DocumentSnapshot? = null
         val measures = arrayListOf<MeasureData>()
@@ -252,7 +245,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
                 lastVisible = documentSnapshot.documents[documentSnapshot.size() - 1]
             } catch (e: Exception) {
                 emit(Response.Failure(e))
-                Log.e(TAG, "got measures 23 last date: ${e.message}")
+                DebugLog.e(TAG) { "Fetching paged measurements failed: ${e.javaClass.simpleName}" }
                 break
             }
         }
@@ -268,7 +261,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
         return try {
             doc.get(AggregateSource.SERVER).await().count.toInt()
         } catch (e: Exception) {
-            Log.e(TAG, "getNewInvitations error: ${e.message}")
+            DebugLog.e(TAG) { "Fetching invitation count failed: ${e.javaClass.simpleName}" }
             0
         }
     }
@@ -285,7 +278,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
                 } else {
                     // Get new FCM registration token
                     val token = task1.result
-                    DebugLog.d(TAG) { "updateToken token: $token" }
+                    DebugLog.d(TAG) { "Updating FCM registration token" }
                     db.collection(USERS_COLLECTION).document(uuid!!)
                         .update(USERS_TOKEN, token)
                         .addOnCompleteListener { task2 ->
@@ -338,7 +331,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
             Log.d(TAG, "update legal success")
             Response.Success(true)
         } catch (e: Exception) {
-            Log.d(TAG, "update legal exception: $e")
+            DebugLog.e(TAG) { "Updating legal consent failed: ${e.javaClass.simpleName}" }
             Response.Failure(e)
         }
     }
@@ -360,7 +353,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
             Log.d(TAG, "qr upload success")
             Response.Success(true)
         } catch (e: Exception) {
-            Log.d(TAG, "QR upload exception: $e")
+            DebugLog.e(TAG) { "Uploading scan failed: ${e.javaClass.simpleName}" }
             Response.Failure(e)
         }
     }

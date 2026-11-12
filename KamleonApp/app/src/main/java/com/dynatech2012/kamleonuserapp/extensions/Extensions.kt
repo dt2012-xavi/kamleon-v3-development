@@ -1,8 +1,6 @@
 package com.dynatech2012.kamleonuserapp.extensions
 
 import android.content.res.Resources
-import android.util.Log
-import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.views.graph.KamleonUtils
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
@@ -186,7 +184,6 @@ val Date.isLastWeek: Boolean
             set(Calendar.MILLISECOND, 0)
         }
         // Check if date is after the beginning
-        Log.d("Date", "isLastWeek: ${calendar.time}, ${sevenDaysAgo.time} = ${calendar.after(sevenDaysAgo)}")
         return calendar.after(sevenDaysAgo)
     }
 
@@ -208,13 +205,13 @@ val Date.formatTimeForPopup: String
         }
         // If it's within the last week, display the day name (e.g., "Tuesday").
         else if (date.isLastWeek) {
-            Log.d(Invitation.TAG, "invitationTime: isLastWeek: $date")
+
             val dateFormater = SimpleDateFormat("EEEE 'at' HH:mm", Locale.US)
             return dateFormater.format(date)
         }
         // If it's more than one week ago, display the full date.
         else {
-            Log.d(Invitation.TAG, "invitationTime: is old: $date")
+
             val day = date.day()
             val daySuffix = if (day in 11..13) {
                 "th"
@@ -248,13 +245,13 @@ val Date.formatTime: String
         }
         // If it's within the last week, display the day name (e.g., "Tuesday").
         else if (date.isLastWeek) {
-            Log.d(Invitation.TAG, "invitationTime: isLastWeek: $date")
+
             val dateFormater = SimpleDateFormat("EEEE 'at' HH:mm", Locale.US)
             return dateFormater.format(date)
         }
         // If it's more than one week ago, display the full date.
         else {
-            Log.d(Invitation.TAG, "invitationTime: is old: $date")
+
             val day = date.day()
             val daySuffix = if (day in 11..13) {
                 "th"

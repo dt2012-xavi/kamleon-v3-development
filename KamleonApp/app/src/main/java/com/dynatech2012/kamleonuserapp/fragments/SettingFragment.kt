@@ -454,14 +454,14 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             .toLocalDate()
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
         val formattedDate = localDate.format(formatter)
-        Log.d(TAG, "formatted birth date: $formattedDate")
+
         binding.prefMenuItemBirth.setValue(formattedDate)
         binding.smNotiSwitch.getSwitchComp()?.isChecked =
             userData.notifications["analytics"] ?: true
     }
 
     private fun onUserProfilesChanged(organizations: ArrayList<Organization>) {
-        Log.d(TAG, "on user profiles changed: $organizations")
+        Log.d(TAG, "User profiles changed: count=${organizations.size}")
         if (organizations.isEmpty()) {
             binding.llSettingAccountInfoSingle.visibility = View.GONE
             binding.llSettingAccountInfoMultiple.visibility = View.GONE
@@ -519,7 +519,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     override fun onDateChanged(date: Long, day: Int, month: Int, year: Int) {
         val dateSelected = GregorianCalendar(year, month, day).time
         val fourteenYAgo = Date().addYears(-14)
-        Log.d(DatePickerFragment.TAG, "ggg onDateChanged: $dateSelected, $fourteenYAgo")
+        Log.d(DatePickerFragment.TAG, "Birth date selection changed")
         val isDateAllowed = dateSelected <= fourteenYAgo
         dateFragment?.enableSaveButton(isDateAllowed)
         if (!isDateAllowed) {

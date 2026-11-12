@@ -62,6 +62,8 @@ android {
         warningsAsErrors = true
         checkDependencies = true
         checkTestSources = true
+        // Legacy Log calls are migrated incrementally; keep all other Timber checks active.
+        disable "LogNotTimber"
     }
     buildFeatures {
         viewBinding = true
@@ -237,6 +239,7 @@ dependencies {
 
     implementation libs.mlkit.barcode.scanning
 
-    // Splash
+    // Logging and splash
+    implementation libs.timber
     implementation libs.core.splashscreen
 }

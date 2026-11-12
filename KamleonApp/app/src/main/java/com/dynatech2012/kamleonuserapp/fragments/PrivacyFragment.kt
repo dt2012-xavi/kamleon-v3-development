@@ -6,7 +6,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.util.Linkify
-import android.util.Log
+import timber.log.Timber
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -98,7 +98,7 @@ class PrivacyFragment : BaseFragment<ActivityPrivacyBinding>() {
             updatePrivacyItemViews()
         }
         binding.btnNext.setOnClickListener {
-            Log.d(TAG, "Btn clicked")
+            Timber.d("Privacy consent accepted; opening onboarding")
             //viewModel.signup()
             findNavController().navigate(R.id.action_privacyFragment_to_onboardingFragment)
         }
@@ -193,10 +193,7 @@ class PrivacyFragment : BaseFragment<ActivityPrivacyBinding>() {
     }
 
     private fun startActivity(state: Int) {
-        Log.d(
-            TAG,
-            "register Callback privacy - $state"
-        ) //TODO display user errors and navigate to register fragment to display them and the user to fix them
+        Timber.d("Privacy screen observed registration state: %s", state) //TODO display user errors and navigate to register fragment to display them and the user to fix them
         if (state == 3) /*before 2*/ {
             findNavController().navigate(R.id.action_privacyFragment_to_onboardingFragment)
         }

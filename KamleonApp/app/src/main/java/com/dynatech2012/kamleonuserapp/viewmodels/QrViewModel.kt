@@ -68,15 +68,15 @@ class QrViewModel @Inject constructor(
         val ioDispatcher = Dispatchers.IO
         viewModelScope.launch(ioDispatcher) {
             analyzer.qrStingFlow.collect { qrString ->
-                DebugLog.d(TAG) { "qqqq3 status: $qrString" }
+                DebugLog.d(TAG) { "QR scanner state received" }
                 // qr example
                 // {"unitId": "1000", "sessionId": "1708532818789", "data": {}}
                 if (qrString is Response.Success) {
-                    DebugLog.d(TAG) { "qqqq4: ${qrString.data}" }
+                    DebugLog.d(TAG) { "QR scan succeeded; parsing link" }
                     //val gson = Gson()
                     //val qrResponse = gson.fromJson(qrString.data, QRResponse::class.java)
                     val qrResponse = parseQrString(qrString.data)
-                    DebugLog.d(TAG) { "qqqq5: $qrResponse" }
+                    DebugLog.d(TAG) { "QR link parsed" }
                     _qrResponse.postValue(Response.Success(qrResponse))
                 }
             }

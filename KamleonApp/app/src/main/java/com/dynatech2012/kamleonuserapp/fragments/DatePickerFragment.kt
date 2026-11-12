@@ -104,7 +104,7 @@ class DatePickerFragment : BottomSheetDialogFragment() {
         pickerV.setDate(initialDate)
         pickerV.setMaxxDate(fourTeenYearsAgo)
         pickerV.setDateChangeListener(dateChangeListener)
-        Log.d(TAG, "ACTIONN onDateChanged first date: $dateValue")
+        Log.d(TAG, "Date picker initialized")
         pickerV.setDatePickerTouchListener(object : OnDatePickerTouchListener {
             override fun onDatePickerTouchDown() {
                 behavior.isDraggable = false
@@ -127,9 +127,9 @@ class DatePickerFragment : BottomSheetDialogFragment() {
     private fun onSave() {
         Log.d(TAG, "onSave")
         pickerV.getDateSelected().let { dateSelected ->
-            Log.d(TAG, "onSave date: year: ${dateSelected.year}, month: ${dateSelected.month}, day: ${dateSelected.day}")
+            Log.d(TAG, "Date picker selection saved")
             val date = GregorianCalendar(dateSelected.year, dateSelected.month, dateSelected.day).time
-            Log.d(TAG, "onSave date: $date")
+
             viewModel.changeBirth(date)
         }
     }
@@ -153,7 +153,7 @@ class DatePickerFragment : BottomSheetDialogFragment() {
         @JvmStatic
         fun newInstance(dismissListener: BottomFragmentDismissListener, dateChangeListener: DateChangeListener, value: Date) =
             DatePickerFragment().apply {
-                Log.d(TAG, "onDateChanged first date: $value")
+                Log.d(TAG, "Date picker selection changed")
                 this.dismissListener = dismissListener
                 this.dateChangeListener = dateChangeListener
                 dateValue = value

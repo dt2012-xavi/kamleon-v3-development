@@ -94,18 +94,18 @@ class QRCodeImageAnalyzerMLKitKotlin :
                         // Task completed successfully
                         for (barcode in barcodes) {
                             val rawValue = barcode.rawValue
-                            DebugLog.d(TAG) { "qrScanner ML: barcode: $rawValue" }
+                            DebugLog.d(TAG) { "QR barcode detected" }
                             val valueType = barcode.valueType
                             // See API reference for complete list of supported types
                             if (rawValue != null && valueType == Barcode.TYPE_URL) {
                                 _qrStingFlow.value = Response.Success(rawValue)
-                                _qrDebugFlow.value = Response.Success("QR debug -- ML analyzer: success with value: $rawValue")
+                                _qrDebugFlow.value = Response.Success("QR analyzer accepted a URL")
                                 //listener.onQRCodeFound(rawValue)
                             } else {
                                 val e: Exception =
                                     IllegalStateException("Unexpected value: $valueType")
-                                DebugLog.d(TAG) { "qrScanner ML: failure with exception: $e" }
-                                _qrDebugFlow.value = Response.Success("QR debug -- ML analyzer: error: $e")
+                                DebugLog.d(TAG) { "QR analyzer rejected barcode type" }
+                                _qrDebugFlow.value = Response.Success("QR analyzer rejected barcode type")
                                 _qrStingFlow.value = Response.Failure(e)
                                 //listener.onQRCodeException(e)
                             }
@@ -114,8 +114,8 @@ class QRCodeImageAnalyzerMLKitKotlin :
                 }
                 .addOnFailureListener { e: Exception ->
                     // Task failed with an exception
-                    DebugLog.d(TAG) { "qrScanner ML: failure processing image: $e" }
-                    _qrDebugFlow.value = Response.Success("QR debug -- ML analyzer: success with value: $e")
+                    DebugLog.d(TAG) { "QR analyzer failed to process image" }
+                    _qrDebugFlow.value = Response.Success("QR analyzer failed to process image")
                     _qrStingFlow.value = Response.Failure(e)
                     //listener.onQRCodeException(e)
                 }

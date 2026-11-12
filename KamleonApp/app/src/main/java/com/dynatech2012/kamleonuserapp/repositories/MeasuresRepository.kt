@@ -26,8 +26,8 @@ class MeasuresRepository @Inject constructor(
             if (measures?.isNotEmpty() == true) {
                 Log.d(TAG, "got measures from DB not empty")
                 lastDateLong = measures[0].analysisDate
-                Log.d(TAG, "got measures from DB 4 last date: ${Date(lastDateLong)}")
-                Log.d(TAG, "got measures from DB 4 score last: ${measures[0].score}")
+                Log.d(TAG, "Latest local measure found")
+
             }
             else {
                 Log.w(TAG, "got measures from DB EMPTY")
@@ -43,15 +43,13 @@ class MeasuresRepository @Inject constructor(
         if (response.isSuccess) {
             val measures = response.dataValue
             Log.d(TAG, "got measures from FS 2 size ${measures?.size}")
-            for (m in measures ?: emptyList()) {
-                Log.d(TAG, "got measures from FS 3 score and date: ${m.score} _ date: ${Date(m.analysisDate)}")
-            }
+
             if (measures?.isNotEmpty() == true) {
                 Log.d(TAG, "got measures from FS not empty")
                 database.saveMeasures(measures)
                 lastDateLong = measures[0].analysisDate
                 newMeasuresFS = measures
-                Log.d(TAG, "got measures from FS 4 score last: ${measures[0].score}")
+                Log.d(TAG, "Latest remote measure found")
             }
             else {
                 Log.w(TAG, "got measures from FS EMPTY")

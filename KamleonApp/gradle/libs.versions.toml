@@ -29,6 +29,7 @@ mlkitVision = "17.3.0"
 mlkitBarcode = "17.3.0"
 circleimageview = "3.1.0"
 coreSplashscreen = "1.2.0"
+timber = "5.0.1"
 
 [libraries]
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
@@ -75,6 +76,7 @@ mlkit-vision-common = { module = "com.google.mlkit:vision-common", version.ref =
 mlkit-barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "mlkitBarcode" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraX" }
 camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraX" }
 camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraX" }
