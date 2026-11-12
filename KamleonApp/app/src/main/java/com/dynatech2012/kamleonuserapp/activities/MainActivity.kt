@@ -54,7 +54,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "XXX init activity main")
-        handleIntent(intent)
+        if (savedInstanceState == null) handleIntent(intent)
         initObservers()
     }
 
@@ -73,7 +73,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         val unitId = intent.getStringExtra("unitId")
         val sessionId = intent.getStringExtra("sessionId")
         if (!unitId.isNullOrEmpty() && !sessionId.isNullOrEmpty()) {
-            DebugLog.d(TAG) { "XXX Received unitId: $unitId, sessionId: $sessionId" }
+            intent.removeExtra("unitId")
+            intent.removeExtra("sessionId")
+            DebugLog.d(TAG) { "Scan link received by main activity" }
             // Use the parameters as needed
             val qrResponse = QRResponse(
                 unitId = unitId,

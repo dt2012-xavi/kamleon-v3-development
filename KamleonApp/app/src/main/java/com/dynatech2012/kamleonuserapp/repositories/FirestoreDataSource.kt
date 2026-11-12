@@ -17,11 +17,11 @@ import com.dynatech2012.kamleonuserapp.models.RawMeasureData
 import com.dynatech2012.kamleonuserapp.models.UserStatus
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 
 import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.messaging.FirebaseMessaging
@@ -47,7 +47,7 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
     ): Response<CustomUser> {
         uuid?.let { uuid ->
             val doc = db.collection(USERS_COLLECTION).document(uuid)
-            user = CustomUser(
+            val newProfile = CustomUser(
                 uuid,
                 email,
                 fName,
@@ -56,42 +56,46 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
                 dateOfBirth = birthday,
                 legal = KamleonLegal(healthConsent = healthConsent, privacyPolicyApp = appPrivacy)
             )
-            doc.set(user).await()
-            Firebase.auth.currentUser?.let {
-                return Response.Success(user)
+            return try {
+                val profile = db.runTransaction { transaction ->
+                    val existing = transaction.get(doc)
+                    if (existing.exists()) {
+                        existing.toObject<CustomUser>()
+                            ?: throw IllegalStateException("User profile could not be parsed")
+                    } else {
+                        transaction.set(doc, newProfile)
+                        newProfile
+                    }
+                }.await()
+                user = profile
+                Response.Success(profile)
+            } catch (e: Exception) {
+                Response.Failure(e)
             }
         }
-        return Response.Failure(Exception())
+        return Response.Failure(Exception("User not logged in"))
     }
 
     suspend fun createUserStep2(
         height: Float?, weight: Float?, gender: Gender
     ): Response<CustomUser> {
-        uuid?.let { uuid ->
-            val doc = db.collection(USERS_COLLECTION).document(uuid)
-            doc.update(
-                hashMapOf(
-                    "height" to height,
-                    "weight" to weight,
-                    "gender" to gender
-                ) as Map<String, Any>
-            ).await()
-            Firebase.auth.currentUser?.let {
-                user.height = height
-                user.weight = weight
-                user.gender = gender
-                return Response.Success(user)
-            }
+        val userId = uuid ?: return Response.Failure(Exception("User not logged in"))
+        return try {
+            val doc = db.collection(USERS_COLLECTION).document(userId)
+            doc.update(mapOf("height" to height, "weight" to weight, "gender" to gender)).await()
+            val result = getUserData()
+            if (result is Response.Success) result else Response.Failure(Exception("User profile unavailable"))
+        } catch (e: Exception) {
+            Response.Failure(e)
         }
-        return Response.Failure(Exception())
     }
 
     suspend fun updateUser(data: HashMap<String, Any>): Response<Unit> {
         if (uuid == null) {
             return Response.Failure(Exception("User not logged in"))
         }
-        DebugLog.i("PIN") { "--->> UUID user collection: $uuid" }
-        DebugLog.i("PIN") { "--->> data: $data" }
+        DebugLog.i("PIN") { "Updating user profile" }
+        DebugLog.i("PIN") { "User profile update requested" }
         val doc = db.collection(USERS_COLLECTION).document(uuid!!)
         return try {
             doc.update(data).await()
@@ -101,17 +105,19 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
         }
     }
 
-    suspend fun getUserData(): Response<CustomUser> {
-        if (uuid == null) {
-            return Response.Failure(Exception("User not logged in"))
+    suspend fun getUserData(source: Source = Source.DEFAULT): Response<CustomUser> {
+        val userId = uuid ?: return Response.Failure(Exception("User not logged in"))
+        return try {
+            val snapshot = db.collection(USERS_COLLECTION).document(userId).get(source).await()
+            if (!snapshot.exists()) return Response.Failure(UserProfileMissingException())
+            val profile = snapshot.toObject<CustomUser>()
+                ?: return Response.Failure(Exception("User profile could not be parsed"))
+            user = profile
+            DebugLog.d(TAG) { "User profile loaded" }
+            Response.Success(profile)
+        } catch (e: Exception) {
+            Response.Failure(e)
         }
-        val doc = db.collection(USERS_COLLECTION).document(uuid!!)
-        doc.get().await().toObject<CustomUser>()?.let { u ->
-            user = u
-            DebugLog.d(TAG) { "getUserData token: ${u.token}" }
-            return Response.Success(u)
-        }
-        return Response.Failure(Exception("User parsing error"))
     }
 
     suspend fun updateUserImage(uri: Uri): Response<Boolean> {

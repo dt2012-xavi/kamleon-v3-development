@@ -3,7 +3,7 @@ package com.dynatech2012.kamleonuserapp.fragments
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
+import timber.log.Timber
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.activities.InitActivity
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityOnboardingBinding
@@ -140,21 +141,21 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
                 }
 
                 OnBoardingStep.Height -> {
-                    Log.d(TAG, "picker height: ${binding.heightPicker.getSelectedValue()}")
+                    Timber.d("Height step completed")
                     binding.heightPicker.getSelectedValue()?.let {
                         viewModel.height = it.toFloat()
                     }
                 }
 
                 OnBoardingStep.Weight -> {
-                    Log.d(TAG, "picker weight: ${binding.weightPicker.getSelectedValue()}")
+                    Timber.d("Weight step completed")
                     binding.weightPicker.getSelectedValue()?.let {
                         viewModel.weight = it.toFloat()
                     }
                 }
 
                 OnBoardingStep.Gender -> {
-                    Log.d(TAG, "picker gender: ${binding.genderPicker.getSelectedValue()}")
+                    Timber.d("Gender step completed")
                     val genderPicked = binding.genderPicker.getSelectedValue()
                     val gender = Gender.fromRaw(genderPicked)
                     viewModel.gender = gender
@@ -164,7 +165,7 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         }
 
         binding.btnNavBack.setOnClickListener {
-            Log.i(TAG, "Back button clicked with step: ${state.step}")
+            Timber.d("Onboarding back requested at step: %s", state)
             if (state.step == 0) {
                 findNavController().popBackStack()
             } else {
@@ -173,22 +174,29 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
             updateUI()
         }
 
-        viewModel.uiState.observe(this, this::startActivity)
+        viewModel.uiState.observe(viewLifecycleOwner, this::startActivity)
 
     }
 
     private fun startActivity(state: Int) {
-        Log.d(
-            PrivacyFragment.TAG,
-            "register Callback privacy - $state"
-        )
+        Timber.d("Onboarding observed registration state: %s", state)
         //TODO display user errors and navigate to register fragment to display them and the user to fix them
         if (state == 3) {
             checkIfGoNextStep()
-        } else if (state == -1) {
-            //show snackbar with error
-            Snackbar.make(binding.root, R.string.signup_error_server_error, Snackbar.LENGTH_SHORT)
-                .show()
+        } else if (state == -7) {
+            if (findNavController().currentDestination?.id == R.id.onboardingFragment) {
+                findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)
+            }
+        } else if (state == -1 || state == -6) {
+            binding.pbOnboardNext.visibility = View.GONE
+            binding.pbOnboardSkip.visibility = View.GONE
+            binding.btnNext.isEnabled = true
+            binding.btnNext.text = getString(R.string.onboard_button_next)
+            Snackbar.make(
+                binding.root,
+                if (state == -6) R.string.startup_network_error else R.string.signup_error_server_error,
+                Snackbar.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -196,7 +204,7 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
         when (state.step) {
 
             OnBoardingStep.values().size - 1 -> {
-                Log.i("REGISTER","--->>> Step here to check:  ${OnBoardingStep.values().size}")
+                Timber.d("Finishing registration profile")
                 binding.btnNext.text = ""
                 binding.pbOnboardNext.visibility = View.VISIBLE
                 viewModel.finishSignup()
@@ -204,11 +212,11 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
 
             OnBoardingStep.Notification.step/*, OnBoardingStep.Location.step*/ -> {
                 // Do nothing
-                Log.i("REGISTER","--->>> Notification step to check")
+                Timber.d("Awaiting notification permission result")
             }
 
             else -> {
-                Log.i("REGISTER","--->>> Else to check")
+                Timber.d("Advancing onboarding step")
 
                 goNextStep()
             }
@@ -221,7 +229,7 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
     }
 
     private fun updateUI() {
-        Log.i("REGISTER", "--->>> UPDATE UI Step here:  ${state.step}")
+        Timber.d("Showing onboarding step: %s", state)
 
         if (state.step == 0 || state.step == 1) {
             //binding.progressStep.visibility = View.INVISIBLE
@@ -250,7 +258,7 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
                 binding.pbOnboardSkip.visibility = View.VISIBLE
                 binding.btnNext.isEnabled = false
                 binding.tvBottomDesc.isEnabled = false
-                Log.i("REGISTER", "--->>> Step here when on click:  ${state.step}")
+                Timber.d("Skipping onboarding step: %s", state)
 
                 if (state.step == 2 || state.step == 3 || state.step == 4) {
                     when (state.step) {
@@ -307,7 +315,7 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
 
             else -> {}
         }
-        Log.d(TAG, "spinner data source: $aryRet")
+        Timber.d("Picker options prepared for step: %s", step)
 
         return aryRet
     }
@@ -319,18 +327,17 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
             }
             val picker = spinnerViewFor(onboardState)
 
-            Log.e("SPINNER", "Datasource size = " + spinnerDataSource(onboardState).size)
+            Timber.d("Picker options loaded for step: %s", onboardState)
             picker.setValues(spinnerDataSource(onboardState))
         }
     }
 
     private fun initObservers() {
-        viewModel.uiState.observe(this, this::onStateReceived)
+        viewModel.uiState.observe(viewLifecycleOwner, this::onStateReceived)
     }
 
     private fun onStateReceived(state: Int) {
-        Log.d(TAG, "Callback new state received: $state")
-        Log.d(TAG, "login step state received $state")
+        Timber.d("Onboarding observed state: %s", state)
         when (state) {
             4 -> {
                 goNextStep()
@@ -344,6 +351,8 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
                 binding.tvBottomDesc.visibility = View.VISIBLE
                 showVerificationDialog()
             }
+
+            7 -> (requireActivity() as InitActivity).openMain()
 
             else -> {}
         }
@@ -361,9 +370,9 @@ class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
             getString(R.string.dialog_verify_desc, viewModel.email)
         val logoutDialog = dialog.show()
         logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        Log.d(TAG, "login step show verif dialog")
+        Timber.d("Showing verification email dialog")
         dialogView.findViewById<TextView>(R.id.tv_dialog_verify_ok).setOnClickListener {
-            Log.d(AuthViewModel.TAG, "login step verif dialog ok")
+            Timber.d("Verification dialog acknowledged")
             // Not necessary. Only if navigation fails
             binding.btnNext.isEnabled = true
             binding.tvBottomDesc.isEnabled = true

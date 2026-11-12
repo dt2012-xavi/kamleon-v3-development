@@ -39,8 +39,14 @@
     <string name="signup_error_empty_fields">Please enter your first name and last name</string>
     <string name="signup_error_password">Password must be at least 6 characters long</string>
     <string name="signup_error_email_pattern">Please use a valid email</string>
-    <string name="signup_error_email_used">This email is already in use</string>
+    <string name="signup_session_expired">Your session ended. Sign in to finish setting up your account.</string>
+    <string name="signup_existing_account_title">Could not create account</string>
+    <string name="signup_existing_account_message">If you already have an account, sign in or use Forgot password to recover access.</string>
     <string name="signup_error_server_error">There was a problem with the signup, please try again</string>
+    <string name="signup_complete_profile">Complete profile</string>
+    <string name="startup_network_error">Could not load your account. Check your connection and try again.</string>
+    <string name="retry">Retry</string>
+    <string name="verification_email_sent">Verification email sent. Check your inbox.</string>
 
     <!-- Forgot Pwd -->
     <string name="forgotpwd_settings"><u>Forgot password?</u></string>

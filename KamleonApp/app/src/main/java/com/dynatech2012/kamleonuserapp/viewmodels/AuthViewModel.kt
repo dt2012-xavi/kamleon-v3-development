@@ -1,9 +1,10 @@
 package com.dynatech2012.kamleonuserapp.viewmodels
 
 import android.text.TextUtils
-import android.util.Log
+import timber.log.Timber
 import android.util.Patterns
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,8 +12,10 @@ import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
-import com.dynatech2012.kamleonuserapp.utils.DebugLog
+import com.dynatech2012.kamleonuserapp.repositories.UserProfileMissingException
 import dagger.hilt.android.lifecycle.HiltViewModel
+import com.google.firebase.firestore.Source
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -23,18 +26,33 @@ class AuthViewModel @Inject constructor(
     private val authRepo: UserRepository,
     private val firestoreRepo: FirestoreDataSource,
     private val cloudFuctions: CloudFunctions,
-    private val userRepository: UserRepository
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _isReady = MutableLiveData<Boolean>()
-    val isReady: LiveData<Boolean> = _isReady
-    var alreadyLogged = false
-    var alreadyVerified = false
-    var alreadyPolicy = false
-    var alreadySplash = false
+    enum class StartupState { Checking, NeedsLogin, NeedsProfile, NeedsPolicy, Ready, RetryableError }
 
-    var unitId: String? = null
-    var sessionId: String? = null
+    private val _startupState = MutableLiveData(StartupState.Checking)
+    val startupState: LiveData<StartupState> = _startupState
+    @Volatile
+    var recoveringProfile = false
+        private set
+    val recoveryEmail: String? get() = if (recoveringProfile) authRepo.email else null
+
+    fun pendingScan(unitId: String, sessionId: String) {
+        savedStateHandle["scanUnitId"] = unitId
+        savedStateHandle["scanSessionId"] = sessionId
+    }
+
+    fun consumePendingScan(): Pair<String, String>? {
+        val unitId = savedStateHandle.get<String>("scanUnitId")
+        val sessionId = savedStateHandle.get<String>("scanSessionId")
+        savedStateHandle.remove<String>("scanUnitId")
+        savedStateHandle.remove<String>("scanSessionId")
+        return if (!unitId.isNullOrEmpty() && !sessionId.isNullOrEmpty()) unitId to sessionId else null
+    }
+
+    @Volatile
+    private var startupCheck = 0
 
     var fName: String? = ""
     var lName: String? = ""
@@ -61,12 +79,21 @@ class AuthViewModel @Inject constructor(
     }
 
     fun signup() {
-        Log.d(TAG, "Sign up state ${uiState.value}")
+        Timber.d("Registration requested")
         viewModelScope.launch(Dispatchers.IO) {
-            if (email != null && pass != null && fName != null && lName != null) {
-                val authResult = authRepo.signup(email!!, pass!!)
-                Log.d(TAG, "register auth result: $authResult")
-                if (authResult.isSuccess && authResult.dataValue != null) {
+            if (email != null && fName != null && lName != null &&
+                (recoveringProfile || pass != null)) {
+                val resumingProfile = recoveringProfile
+                val authResult = if (resumingProfile) null else authRepo.signup(email!!, pass!!)
+                val authSucceeded = if (resumingProfile) {
+                    authRepo.checkLogged && authRepo.email == email
+                } else {
+                    authResult?.isSuccess == true
+                }
+                Timber.d("Registration authentication available: %s", authSucceeded)
+                if (authSucceeded) {
+                    recoveringProfile = true
+                    pass = ""
                     _uiState.postValue(1)
                     val registerResult =
                         firestoreRepo.createUserStep1(
@@ -79,12 +106,16 @@ class AuthViewModel @Inject constructor(
                         )
                     if (registerResult.isSuccess && registerResult.dataValue != null) {
                         _uiState.postValue(2)
-                        sendVerificationEmail()
+                        if (authRepo.isEmailVerified) _uiState.postValue(3) else sendVerificationEmail()
                     } else {
+                        recoveringProfile = authRepo.checkLogged && authRepo.email == email
                         _uiState.postValue(-1)
                     }
                 } else {
-                    _uiState.postValue(-1)
+                    _uiState.postValue(
+                        if (resumingProfile || authResult?.error is FirebaseAuthUserCollisionException) -7
+                        else -1
+                    )
                 }
             } else {
                 _uiState.postValue(-1)
@@ -100,7 +131,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun checkRegisterInputs() {
-        DebugLog.d(TAG) { "checkRegisterInputs: $fName, $lName, $email, $pass" }
+        Timber.d("Validating registration inputs")
         //check every input
         if (fName.isNullOrEmpty()) { //first name is empty or null
             _registerInputs.postValue(0)
@@ -119,21 +150,16 @@ class AuthViewModel @Inject constructor(
             _registerInputs.postValue(3)
             return
         }
-        //check if password is at least 6 characters
-        if (pass.isNullOrEmpty() || pass!!.length < 6) {
+        // A signed-in account with no profile does not need a new password.
+        if (!recoveringProfile && (pass.isNullOrEmpty() || pass!!.length < 6)) {
             _registerInputs.postValue(4)
             return
         }
-        //check if email is already used
-        viewModelScope.launch(Dispatchers.IO) {
-            val emailUsed = userRepository.isEmailUsed(email!!)
-            if (emailUsed) {
-                _registerInputs.postValue(5)
-                return@launch
-            } else {
-                _registerInputs.postValue(6)
-            }
+        if (recoveringProfile && (!authRepo.checkLogged || authRepo.email != email)) {
+            _registerInputs.value = -3
+            return
         }
+        _registerInputs.value = 6
     }
 
     fun notificationPermissionGranted() {
@@ -149,27 +175,37 @@ class AuthViewModel @Inject constructor(
     fun finishSignup() {
         viewModelScope.launch(Dispatchers.IO) {
             val registerResult = firestoreRepo.createUserStep2(height, weight, gender)
-            Log.d(TAG, "login step finish sign up")
-            if (registerResult.isSuccess && registerResult.dataValue != null) {
-                _uiState.postValue(5)
-            }
+            Timber.d("Registration profile update succeeded: %s", registerResult.isSuccess)
+            _uiState.postValue(
+                if (!registerResult.isSuccess) -1
+                else if (authRepo.isEmailVerified) 7
+                else 5
+            )
         }
     }
 
     fun sendVerificationEmail() {
         viewModelScope.launch(Dispatchers.IO) {
             val userId = authRepo.uuid ?: return@launch
-            val username = "$fName $lName"
-            if (email == null) {
-                Log.e(TAG, "Email or username is null")
-                return@launch
+            val emailAddress = authRepo.email ?: return@launch
+            val username = if (!fName.isNullOrBlank() && !lName.isNullOrBlank()) {
+                "$fName $lName"
+            } else {
+                val profile = firestoreRepo.getUserData().dataValue
+                if (profile == null) {
+                    _uiState.postValue(-6)
+                    return@launch
+                }
+                "${profile.name} ${profile.lastName}"
             }
-            Log.d(TAG, "login step send verif email")
+            Timber.d("Requesting verification email")
             val verificationResponse =
-                cloudFuctions.sendVerificationEmail(userId, email!!, username)
+                cloudFuctions.sendVerificationEmail(userId, emailAddress, username)
             if (verificationResponse.isSuccess) {
-                Log.d(TAG, "login step send verif email post 3 (before 5)")
+                Timber.d("Verification email request succeeded")
                 _uiState.postValue(3)
+            } else {
+                _uiState.postValue(-6)
             }
         }
     }
@@ -184,6 +220,8 @@ class AuthViewModel @Inject constructor(
     }
 
     fun login(email: String, pass: String) {
+        recoveringProfile = false
+        Timber.d("Login requested")
         _uiState.value = 1
         if (!isValidEmail(email)) {
             _uiState.postValue(-4)
@@ -191,35 +229,44 @@ class AuthViewModel @Inject constructor(
         }
         viewModelScope.launch(Dispatchers.IO) {
             val authResult = authRepo.login(email, pass)
-            if (authResult.isSuccess && authResult.dataValue != null)
-                if (!authRepo.isEmailVerified)
-                    _uiState.postValue(-5)
-                else {
-                    val userResponse = firestoreRepo.getUserData()
-                    if (userResponse.isSuccess && userResponse.dataValue?.legal?.privacyPolicyApp == true) {
-                        Log.d(TAG, "login:success: ${authResult.dataValue?.legal}")
-                        _uiState.postValue(7)
-                    } else {
-                        Log.d(TAG, "login:success: ${authResult.dataValue?.legal}")
-                        _uiState.postValue(6)
+            if (authResult.isSuccess && authResult.dataValue != null) {
+                when (val userResponse = firestoreRepo.getUserData(Source.SERVER)) {
+                    is com.dynatech2012.kamleonuserapp.repositories.Response.Success -> {
+                        fName = userResponse.data.name
+                        lName = userResponse.data.lastName
+                        _uiState.postValue(
+                            if (!authRepo.isEmailVerified) -5
+                            else if (userResponse.data.legal.privacyPolicyApp) 7
+                            else 6
+                        )
                     }
+                    is com.dynatech2012.kamleonuserapp.repositories.Response.Failure -> {
+                        if (userResponse.exception is UserProfileMissingException) {
+                            recoveringProfile = true
+                            _uiState.postValue(8)
+                        } else {
+                            _uiState.postValue(-6)
+                        }
+                    }
+                    else -> _uiState.postValue(-6)
                 }
+            }
             else if (authResult.isFailure) {
                 when (val e = authResult.error) {
                     is com.google.firebase.auth.FirebaseAuthInvalidUserException -> {
                         // user invalid
-                        Log.e(UserRepository.TAG, "login:failure: $e _ ${e.cause}", e)
+                        Timber.w("Login failed: user invalid")
                         _uiState.postValue(-3)
                     }
 
                     is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> {
                         // Pass wrong
-                        Log.e(UserRepository.TAG, "login:failure: $e _ ${e.cause}", e)
+                        Timber.w("Login failed: credentials invalid")
                         _uiState.postValue(-2)
                     }
 
                     else -> {
-                        Log.e(UserRepository.TAG, "login:failure: $e _ ${e?.cause}", e)
+                        Timber.w("Login failed: %s", e?.javaClass?.simpleName ?: "Unknown")
                         _uiState.postValue(-1)
                     }
                 }
@@ -233,28 +280,18 @@ class AuthViewModel @Inject constructor(
         _uiState.value = 0
     }
 
-    fun resetLogged() {
-        Log.d(TAG, "XXX resetLogged: resetting authViewModel")
-        alreadyLogged = false
-        alreadyVerified = false
-        alreadyPolicy = false
-        unitId = null
-        sessionId = null
-        _isReady.value = false
-    }
-
     fun checkLogin() {
-        alreadyLogged = authRepo.checkLogged
-        alreadyVerified = authRepo.isEmailVerified
+        val request = ++startupCheck
+        _startupState.value = StartupState.Checking
         viewModelScope.launch(Dispatchers.IO) {
-            val userResponse = firestoreRepo.getUserData()
-            if (userResponse.isSuccess) {
-                val user = userResponse.dataValue
-                if (user?.legal?.privacyPolicyApp == true)
-                    alreadyPolicy = true
+            val authenticated = authRepo.checkLogged
+            val profile = if (authenticated) firestoreRepo.getUserData(Source.SERVER) else null
+            val state = startupStateFor(authenticated, authRepo.isEmailVerified, profile)
+            if (request == startupCheck) {
+                recoveringProfile = state == StartupState.NeedsProfile
+                Timber.d("Startup authentication state: %s", state)
+                _startupState.postValue(state)
             }
-            Log.d(TAG, "checkLogin: $alreadyLogged, $alreadyVerified, $alreadyPolicy")
-            _isReady.postValue(true)
         }
     }
 

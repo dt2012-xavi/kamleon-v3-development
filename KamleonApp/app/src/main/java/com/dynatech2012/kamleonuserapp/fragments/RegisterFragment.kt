@@ -2,7 +2,7 @@ package com.dynatech2012.kamleonuserapp.fragments
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
+import timber.log.Timber
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.activityViewModels
@@ -10,7 +10,6 @@ import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.ActivityRegisterBinding
-import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,7 +37,7 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
     }
 
     override fun initView() {
-        Log.d(TAG, "cxcxcx on init view registerFragment")
+        Timber.d("Registration form displayed")
         binding.btnCreateAccount.isEnabled = false
         binding.inputBoxFName.getEditTextView()?.imeOptions = EditorInfo.IME_ACTION_NEXT
         binding.inputBoxLName.getEditTextView()?.imeOptions = EditorInfo.IME_ACTION_NEXT
@@ -51,16 +50,21 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
         binding.inputBoxPwd.getEditTextView()?.addTextChangedListener(inputWatcher)
         binding.inputBoxPwdRepeat.getEditTextView()?.addTextChangedListener(inputWatcher)
 
+        if (viewModel.recoveringProfile) {
+            binding.inputBoxEmail.getEditTextView()?.setText(viewModel.recoveryEmail)
+            binding.inputBoxEmail.isEnabled = false
+            binding.inputBoxPwd.visibility = View.GONE
+            binding.inputBoxPwdRepeat.visibility = View.GONE
+            binding.btnCreateAccount.setText(R.string.signup_complete_profile)
+        }
         binding.tvError.text = ""
         binding.errorLayout.visibility = View.GONE
+        updateButtonState()
     }
 
     override fun initEvent() {
         binding.btnCreateAccount.setOnClickListener {
-            DebugLog.d(TAG) { "cxcxcx onClick create account with email: ${binding.inputBoxEmail.getEditTextView()?.text.toString()}|" }
-            DebugLog.d(TAG) { "cxcxcx onClick create account with password: ${binding.inputBoxPwd.getEditTextView()?.text.toString()}|" }
-            DebugLog.d(TAG) { "cxcxcx onClick create account with first name: ${binding.inputBoxFName.getEditTextView()?.text.toString()}|" }
-            DebugLog.d(TAG) { "cxcxcx onClick create account with last name: ${binding.inputBoxLName.getEditTextView()?.text.toString()}|" }
+            Timber.d("Registration form submitted")
             viewModel.fName = binding.inputBoxFName.getEditTextView()?.text.toString().trim()
             viewModel.lName = binding.inputBoxLName.getEditTextView()?.text.toString().trim()
             viewModel.email = binding.inputBoxEmail.getEditTextView()?.text.toString().trim()
@@ -75,8 +79,8 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
         }
 
         viewModel.resetRegisterInputs()
-        viewModel.registerInputs.observe(this) {
-            DebugLog.i(TAG) { "cxcxcx register registerInputs: $it" }
+        viewModel.registerInputs.observe(viewLifecycleOwner) {
+            Timber.d("Registration validation result: %s", it)
             when (it) {
                 6 -> {
                     binding.errorLayout.visibility = View.GONE
@@ -94,9 +98,9 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
                     binding.errorLayout.visibility = View.VISIBLE
                     binding.tvError.text = (getString(R.string.signup_error_password))
                 }
-                5 -> {
+                -3 -> {
                     binding.errorLayout.visibility = View.VISIBLE
-                    binding.tvError.text = (getString(R.string.signup_error_email_used))
+                    binding.tvError.text = getString(R.string.signup_session_expired)
                 }
             }
         }
@@ -124,7 +128,7 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
     */
 
     private fun startPrivacy() {
-        Log.i(TAG,"cxcxcx startPrivacy from register fragment")
+        Timber.d("Navigating to privacy consent")
         findNavController().navigate(R.id.action_registerFragment_to_privacyFragment)
     }
 
@@ -132,13 +136,12 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
         val hasValidInput = binding.inputBoxFName.getEditTextView()?.text.toString().isNotBlank()
                 && binding.inputBoxLName.getEditTextView()?.text.toString().isNotBlank()
                 && binding.inputBoxEmail.getEditTextView()?.text.toString().isNotBlank()
-                && binding.inputBoxPwd.getEditTextView()?.text.toString().isNotBlank()
-                && binding.inputBoxPwdRepeat.getEditTextView()?.text.toString().isNotBlank()
-                && binding.inputBoxPwd.getEditTextView()?.text.toString() == binding.inputBoxPwdRepeat.getEditTextView()?.text.toString()
+                && (viewModel.recoveringProfile ||
+                    (binding.inputBoxPwd.getEditTextView()?.text.toString().isNotBlank()
+                        && binding.inputBoxPwdRepeat.getEditTextView()?.text.toString().isNotBlank()
+                        && binding.inputBoxPwd.getEditTextView()?.text.toString() ==
+                        binding.inputBoxPwdRepeat.getEditTextView()?.text.toString()))
         binding.btnCreateAccount.isEnabled = hasValidInput
     }
 
-    companion object {
-        private const val TAG = "RegisterFragment"
-    }
 }

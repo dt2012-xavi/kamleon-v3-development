@@ -1,9 +1,8 @@
 package com.dynatech2012.kamleonuserapp.repositories
 
-import android.util.Log
+import timber.log.Timber
 import androidx.lifecycle.MutableLiveData
 import com.dynatech2012.kamleonuserapp.models.CustomUser
-import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
@@ -27,23 +26,18 @@ class UserRepository {
     val isEmailVerified: Boolean
         get() = auth.currentUser?.isEmailVerified ?: true
 
-    suspend fun isEmailUsed(email: String): Boolean {
-        val user = auth.fetchSignInMethodsForEmail(email).await()
-        return user.signInMethods?.isNotEmpty() ?: false
-    }
-
     suspend fun signup(
         email: String,
         pass: String
     ): Response<CustomUser> {//= suspendCoroutine { continuation ->
         return try {
             auth.createUserWithEmailAndPassword(email, pass).await()
-            Log.d(TAG, "createUserWithEmail:success")
+            Timber.d("Firebase account creation succeeded")
             val user = auth.currentUser
             val customUser = CustomUser(email)
             Response.Success(customUser)
         } catch (e: Exception) {
-            Log.e(TAG, "createUserWithEmail:failure", e)
+            Timber.w("Firebase account creation failed: %s", e.javaClass.simpleName)
             Response.Failure(e)
         }
     }
@@ -52,10 +46,10 @@ class UserRepository {
         email: String,
         pass: String
     ): Response<CustomUser> {// = suspendCoroutine { continuation ->
-        DebugLog.d(TAG) { "Will try  to login: $email _ $pass" }
+        Timber.d("Firebase sign-in requested")
         try {
             auth.signInWithEmailAndPassword(email, pass).await()
-            Log.d(TAG, "login:success")
+            Timber.d("Firebase sign-in succeeded")
             val user = auth.currentUser
             val customUser = CustomUser(email)
             return Response.Success(customUser)
@@ -63,18 +57,18 @@ class UserRepository {
             when (e) {
                 is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> {
                     // Pass wrong
-                    Log.e(TAG, "login:failure: $e _ ${e.cause}", e)
+                    Timber.w("Firebase sign-in failed: invalid credentials")
                     return Response.Failure(e)
                 }
 
                 is com.google.firebase.auth.FirebaseAuthInvalidUserException -> {
                     // user invalid
-                    Log.e(TAG, "login:failure: $e _ ${e.cause}", e)
+                    Timber.w("Firebase sign-in failed: invalid user")
                     return Response.Failure(e)
                 }
 
                 else -> {
-                    Log.e(TAG, "login:failure: $e _ ${e.cause}", e)
+                    Timber.w("Firebase sign-in failed: %s", e.javaClass.simpleName)
                     return Response.Failure(e)
                 }
             }
@@ -84,10 +78,8 @@ class UserRepository {
     val checkLogged: Boolean
         get() {
             val user = auth.currentUser
-            DebugLog.i(TAG) { "checkLogged here: $user" }
             val isLogged = user != null
-
-            Log.d(TAG, "checkLogged: $isLogged")
+            Timber.d("Firebase session present: %s", isLogged)
             return isLogged
         }
 
@@ -102,7 +94,7 @@ class UserRepository {
         if (it.currentUser == null) {
             FirebaseInstallations.getInstance().getToken(true)
                 .addOnCompleteListener { task: Task<InstallationTokenResult> ->
-                    Log.d(TAG, "User is signed out")
+                    Timber.d("Firebase user signed out")
                     val tokenS = task.result
                     val tokenS2 = tokenS.token
                     logoutStatus.postValue(true)
