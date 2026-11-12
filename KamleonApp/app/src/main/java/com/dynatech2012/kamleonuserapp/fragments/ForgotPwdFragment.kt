@@ -1,99 +1,85 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.text.Editable
-import android.text.TextWatcher
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.view.inputmethod.EditorInfo
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.graphics.drawable.toDrawable
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
-import com.dynatech2012.kamleonuserapp.base.BaseFragment
-import com.dynatech2012.kamleonuserapp.databinding.ActivityForgotPwdBinding
+import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.viewmodels.ForgotPwdViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ForgotPwdFragment : BaseFragment<ActivityForgotPwdBinding>() {
-    override fun setBinding(): ActivityForgotPwdBinding = ActivityForgotPwdBinding.inflate(layoutInflater)
+class ForgotPwdFragment : Fragment() {
     private val viewModel: ForgotPwdViewModel by viewModels()
-    override fun initView() {
-        binding.btnSendLoginLink.isEnabled = false
 
-        binding.inputBoxEmail.getEditTextView()?.imeOptions = EditorInfo.IME_ACTION_DONE
-        binding.inputBoxEmail.getEditTextView()?.addTextChangedListener(object : TextWatcher {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    }
 
-            override fun afterTextChanged(s: Editable) {}
-
-            override fun beforeTextChanged(s: CharSequence, start: Int,
-                                           count: Int, after: Int) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (view as ComposeView).setContent {
+            var email by rememberSaveable { mutableStateOf("") }
+            AppTheme(useDarkTheme = false) {
+                ForgotPwdScreen(
+                    email = email,
+                    onEmailChange = { email = it },
+                    onSend = { viewModel.resetPwd(email) },
+                    onClose = {
+                        findNavController().navigate(R.id.action_forgotPwdFragment_to_loginFragment)
+                    },
+                    onCreateAccount = {
+                        findNavController().navigate(R.id.action_forgotPwdFragment_to_registerFragment)
+                    }
+                )
             }
-
-            override fun onTextChanged(s: CharSequence, start: Int,
-                                       before: Int, count: Int) {
-                binding.btnSendLoginLink.isEnabled = binding.inputBoxEmail.getEditTextView()?.text.toString().isNotBlank()
-            }
-        })
-
-        initObservers()
-    }
-
-    override fun initEvent() {
-        binding.btnClose.setOnClickListener {
-            findNavController().navigate(R.id.action_forgotPwdFragment_to_loginFragment)
         }
-
-        binding.tvCreateNewAcc.setOnClickListener {
-            findNavController().navigate(R.id.action_forgotPwdFragment_to_registerFragment)
-        }
-
-        binding.btnSendLoginLink.setOnClickListener {
-            viewModel.resetPwd(binding.inputBoxEmail.getEditTextView()?.text.toString())
+        viewModel.resetPwdSuccess.observe(viewLifecycleOwner) {
+            if (it) showSuccessDialog() else showErrorDialog()
         }
     }
-
-    private fun initObservers() {
-        viewModel.resetPwdSuccess.observe(this) {
-            if (it) showSuccessDialog()
-            else showErrorDialog()
-        }
-    }
-
 
     private fun showSuccessDialog() {
-        val title = getString(R.string.dialog_reset_pwd_success_title)
-        val message = getString(R.string.dialog_reset_pwd_success_description)
-        showReadyDialog(title, message)
+        showReadyDialog(
+            getString(R.string.dialog_reset_pwd_success_title),
+            getString(R.string.dialog_reset_pwd_success_description)
+        )
     }
 
     private fun showErrorDialog() {
-        val title = getString(R.string.dialog_reset_pwd_error_title)
-        val message = getString(R.string.dialog_reset_pwd_error_description)
-        showReadyDialog(title, message)
+        showReadyDialog(
+            getString(R.string.dialog_reset_pwd_error_title),
+            getString(R.string.dialog_reset_pwd_error_description)
+        )
     }
 
     private fun showReadyDialog(title: String, message: String) {
-        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        val inflater = this.layoutInflater
-        val dialogView: View = inflater.inflate(R.layout.layout_dialog_ok, null)
-
-        dialog.setView(dialogView)
-        dialog.setCancelable(false)
-        // -3 is email not valid, -2 is password not valid, -1 is firebase error
+        val dialogView = layoutInflater.inflate(R.layout.layout_dialog_ok, null)
         dialogView.findViewById<TextView>(R.id.tvDialogTitle).text = title
         dialogView.findViewById<TextView>(R.id.tvDialogDesc).text = message
-        val logoutDialog = dialog.show()
-        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener {
-            logoutDialog.dismiss()
-        }
-    }
-
-    companion object {
-        private val TAG = ForgotPwdFragment::class.java.simpleName
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setCancelable(false)
+            .show()
+        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener { dialog.dismiss() }
     }
 }

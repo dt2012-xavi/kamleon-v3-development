@@ -91,9 +91,16 @@ fun kamleonRegular(size: TextUnit) = kamleonTextStyle(MatTheme.fontFamily, size)
  * `style="@style/CircularBookFont"`.
  *
  * Measured on device (SM-A556B, API 36): TextViews using the XML Book style are drawn with the
- * Regular face (glyph widths match Regular pixel for pixel; the hinted Book TTF is not what shows).
- * Compose uses the same face so both UIs look identical. If the XML is ever fixed to render the
+ * Regular face (glyph widths match Regular pixel for pixel; the Book TTF is not what shows).
+ * Likely cause: the theme's text style (TextAppearance.Kamleon) sets both `app:fontFamily` and
+ * `android:fontFamily` to circular_pro, and AppCompat gives the former priority over the
+ * `android:fontFamily` of CircularBookFont / CircularMediumFont. The same effect makes
+ * `style=CircularMediumFont` + bold titles render with the Bold face (see [kamleonHeadline6]).
+ * Compose uses the same faces so both UIs look identical. If the XML is ever fixed to render the
  * real Book face, switch this to `MatTheme.fontFamilyBook`.
+ *
+ * Known residual: 12sp texts are ~3.5% wider in the XML than in Compose on this device (same glyph
+ * sizes, larger advances); the cause was not found, so no compensation is applied.
  */
 @Composable
 fun kamleonBook(size: TextUnit) = kamleonTextStyle(MatTheme.fontFamily, size)
