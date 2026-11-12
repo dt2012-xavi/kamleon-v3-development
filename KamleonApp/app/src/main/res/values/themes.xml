@@ -4,7 +4,6 @@
         <item name="colorPrimary">@color/kamleon_blue</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:fitsSystemWindows">true</item>
         <item name="android:windowLightStatusBar">true</item>
         <!-- Add other shared color and text attributes here as needed -->
         <item name="colorSurface">@color/white</item>

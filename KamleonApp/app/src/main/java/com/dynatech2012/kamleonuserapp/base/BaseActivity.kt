@@ -2,6 +2,7 @@ package com.dynatech2012.kamleonuserapp.base
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
@@ -15,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
-import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.MainActivity
 
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
@@ -35,7 +35,10 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     }
 
     private fun configureSystemBars() {
-        val style = SystemBarStyle.dark(getColor(R.color.kamleon_dark_grey))
+        // Transparent bars with dark icons: the activity background (and the screen behind it)
+        // shows through, so there is no visual break between content and system bars.
+        // Light-only for now; a dark theme will need SystemBarStyle.auto(...) later.
+        val style = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
         enableEdgeToEdge(
             statusBarStyle = style,
             navigationBarStyle = style,
