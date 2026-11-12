@@ -35,17 +35,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.AppTheme
-import com.dynatech2012.kamleonuserapp.views.KamleonInputBox
 import com.dynatech2012.kamleonuserapp.views.KamleonRoundButton
+import com.dynatech2012.kamleonuserapp.views.KamleonTextField
 import com.dynatech2012.kamleonuserapp.views.KamleonTextLink
-import com.dynatech2012.kamleonuserapp.views.kamleonHeadline6
-import com.dynatech2012.kamleonuserapp.views.kamleonRegular
-import com.dynatech2012.kamleonuserapp.views.spResource
+import com.dynatech2012.kamleonuserapp.views.kamleonBody
+import com.dynatech2012.kamleonuserapp.views.kamleonCaption
+import com.dynatech2012.kamleonuserapp.views.kamleonTitle
 
 /**
- * Compose port of `activity_forgot_pwd.xml`. Literal margins/paddings come from the XML
- * (90dp header offset, 44dp side padding, 52dp before the input, ...); keep both in sync until the
- * XML is deleted.
+ * Compose version of `activity_forgot_pwd.xml`. Layout margins are the XML's literal values (90dp
+ * header offset, 44dp side padding, 52dp before the input, ...); typography and the text field
+ * come from the shared Kamleon components.
  */
 @Composable
 fun ForgotPwdScreen(
@@ -78,19 +78,18 @@ fun ForgotPwdScreen(
             )
             Text(
                 text = stringResource(R.string.forgotpwd_title),
-                // The XML asks for CircularMediumFont + bold, but renders the Bold face (see kamleonBook).
-                style = kamleonHeadline6(),
+                style = kamleonTitle(),
                 color = darkGrey,
                 modifier = Modifier.padding(top = 8.dp)
             )
             Text(
                 text = stringResource(R.string.forgotpwd_desc),
-                style = kamleonRegular(spResource(R.dimen.ts_16)),
+                style = kamleonBody(),
                 color = darkGrey,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 8.dp)
             )
-            KamleonInputBox(
+            KamleonTextField(
                 value = email,
                 onValueChange = onEmailChange,
                 placeholder = stringResource(R.string.placeholder_email),
@@ -110,10 +109,9 @@ fun ForgotPwdScreen(
                 modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Style CircularBookFont: drawn with the Regular face on device (see kamleonBook).
                 Text(
                     text = stringResource(R.string.forgotpwd_can_not_reset),
-                    style = kamleonRegular(spResource(R.dimen.ts_12)),
+                    style = kamleonCaption(),
                     color = grey60
                 )
                 // "OR" divider: two 1px (physical pixel) lines around the label.
@@ -126,7 +124,7 @@ fun ForgotPwdScreen(
                     Box(Modifier.height(36.dp).padding(horizontal = 10.dp), contentAlignment = Alignment.Center) {
                         Text(
                             text = stringResource(R.string.forgotpwd_or),
-                            style = kamleonRegular(spResource(R.dimen.ts_12)),
+                            style = kamleonCaption(),
                             color = grey60
                         )
                     }
@@ -135,7 +133,7 @@ fun ForgotPwdScreen(
                 KamleonTextLink(
                     text = stringResource(R.string.forgotpwd_create_new),
                     onClick = onCreateAccount,
-                    style = kamleonRegular(spResource(R.dimen.ts_12)),
+                    style = kamleonCaption(),
                     color = grey60,
                     pressedColor = colorResource(R.color.kamleon_secondary_grey_70),
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),

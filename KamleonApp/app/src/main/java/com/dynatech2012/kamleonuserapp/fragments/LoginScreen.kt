@@ -29,18 +29,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.AppTheme
-import com.dynatech2012.kamleonuserapp.views.KamleonInputBox
 import com.dynatech2012.kamleonuserapp.views.KamleonRoundButton
+import com.dynatech2012.kamleonuserapp.views.KamleonTextField
 import com.dynatech2012.kamleonuserapp.views.KamleonTextLink
-import com.dynatech2012.kamleonuserapp.views.kamleonBook
-import com.dynatech2012.kamleonuserapp.views.kamleonHeadline6
-import com.dynatech2012.kamleonuserapp.views.kamleonRegular
-import com.dynatech2012.kamleonuserapp.views.spResource
+import com.dynatech2012.kamleonuserapp.views.kamleonBody
+import com.dynatech2012.kamleonuserapp.views.kamleonBodySmall
+import com.dynatech2012.kamleonuserapp.views.kamleonCaption
+import com.dynatech2012.kamleonuserapp.views.kamleonTitle
 
 /**
- * Compose port of `activity_login.xml`. Margins, paddings and text sizes are the literal values
- * from the XML (44dp side padding, 90dp header offset, 40dp bottom padding, ...); keep both in
- * sync until the XML is deleted.
+ * Compose version of `activity_login.xml`. Layout margins are the XML's literal values (44dp side
+ * padding, 90dp header offset, 40dp bottom padding, ...); typography and the text field come from
+ * the shared Kamleon components.
  */
 @Composable
 fun LoginScreen(
@@ -83,13 +83,13 @@ fun LoginScreen(
                 )
                 Text(
                     text = stringResource(R.string.login_title),
-                    style = kamleonHeadline6(),
+                    style = kamleonTitle(),
                     color = darkGrey,
                     modifier = Modifier.padding(top = 8.dp)
                 )
                 Text(
                     text = stringResource(R.string.login_desc),
-                    style = kamleonRegular(spResource(R.dimen.ts_16)),
+                    style = kamleonBody(),
                     color = darkGrey,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 8.dp)
@@ -98,7 +98,7 @@ fun LoginScreen(
 
             // Form block
             Column(Modifier.fillMaxWidth().padding(top = 40.dp).padding(horizontal = 44.dp)) {
-                KamleonInputBox(
+                KamleonTextField(
                     value = email,
                     onValueChange = onEmailChange,
                     placeholder = stringResource(R.string.placeholder_email),
@@ -106,7 +106,7 @@ fun LoginScreen(
                     imeAction = ImeAction.Next,
                     testTag = "login_email"
                 )
-                KamleonInputBox(
+                KamleonTextField(
                     value = password,
                     onValueChange = onPasswordChange,
                     placeholder = stringResource(R.string.placeholder_password),
@@ -119,7 +119,7 @@ fun LoginScreen(
                 KamleonTextLink(
                     text = stringResource(R.string.login_forgot_pwd),
                     onClick = onForgotPassword,
-                    style = kamleonRegular(spResource(R.dimen.ts_12)),
+                    style = kamleonCaption(),
                     color = grey60,
                     pressedColor = colorResource(R.color.kamleon_secondary_grey_70),
                     underline = true,
@@ -151,13 +151,13 @@ fun LoginScreen(
             ) {
                 Text(
                     text = stringResource(R.string.login_not_have_account),
-                    style = kamleonRegular(spResource(R.dimen.ts_14)),
+                    style = kamleonBodySmall(),
                     color = grey60
                 )
                 KamleonTextLink(
                     text = stringResource(R.string.login_signup),
                     onClick = onRegister,
-                    style = kamleonBook(spResource(R.dimen.ts_14)),
+                    style = kamleonBodySmall(),
                     color = colorResource(R.color.kamleon_blue),
                     underline = true,
                     contentPadding = PaddingValues(horizontal = 10.dp),

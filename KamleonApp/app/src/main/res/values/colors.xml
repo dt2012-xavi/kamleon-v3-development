@@ -50,6 +50,8 @@
     <color name="kamleon_secondary_grey_60">#808285</color>
     <color name="kamleon_secondary_grey_50">#A7A9AC</color>
     <color name="kamleon_secondary_grey_40">#D1D3D4</color>
+    <!-- Hairline outline for text fields and disabled buttons -->
+    <color name="kamleon_outline">#E4E4E4</color>
 
     <color name="shadow_black_0">#01000000</color>
     <color name="shadow_black_1">#02000000</color>

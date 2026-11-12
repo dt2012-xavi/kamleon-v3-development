@@ -7,11 +7,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -42,73 +43,65 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.MatTheme
 
-// Compose counterparts of the XML styles (CircularRegularFont, CircularBookFont,
-// RoundBlueButtonTextStyle, TextAppearance.Kamleon.Headline6) and of the custom views
-// (KamleonInputBox, bg_btn_round_blue). Sizes and colors come from the same dimen and
-// color resources so XML and Compose screens stay identical.
+// Shared building blocks for the Compose screens: one type scale, one text field, one button and
+// one text link. Sizes and colors come from the existing dimen/color resources.
+//
+// Typography: every text uses the Circular family through [MatTheme.fontFamily] (Regular, Medium,
+// Bold). The XML screens also end up on those faces: the theme text style (TextAppearance.Kamleon)
+// sets `app:fontFamily`, which AppCompat prioritises over the `android:fontFamily` of the
+// CircularBookFont / CircularMediumFont styles, so "Book" text is actually drawn as Regular. The
+// Book face is therefore not part of the Compose scale; reintroduce it deliberately if wanted.
 
-/** Reads an `sp` dimen resource as a [TextUnit], honouring the user's font scale like XML does. */
+/** Reads an `sp` dimen resource as a [TextUnit], honouring the user's font scale. */
 @Composable
 fun spResource(@DimenRes id: Int): TextUnit {
     val dp = dimensionResource(id)
     return with(LocalDensity.current) { dp.toSp() }
 }
 
-// XML TextViews include font padding by default; Compose does not. Keep it so line boxes match.
+// XML TextViews include font padding by default; Compose does not. Keep it so line boxes match
+// the XML screens that are still around.
 @Suppress("DEPRECATION")
 private val XmlFontPadding = PlatformTextStyle(includeFontPadding = true)
 
 @Composable
-fun kamleonTextStyle(
-    fontFamily: FontFamily,
-    size: TextUnit,
-    weight: FontWeight = FontWeight.Normal
-): TextStyle = TextStyle(
-    fontFamily = fontFamily,
+private fun circular(@DimenRes size: Int, weight: FontWeight = FontWeight.Normal): TextStyle = TextStyle(
+    fontFamily = MatTheme.fontFamily,
     fontWeight = weight,
-    fontSize = size,
+    fontSize = spResource(size),
     platformStyle = XmlFontPadding
 )
 
-/** `style="@style/CircularRegularFont"`. */
+/** Screen titles: Bold 20sp. */
 @Composable
-fun kamleonRegular(size: TextUnit) = kamleonTextStyle(MatTheme.fontFamily, size)
+fun kamleonTitle() = circular(R.dimen.ts_20, FontWeight.Bold)
 
-/**
- * `style="@style/CircularBookFont"`.
- *
- * Measured on device (SM-A556B, API 36): TextViews using the XML Book style are drawn with the
- * Regular face (glyph widths match Regular pixel for pixel; the Book TTF is not what shows).
- * Likely cause: the theme's text style (TextAppearance.Kamleon) sets both `app:fontFamily` and
- * `android:fontFamily` to circular_pro, and AppCompat gives the former priority over the
- * `android:fontFamily` of CircularBookFont / CircularMediumFont. The same effect makes
- * `style=CircularMediumFont` + bold titles render with the Bold face (see [kamleonHeadline6]).
- * Compose uses the same faces so both UIs look identical. If the XML is ever fixed to render the
- * real Book face, switch this to `MatTheme.fontFamilyBook`.
- *
- * Known residual: 12sp texts are ~3.5% wider in the XML than in Compose on this device (same glyph
- * sizes, larger advances); the cause was not found, so no compensation is applied.
- */
+/** Descriptions and primary body copy: Regular 16sp. */
 @Composable
-fun kamleonBook(size: TextUnit) = kamleonTextStyle(MatTheme.fontFamily, size)
+fun kamleonBody() = circular(R.dimen.ts_16)
 
-/** `textAppearance="@style/TextAppearance.Kamleon.Headline6"` (bold, 20sp, Circular family). */
+/** Secondary body copy and field text: Regular 14sp. */
 @Composable
-fun kamleonHeadline6() =
-    kamleonTextStyle(MatTheme.fontFamily, spResource(R.dimen.ts_20), FontWeight.Bold)
+fun kamleonBodySmall() = circular(R.dimen.ts_14)
+
+/** Links, hints and captions: Regular 13sp (replaces the 12sp used by the XML screens). */
+@Composable
+fun kamleonCaption() = circular(R.dimen.ts_13)
+
+/** Button labels: Medium, size from `round_blue_button_text_size`. */
+@Composable
+fun kamleonButtonText() = circular(R.dimen.round_blue_button_text_size, FontWeight.Medium)
 
 /**
  * Text that darkens while pressed, like the `color_text_button` selector used by XML text links.
@@ -123,8 +116,7 @@ fun KamleonTextLink(
     modifier: Modifier = Modifier,
     pressedColor: Color = color,
     underline: Boolean = false,
-    contentPadding: androidx.compose.foundation.layout.PaddingValues =
-        androidx.compose.foundation.layout.PaddingValues(0.dp)
+    contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
@@ -140,11 +132,15 @@ fun KamleonTextLink(
 }
 
 /**
- * Port of `KamleonInputBox` (`layout_kamleon_input_box.xml`): a pill with the label on the left
- * and the right-aligned value, plus the arrow/eye toggle for secure inputs.
+ * The app's single-line text field: a pill with the placeholder inside (it disappears as soon as
+ * there is text), left-aligned text, a visible outline (so it never vanishes on light backgrounds)
+ * that turns teal while focused, and an eye toggle when [secure].
+ *
+ * Keyboard actions are the defaults: Next moves focus to the following field and Done hides the
+ * keyboard.
  */
 @Composable
-fun KamleonInputBox(
+fun KamleonTextField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
@@ -155,89 +151,86 @@ fun KamleonInputBox(
     testTag: String? = null
 ) {
     var secureOn by rememberSaveable { mutableStateOf(true) }
-    val grey60 = colorResource(R.color.kamleon_secondary_grey_60)
-    val textSize = spResource(R.dimen.ts_14)
-    Box(
+    val interaction = remember { MutableInteractionSource() }
+    val focused by interaction.collectIsFocusedAsState()
+    val shape = RoundedCornerShape(dimensionResource(R.dimen.input_text_box_corner_radius))
+    val textStyle = kamleonBodySmall().copy(color = colorResource(R.color.kamleon_secondary_grey_70))
+    val eyeSize = Modifier.size(
+        dimensionResource(R.dimen.input_text_box_eye_width),
+        dimensionResource(R.dimen.input_text_box_eye_height)
+    )
+
+    BasicTextField(
+        value = value,
+        onValueChange = onValueChange,
+        singleLine = true,
+        textStyle = textStyle,
+        interactionSource = interaction,
+        cursorBrush = SolidColor(colorResource(R.color.kamleon_blue)),
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
+        visualTransformation = if (secure && secureOn) PasswordVisualTransformation() else VisualTransformation.None,
         modifier = modifier
             .fillMaxWidth()
             .height(dimensionResource(R.dimen.input_text_box_height))
-            .background(
-                colorResource(R.color.color_fa),
-                RoundedCornerShape(dimensionResource(R.dimen.input_text_box_corner_radius))
-            )
-            .padding(horizontal = dimensionResource(R.dimen.input_text_box_padding_h))
-    ) {
-        Text(
-            text = placeholder,
-            style = kamleonBook(textSize),
-            color = grey60,
-            modifier = Modifier.align(Alignment.CenterStart)
-        )
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            BasicTextField(
-                value = value,
-                onValueChange = onValueChange,
-                singleLine = true,
-                // The XML EditText keeps the platform default font, not Circular.
-                textStyle = kamleonTextStyle(FontFamily.Default, textSize).copy(
-                    color = colorResource(R.color.kamleon_secondary_grey_70),
-                    textAlign = TextAlign.End
-                ),
-                cursorBrush = SolidColor(colorResource(R.color.kamleon_blue)),
-                keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
-                // Default keyboard actions: Next moves focus to the following field and Done hides
-                // the keyboard, like the XML EditTexts (overriding them would break Next).
-                visualTransformation = if (secure && secureOn) PasswordVisualTransformation() else VisualTransformation.None,
+            .then(if (testTag != null) Modifier.testTag(testTag) else Modifier),
+        decorationBox = { innerTextField ->
+            Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 50.dp)
-                    .then(if (testTag != null) Modifier.testTag(testTag) else Modifier)
-            )
-            if (secure) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            role = Role.Button,
-                            onClickLabel = stringResource(
-                                if (secureOn) R.string.auth_show_password else R.string.auth_hide_password
-                            )
-                        ) { secureOn = !secureOn }
-                        .padding(start = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.icn_secure_input_arrow),
-                        contentDescription = null,
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier.size(
-                            dimensionResource(R.dimen.input_text_box_eye_width),
-                            dimensionResource(R.dimen.input_text_box_eye_height)
-                        )
+                    .fillMaxWidth()
+                    .height(dimensionResource(R.dimen.input_text_box_height))
+                    .clip(shape)
+                    .background(colorResource(R.color.color_fa))
+                    .border(
+                        BorderStroke(
+                            1.dp,
+                            if (focused) colorResource(R.color.kamleon_blue) else colorResource(R.color.kamleon_outline)
+                        ),
+                        shape
                     )
-                    Image(
-                        painter = painterResource(if (secureOn) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open),
-                        contentDescription = null,
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier.size(
-                            dimensionResource(R.dimen.input_text_box_eye_width),
-                            dimensionResource(R.dimen.input_text_box_eye_height)
+                    .padding(horizontal = dimensionResource(R.dimen.input_text_box_padding_h) + 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                    if (value.isEmpty()) {
+                        Text(
+                            text = placeholder,
+                            style = kamleonBodySmall(),
+                            color = colorResource(R.color.kamleon_secondary_grey_60)
                         )
-                    )
+                    }
+                    innerTextField()
+                }
+                if (secure) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                role = Role.Button,
+                                onClickLabel = stringResource(
+                                    if (secureOn) R.string.auth_show_password else R.string.auth_hide_password
+                                )
+                            ) { secureOn = !secureOn }
+                            .padding(start = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(if (secureOn) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open),
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
+                            modifier = eyeSize
+                        )
+                    }
                 }
             }
         }
-    }
+    )
 }
 
 /**
- * Port of the `bg_btn_round_blue` button: filled, translucent when pressed, outlined when
- * disabled. While [loading] the label is replaced by a small spinner and the button is inert.
+ * Primary pill button: filled teal, translucent when pressed, outlined when disabled. While
+ * [loading] the label is replaced by a small spinner and the button is inert.
  */
 @Composable
 fun KamleonRoundButton(
@@ -253,9 +246,6 @@ fun KamleonRoundButton(
     val active = enabled && !loading
     val shape = RoundedCornerShape(dimensionResource(R.dimen.round_blue_button_corner_radius))
     val grey40 = colorResource(R.color.kamleon_secondary_grey_40)
-    // The XML disabled outline (bg_btn_round_blue_disabled) is drawn lighter than its grey40
-    // stroke color on device (measured #E4E4E4 over white), so match what is actually shown.
-    val disabledStroke = Color(0xFFE4E4E4)
     val container = when {
         !active -> Color.Transparent
         pressed -> colorResource(R.color.kamleon_blue_pressed)
@@ -268,7 +258,10 @@ fun KamleonRoundButton(
             .height(dimensionResource(R.dimen.round_blue_button_height))
             .clip(shape)
             .background(container)
-            .then(if (!active) Modifier.border(BorderStroke(1.dp, disabledStroke), shape) else Modifier)
+            .then(
+                if (!active) Modifier.border(BorderStroke(1.dp, colorResource(R.color.kamleon_outline)), shape)
+                else Modifier
+            )
             .clickable(
                 interactionSource = interaction,
                 indication = null,
@@ -279,7 +272,6 @@ fun KamleonRoundButton(
             .then(if (testTag != null) Modifier.testTag(testTag) else Modifier)
     ) {
         if (loading) {
-            // Matches the 16dp progressBarStyleSmall tinted grey40 in activity_login.xml.
             CircularProgressIndicator(
                 modifier = Modifier.size(16.dp),
                 color = grey40,
@@ -288,11 +280,7 @@ fun KamleonRoundButton(
         } else {
             Text(
                 text = text,
-                style = kamleonTextStyle(
-                    MatTheme.fontFamily,
-                    spResource(R.dimen.round_blue_button_text_size),
-                    FontWeight.Medium
-                ),
+                style = kamleonButtonText(),
                 color = if (active) colorResource(R.color.white) else grey40
             )
         }
