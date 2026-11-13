@@ -1,81 +1,81 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.text.Editable
-import android.text.TextWatcher
-import timber.log.Timber
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.view.inputmethod.EditorInfo
+import android.view.ViewGroup
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
-import com.dynatech2012.kamleonuserapp.base.BaseFragment
-import com.dynatech2012.kamleonuserapp.databinding.ActivityRegisterBinding
+import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
-class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
+class RegisterFragment : Fragment() {
     private val viewModel: AuthViewModel by activityViewModels()
 
-    override fun setBinding(): ActivityRegisterBinding =
-        ActivityRegisterBinding.inflate(layoutInflater)
+    // Validation message currently shown under the form (null = none).
+    private var error by mutableStateOf<Int?>(null)
 
-    private val inputWatcher = object : TextWatcher {
-        override fun afterTextChanged(s: Editable) {}
-        override fun beforeTextChanged(
-            s: CharSequence, start: Int,
-            count: Int, after: Int
-        ) {
-        }
-
-        override fun onTextChanged(
-            s: CharSequence, start: Int,
-            before: Int, count: Int
-        ) {
-            updateButtonState()
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
     }
 
-    override fun initView() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         Timber.d("Registration form displayed")
-        binding.btnCreateAccount.isEnabled = false
-        binding.inputBoxFName.getEditTextView()?.imeOptions = EditorInfo.IME_ACTION_NEXT
-        binding.inputBoxLName.getEditTextView()?.imeOptions = EditorInfo.IME_ACTION_NEXT
-        binding.inputBoxEmail.getEditTextView()?.imeOptions = EditorInfo.IME_ACTION_NEXT
-        binding.inputBoxPwd.getEditTextView()?.imeOptions = EditorInfo.IME_ACTION_DONE
+        val recovering = viewModel.recoveringProfile
+        error = null
 
-        binding.inputBoxFName.getEditTextView()?.addTextChangedListener(inputWatcher)
-        binding.inputBoxLName.getEditTextView()?.addTextChangedListener(inputWatcher)
-        binding.inputBoxEmail.getEditTextView()?.addTextChangedListener(inputWatcher)
-        binding.inputBoxPwd.getEditTextView()?.addTextChangedListener(inputWatcher)
-        binding.inputBoxPwdRepeat.getEditTextView()?.addTextChangedListener(inputWatcher)
+        (view as ComposeView).setContent {
+            var firstName by rememberSaveable { mutableStateOf("") }
+            var lastName by rememberSaveable { mutableStateOf("") }
+            var email by rememberSaveable { mutableStateOf(if (recovering) viewModel.recoveryEmail.orEmpty() else "") }
+            // Passwords are deliberately not saved in instance state.
+            var password by remember { mutableStateOf("") }
+            var repeatPassword by remember { mutableStateOf("") }
 
-        if (viewModel.recoveringProfile) {
-            binding.inputBoxEmail.getEditTextView()?.setText(viewModel.recoveryEmail)
-            binding.inputBoxEmail.isEnabled = false
-            binding.inputBoxPwd.visibility = View.GONE
-            binding.inputBoxPwdRepeat.visibility = View.GONE
-            binding.btnCreateAccount.setText(R.string.signup_complete_profile)
-        }
-        binding.tvError.text = ""
-        binding.errorLayout.visibility = View.GONE
-        updateButtonState()
-    }
-
-    override fun initEvent() {
-        binding.btnCreateAccount.setOnClickListener {
-            Timber.d("Registration form submitted")
-            viewModel.fName = binding.inputBoxFName.getEditTextView()?.text.toString().trim()
-            viewModel.lName = binding.inputBoxLName.getEditTextView()?.text.toString().trim()
-            viewModel.email = binding.inputBoxEmail.getEditTextView()?.text.toString().trim()
-            viewModel.pass = binding.inputBoxPwd.getEditTextView()?.text.toString()
-            //first check about the
-            viewModel.checkRegisterInputs()
-            //startPrivacy()
-        }
-
-        binding.tvToLogin.setOnClickListener {
-            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+            AppTheme(useDarkTheme = false) {
+                RegisterScreen(
+                    firstName = firstName,
+                    lastName = lastName,
+                    email = email,
+                    password = password,
+                    repeatPassword = repeatPassword,
+                    recovering = recovering,
+                    error = error,
+                    onFirstNameChange = { firstName = it },
+                    onLastNameChange = { lastName = it },
+                    onEmailChange = { email = it },
+                    onPasswordChange = { password = it },
+                    onRepeatPasswordChange = { repeatPassword = it },
+                    onCreate = {
+                        Timber.d("Registration form submitted")
+                        viewModel.fName = firstName.trim()
+                        viewModel.lName = lastName.trim()
+                        viewModel.email = email.trim()
+                        viewModel.pass = password
+                        viewModel.checkRegisterInputs()
+                    },
+                    onLogin = {
+                        findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+                    }
+                )
+            }
         }
 
         viewModel.resetRegisterInputs()
@@ -83,65 +83,19 @@ class RegisterFragment : BaseFragment<ActivityRegisterBinding>() {
             Timber.d("Registration validation result: %s", it)
             when (it) {
                 6 -> {
-                    binding.errorLayout.visibility = View.GONE
+                    error = null
                     startPrivacy()
                 }
-                0, 1 -> {
-                    binding.errorLayout.visibility = View.VISIBLE
-                    binding.tvError.text = (getString(R.string.signup_error_empty_fields))
-                }
-                2, 3 -> {
-                    binding.errorLayout.visibility = View.VISIBLE
-                    binding.tvError.text = (getString(R.string.signup_error_email_pattern))
-                }
-                4 -> {
-                    binding.errorLayout.visibility = View.VISIBLE
-                    binding.tvError.text = (getString(R.string.signup_error_password))
-                }
-                -3 -> {
-                    binding.errorLayout.visibility = View.VISIBLE
-                    binding.tvError.text = getString(R.string.signup_session_expired)
-                }
+                0, 1 -> error = R.string.signup_error_empty_fields
+                2, 3 -> error = R.string.signup_error_email_pattern
+                4 -> error = R.string.signup_error_password
+                -3 -> error = R.string.signup_session_expired
             }
         }
     }
-
-    /*
-    override fun onDestroyView() {
-        Log.d(TAG, "cxcxcx onDestroyView")
-        binding.inputBoxFName.getEditTextView()?.text?.clear()
-        binding.inputBoxLName.getEditTextView()?.text?.clear()
-        binding.inputBoxEmail.getEditTextView()?.text?.clear()
-        binding.inputBoxPwd.getEditTextView()?.text?.clear()
-        binding.inputBoxPwdRepeat.getEditTextView()?.text?.clear()
-        viewModel.fName = ""
-        viewModel.lName = ""
-        viewModel.email = ""
-        viewModel.pass = ""
-        binding.inputBoxFName.getEditTextView()?.removeTextChangedListener(inputWatcher)
-        binding.inputBoxLName.getEditTextView()?.removeTextChangedListener(inputWatcher)
-        binding.inputBoxEmail.getEditTextView()?.removeTextChangedListener(inputWatcher)
-        binding.inputBoxPwd.getEditTextView()?.removeTextChangedListener(inputWatcher)
-        binding.inputBoxPwdRepeat.getEditTextView()?.removeTextChangedListener(inputWatcher)
-        super.onDestroyView()
-    }
-    */
 
     private fun startPrivacy() {
         Timber.d("Navigating to privacy consent")
         findNavController().navigate(R.id.action_registerFragment_to_privacyFragment)
     }
-
-    private fun updateButtonState() {
-        val hasValidInput = binding.inputBoxFName.getEditTextView()?.text.toString().isNotBlank()
-                && binding.inputBoxLName.getEditTextView()?.text.toString().isNotBlank()
-                && binding.inputBoxEmail.getEditTextView()?.text.toString().isNotBlank()
-                && (viewModel.recoveringProfile ||
-                    (binding.inputBoxPwd.getEditTextView()?.text.toString().isNotBlank()
-                        && binding.inputBoxPwdRepeat.getEditTextView()?.text.toString().isNotBlank()
-                        && binding.inputBoxPwd.getEditTextView()?.text.toString() ==
-                        binding.inputBoxPwdRepeat.getEditTextView()?.text.toString()))
-        binding.btnCreateAccount.isEnabled = hasValidInput
-    }
-
 }

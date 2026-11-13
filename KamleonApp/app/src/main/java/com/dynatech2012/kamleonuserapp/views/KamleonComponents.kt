@@ -136,6 +136,8 @@ fun KamleonTextLink(
  * there is text), left-aligned text, a visible outline (so it never vanishes on light backgrounds)
  * that turns teal while focused, and an eye toggle when [secure].
  *
+ * A disabled field (`enabled = false`) is read-only and greyed out.
+ *
  * Keyboard actions are the defaults: Next moves focus to the following field and Done hides the
  * keyboard.
  */
@@ -148,13 +150,16 @@ fun KamleonTextField(
     secure: Boolean = false,
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Next,
+    enabled: Boolean = true,
     testTag: String? = null
 ) {
     var secureOn by rememberSaveable { mutableStateOf(true) }
     val interaction = remember { MutableInteractionSource() }
     val focused by interaction.collectIsFocusedAsState()
     val shape = RoundedCornerShape(dimensionResource(R.dimen.input_text_box_corner_radius))
-    val textStyle = kamleonBodySmall().copy(color = colorResource(R.color.kamleon_secondary_grey_70))
+    val textStyle = kamleonBodySmall().copy(
+        color = colorResource(if (enabled) R.color.kamleon_secondary_grey_70 else R.color.kamleon_secondary_grey_60)
+    )
     val eyeSize = Modifier.size(
         dimensionResource(R.dimen.input_text_box_eye_width),
         dimensionResource(R.dimen.input_text_box_eye_height)
@@ -164,6 +169,7 @@ fun KamleonTextField(
         value = value,
         onValueChange = onValueChange,
         singleLine = true,
+        enabled = enabled,
         textStyle = textStyle,
         interactionSource = interaction,
         cursorBrush = SolidColor(colorResource(R.color.kamleon_blue)),
