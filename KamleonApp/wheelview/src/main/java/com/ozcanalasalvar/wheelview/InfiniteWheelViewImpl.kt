@@ -165,7 +165,9 @@ fun InfiniteWheelViewImpl(
 
 private fun calculateIndexToFocus(listState: LazyListState, height: Dp): Int {
     val currentItem = listState.layoutInfo.visibleItemsInfo.firstOrNull()
-    var index = currentItem?.index ?: 0
+    // Before the first layout there is no item info yet; fall back to the state's own index (the
+    // initial selection) instead of 0, otherwise the first focus callback reports the wrong item.
+    var index = currentItem?.index ?: listState.firstVisibleItemIndex
 
     if (currentItem?.offset != 0) {
         if (currentItem != null && currentItem.offset <= -height.value * 3 / 10) {
