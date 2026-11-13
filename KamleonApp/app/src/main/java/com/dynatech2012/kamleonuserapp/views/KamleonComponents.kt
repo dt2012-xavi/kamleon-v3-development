@@ -1,6 +1,7 @@
 package com.dynatech2012.kamleonuserapp.views
 
 import androidx.annotation.DimenRes
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -83,6 +84,10 @@ private fun circular(@DimenRes size: Int, weight: FontWeight = FontWeight.Normal
     platformStyle = XmlFontPadding
 )
 
+/** Large headings on the left-aligned flow screens (privacy): Regular 32sp. */
+@Composable
+fun kamleonDisplay() = circular(R.dimen.ts_32)
+
 /** Screen titles: Bold 20sp. */
 @Composable
 fun kamleonTitle() = circular(R.dimen.ts_20, FontWeight.Bold)
@@ -90,6 +95,10 @@ fun kamleonTitle() = circular(R.dimen.ts_20, FontWeight.Bold)
 /** Descriptions and primary body copy: Regular 16sp. */
 @Composable
 fun kamleonBody() = circular(R.dimen.ts_16)
+
+/** Emphasised body copy such as inline links and text buttons: Bold 16sp. */
+@Composable
+fun kamleonBodyBold() = circular(R.dimen.ts_16, FontWeight.Bold)
 
 /** Secondary body copy and field text: Regular 14sp. */
 @Composable
@@ -290,5 +299,24 @@ fun KamleonRoundButton(
                 color = if (active) colorResource(R.color.white) else grey40
             )
         }
+    }
+}
+
+/** Thin linear progress bar (4dp, square ends): [progress] in 0..1, teal over a light track. */
+@Composable
+fun KamleonProgressBar(progress: Float, modifier: Modifier = Modifier) {
+    val animated by animateFloatAsState(progress.coerceIn(0f, 1f), label = "progress")
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(4.dp)
+            .background(colorResource(R.color.kamleon_progress_track))
+    ) {
+        Box(
+            Modifier
+                .fillMaxWidth(animated)
+                .fillMaxHeight()
+                .background(colorResource(R.color.kamleon_blue))
+        )
     }
 }

@@ -1,205 +1,58 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.util.Linkify
-import timber.log.Timber
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.core.text.HtmlCompat
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
-import com.dynatech2012.kamleonuserapp.base.BaseFragment
-import com.dynatech2012.kamleonuserapp.constants.UrlConstants
-import com.dynatech2012.kamleonuserapp.databinding.ActivityPrivacyBinding
+import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
-class PrivacyFragment : BaseFragment<ActivityPrivacyBinding>() {
+class PrivacyFragment : Fragment() {
     private val viewModel: AuthViewModel by activityViewModels()
-    override fun setBinding(): ActivityPrivacyBinding =
-        ActivityPrivacyBinding.inflate(layoutInflater)
 
-    private var acceptState = arrayOf(false, false, false)
-
-    private fun privacyItemIcons(): Array<ImageView> {
-        return arrayOf(binding.ivPrivacy1, binding.ivPrivacy2, binding.ivPrivacy3)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
     }
 
-    private fun privacyItemTextViews(): Array<TextView> {
-        return arrayOf(binding.tvPrivacy1, binding.tvPrivacy2, binding.tvPrivacy3)
-    }
-
-    private fun privacyItemLayouts(): Array<LinearLayout> {
-        return arrayOf(binding.privacyLayout1, binding.privacyLayout2, binding.privacyLayout3)
-    }
-
-    override fun initView() {
-        val privacyItemStrRes =
-            arrayOf(R.string.privacy_item1, R.string.privacy_item2, R.string.privacy_item3)
-        for (itemIndex in 0 until privacyItemLayouts().size) {
-            privacyItemIcons()[itemIndex].setImageResource(R.drawable.icn_circular_uncheck)
-
-            privacyItemLayouts()[itemIndex].setOnClickListener {
-                privacyItemViewClicked(itemIndex)
-            }
-
-            val spannableString = privacySpannableString(getString(privacyItemStrRes[itemIndex]))
-            privacyItemTextViews()[itemIndex].setText(
-                spannableString,
-                TextView.BufferType.SPANNABLE
-            )
-
-            privacyItemTextViews()[itemIndex].movementMethod = LinkMovementMethod.getInstance()
-        }
-        updatePrivacyItemViews()
-
-        val contactSpannableString = SpannableString(
-            getString(R.string.privacy_note)
-        )
-        val clickableContactSpan = object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                openEmailTo("info@kamleon.com")
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                ds.isUnderlineText = true
-                ds.isFakeBoldText = true
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (view as ComposeView).setContent {
+            AppTheme(useDarkTheme = false) {
+                PrivacyScreen(
+                    onBack = {
+                        findNavController().navigate(R.id.action_privacyFragment_to_registerFragment)
+                    },
+                    onNext = {
+                        Timber.d("Privacy consent accepted; opening onboarding")
+                        findNavController().navigate(R.id.action_privacyFragment_to_onboardingFragment)
+                    },
+                    onOpenUrl = { url -> startActivity(Intent(Intent.ACTION_VIEW, url.toUri())) },
+                    onEmail = { address ->
+                        startActivity(Intent(Intent.ACTION_SENDTO).apply { data = "mailto:$address".toUri() })
+                    }
+                )
             }
         }
-        val startIndex = contactSpannableString.indexOf("info@kamleon.com")
-        val endIndex = startIndex + "info@kamleon.com".length
-        contactSpannableString.setSpan(
-            clickableContactSpan,
-            startIndex,
-            endIndex,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        binding.tvPrivacyNote.text = contactSpannableString
-        binding.tvPrivacyNote.movementMethod = LinkMovementMethod.getInstance()
-
-
-        initObservers()
-    }
-
-    override fun initEvent() {
-        binding.btnNavBack.setOnClickListener {
-            findNavController().navigate(R.id.action_privacyFragment_to_registerFragment)
-        }
-        binding.btnAcceptAll.setOnClickListener {
-            acceptState = arrayOf(true, true, true)
-            updatePrivacyItemViews()
-        }
-        binding.btnNext.setOnClickListener {
-            Timber.d("Privacy consent accepted; opening onboarding")
-            //viewModel.signup()
-            findNavController().navigate(R.id.action_privacyFragment_to_onboardingFragment)
-        }
-    }
-
-    private fun privacySpannableString(textFull: String): SpannableString {
-        val textTerms = getString(R.string.privacy_word_terms)
-        val textPrivacy = getString(R.string.privacy_word_privacy)
-        val textConsent = getString(R.string.privacy_word_consent)
-
-        val spannableString = SpannableString(textFull)
-        val clickableTerms: ClickableSpan = object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                openWebBrowser(UrlConstants.URL_TERMS)
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                ds.isUnderlineText = true
-                ds.isFakeBoldText = true
-                //ds.color = requireContext().getColor(R.color.kamleon_blue)
+        viewModel.uiState.observe(viewLifecycleOwner) { state ->
+            Timber.d("Privacy screen observed registration state: %s", state)
+            if (state == 3) {
+                findNavController().navigate(R.id.action_privacyFragment_to_onboardingFragment)
             }
         }
-        val clickablePolicy: ClickableSpan = object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                openWebBrowser(UrlConstants.URL_POLICY_APP)
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                ds.isUnderlineText = true
-                ds.isFakeBoldText = true
-                //ds.color = requireContext().getColor(R.color.kamleon_blue)
-            }
-        }
-        val clickableConsent: ClickableSpan = object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                openWebBrowser(UrlConstants.URL_CONSENT)
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                ds.isUnderlineText = true
-                ds.isFakeBoldText = true
-                //ds.color = requireContext().getColor(R.color.kamleon_blue)
-            }
-        }
-
-        val termsIndex = textFull.indexOf(textTerms)
-        val privacyIndex = textFull.indexOf(textPrivacy)
-        val consentIndex = textFull.indexOf(textConsent)
-        if (termsIndex >= 0) {
-            spannableString.setSpan(
-                clickableTerms,
-                termsIndex,
-                termsIndex + textTerms.length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-        }
-        if (privacyIndex >= 0) {
-            spannableString.setSpan(
-                clickablePolicy,
-                privacyIndex,
-                privacyIndex + textPrivacy.length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-        }
-        if (consentIndex >= 0) {
-            spannableString.setSpan(
-                clickableConsent,
-                consentIndex,
-                consentIndex + textConsent.length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-        }
-        return spannableString
-    }
-
-    private fun privacyItemViewClicked(index: Int) {
-        acceptState[index] = !acceptState[index]
-        updatePrivacyItemViews()
-    }
-
-    private fun updatePrivacyItemViews() {
-        for (index in 0 until privacyItemLayouts().size) {
-            privacyItemIcons()[index].setImageResource(if (acceptState[index]) R.drawable.icn_circular_check else R.drawable.icn_circular_uncheck)
-        }
-        binding.btnAcceptAll.visibility =
-            if (acceptState.contains(false)) View.VISIBLE else View.INVISIBLE
-        binding.btnNext.isEnabled = (acceptState[0] && acceptState[1] && acceptState[2])
-    }
-
-    private fun initObservers() {
-        viewModel.uiState.observe(this, this::startActivity)
-    }
-
-    private fun startActivity(state: Int) {
-        Timber.d("Privacy screen observed registration state: %s", state) //TODO display user errors and navigate to register fragment to display them and the user to fix them
-        if (state == 3) /*before 2*/ {
-            findNavController().navigate(R.id.action_privacyFragment_to_onboardingFragment)
-        }
-    }
-
-    companion object {
-        val TAG = PrivacyFragment::class.simpleName
     }
 }

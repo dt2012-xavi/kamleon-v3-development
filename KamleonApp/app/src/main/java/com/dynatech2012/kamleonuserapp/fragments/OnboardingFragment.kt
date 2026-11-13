@@ -1,398 +1,253 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import timber.log.Timber
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.graphics.drawable.toDrawable
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.InitActivity
-import com.dynatech2012.kamleonuserapp.base.BaseFragment
+import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.constants.Constants
-import com.dynatech2012.kamleonuserapp.databinding.ActivityOnboardingBinding
 import com.dynatech2012.kamleonuserapp.extensions.addYears
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import com.google.android.material.snackbar.Snackbar
-import com.ozcanalasalvar.datepicker.view.datapicker.DataPicker
+import com.ozcanalasalvar.datepicker.model.Date as PickerDate
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
+import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
 
+/**
+ * Post-registration questionnaire: birth date, notifications, height, weight and gender. The
+ * account is created when the birth date step is confirmed; the profile is completed on the last
+ * step (or when it is skipped).
+ */
 @AndroidEntryPoint
-class OnboardingFragment : BaseFragment<ActivityOnboardingBinding>() {
+class OnboardingFragment : Fragment() {
     private val viewModel: AuthViewModel by activityViewModels()
 
-    enum class OnBoardingStep(val step: Int) {
-        BirthDate(0),
-        Notification(1),
+    private var step by mutableIntStateOf(OnboardingSteps.BIRTH_DATE)
+    private var nextLoading by mutableStateOf(false)
+    private var pickerKey by mutableIntStateOf(0)
 
-        //Location(1),
-        Height(2),
-        Weight(3),
-        Gender(4);
+    // Users must be at least 14 years old: that is both the default and the latest allowed date.
+    private val maxBirthDate = PickerDate(Date().addYears(-14).time)
+    private val birthYearsRange = 1904..Calendar.getInstance().apply { time = Date().addYears(-14) }.get(Calendar.YEAR)
+
+    // Latest picker selections. Plain fields: they are only read when a step is (re)composed or
+    // when "Next" is pressed.
+    private var birthDate = maxBirthDate
+    private var selectedHeight = ""
+    private var selectedWeight = ""
+    private var selectedGender = ""
+
+    private val heightValues = (140..230).map { "$it" }
+    private val weightValues = (30..130).map { "$it" }
+    private val genderValues = Gender.values().map { it.raw }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        savedInstanceState?.let { step = it.getInt(KEY_STEP, OnboardingSteps.BIRTH_DATE) }
     }
 
-    override fun setBinding(): ActivityOnboardingBinding =
-        ActivityOnboardingBinding.inflate(layoutInflater)
-
-    private var state: OnBoardingStep = OnBoardingStep.BirthDate
-    private fun containerLayoutFor(step: OnBoardingStep): LinearLayout {
-        val layouts = arrayOf(
-            binding.layoutBirthday,
-            binding.layoutNotification,
-            //binding.layoutLocation,
-            binding.layoutHeight,
-            binding.layoutWeight,
-            binding.layoutGender,
-        )
-        return layouts[step.step]
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(KEY_STEP, step)
     }
 
-    private fun spinnerViewFor(step: OnBoardingStep): DataPicker {
-        return when (step) {
-            OnBoardingStep.Height -> {
-                binding.heightPicker
-            }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    }
 
-            OnBoardingStep.Weight -> {
-                binding.weightPicker
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (view as ComposeView).setContent {
+            AppTheme(useDarkTheme = false) {
+                OnboardingScreen(
+                    step = step,
+                    nextLoading = nextLoading,
+                    pickerKey = pickerKey,
+                    birthDate = birthDate,
+                    birthYearsRange = birthYearsRange,
+                    maxBirthDate = maxBirthDate,
+                    heightValues = heightValues,
+                    weightValues = weightValues,
+                    genderValues = genderValues,
+                    selectedHeight = selectedHeight,
+                    selectedWeight = selectedWeight,
+                    selectedGender = selectedGender,
+                    onBirthDateChange = { _, _, _, millis -> birthDate = PickerDate(millis) },
+                    onHeightChange = { selectedHeight = it },
+                    onWeightChange = { selectedWeight = it },
+                    onGenderChange = { selectedGender = it },
+                    onBack = ::onBack,
+                    onNext = ::onNext,
+                    onSkip = ::onSkip
+                )
             }
+        }
+        viewModel.uiState.observe(viewLifecycleOwner, this::onStateReceived)
+    }
 
-            OnBoardingStep.Gender -> {
-                binding.genderPicker
-            }
-
-            else -> binding.heightPicker
+    private fun onBack() {
+        Timber.d("Onboarding back requested at step: %s", step)
+        if (step == OnboardingSteps.BIRTH_DATE) {
+            findNavController().popBackStack()
+        } else {
+            step -= 1
         }
     }
 
-    override fun initView() {
-        binding.progressStep.max = OnBoardingStep.values().size
+    private fun onNext() {
+        when (step) {
+            OnboardingSteps.NOTIFICATIONS -> {
+                activity?.supportFragmentManager?.setFragmentResult(
+                    Constants.GRANT_NOTIFICATION,
+                    Bundle().apply { putBoolean(Constants.GRANT_NOTIFICATION_BUNDLE, true) }
+                )
+            }
 
-        val fourteenYearsAgo = Date().addYears(-14).time
-        binding.datePicker.setDate(fourteenYearsAgo)
-        binding.datePicker.setMaxxDate(fourteenYearsAgo)
+            OnboardingSteps.BIRTH_DATE -> {
+                viewModel.birthday = GregorianCalendar(birthDate.year, birthDate.month - 1, birthDate.day).time
+                viewModel.signup()
+            }
 
-        binding.weightPicker.setValueUnit("kg")
-        binding.weightPicker.setValueWidth(50)
-        binding.weightPicker.setShowDecimal(true)
+            OnboardingSteps.HEIGHT -> {
+                Timber.d("Height step completed")
+                selectedHeight.toFloatOrNull()?.let { viewModel.height = it }
+            }
 
-        binding.heightPicker.setValueUnit("cm")
-        binding.heightPicker.setValueWidth(74)
-        binding.heightPicker.setShowDecimal(true)
+            OnboardingSteps.WEIGHT -> {
+                Timber.d("Weight step completed")
+                selectedWeight.toFloatOrNull()?.let { viewModel.weight = it }
+            }
 
-        updateUI()
-        setupSpinners()
-        initObservers()
+            OnboardingSteps.GENDER -> {
+                Timber.d("Gender step completed")
+                viewModel.gender = Gender.fromRaw(selectedGender)
+            }
+        }
+        checkIfGoNextStep()
+    }
+
+    private fun onSkip() {
+        Timber.d("Skipping onboarding step: %s", step)
+        when (step) {
+            OnboardingSteps.HEIGHT -> viewModel.height = 0f
+            OnboardingSteps.WEIGHT -> viewModel.weight = 0f
+            OnboardingSteps.GENDER -> viewModel.gender = Gender.none
+        }
+        checkIfGoNextStep()
+    }
+
+    private fun checkIfGoNextStep() {
+        when (step) {
+            OnboardingSteps.COUNT - 1 -> {
+                Timber.d("Finishing registration profile")
+                nextLoading = true
+                viewModel.finishSignup()
+            }
+
+            // Wait for the permission result (state 4) before moving on.
+            OnboardingSteps.NOTIFICATIONS -> Timber.d("Awaiting notification permission result")
+
+            else -> {
+                Timber.d("Advancing onboarding step")
+                goNextStep()
+            }
+        }
+    }
+
+    private fun goNextStep() {
+        step += 1
     }
 
     private fun resetView() {
-        val fourteenYearsAgo = Date().addYears(-14).time
-        binding.datePicker.setDate(fourteenYearsAgo)
-        binding.datePicker.setMaxxDate(fourteenYearsAgo)
-
-        binding.weightPicker.setValueUnit("kg")
-        binding.weightPicker.setValueWidth(50)
-        binding.weightPicker.setShowDecimal(true)
-
-        binding.heightPicker.setValueUnit("cm")
-        binding.heightPicker.setValueWidth(74)
-        binding.heightPicker.setShowDecimal(true)
-
+        birthDate = maxBirthDate
+        selectedHeight = ""
+        selectedWeight = ""
+        selectedGender = ""
+        pickerKey += 1
         viewModel.gender = Gender.none
         viewModel.height = 0f
         viewModel.weight = 0f
         viewModel.birthday = Date()
     }
 
-    override fun initEvent() {
-        binding.btnNext.setOnClickListener {
-            when (state) {
-                OnBoardingStep.Notification -> {
-                    activity?.supportFragmentManager?.setFragmentResult(
-                        Constants.GRANT_NOTIFICATION,
-                        Bundle().apply {
-                            putBoolean(Constants.GRANT_NOTIFICATION_BUNDLE, true)
-                        })
-                }
-                /*
-                OnBoardingStep.Location -> {
-                    activity?.supportFragmentManager?.setFragmentResult(Constants.GRANT_LOCATION, Bundle().apply {
-                        putBoolean(Constants.GRANT_LOCATION_BUNDLE, true)
-                    })
-                }*/
-                OnBoardingStep.BirthDate -> {
-                    val dateSelected = binding.datePicker.getDateSelected()
-                    //val localDate = LocalDate.of(dateSelected.year, dateSelected.month, dateSelected.day)
-                    val date = GregorianCalendar(
-                        dateSelected.year,
-                        dateSelected.month - 1,
-                        dateSelected.day
-                    ).time
-                    viewModel.birthday = date
-                    viewModel.signup()
-                }
-
-                OnBoardingStep.Height -> {
-                    Timber.d("Height step completed")
-                    binding.heightPicker.getSelectedValue()?.let {
-                        viewModel.height = it.toFloat()
-                    }
-                }
-
-                OnBoardingStep.Weight -> {
-                    Timber.d("Weight step completed")
-                    binding.weightPicker.getSelectedValue()?.let {
-                        viewModel.weight = it.toFloat()
-                    }
-                }
-
-                OnBoardingStep.Gender -> {
-                    Timber.d("Gender step completed")
-                    val genderPicked = binding.genderPicker.getSelectedValue()
-                    val gender = Gender.fromRaw(genderPicked)
-                    viewModel.gender = gender
-                }
-            }
-            checkIfGoNextStep()
-        }
-
-        binding.btnNavBack.setOnClickListener {
-            Timber.d("Onboarding back requested at step: %s", state)
-            if (state.step == 0) {
-                findNavController().popBackStack()
-            } else {
-                state = OnBoardingStep.values()[state.step - 1]
-            }
-            updateUI()
-        }
-
-        viewModel.uiState.observe(viewLifecycleOwner, this::startActivity)
-
-    }
-
-    private fun startActivity(state: Int) {
-        Timber.d("Onboarding observed registration state: %s", state)
-        //TODO display user errors and navigate to register fragment to display them and the user to fix them
-        if (state == 3) {
-            checkIfGoNextStep()
-        } else if (state == -7) {
-            if (findNavController().currentDestination?.id == R.id.onboardingFragment) {
-                findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)
-            }
-        } else if (state == -1 || state == -6) {
-            binding.pbOnboardNext.visibility = View.GONE
-            binding.pbOnboardSkip.visibility = View.GONE
-            binding.btnNext.isEnabled = true
-            binding.btnNext.text = getString(R.string.onboard_button_next)
-            Snackbar.make(
-                binding.root,
-                if (state == -6) R.string.startup_network_error else R.string.signup_error_server_error,
-                Snackbar.LENGTH_LONG
-            ).show()
-        }
-    }
-
-    private fun checkIfGoNextStep() {
-        when (state.step) {
-
-            OnBoardingStep.values().size - 1 -> {
-                Timber.d("Finishing registration profile")
-                binding.btnNext.text = ""
-                binding.pbOnboardNext.visibility = View.VISIBLE
-                viewModel.finishSignup()
-            }
-
-            OnBoardingStep.Notification.step/*, OnBoardingStep.Location.step*/ -> {
-                // Do nothing
-                Timber.d("Awaiting notification permission result")
-            }
-
-            else -> {
-                Timber.d("Advancing onboarding step")
-
-                goNextStep()
-            }
-        }
-        updateUI()
-    }
-
-    private fun goNextStep() {
-        state = OnBoardingStep.values()[state.step + 1]
-    }
-
-    private fun updateUI() {
-        Timber.d("Showing onboarding step: %s", state)
-
-        if (state.step == 0 || state.step == 1) {
-            //binding.progressStep.visibility = View.INVISIBLE
-            binding.tvBottomDesc.text = getString(R.string.onboard_bottom_text)
-            binding.tvBottomDesc.visibility = View.VISIBLE
-            binding.tvBottomDesc.isClickable = false
-            binding.tvBottomDesc.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.kamleon_secondary_grey_60
-                )
-            )
-        } else if (state.step > 1) {
-
-            binding.tvBottomDesc.text = getString(R.string.onboard_bottom_later)
-            binding.tvBottomDesc.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.kamleon_blue
-                )
-            )
-            binding.tvBottomDesc.isClickable = true
-            binding.tvBottomDesc.setOnClickListener {
-
-                binding.tvBottomDesc.visibility = View.INVISIBLE
-                binding.pbOnboardSkip.visibility = View.VISIBLE
-                binding.btnNext.isEnabled = false
-                binding.tvBottomDesc.isEnabled = false
-                Timber.d("Skipping onboarding step: %s", state)
-
-                if (state.step == 2 || state.step == 3 || state.step == 4) {
-                    when (state.step) {
-                        2 -> {
-                            viewModel.height = 0f
-                        }
-
-                        3 -> {
-                            viewModel.weight = 0f
-                        }
-
-                        4 -> {
-                            viewModel.gender = Gender.none
-                        }
-                    }
-                    checkIfGoNextStep()
-                } else {
-                    viewModel.finishSignup()
-                }
-            }
-            binding.pbOnboardSkip.visibility = View.INVISIBLE
-            binding.btnNext.isEnabled = true
-            binding.tvBottomDesc.isEnabled = true
-            binding.tvBottomDesc.visibility = View.VISIBLE
-        }
-        binding.progressStep.progress = state.step + 1
-
-        for (stepCase in OnBoardingStep.values()) {
-            containerLayoutFor(stepCase).visibility =
-                if (state == stepCase) View.VISIBLE else View.GONE
-        }
-
-    }
-
-    private fun spinnerDataSource(step: OnBoardingStep): ArrayList<String> {
-        val aryRet = ArrayList<String>()
-        when (step) {
-            OnBoardingStep.Height -> {
-                for (height in 140..230) {
-                    aryRet.add("$height")
-                }
-            }
-
-            OnBoardingStep.Weight -> {
-                for (weight in 30..130) {
-                    aryRet.add("$weight")
-                }
-            }
-
-            OnBoardingStep.Gender -> {
-                val arrRes = Gender.values().map { it.raw }
-                aryRet.addAll(arrRes)
-            }
-
-            else -> {}
-        }
-        Timber.d("Picker options prepared for step: %s", step)
-
-        return aryRet
-    }
-
-    private fun setupSpinners() {
-        for (onboardState in OnBoardingStep.values()) {
-            if (onboardState.step <= OnBoardingStep.BirthDate.step) {
-                continue
-            }
-            val picker = spinnerViewFor(onboardState)
-
-            Timber.d("Picker options loaded for step: %s", onboardState)
-            picker.setValues(spinnerDataSource(onboardState))
-        }
-    }
-
-    private fun initObservers() {
-        viewModel.uiState.observe(viewLifecycleOwner, this::onStateReceived)
-    }
-
     private fun onStateReceived(state: Int) {
-        Timber.d("Onboarding observed state: %s", state)
+        Timber.d("Onboarding observed registration state: %s", state)
         when (state) {
-            4 -> {
-                goNextStep()
-                updateUI()
-            }
+            3 -> checkIfGoNextStep()
+
+            4 -> goNextStep()
 
             5 -> {
-                binding.pbOnboardNext.visibility = View.GONE
-                binding.pbOnboardSkip.visibility = View.GONE
-                binding.btnNext.text = getString(R.string.onboard_button_next)
-                binding.tvBottomDesc.visibility = View.VISIBLE
+                nextLoading = false
                 showVerificationDialog()
             }
 
             7 -> (requireActivity() as InitActivity).openMain()
 
-            else -> {}
+            -7 -> {
+                if (findNavController().currentDestination?.id == R.id.onboardingFragment) {
+                    findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)
+                }
+            }
+
+            -1, -6 -> {
+                nextLoading = false
+                Snackbar.make(
+                    requireView(),
+                    if (state == -6) R.string.startup_network_error else R.string.signup_error_server_error,
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
         }
     }
 
     private fun showVerificationDialog() {
-        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        val inflater = this.layoutInflater
-        val dialogView: View = inflater.inflate(R.layout.layout_dialog_email_verification, null)
-
-        dialog.setView(dialogView)
-        dialog.setCancelable(false)
-
+        val dialogView = layoutInflater.inflate(R.layout.layout_dialog_email_verification, null)
         dialogView.findViewById<TextView>(R.id.tv_dialog_verify_desc).text =
             getString(R.string.dialog_verify_desc, viewModel.email)
-        val logoutDialog = dialog.show()
-        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setCancelable(false)
+            .show()
+        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
         Timber.d("Showing verification email dialog")
         dialogView.findViewById<TextView>(R.id.tv_dialog_verify_ok).setOnClickListener {
             Timber.d("Verification dialog acknowledged")
-            // Not necessary. Only if navigation fails
-            binding.btnNext.isEnabled = true
-            binding.tvBottomDesc.isEnabled = true
-
-            state = OnBoardingStep.BirthDate
+            step = OnboardingSteps.BIRTH_DATE
             resetView()
-            updateUI()
-
-            logoutDialog.dismiss()
-
-            // Go to login
+            dialog.dismiss()
             findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)
         }
         dialogView.findViewById<TextView>(R.id.tv_dialog_verify_resend).setOnClickListener {
-            logoutDialog.dismiss()
+            dialog.dismiss()
             viewModel.sendVerificationEmail()
         }
     }
 
-    companion object {
-        val TAG = PrivacyFragment::class.simpleName
+    private companion object {
+        const val KEY_STEP = "onboarding_step"
     }
 }
