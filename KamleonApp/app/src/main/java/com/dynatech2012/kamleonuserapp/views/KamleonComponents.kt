@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
@@ -239,6 +240,9 @@ fun KamleonTextField(
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
+                            // Tappable but not a keyboard focus stop: otherwise the IME "Next" action
+                            // from the password field lands on the eye instead of the next field.
+                            .focusProperties { canFocus = false }
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null,
