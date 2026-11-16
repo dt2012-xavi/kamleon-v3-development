@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,7 +38,8 @@ import com.dynatech2012.kamleonuserapp.views.KamleonRoundButton
 import com.dynatech2012.kamleonuserapp.views.KamleonTextLink
 import com.dynatech2012.kamleonuserapp.views.kamleonBody
 import com.dynatech2012.kamleonuserapp.views.kamleonBodySmall
-import com.dynatech2012.kamleonuserapp.views.kamleonDisplay
+import com.dynatech2012.kamleonuserapp.views.kamleonBodyBold
+import com.dynatech2012.kamleonuserapp.views.kamleonCaption
 import com.dynatech2012.kamleonuserapp.views.kamleonTitle
 import com.ozcanalasalvar.datepicker.compose.datapicker.WheelDataPicker
 import com.ozcanalasalvar.datepicker.compose.datepicker.WheelDatePicker
@@ -137,7 +139,7 @@ fun OnboardingScreen(
                 ProvideTextStyle(TextStyle(fontFamily = MatTheme.fontFamily)) {
                     androidx.compose.runtime.key(pickerKey) {
                         when (step) {
-                            OnboardingSteps.BIRTH_DATE -> PickerStep(stringResource(R.string.onboard_birthday_title)) {
+                            OnboardingSteps.BIRTH_DATE -> PickerStep(step, R.string.onboard_birthday_title, R.string.onboard_why_birthday) {
                                 WheelDatePicker(
                                     offset = 1,
                                     yearsRange = birthYearsRange,
@@ -150,8 +152,8 @@ fun OnboardingScreen(
                                     onDateChanged = onBirthDateChange
                                 )
                             }
-                            OnboardingSteps.NOTIFICATIONS -> NotificationStep(darkGrey)
-                            OnboardingSteps.HEIGHT -> PickerStep(stringResource(R.string.onboard_height_title)) {
+                            OnboardingSteps.NOTIFICATIONS -> NotificationStep(step, darkGrey)
+                            OnboardingSteps.HEIGHT -> PickerStep(step, R.string.onboard_height_title, R.string.onboard_why_height) {
                                 WheelDataPicker(
                                     offset = 1,
                                     valueUnit = "cm",
@@ -165,7 +167,7 @@ fun OnboardingScreen(
                                     onValueChanged = { value, _ -> onHeightChange(value) }
                                 )
                             }
-                            OnboardingSteps.WEIGHT -> PickerStep(stringResource(R.string.onboard_weight_title)) {
+                            OnboardingSteps.WEIGHT -> PickerStep(step, R.string.onboard_weight_title, R.string.onboard_why_weight) {
                                 WheelDataPicker(
                                     offset = 1,
                                     valueUnit = "kg",
@@ -179,7 +181,7 @@ fun OnboardingScreen(
                                     onValueChanged = { value, _ -> onWeightChange(value) }
                                 )
                             }
-                            OnboardingSteps.GENDER -> PickerStep(stringResource(R.string.onboard_gender_title)) {
+                            OnboardingSteps.GENDER -> PickerStep(step, R.string.onboard_gender_title, R.string.onboard_why_gender) {
                                 WheelDataPicker(
                                     offset = 1,
                                     startValue = selectedGender,
@@ -231,16 +233,44 @@ fun OnboardingScreen(
     }
 }
 
-/** A step made of a centered title and a picker centered in the remaining space. */
+/** "Step X of 5" caption shown above every question. */
 @Composable
-private fun PickerStep(title: String, picker: @Composable () -> Unit) {
+private fun StepCounter(step: Int) {
+    Text(
+        text = stringResource(R.string.onboard_step_counter, step + 1, OnboardingSteps.COUNT),
+        style = kamleonCaption(),
+        color = colorResource(R.color.kamleon_secondary_grey_60),
+        textAlign = TextAlign.Center,
+        modifier = Modifier.fillMaxWidth()
+    )
+}
+
+/**
+ * A question step: step counter, centered title, a short reason for asking, and the picker
+ * centered in the remaining space.
+ */
+@Composable
+private fun PickerStep(
+    step: Int,
+    @StringRes title: Int,
+    @StringRes why: Int,
+    picker: @Composable () -> Unit
+) {
     Column(Modifier.fillMaxSize().padding(horizontal = 18.dp).padding(bottom = 80.dp)) {
+        StepCounter(step)
         Text(
-            text = title,
-            style = kamleonDisplay(),
+            text = stringResource(title),
+            style = kamleonTitle(),
             color = colorResource(R.color.kamleon_dark_grey),
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+            modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
+        )
+        Text(
+            text = stringResource(why),
+            style = kamleonBodySmall(),
+            color = colorResource(R.color.kamleon_secondary_grey_60),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
         )
         Box(
             Modifier.weight(1f).fillMaxWidth().padding(top = 10.dp),
@@ -250,25 +280,29 @@ private fun PickerStep(title: String, picker: @Composable () -> Unit) {
 }
 
 @Composable
-private fun NotificationStep(darkGrey: androidx.compose.ui.graphics.Color) {
+private fun NotificationStep(step: Int, darkGrey: androidx.compose.ui.graphics.Color) {
     Column(Modifier.fillMaxSize().padding(horizontal = 18.dp)) {
+        StepCounter(step)
         Text(
             text = stringResource(R.string.onboard_noti_title),
-            style = kamleonDisplay(),
+            style = kamleonTitle(),
             color = darkGrey,
-            modifier = Modifier.padding(top = 16.dp)
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
         )
         Text(
             text = stringResource(R.string.onboard_noti_sub1),
-            style = kamleonTitle(),
+            style = kamleonBodyBold(),
             color = darkGrey,
-            modifier = Modifier.padding(top = 16.dp)
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(top = 24.dp)
         )
         Text(
             text = stringResource(R.string.onboard_noti_sub2),
             style = kamleonBody(),
             color = darkGrey,
-            modifier = Modifier.padding(top = 16.dp)
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
         )
     }
 }

@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import android.util.Patterns
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,13 +18,19 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,10 +44,16 @@ import com.dynatech2012.kamleonuserapp.views.kamleonBody
 import com.dynatech2012.kamleonuserapp.views.kamleonBodySmall
 import com.dynatech2012.kamleonuserapp.views.kamleonTitle
 
+private const val MIN_PASSWORD_LENGTH = 6
+
 /**
  * Compose version of `activity_register.xml`. Layout margins are the XML's literal values (90dp
  * header offset, 20dp before the form, 44dp side padding, 12dp between fields, ...); typography
  * and fields come from the shared Kamleon components.
+ *
+ * Feedback: a validation result from submitting ([error]) is shown under the form and outlines the
+ * offending field(s) in red. While typing, the screen also explains on its own why the form cannot
+ * be sent yet (invalid email after leaving the field, short password, passwords that differ).
  *
  * When [recovering] is true an authenticated account without a profile is being completed: the
  * email is fixed, the password fields are hidden and the button reads "Complete profile".
@@ -66,6 +79,31 @@ fun RegisterScreen(
         (recovering || (password.isNotBlank() && repeatPassword.isNotBlank() && password == repeatPassword))
     val darkGrey = colorResource(R.color.kamleon_dark_grey)
     val grey60 = colorResource(R.color.kamleon_secondary_grey_60)
+
+    // A field counts as "visited" once it has had focus and lost it; only then is it judged live.
+    var emailVisited by remember { mutableStateOf(false) }
+    var passwordVisited by remember { mutableStateOf(false) }
+    var emailHadFocus by remember { mutableStateOf(false) }
+    var passwordHadFocus by remember { mutableStateOf(false) }
+
+    val emailInvalid = email.isNotBlank() && !Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches()
+    val passwordShort = password.isNotEmpty() && password.length < MIN_PASSWORD_LENGTH
+    val passwordsDiffer = password.isNotEmpty() && repeatPassword.isNotEmpty() && password != repeatPassword
+
+    val liveError: Int? = when {
+        emailVisited && emailInvalid -> R.string.signup_error_email_pattern
+        passwordVisited && passwordShort -> R.string.signup_error_password
+        passwordsDiffer -> R.string.signup_error_password_mismatch
+        else -> null
+    }
+    val message = error ?: liveError
+
+    val nameError = error == R.string.signup_error_empty_fields
+    val emailError = error == R.string.signup_error_email_pattern ||
+        (error == null && emailVisited && emailInvalid)
+    val passwordError = error == R.string.signup_error_password ||
+        (error == null && passwordVisited && passwordShort)
+    val repeatError = passwordsDiffer
 
     // Root uses ?attr/colorSurface, which the theme maps to white.
     BoxWithConstraints(Modifier.fillMaxSize().background(colorResource(R.color.white))) {
@@ -108,12 +146,18 @@ fun RegisterScreen(
                     value = firstName,
                     onValueChange = onFirstNameChange,
                     placeholder = stringResource(R.string.placeholder_first_name),
+                    capitalization = KeyboardCapitalization.Words,
+                    contentType = ContentType.PersonFirstName,
+                    isError = nameError && firstName.isBlank(),
                     testTag = "register_first_name"
                 )
                 KamleonTextField(
                     value = lastName,
                     onValueChange = onLastNameChange,
                     placeholder = stringResource(R.string.placeholder_last_name),
+                    capitalization = KeyboardCapitalization.Words,
+                    contentType = ContentType.PersonLastName,
+                    isError = nameError && lastName.isBlank(),
                     modifier = Modifier.padding(top = 12.dp),
                     testTag = "register_last_name"
                 )
@@ -122,7 +166,13 @@ fun RegisterScreen(
                     onValueChange = onEmailChange,
                     placeholder = stringResource(R.string.placeholder_email),
                     keyboardType = KeyboardType.Email,
+                    autoCorrect = false,
+                    contentType = ContentType.EmailAddress,
                     enabled = !recovering,
+                    isError = emailError,
+                    onFocusChange = { focused ->
+                        if (focused) emailHadFocus = true else if (emailHadFocus) emailVisited = true
+                    },
                     modifier = Modifier.padding(top = 12.dp),
                     testTag = "register_email"
                 )
@@ -133,7 +183,12 @@ fun RegisterScreen(
                         placeholder = stringResource(R.string.placeholder_password),
                         secure = true,
                         keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done,
+                        autoCorrect = false,
+                        contentType = ContentType.NewPassword,
+                        isError = passwordError,
+                        onFocusChange = { focused ->
+                            if (focused) passwordHadFocus = true else if (passwordHadFocus) passwordVisited = true
+                        },
                         modifier = Modifier.padding(top = 12.dp),
                         testTag = "register_password"
                     )
@@ -144,11 +199,14 @@ fun RegisterScreen(
                         secure = true,
                         keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Done,
+                        autoCorrect = false,
+                        contentType = ContentType.NewPassword,
+                        isError = repeatError,
                         modifier = Modifier.padding(top = 12.dp),
                         testTag = "register_repeat_password"
                     )
                 }
-                if (error != null) {
+                if (message != null) {
                     Row(
                         modifier = Modifier.padding(top = 12.dp, start = 8.dp).testTag("register_error"),
                         verticalAlignment = Alignment.CenterVertically
@@ -158,7 +216,7 @@ fun RegisterScreen(
                             contentDescription = null
                         )
                         Text(
-                            text = stringResource(error),
+                            text = stringResource(message),
                             style = kamleonBodySmall(),
                             color = colorResource(R.color.kmln_red),
                             modifier = Modifier.padding(start = 12.dp)

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -106,6 +107,21 @@ class OnboardingFragment : Fragment() {
             }
         }
         viewModel.uiState.observe(viewLifecycleOwner, this::onStateReceived)
+
+        // The system Back button goes to the previous step; from the first step it leaves as usual.
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (step > OnboardingSteps.BIRTH_DATE) {
+                        step -= 1
+                    } else {
+                        isEnabled = false
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                    }
+                }
+            }
+        )
     }
 
     private fun onBack() {
@@ -196,7 +212,10 @@ class OnboardingFragment : Fragment() {
     private fun onStateReceived(state: Int) {
         Timber.d("Onboarding observed registration state: %s", state)
         when (state) {
-            3 -> checkIfGoNextStep()
+            // "Verification email sent". It must not move the questionnaire along: it can arrive
+            // while the user is on any step. After a resend from the final dialog it re-runs the
+            // finishing step, which shows the confirmation dialog again.
+            3 -> if (step == OnboardingSteps.COUNT - 1) checkIfGoNextStep()
 
             4 -> goNextStep()
 

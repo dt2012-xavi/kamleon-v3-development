@@ -58,11 +58,11 @@ class RegisterFragment : Fragment() {
                     repeatPassword = repeatPassword,
                     recovering = recovering,
                     error = error,
-                    onFirstNameChange = { firstName = it },
-                    onLastNameChange = { lastName = it },
-                    onEmailChange = { email = it },
-                    onPasswordChange = { password = it },
-                    onRepeatPasswordChange = { repeatPassword = it },
+                    onFirstNameChange = { firstName = it; error = null },
+                    onLastNameChange = { lastName = it; error = null },
+                    onEmailChange = { email = it; error = null },
+                    onPasswordChange = { password = it; error = null },
+                    onRepeatPasswordChange = { repeatPassword = it; error = null },
                     onCreate = {
                         Timber.d("Registration form submitted")
                         viewModel.fName = firstName.trim()

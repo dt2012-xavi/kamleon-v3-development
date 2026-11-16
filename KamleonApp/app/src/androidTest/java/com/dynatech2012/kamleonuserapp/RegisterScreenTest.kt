@@ -10,6 +10,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.requestFocus
 import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.fragments.RegisterScreen
 import org.junit.Assert.assertEquals
@@ -113,6 +114,55 @@ class RegisterScreenTest {
             }
         }
 
+        composeRule.onNodeWithTag("register_error").assertIsDisplayed()
+    }
+
+    @Test
+    fun differingPasswordsExplainThemselvesWhileTyping() {
+        var password by mutableStateOf("")
+        var repeat by mutableStateOf("")
+
+        composeRule.setContent {
+            AppTheme(useDarkTheme = false) {
+                RegisterScreen(
+                    firstName = "Ana", lastName = "Gil", email = "ana@example.com",
+                    password = password, repeatPassword = repeat,
+                    recovering = false, error = null,
+                    onFirstNameChange = {}, onLastNameChange = {}, onEmailChange = {},
+                    onPasswordChange = { password = it }, onRepeatPasswordChange = { repeat = it },
+                    onCreate = {}, onLogin = {}
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("register_error").assertDoesNotExist()
+        composeRule.onNodeWithTag("register_password").performTextInput("secret1")
+        composeRule.onNodeWithTag("register_repeat_password").performTextInput("secret2")
+        composeRule.onNodeWithTag("register_error").assertIsDisplayed()
+        composeRule.onNodeWithTag("register_repeat_password").performTextInput("1")
+        composeRule.onNodeWithTag("register_error").assertDoesNotExist()
+    }
+
+    @Test
+    fun invalidEmailIsReportedOnlyAfterLeavingTheField() {
+        var email by mutableStateOf("")
+
+        composeRule.setContent {
+            AppTheme(useDarkTheme = false) {
+                RegisterScreen(
+                    firstName = "", lastName = "", email = email, password = "", repeatPassword = "",
+                    recovering = false, error = null,
+                    onFirstNameChange = {}, onLastNameChange = {}, onEmailChange = { email = it },
+                    onPasswordChange = {}, onRepeatPasswordChange = {},
+                    onCreate = {}, onLogin = {}
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("register_email").requestFocus()
+        composeRule.onNodeWithTag("register_email").performTextInput("not-an-email")
+        composeRule.onNodeWithTag("register_error").assertDoesNotExist()
+        composeRule.onNodeWithTag("register_first_name").requestFocus()
         composeRule.onNodeWithTag("register_error").assertIsDisplayed()
     }
 }

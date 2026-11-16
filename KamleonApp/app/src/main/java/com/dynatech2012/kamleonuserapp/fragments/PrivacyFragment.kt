@@ -9,18 +9,14 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.AppTheme
-import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
 class PrivacyFragment : Fragment() {
-    private val viewModel: AuthViewModel by activityViewModels()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,12 +42,6 @@ class PrivacyFragment : Fragment() {
                         startActivity(Intent(Intent.ACTION_SENDTO).apply { data = "mailto:$address".toUri() })
                     }
                 )
-            }
-        }
-        viewModel.uiState.observe(viewLifecycleOwner) { state ->
-            Timber.d("Privacy screen observed registration state: %s", state)
-            if (state == 3) {
-                findNavController().navigate(R.id.action_privacyFragment_to_onboardingFragment)
             }
         }
     }

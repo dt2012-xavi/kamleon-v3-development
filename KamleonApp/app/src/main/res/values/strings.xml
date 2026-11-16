@@ -40,6 +40,7 @@
     <string name="signup_login"><u>Log in</u></string>
     <string name="signup_error_empty_fields">Please enter your first name and last name</string>
     <string name="signup_error_password">Password must be at least 6 characters long</string>
+    <string name="signup_error_password_mismatch">Passwords do not match</string>
     <string name="signup_error_email_pattern">Please use a valid email</string>
     <string name="signup_session_expired">Your session ended. Sign in to finish setting up your account.</string>
     <string name="signup_existing_account_title">Could not create account</string>
@@ -76,6 +77,12 @@
     <string name="onboard_button_next">Next</string>
     <string name="onboard_button_start">Start!</string>
     <string name="onboard_button_step">%1$d/6</string>
+    <string name="onboard_step_counter">Step %1$d of %2$d</string>
+    <!-- Short reasons shown under each question; copy to be reviewed by product -->
+    <string name="onboard_why_birthday">We use your age to interpret your results correctly.</string>
+    <string name="onboard_why_height">Used to personalise your analysis.</string>
+    <string name="onboard_why_weight">Used to personalise your analysis.</string>
+    <string name="onboard_why_gender">Used to personalise your analysis. You can choose not to say.</string>
     <string name="onboard_bottom_text">You can change it later in the App settings</string>
     <string name="onboard_bottom_later">Skip, I\'ll fill it later</string>
     <string name="onboard_noti_title">Stay updated with your latest sample</string>

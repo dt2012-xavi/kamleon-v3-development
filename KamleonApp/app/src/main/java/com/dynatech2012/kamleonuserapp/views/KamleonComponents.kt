@@ -24,6 +24,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +32,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -42,10 +44,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -83,10 +88,6 @@ private fun circular(@DimenRes size: Int, weight: FontWeight = FontWeight.Normal
     fontSize = spResource(size),
     platformStyle = XmlFontPadding
 )
-
-/** Large headings on the left-aligned flow screens (privacy): Regular 32sp. */
-@Composable
-fun kamleonDisplay() = circular(R.dimen.ts_32)
 
 /** Screen titles: Bold 20sp. */
 @Composable
@@ -145,7 +146,8 @@ fun KamleonTextLink(
  * there is text), left-aligned text, a visible outline (so it never vanishes on light backgrounds)
  * that turns teal while focused, and an eye toggle when [secure].
  *
- * A disabled field (`enabled = false`) is read-only and greyed out.
+ * A disabled field (`enabled = false`) is read-only and greyed out; `isError` draws a red outline.
+ * [contentType] marks the field for autofill, and [onFocusChange] reports focus changes.
  *
  * Keyboard actions are the defaults: Next moves focus to the following field and Done hides the
  * keyboard.
@@ -160,11 +162,19 @@ fun KamleonTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Next,
     enabled: Boolean = true,
+    isError: Boolean = false,
+    capitalization: KeyboardCapitalization = KeyboardCapitalization.None,
+    autoCorrect: Boolean = true,
+    contentType: ContentType? = null,
+    onFocusChange: ((Boolean) -> Unit)? = null,
     testTag: String? = null
 ) {
     var secureOn by rememberSaveable { mutableStateOf(true) }
     val interaction = remember { MutableInteractionSource() }
     val focused by interaction.collectIsFocusedAsState()
+    if (onFocusChange != null) {
+        LaunchedEffect(focused) { onFocusChange(focused) }
+    }
     val shape = RoundedCornerShape(dimensionResource(R.dimen.input_text_box_corner_radius))
     val textStyle = kamleonBodySmall().copy(
         color = colorResource(if (enabled) R.color.kamleon_secondary_grey_70 else R.color.kamleon_secondary_grey_60)
@@ -182,11 +192,17 @@ fun KamleonTextField(
         textStyle = textStyle,
         interactionSource = interaction,
         cursorBrush = SolidColor(colorResource(R.color.kamleon_blue)),
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
+        keyboardOptions = KeyboardOptions(
+            capitalization = capitalization,
+            autoCorrectEnabled = autoCorrect,
+            keyboardType = keyboardType,
+            imeAction = imeAction
+        ),
         visualTransformation = if (secure && secureOn) PasswordVisualTransformation() else VisualTransformation.None,
         modifier = modifier
             .fillMaxWidth()
             .height(dimensionResource(R.dimen.input_text_box_height))
+            .then(if (contentType != null) Modifier.semantics { this.contentType = contentType } else Modifier)
             .then(if (testTag != null) Modifier.testTag(testTag) else Modifier),
         decorationBox = { innerTextField ->
             Row(
@@ -198,7 +214,11 @@ fun KamleonTextField(
                     .border(
                         BorderStroke(
                             1.dp,
-                            if (focused) colorResource(R.color.kamleon_blue) else colorResource(R.color.kamleon_outline)
+                            when {
+                                isError -> colorResource(R.color.kmln_red)
+                                focused -> colorResource(R.color.kamleon_blue)
+                                else -> colorResource(R.color.kamleon_outline)
+                            }
                         ),
                         shape
                     )

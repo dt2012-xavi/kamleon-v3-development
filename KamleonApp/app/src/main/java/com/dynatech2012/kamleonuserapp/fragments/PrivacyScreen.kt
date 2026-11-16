@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -51,7 +52,7 @@ import com.dynatech2012.kamleonuserapp.views.KamleonRoundButton
 import com.dynatech2012.kamleonuserapp.views.kamleonBody
 import com.dynatech2012.kamleonuserapp.views.kamleonBodyBold
 import com.dynatech2012.kamleonuserapp.views.kamleonBodySmall
-import com.dynatech2012.kamleonuserapp.views.kamleonDisplay
+import com.dynatech2012.kamleonuserapp.views.kamleonTitle
 
 private const val SUPPORT_EMAIL = "info@kamleon.com"
 
@@ -82,7 +83,12 @@ fun PrivacyScreen(
     )
     val item1 = linkedText(stringResource(R.string.privacy_item1), linkTargets, onOpenUrl)
     val item2 = linkedText(stringResource(R.string.privacy_item2), linkTargets, onOpenUrl)
-    val item3 = linkedText(stringResource(R.string.privacy_item3), linkTargets, onOpenUrl)
+    // The consent item is a statement followed by a separate paragraph (split on the blank lines
+    // of the string) so that it reads as two blocks instead of one wall of text.
+    val consentParts = stringResource(R.string.privacy_item3).split("\n\n\n", limit = 2)
+    val item3 = linkedText(consentParts[0].trim(), linkTargets, onOpenUrl)
+    val item3Extra = consentParts.getOrNull(1)?.trim()?.takeIf { it.isNotEmpty() }
+        ?.let { linkedText(it, linkTargets, onOpenUrl) }
     val note = linkedText(
         stringResource(R.string.privacy_note),
         listOf(SUPPORT_EMAIL to SUPPORT_EMAIL),
@@ -101,13 +107,14 @@ fun PrivacyScreen(
             ) {
                 Text(
                     text = stringResource(R.string.privacy_title),
-                    style = kamleonDisplay(),
+                    style = kamleonTitle(),
                     color = darkGrey,
-                    modifier = Modifier.padding(top = 8.dp)
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
                 )
-                PrivacyItem(policy, { policy = it }, item1, grey70, Modifier.padding(top = 24.dp), "privacy_item_policy")
-                PrivacyItem(terms, { terms = it }, item2, grey70, Modifier.padding(top = 18.dp), "privacy_item_terms")
-                PrivacyItem(consent, { consent = it }, item3, grey70, Modifier.padding(top = 18.dp), "privacy_item_consent")
+                PrivacyItem(policy, { policy = it }, item1, null, grey70, Modifier.padding(top = 16.dp), "privacy_item_policy")
+                PrivacyItem(terms, { terms = it }, item2, null, grey70, Modifier, "privacy_item_terms")
+                PrivacyItem(consent, { consent = it }, item3, item3Extra, grey70, Modifier, "privacy_item_consent")
                 Text(
                     text = note,
                     style = kamleonBodySmall(),
@@ -156,12 +163,16 @@ fun PrivacyScreen(
     }
 }
 
-/** One consent row: round check icon plus text; the whole row toggles, links inside open pages. */
+/**
+ * One consent row: round check icon plus text; the whole row (at least 48dp tall) toggles, links
+ * inside open pages. [extra] is an optional second paragraph that belongs to the same choice.
+ */
 @Composable
 private fun PrivacyItem(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     text: AnnotatedString,
+    extra: AnnotatedString?,
     color: androidx.compose.ui.graphics.Color,
     modifier: Modifier,
     testTag: String
@@ -176,21 +187,23 @@ private fun PrivacyItem(
                 role = Role.Checkbox,
                 onValueChange = onCheckedChange
             )
+            .heightIn(min = 48.dp)
             .padding(start = 16.dp)
-            .testTag(testTag)
+            .testTag(testTag),
+        verticalAlignment = Alignment.Top
     ) {
         // 60px xxhdpi icons => 20dp.
         Image(
             painter = painterResource(if (checked) R.drawable.icn_circular_check else R.drawable.icn_circular_uncheck),
             contentDescription = null,
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.padding(top = 14.dp).size(20.dp)
         )
-        Text(
-            text = text,
-            style = kamleonBody(),
-            color = color,
-            modifier = Modifier.padding(start = 16.dp, top = 4.dp, bottom = 2.dp)
-        )
+        Column(Modifier.padding(start = 16.dp, top = 12.dp, bottom = 12.dp)) {
+            Text(text = text, style = kamleonBody(), color = color)
+            if (extra != null) {
+                Text(text = extra, style = kamleonBody(), color = color, modifier = Modifier.padding(top = 12.dp))
+            }
+        }
     }
 }
 
