@@ -11,15 +11,26 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -34,7 +45,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
@@ -44,8 +57,11 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.error
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
@@ -148,10 +164,14 @@ fun KamleonTextLink(
  * that turns teal while focused, and an eye toggle when [secure].
  *
  * A disabled field (`enabled = false`) is read-only and greyed out; `isError` draws a red outline.
- * [contentType] marks the field for autofill, and [onFocusChange] reports focus changes.
+ * [errorText] shows the message right under the field (red outline included), announces it to
+ * accessibility services and scrolls it into view when the field has focus, so it never ends up
+ * hidden behind the keyboard. [contentType] marks the field for autofill, [onFocusChange] reports
+ * focus changes and [focusRequester] lets the screen move focus here (e.g. to the first invalid
+ * field).
  *
- * Keyboard actions are the defaults: Next moves focus to the following field and Done hides the
- * keyboard.
+ * Keyboard actions are the defaults (Next moves focus to the following field, Done hides the
+ * keyboard) unless [onImeAction] is given: then Done/Go/Send call it, e.g. to submit the form.
  */
 @Composable
 fun KamleonTextField(
@@ -168,6 +188,9 @@ fun KamleonTextField(
     autoCorrect: Boolean = true,
     contentType: ContentType? = null,
     onFocusChange: ((Boolean) -> Unit)? = null,
+    errorText: String? = null,
+    focusRequester: FocusRequester? = null,
+    onImeAction: (() -> Unit)? = null,
     testTag: String? = null
 ) {
     var secureOn by rememberSaveable { mutableStateOf(true) }
@@ -175,6 +198,11 @@ fun KamleonTextField(
     val focused by interaction.collectIsFocusedAsState()
     if (onFocusChange != null) {
         LaunchedEffect(focused) { onFocusChange(focused) }
+    }
+    val bringIntoView = remember { BringIntoViewRequester() }
+    val showError = isError || errorText != null
+    LaunchedEffect(errorText, focused) {
+        if (errorText != null && focused) bringIntoView.bringIntoView()
     }
     val shape = RoundedCornerShape(dimensionResource(R.dimen.input_text_box_corner_radius))
     val textStyle = kamleonBodySmall().copy(
@@ -185,86 +213,106 @@ fun KamleonTextField(
         dimensionResource(R.dimen.input_text_box_eye_height)
     )
 
-    BasicTextField(
-        value = value,
-        onValueChange = onValueChange,
-        singleLine = true,
-        enabled = enabled,
-        textStyle = textStyle,
-        interactionSource = interaction,
-        cursorBrush = SolidColor(colorResource(R.color.kamleon_blue)),
-        keyboardOptions = KeyboardOptions(
-            capitalization = capitalization,
-            autoCorrectEnabled = autoCorrect,
-            keyboardType = keyboardType,
-            imeAction = imeAction
-        ),
-        visualTransformation = if (secure && secureOn) PasswordVisualTransformation() else VisualTransformation.None,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(dimensionResource(R.dimen.input_text_box_height))
-            .then(if (contentType != null) Modifier.semantics { this.contentType = contentType } else Modifier)
-            .then(if (testTag != null) Modifier.testTag(testTag) else Modifier),
-        decorationBox = { innerTextField ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(dimensionResource(R.dimen.input_text_box_height))
-                    .clip(shape)
-                    .background(colorResource(R.color.color_fa))
-                    .border(
-                        BorderStroke(
-                            1.dp,
-                            when {
-                                isError -> colorResource(R.color.kmln_red)
-                                focused -> colorResource(R.color.kamleon_blue)
-                                else -> colorResource(R.color.kamleon_outline)
-                            }
-                        ),
-                        shape
-                    )
-                    .padding(horizontal = dimensionResource(R.dimen.input_text_box_padding_h) + 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
-                    if (value.isEmpty()) {
-                        Text(
-                            text = placeholder,
-                            style = kamleonBodySmall(),
-                            color = colorResource(R.color.kamleon_secondary_grey_60)
+    Column(modifier.bringIntoViewRequester(bringIntoView)) {
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
+            singleLine = true,
+            enabled = enabled,
+            textStyle = textStyle,
+            interactionSource = interaction,
+            cursorBrush = SolidColor(colorResource(R.color.kamleon_blue)),
+            keyboardOptions = KeyboardOptions(
+                capitalization = capitalization,
+                autoCorrectEnabled = autoCorrect,
+                keyboardType = keyboardType,
+                imeAction = imeAction
+            ),
+            keyboardActions = if (onImeAction != null) {
+                KeyboardActions(onDone = { onImeAction() }, onGo = { onImeAction() }, onSend = { onImeAction() })
+            } else {
+                KeyboardActions.Default
+            },
+            visualTransformation = if (secure && secureOn) PasswordVisualTransformation() else VisualTransformation.None,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(dimensionResource(R.dimen.input_text_box_height))
+                .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier)
+                .then(if (errorText != null) Modifier.semantics { error(errorText) } else Modifier)
+                .then(if (contentType != null) Modifier.semantics { this.contentType = contentType } else Modifier)
+                .then(if (testTag != null) Modifier.testTag(testTag) else Modifier),
+            decorationBox = { innerTextField ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(dimensionResource(R.dimen.input_text_box_height))
+                        .clip(shape)
+                        .background(colorResource(R.color.color_fa))
+                        .border(
+                            BorderStroke(
+                                1.dp,
+                                when {
+                                    showError -> colorResource(R.color.kmln_red)
+                                    focused -> colorResource(R.color.kamleon_blue)
+                                    else -> colorResource(R.color.kamleon_outline)
+                                }
+                            ),
+                            shape
                         )
+                        .padding(horizontal = dimensionResource(R.dimen.input_text_box_padding_h) + 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                        if (value.isEmpty()) {
+                            Text(
+                                text = placeholder,
+                                style = kamleonBodySmall(),
+                                color = colorResource(R.color.kamleon_secondary_grey_60)
+                            )
+                        }
+                        innerTextField()
                     }
-                    innerTextField()
-                }
-                if (secure) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            // Tappable but not a keyboard focus stop: otherwise the IME "Next" action
-                            // from the password field lands on the eye instead of the next field.
-                            .focusProperties { canFocus = false }
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                role = Role.Button,
-                                onClickLabel = stringResource(
-                                    if (secureOn) R.string.auth_show_password else R.string.auth_hide_password
-                                )
-                            ) { secureOn = !secureOn }
-                            .padding(start = 8.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = painterResource(if (secureOn) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open),
-                            contentDescription = null,
-                            contentScale = ContentScale.Fit,
-                            modifier = eyeSize
-                        )
+                    if (secure) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                // Tappable but not a keyboard focus stop: otherwise the IME "Next" action
+                                // from the password field lands on the eye instead of the next field.
+                                .focusProperties { canFocus = false }
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                    role = Role.Button,
+                                    onClickLabel = stringResource(
+                                        if (secureOn) R.string.auth_show_password else R.string.auth_hide_password
+                                    )
+                                ) { secureOn = !secureOn }
+                                .padding(start = 8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(if (secureOn) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open),
+                                contentDescription = null,
+                                contentScale = ContentScale.Fit,
+                                modifier = eyeSize
+                            )
+                        }
                     }
                 }
             }
+        )
+        if (errorText != null) {
+            Text(
+                text = errorText,
+                style = kamleonCaption(),
+                color = colorResource(R.color.kmln_red),
+                modifier = Modifier
+                    .padding(start = dimensionResource(R.dimen.input_text_box_padding_h) + 4.dp, top = 4.dp)
+                    .semantics { liveRegion = LiveRegionMode.Polite }
+                    .then(if (testTag != null) Modifier.testTag(testTag + "_error") else Modifier)
+            )
         }
-    )
+    }
 }
 
 /**
@@ -341,6 +389,31 @@ fun KamleonProgressBar(progress: Float, modifier: Modifier = Modifier) {
                 .fillMaxWidth(animated)
                 .fillMaxHeight()
                 .background(colorResource(R.color.kamleon_blue))
+        )
+    }
+}
+
+/**
+ * Layout shared by the auth forms: the [content] scrolls, while the primary action stays in a
+ * fixed [bottomBar] that always remains on screen (above the keyboard when it is open), so the
+ * button is never buried under the IME. [bottomBar] receives whether the keyboard is visible so it
+ * can hide secondary content (e.g. the "Register" link) and give the fields the space.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun KamleonFormLayout(
+    bottomBar: @Composable ColumnScope.(imeVisible: Boolean) -> Unit,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    val imeVisible = WindowInsets.isImeVisible
+    Column(Modifier.fillMaxSize().background(colorResource(R.color.white))) {
+        Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()), content = content)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 44.dp)
+                .padding(top = 8.dp, bottom = if (imeVisible) 12.dp else 40.dp),
+            content = { bottomBar(imeVisible) }
         )
     }
 }

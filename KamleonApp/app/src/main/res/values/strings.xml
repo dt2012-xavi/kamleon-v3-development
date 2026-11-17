@@ -40,6 +40,11 @@
     <string name="signup_login"><u>Log in</u></string>
     <string name="signup_error_empty_fields">Please enter your first name and last name</string>
     <string name="signup_error_password">Password must be at least 6 characters long</string>
+    <string name="field_error_email_required">Enter your email</string>
+    <string name="field_error_password_required">Enter your password</string>
+    <string name="signup_error_first_name_required">Enter your first name</string>
+    <string name="signup_error_last_name_required">Enter your last name</string>
+    <string name="signup_error_repeat_required">Repeat your password</string>
     <string name="signup_error_password_mismatch">Passwords do not match</string>
     <string name="signup_error_email_pattern">Please use a valid email</string>
     <string name="signup_session_expired">Your session ended. Sign in to finish setting up your account.</string>
