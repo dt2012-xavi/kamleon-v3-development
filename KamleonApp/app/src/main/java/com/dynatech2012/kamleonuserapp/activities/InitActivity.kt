@@ -30,7 +30,6 @@ import timber.log.Timber
 @AndroidEntryPoint
 class InitActivity : BaseActivity<ActivityInitBinding>() {
     private val viewModel: AuthViewModel by viewModels()
-    private var mainOpened = false
     private var resetRestoredFlow = false
 
     // Ask the NavHostFragment, not the view: after process death onCreate runs before the
@@ -79,7 +78,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     }
 
     private fun route(state: AuthViewModel.StartupState?) {
-        if (viewModel.splashDurationCompleted.value != true || mainOpened) return
+        if (viewModel.splashDurationCompleted.value != true || viewModel.mainOpened) return
         when (state) {
             AuthViewModel.StartupState.Ready -> openMain()
             AuthViewModel.StartupState.NeedsLogin, AuthViewModel.StartupState.NeedsPolicy -> {
@@ -132,8 +131,8 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     }
 
     fun openMain() {
-        if (mainOpened) return
-        mainOpened = true
+        if (viewModel.mainOpened) return
+        viewModel.mainOpened = true
         // A scan link opens InitActivity on top of a running MainActivity: reuse it (onNewIntent)
         // instead of stacking another one for every link.
         val mainIntent = Intent(this, MainActivity::class.java)

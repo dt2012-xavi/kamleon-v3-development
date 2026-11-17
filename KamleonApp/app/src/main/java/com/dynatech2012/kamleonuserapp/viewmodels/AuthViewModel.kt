@@ -91,6 +91,13 @@ class AuthViewModel @Inject constructor(
     val splashDurationCompleted = MutableLiveData<Boolean>()
     var appInitializationStarted = false // To prevent re-initialization
 
+    /**
+     * MainActivity was already started from this InitActivity. It lives here, not in the activity:
+     * a recreated InitActivity (theme, language or font size change) re-observes the Ready state
+     * and the login result, and would otherwise start Main a second time.
+     */
+    var mainOpened = false
+
     fun signalSplashDurationCompleted() {
         splashDurationCompleted.postValue(true)
     }
