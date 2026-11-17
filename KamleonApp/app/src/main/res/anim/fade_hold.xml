@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Outgoing screen: stays fully visible while the incoming one fades in over it. Fading both at once
+  would dip the combined opacity and, with the translucent Init window, flash whatever is behind.
+-->
+<alpha xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="250"
+    android:fromAlpha="1.0"
+    android:toAlpha="1.0" />

@@ -12,7 +12,13 @@
         tools:layout="@layout/activity_splash" >
         <action
             android:id="@+id/action_splashFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_hold"
+            app:popEnterAnim="@anim/fade_hold"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -21,10 +27,18 @@
         tools:layout="@layout/activity_login" >
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
-            app:destination="@id/registerFragment" />
+            app:destination="@id/registerFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_hold"
+            app:popEnterAnim="@anim/fade_hold"
+            app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_loginFragment_to_forgotPwdFragment"
-            app:destination="@id/forgotPwdFragment" />
+            app:destination="@id/forgotPwdFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_hold"
+            app:popEnterAnim="@anim/fade_hold"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
 
     <fragment
@@ -34,10 +48,18 @@
         tools:layout="@layout/activity_forgot_pwd" >
         <action
             android:id="@+id/action_forgotPwdFragment_to_registerFragment"
-            app:destination="@id/registerFragment" />
+            app:destination="@id/registerFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_hold"
+            app:popEnterAnim="@anim/fade_hold"
+            app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_forgotPwdFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_hold"
+            app:popEnterAnim="@anim/fade_hold"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
 
 
@@ -48,10 +70,18 @@
         tools:layout="@layout/activity_privacy" >
         <action
             android:id="@+id/action_privacyFragment_to_onboardingFragment"
-            app:destination="@id/onboardingFragment" />
+            app:destination="@id/onboardingFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_hold"
+            app:popEnterAnim="@anim/fade_hold"
+            app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_privacyFragment_to_registerFragment"
-            app:destination="@id/registerFragment" />
+            app:destination="@id/registerFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_hold"
+            app:popEnterAnim="@anim/fade_hold"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/onboardingFragment"
@@ -60,7 +90,11 @@
         tools:layout="@layout/activity_onboarding" >
         <action
             android:id="@+id/action_onboardingFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_hold"
+            app:popEnterAnim="@anim/fade_hold"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
 
     <fragment
@@ -70,10 +104,39 @@
         tools:layout="@layout/activity_register" >
         <action
             android:id="@+id/action_registerFragment_to_privacyFragment"
-            app:destination="@id/privacyFragment" />
+            app:destination="@id/privacyFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_hold"
+            app:popEnterAnim="@anim/fade_hold"
+            app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_registerFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_hold"
+            app:popEnterAnim="@anim/fade_hold"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
+
+    <!-- Startup routing (InitActivity) can land on login/register from any destination, e.g. after
+         process death. They clear the splash so Back from the first screen leaves the app. -->
+    <action
+        android:id="@+id/action_global_loginFragment"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/splashFragment"
+        app:popUpToInclusive="true"
+        app:enterAnim="@anim/fade_in"
+        app:exitAnim="@anim/fade_hold"
+        app:popEnterAnim="@anim/fade_hold"
+        app:popExitAnim="@anim/fade_out" />
+    <action
+        android:id="@+id/action_global_registerFragment"
+        app:destination="@id/registerFragment"
+        app:popUpTo="@id/splashFragment"
+        app:popUpToInclusive="true"
+        app:enterAnim="@anim/fade_in"
+        app:exitAnim="@anim/fade_hold"
+        app:popEnterAnim="@anim/fade_hold"
+        app:popExitAnim="@anim/fade_out" />
 
     </navigation>

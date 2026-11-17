@@ -1,102 +1,49 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.content.Intent
-import android.os.Build
-import android.text.Editable
-import android.text.TextWatcher
-import timber.log.Timber
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
-import android.view.inputmethod.EditorInfo
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import coil.ImageLoader
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
-import coil.load
-import coil.size.Scale
-import com.dynatech2012.kamleonuserapp.R
-import com.dynatech2012.kamleonuserapp.activities.InitActivity
-import com.dynatech2012.kamleonuserapp.activities.MainActivity
-import com.dynatech2012.kamleonuserapp.base.BaseFragment
-import com.dynatech2012.kamleonuserapp.databinding.ActivityLoginBinding
-import com.dynatech2012.kamleonuserapp.databinding.ActivitySplashBinding
+import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
+/**
+ * Startup screen. It only plays the animated logo for [MIN_DURATION_MS] and reports that to the
+ * ViewModel; `InitActivity` leaves it once that time has passed and the session check is done.
+ */
 @AndroidEntryPoint
-class SplashFragment : BaseFragment<ActivitySplashBinding>() {
+class SplashFragment : Fragment() {
     private val viewModel: AuthViewModel by activityViewModels()
-    override fun setBinding(): ActivitySplashBinding = ActivitySplashBinding.inflate(layoutInflater)
 
-    override fun initView() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        setContent { AppTheme(useDarkTheme = false) { SplashScreen() } }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         Timber.d("Splash screen displayed")
-        //viewModel.resetLogged()
-        //viewModel.checkLogin()
-
-        val imageLoader = ImageLoader.Builder(binding.root.context)
-            .components {
-                if (Build.VERSION.SDK_INT >= 28) {
-                    add(ImageDecoderDecoder.Factory())
-                } else {
-                    add(GifDecoder.Factory())
-                }
-            }
-            .build()
-
-        binding.ivSplashGif.load(R.drawable.splash, imageLoader = imageLoader) {
-            lifecycleScope.launch {
-                delay(2000)
-                viewModel.signalSplashDurationCompleted()
-            }
-        }
-
-        //setObservers()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Timber.d("Splash screen resumed")
-        //if (viewModel.alreadySplash) {
-        //    viewModel.resetLogged()
-        //    viewModel.checkLogin()
-
-        //}
-        //viewModel.alreadySplash = true
-    }
-
-    override fun onPause() {
-        super.onPause()
-        removeObservers()
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (hidden) {
-            removeObservers()
-        } else {
-            setObservers()
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(MIN_DURATION_MS)
+            viewModel.signalSplashDurationCompleted()
         }
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        removeObservers()
-    }
-
-    private fun removeObservers() {
-    }
-
-    private fun setObservers() {
-    }
-
-    override fun initEvent() { }
 
     companion object {
-        val TAG: String = SplashFragment::class.java.simpleName
+        /** Minimum time the splash stays up, even if the session check finishes sooner. */
+        const val MIN_DURATION_MS = 2000L
     }
 }

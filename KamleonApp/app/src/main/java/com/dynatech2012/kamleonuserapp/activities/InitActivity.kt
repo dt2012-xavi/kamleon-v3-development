@@ -1,6 +1,7 @@
 package com.dynatech2012.kamleonuserapp.activities
 
 import android.Manifest
+import android.app.ActivityOptions
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -30,13 +31,14 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             findNavController(R.id.nav_host_fragment_init).currentDestination?.id != R.id.splashFragment
         handleIntent(intent)
         viewModel.splashDurationCompleted.observe(this) { completed ->
-            if (completed == true && !viewModel.appInitializationStarted) {
-                viewModel.appInitializationStarted = true
-                viewModel.checkLogin()
-            }
             if (completed == true) route(viewModel.startupState.value)
         }
         viewModel.startupState.observe(this) { route(it) }
+        // The session is checked while the splash plays; route() waits for both to be done.
+        if (!viewModel.appInitializationStarted) {
+            viewModel.appInitializationStarted = true
+            viewModel.checkLogin()
+        }
         if (resetRestoredFlow) viewModel.signalSplashDurationCompleted()
     }
 
@@ -69,7 +71,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
                 if (resetRestoredFlow || navController.currentDestination?.id == R.id.splashFragment) {
                     resetRestoredFlow = false
                     if (navController.currentDestination?.id != R.id.loginFragment) {
-                        navController.navigate(R.id.loginFragment)
+                        navController.navigate(R.id.action_global_loginFragment)
                     }
                 }
             }
@@ -78,7 +80,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
                     navController.currentDestination?.id == R.id.loginFragment) {
                     resetRestoredFlow = false
                     if (navController.currentDestination?.id != R.id.registerFragment) {
-                        navController.navigate(R.id.registerFragment)
+                        navController.navigate(R.id.action_global_registerFragment)
                     }
                 }
             }
@@ -102,7 +104,8 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             mainIntent.putExtra("unitId", unitId)
             mainIntent.putExtra("sessionId", sessionId)
         }
-        startActivity(mainIntent)
+        // Cross-fade into the main screen instead of the system's default activity transition.
+        startActivity(mainIntent, ActivityOptions.makeCustomAnimation(this, R.anim.fade_in, R.anim.fade_hold).toBundle())
         finish()
     }
 
