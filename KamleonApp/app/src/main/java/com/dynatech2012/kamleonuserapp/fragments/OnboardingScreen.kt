@@ -1,6 +1,12 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,6 +60,9 @@ object OnboardingSteps {
     const val WEIGHT = 3
     const val GENDER = 4
     const val COUNT = 5
+
+    /** Minimum age to use the app: also the default and the latest selectable birth date. */
+    const val MIN_AGE = 14
 }
 
 /**
@@ -137,9 +146,19 @@ fun OnboardingScreen(
             ) {
                 // The wheel pickers draw their labels with the default font; give them Circular.
                 ProvideTextStyle(TextStyle(fontFamily = MatTheme.fontFamily)) {
+                    // Fade through between steps: the old one leaves quickly, the new one comes in.
+                    // Inside, use [shownStep] (not [step]) so the outgoing content keeps its own.
+                    AnimatedContent(
+                        targetState = step,
+                        transitionSpec = {
+                            (fadeIn(tween(220, delayMillis = 90)) togetherWith fadeOut(tween(90)))
+                                .using(SizeTransform(clip = false))
+                        },
+                        label = "onboarding-step"
+                    ) { shownStep ->
                     androidx.compose.runtime.key(pickerKey) {
-                        when (step) {
-                            OnboardingSteps.BIRTH_DATE -> PickerStep(step, R.string.onboard_birthday_title, R.string.onboard_why_birthday) {
+                        when (shownStep) {
+                            OnboardingSteps.BIRTH_DATE -> PickerStep(shownStep, R.string.onboard_birthday_title, stringResource(R.string.onboard_why_birthday, OnboardingSteps.MIN_AGE)) {
                                 WheelDatePicker(
                                     offset = 1,
                                     yearsRange = birthYearsRange,
@@ -152,8 +171,8 @@ fun OnboardingScreen(
                                     onDateChanged = onBirthDateChange
                                 )
                             }
-                            OnboardingSteps.NOTIFICATIONS -> NotificationStep(step, darkGrey)
-                            OnboardingSteps.HEIGHT -> PickerStep(step, R.string.onboard_height_title, R.string.onboard_why_height) {
+                            OnboardingSteps.NOTIFICATIONS -> NotificationStep(shownStep, darkGrey)
+                            OnboardingSteps.HEIGHT -> PickerStep(shownStep, R.string.onboard_height_title, stringResource(R.string.onboard_why_height)) {
                                 WheelDataPicker(
                                     offset = 1,
                                     valueUnit = "cm",
@@ -167,7 +186,7 @@ fun OnboardingScreen(
                                     onValueChanged = { value, _ -> onHeightChange(value) }
                                 )
                             }
-                            OnboardingSteps.WEIGHT -> PickerStep(step, R.string.onboard_weight_title, R.string.onboard_why_weight) {
+                            OnboardingSteps.WEIGHT -> PickerStep(shownStep, R.string.onboard_weight_title, stringResource(R.string.onboard_why_weight)) {
                                 WheelDataPicker(
                                     offset = 1,
                                     valueUnit = "kg",
@@ -181,7 +200,7 @@ fun OnboardingScreen(
                                     onValueChanged = { value, _ -> onWeightChange(value) }
                                 )
                             }
-                            OnboardingSteps.GENDER -> PickerStep(step, R.string.onboard_gender_title, R.string.onboard_why_gender) {
+                            OnboardingSteps.GENDER -> PickerStep(shownStep, R.string.onboard_gender_title, stringResource(R.string.onboard_why_gender)) {
                                 WheelDataPicker(
                                     offset = 1,
                                     startValue = selectedGender,
@@ -194,6 +213,7 @@ fun OnboardingScreen(
                                 )
                             }
                         }
+                    }
                     }
                 }
             }
@@ -253,7 +273,7 @@ private fun StepCounter(step: Int) {
 private fun PickerStep(
     step: Int,
     @StringRes title: Int,
-    @StringRes why: Int,
+    why: String,
     picker: @Composable () -> Unit
 ) {
     Column(Modifier.fillMaxSize().padding(horizontal = 18.dp).padding(bottom = 80.dp)) {
@@ -266,7 +286,7 @@ private fun PickerStep(
             modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
         )
         Text(
-            text = stringResource(why),
+            text = why,
             style = kamleonBodySmall(),
             color = colorResource(R.color.kamleon_secondary_grey_60),
             textAlign = TextAlign.Center,

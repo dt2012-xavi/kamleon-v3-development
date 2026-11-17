@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 <!--
     <string name="app_name">KamleonApp</string>
 -->
@@ -94,7 +94,7 @@
     <string name="onboard_button_step">%1$d/6</string>
     <string name="onboard_step_counter">Step %1$d of %2$d</string>
     <!-- Short reasons shown under each question; copy to be reviewed by product -->
-    <string name="onboard_why_birthday">We use your age to interpret your results correctly.</string>
+    <string name="onboard_why_birthday" tools:ignore="PluralsCandidate">We use your age to interpret your results correctly. You must be at least %1$d years old.</string>
     <string name="onboard_why_height">Used to personalise your analysis.</string>
     <string name="onboard_why_weight">Used to personalise your analysis.</string>
     <string name="onboard_why_gender">Used to personalise your analysis. You can choose not to say.</string>

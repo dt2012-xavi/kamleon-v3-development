@@ -46,16 +46,20 @@ class OnboardingFragment : Fragment() {
     private var nextLoading by mutableStateOf(false)
     private var pickerKey by mutableIntStateOf(0)
 
-    // Users must be at least 14 years old: that is both the default and the latest allowed date.
-    private val maxBirthDate = PickerDate(Date().addYears(-14).time)
-    private val birthYearsRange = 1904..Calendar.getInstance().apply { time = Date().addYears(-14) }.get(Calendar.YEAR)
+    // Users must meet the minimum age: that is both the default and the latest allowed date.
+    private val maxBirthDate = PickerDate(Date().addYears(-OnboardingSteps.MIN_AGE).time)
+    private val birthYearsRange =
+        1904..Calendar.getInstance().apply { time = Date().addYears(-OnboardingSteps.MIN_AGE) }.get(Calendar.YEAR)
 
     // Latest picker selections. Plain fields: they are only read when a step is (re)composed or
     // when "Next" is pressed.
     private var birthDate = maxBirthDate
-    private var selectedHeight = ""
-    private var selectedWeight = ""
-    private var selectedGender = ""
+    // Start at typical values rather than at the ends of the wheels, so pressing Next without
+    // touching them does not record 140 cm / 30 kg. Gender starts on "Prefer not to say" so that
+    // nothing is recorded about the user that they did not choose.
+    private var selectedHeight = DEFAULT_HEIGHT
+    private var selectedWeight = DEFAULT_WEIGHT
+    private var selectedGender = DEFAULT_GENDER
 
     private val heightValues = (140..230).map { "$it" }
     private val weightValues = (30..130).map { "$it" }
@@ -66,9 +70,9 @@ class OnboardingFragment : Fragment() {
         savedInstanceState?.let {
             step = it.getInt(KEY_STEP, OnboardingSteps.BIRTH_DATE)
             if (it.containsKey(KEY_BIRTH_MILLIS)) birthDate = PickerDate(it.getLong(KEY_BIRTH_MILLIS))
-            selectedHeight = it.getString(KEY_HEIGHT, "")
-            selectedWeight = it.getString(KEY_WEIGHT, "")
-            selectedGender = it.getString(KEY_GENDER, "")
+            selectedHeight = it.getString(KEY_HEIGHT, DEFAULT_HEIGHT)
+            selectedWeight = it.getString(KEY_WEIGHT, DEFAULT_WEIGHT)
+            selectedGender = it.getString(KEY_GENDER, DEFAULT_GENDER)
         }
     }
 
@@ -220,9 +224,9 @@ class OnboardingFragment : Fragment() {
 
     private fun resetView() {
         birthDate = maxBirthDate
-        selectedHeight = ""
-        selectedWeight = ""
-        selectedGender = ""
+        selectedHeight = DEFAULT_HEIGHT
+        selectedWeight = DEFAULT_WEIGHT
+        selectedGender = DEFAULT_GENDER
         pickerKey += 1
         viewModel.gender = Gender.none
         viewModel.height = 0f
@@ -296,6 +300,10 @@ class OnboardingFragment : Fragment() {
     }
 
     private companion object {
+        // Same "value.decimal" format the wheel pickers report.
+        const val DEFAULT_HEIGHT = "170.0"
+        const val DEFAULT_WEIGHT = "70.0"
+        val DEFAULT_GENDER = Gender.none.raw
         const val KEY_STEP = "onboarding_step"
         const val KEY_BIRTH_MILLIS = "onboarding_birth_millis"
         const val KEY_HEIGHT = "onboarding_height"

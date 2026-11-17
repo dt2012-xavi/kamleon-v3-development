@@ -55,3 +55,9 @@ Corrección aplicada también a `RegisterScreen`: los errores que solo se evalú
 - Arranque: `InitActivity` lanza `checkLogin()` al crearse, en paralelo con el splash; `route()` espera a ambos. Antes la comprobación empezaba tras los 2 s y se sumaban (medido en el Samsung: ahora la salida a Main ocurre ~2,0 s tras mostrar el splash).
 - Transiciones: `res/anim/fade_in|fade_hold|fade_out` (250 ms). La pantalla entrante hace fundido encima de la saliente, que se mantiene opaca (`fade_hold`): desvanecer ambas a la vez baja la opacidad combinada y, con la ventana translúcida de `InitActivity`, dejaría ver lo que hay detrás. Todas las acciones de `login_nav.xml` las llevan, y `InitActivity.openMain()` usa `ActivityOptions.makeCustomAnimation` (verificado grabando el arranque: fundido limpio Splash → Main, sin destello).
 - Navegación de arranque: `InitActivity` navega con las acciones globales `action_global_loginFragment`/`action_global_registerFragment`, que sacan el splash de la pila. Antes se navegaba al destino sin `popUpTo`, así que el splash seguía debajo de Login.
+
+## Onboarding: defaults, edad mínima y animación (2026-11-17)
+
+- Los selectores arrancan en valores típicos (170 cm, 70 kg) y el género en «Prefer not to say»: pulsar «Siguiente» sin tocar la rueda ya no registra 140 cm, 30 kg ni «Male». Los valores usan el formato `valor.decimal` que devuelve `WheelDataPicker`.
+- La edad mínima (`OnboardingSteps.MIN_AGE`, 14) se explica bajo el título de la fecha de nacimiento y gobierna el valor por defecto y la fecha máxima.
+- Los pasos hacen un fundido (`AnimatedContent`, 90 ms de salida y 220 ms de entrada) en vez de cambiar de golpe.
