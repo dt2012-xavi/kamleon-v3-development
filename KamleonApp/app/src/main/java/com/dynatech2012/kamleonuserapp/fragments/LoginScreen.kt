@@ -58,8 +58,13 @@ fun LoginScreen(
     val passwordFocus = remember { FocusRequester() }
     var submitted by remember { mutableStateOf(false) }
     val emailError = if (submitted && email.isBlank()) stringResource(R.string.field_error_email_required) else null
-    val passwordError =
-        if (submitted && password.isBlank()) stringResource(R.string.field_error_password_required) else null
+    // Only the first missing field is reported: that is the one that receives focus, so its
+    // message is never left hidden under the keyboard or the action bar.
+    val passwordError = if (submitted && email.isNotBlank() && password.isBlank()) {
+        stringResource(R.string.field_error_password_required)
+    } else {
+        null
+    }
 
     // The button is never silently disabled: pressing it with a blank field explains what is
     // missing next to that field and moves focus there.

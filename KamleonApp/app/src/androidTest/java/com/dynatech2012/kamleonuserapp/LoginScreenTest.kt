@@ -56,6 +56,8 @@ class LoginScreenTest {
         composeRule.onNodeWithTag("login_sign_in").performClick()
         composeRule.onNodeWithTag("login_email_error").assertIsDisplayed()
         composeRule.onNodeWithTag("login_email").assertIsFocused()
+        // Only the first missing field is reported.
+        composeRule.onNodeWithTag("login_password_error").assertDoesNotExist()
 
         composeRule.onNodeWithTag("login_email").performTextInput("test@example.com")
         composeRule.onNodeWithTag("login_email_error").assertDoesNotExist()

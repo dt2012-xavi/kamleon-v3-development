@@ -213,7 +213,7 @@ fun KamleonTextField(
     // has focus, with some breathing room below, so neither ends up under the keyboard or the fixed
     // action bar. Re-run when the block changes height (e.g. a strength bar replacing the hint).
     var blockSize by remember { mutableStateOf(IntSize.Zero) }
-    val extraBelow = with(LocalDensity.current) { 16.dp.toPx() }
+    val extraBelow = with(LocalDensity.current) { 14.dp.toPx() }
     LaunchedEffect(errorText, focused, blockSize.height) {
         if (focused && blockSize.height > 0 && (errorText != null || supportingContent != null)) {
             bringIntoView.bringIntoView(Rect(0f, 0f, blockSize.width.toFloat(), blockSize.height + extraBelow))
