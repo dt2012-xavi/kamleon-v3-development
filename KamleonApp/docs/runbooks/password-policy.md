@@ -15,11 +15,10 @@ Traduce a la app la política de la web (longitud + fuerza zxcvbn + breach-check
 
 ## Dónde se aplica
 - **Registro** (`AuthViewModel.checkRegisterInputs`): evalúa la política antes de crear la cuenta (códigos `registerInputs`: 4 corta, 5 larga, 7 débil, 8 filtrada, 6 ok) y expone `registerChecking` para el spinner del botón. `RegisterScreen` muestra la barra de fuerza, el error junto al campo y bloquea débiles/cortas al enviar.
-- **Cambio de contraseña** (`MainViewModel.changePwd`): valida la nueva antes de reautenticar; `PwdFragment` muestra el motivo y rechaza «igual que la actual».
+- **Cambio de contraseña** (`MainViewModel.changePwd`): valida la nueva antes de reautenticar y expone `pwdChanging` para el spinner del botón. `PwdScreen` (Compose) muestra la barra de fuerza bajo «nueva contraseña», el motivo del rechazo junto al campo, «igual que la actual» y «no coinciden» mientras se escribe, y la contraseña actual incorrecta (`FirebaseAuthInvalidCredentialsException`) junto a su campo. Otros fallos siguen en diálogo.
 - Fuera de alcance: el reset por enlace.
 
 ## Límites conocidos
 - La política vive en el cliente: protege el flujo de la app, no impide crear cuentas llamando directamente a Firebase Auth.
-- `PwdFragment` sigue en XML: tiene el rechazo con diálogo pero no la barra de fuerza (llegará al migrarla a Compose).
-- Textos nuevos en `strings.xml` (`password_*`, `pwd_error_same_as_current`) pendientes de revisión de producto y de traducción.
+- Textos nuevos en `strings.xml` (`password_*`, `pwd_error_same_as_current`, `pwd_error_new_required`, `nav_back`) pendientes de revisión de producto y de traducción.
 - OkHttp 5.5.1 exige compileSdk 37, por eso se usa `HttpURLConnection`.

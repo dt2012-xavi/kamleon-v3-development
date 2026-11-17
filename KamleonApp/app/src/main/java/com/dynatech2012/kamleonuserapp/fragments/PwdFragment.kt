@@ -1,161 +1,100 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.text.Editable
-import android.text.InputType
-import android.text.TextWatcher
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.graphics.drawable.toDrawable
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
-import com.dynatech2012.kamleonuserapp.base.BaseFragment
-import com.dynatech2012.kamleonuserapp.databinding.ActivityPwdBinding
+import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.security.PasswordPolicyException
+import com.dynatech2012.kamleonuserapp.security.PasswordStrength
 import com.dynatech2012.kamleonuserapp.security.messageRes
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 
 @AndroidEntryPoint
-class PwdFragment : BaseFragment<ActivityPwdBinding>() {
+class PwdFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
-    override fun setBinding(): ActivityPwdBinding = ActivityPwdBinding.inflate(layoutInflater)
-    private var secureInputCurrent: Boolean = true
-    private var secureInputNew: Boolean = true
-    private var secureInputConfirm: Boolean = true
-    override fun initView() {
-        updateInputMode()
-        initObservers()
+
+    private companion object {
+        const val STRENGTH_DEBOUNCE_MS = 150L
     }
 
-    override fun initEvent() {
+    // Passwords are deliberately kept out of saved instance state.
+    private var currentPassword by mutableStateOf("")
+    private var newPassword by mutableStateOf("")
+    private var confirmPassword by mutableStateOf("")
+    // Verdicts reported back by the ViewModel, shown next to their field until it changes.
+    private var currentError by mutableStateOf<Int?>(null)
+    private var newError by mutableStateOf<Int?>(null)
+    // Bumped after a successful change so the screen forgets it was already submitted.
+    private var formKey by mutableIntStateOf(0)
 
-        binding.tvPwdSettings.setOnClickListener {
-            viewModel.resetPwd()
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = ComposeView(requireContext()).apply {
+        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    }
 
-        binding.btnNavClose.setOnClickListener { findNavController().popBackStack() }
-        binding.imageViewEye.isClickable = true
-        binding.imageViewEye.setOnClickListener {
-            secureInputCurrent = !secureInputCurrent
-            updateInputMode()
-        }
-        binding.ivPwdNewEye.isClickable = true
-        binding.ivPwdNewEye.setOnClickListener {
-            secureInputNew = !secureInputNew
-            updateInputMode()
-        }
-        binding.ivPwdConfirmEye.isClickable = true
-        binding.ivPwdConfirmEye.setOnClickListener {
-            secureInputConfirm = !secureInputConfirm
-            updateInputMode()
-        }
-        binding.btnSave.setOnClickListener {
-            // TODO: old pass needed to reauthenticate
-            val oldPwd = binding.etPwd.text.toString()
-            if (binding.etPwdNew.text.toString() != binding.etPwdConf.text.toString()) {
-                showErrorDialog(R.string.pwd_error_title, R.string.pwd_error_dontmatch)
-                return@setOnClickListener
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (view as ComposeView).setContent {
+            val checking by viewModel.pwdChanging.observeAsState(false)
+            // Live strength feedback: debounced so it is not recomputed on every keystroke.
+            var strength by remember { mutableStateOf<PasswordStrength?>(null) }
+            LaunchedEffect(newPassword) {
+                if (newPassword.isEmpty()) {
+                    strength = null
+                } else {
+                    delay(STRENGTH_DEBOUNCE_MS)
+                    strength = viewModel.passwordStrength(newPassword)
+                }
             }
-            if (binding.etPwdNew.text.toString() == oldPwd) {
-                showErrorDialog(R.string.pwd_error_title, R.string.pwd_error_same_as_current)
-                return@setOnClickListener
+            AppTheme(useDarkTheme = false) {
+                PwdScreen(
+                    currentPassword = currentPassword,
+                    newPassword = newPassword,
+                    confirmPassword = confirmPassword,
+                    currentError = currentError,
+                    newError = newError,
+                    checking = checking,
+                    passwordStrength = strength,
+                    onCurrentPasswordChange = { currentPassword = it; currentError = null },
+                    onNewPasswordChange = { newPassword = it; newError = null },
+                    onConfirmPasswordChange = { confirmPassword = it },
+                    onSave = { viewModel.changePwd(currentPassword, newPassword) },
+                    onForgotPassword = { viewModel.resetPwd() },
+                    onBack = { findNavController().popBackStack() },
+                    formKey = formKey
+                )
             }
-            viewModel.changePwd(oldPwd, binding.etPwdNew.text.toString())
         }
-        binding.etPwd.addTextChangedListener(passTextWatcher)
-        binding.etPwdNew.addTextChangedListener(passTextWatcher)
-        binding.etPwdConf.addTextChangedListener(passTextWatcher)
-    }
 
-    private val passTextWatcher = object : TextWatcher {
-        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-        override fun afterTextChanged(s: Editable?) {
-            binding.btnSave.isEnabled = passValidated
-        }
-    }
-
-    private val passValidated: Boolean
-        get() = binding.etPwd.text.toString().isNotEmpty()
-                && binding.etPwdNew.text.toString().isNotEmpty()
-                && binding.etPwdConf.text.toString().isNotEmpty()
-
-    private fun updateInputMode() {
-        binding.imageViewEye.setImageResource(if (secureInputCurrent) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open)
-        if (secureInputCurrent) {
-            binding.etPwd.inputType =
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        } else {
-            binding.etPwd.inputType =
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-        }
-        binding.ivPwdNewEye.setImageResource(if (secureInputNew) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open)
-        if (secureInputNew) {
-            binding.etPwdNew.inputType =
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        } else {
-            binding.etPwdNew.inputType =
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-        }
-        binding.ivPwdConfirmEye.setImageResource(if (secureInputConfirm) R.drawable.ic_eye_crossed else R.drawable.ic_eye_open)
-        if (secureInputConfirm) {
-            binding.etPwdConf.inputType =
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        } else {
-            binding.etPwdConf.inputType =
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-        }
-    }
-
-    private fun initObservers() {
-        viewModel.userUpdated.observe(this, this::onPwdUpdated)
-
-        viewModel.resetPwdSuccess.observe(this) {
+        viewModel.userUpdated.observe(viewLifecycleOwner, this::onPwdUpdated)
+        viewModel.resetPwdSuccess.observe(viewLifecycleOwner) {
             if (it) showSuccessDialog()
-            else showErrorDialog(R.string.pwd_error_title, R.string.pwd_error_generic)
-        }
-    }
-
-    private fun showSuccessDialog() {
-        val title = getString(R.string.dialog_reset_pwd_success_title)
-        val message = getString(R.string.dialog_reset_pwd_success_description)
-        showReadyDialog(title, message)
-    }
-
-    private fun showErrorDialog(
-        titleResource: Int,
-        messageResource: Int,
-        messageString: String? = ""
-    ) {
-        val title = getString(titleResource)
-        var message = ""
-        message = if (!messageString.isNullOrEmpty()) {
-            messageString
-        } else {
-            getString(messageResource)
-        }
-        showReadyDialog(title, message)
-    }
-
-    private fun showReadyDialog(title: String, message: String) {
-        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        val inflater = this.layoutInflater
-        val dialogView: View = inflater.inflate(R.layout.layout_dialog_ok, null)
-
-        dialog.setView(dialogView)
-        dialog.setCancelable(false)
-        // -3 is email not valid, -2 is password not valid, -1 is firebase error
-        dialogView.findViewById<TextView>(R.id.tvDialogTitle).text = title
-        dialogView.findViewById<TextView>(R.id.tvDialogDesc).text = message
-        val logoutDialog = dialog.show()
-        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener {
-            logoutDialog.dismiss()
+            else showErrorDialog(getString(R.string.pwd_error_generic))
         }
     }
 
@@ -163,23 +102,45 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
         if (response == null) return
         when (response) {
             is Response.Success -> {
-                binding.etPwd.text.clear()
-                binding.etPwdNew.text.clear()
-                binding.etPwdConf.text.clear()
+                currentPassword = ""
+                newPassword = ""
+                confirmPassword = ""
+                formKey++
                 showSuccessDialog()
             }
 
-            is Response.Failure -> {
-                val policy = response.exception as? PasswordPolicyException
-                if (policy != null) {
-                    showErrorDialog(R.string.pwd_error_title, policy.reason.messageRes())
-                } else {
-                    showErrorDialog(R.string.pwd_error_title, 0, response.errorMessage ?: "")
-                }
+            is Response.Failure -> when (val e = response.exception) {
+                // Shown next to the field that needs fixing.
+                is PasswordPolicyException -> newError = e.reason.messageRes()
+                is FirebaseAuthInvalidCredentialsException -> currentError = R.string.login_alert_description_wrong_pass
+                else -> showErrorDialog(response.errorMessage ?: getString(R.string.pwd_error_generic))
             }
 
             else -> {}
         }
         viewModel.resetUserUpdated()
+    }
+
+    private fun showSuccessDialog() {
+        showReadyDialog(
+            getString(R.string.dialog_reset_pwd_success_title),
+            getString(R.string.dialog_reset_pwd_success_description)
+        )
+    }
+
+    private fun showErrorDialog(message: String) {
+        showReadyDialog(getString(R.string.pwd_error_title), message)
+    }
+
+    private fun showReadyDialog(title: String, message: String) {
+        val dialogView = layoutInflater.inflate(R.layout.layout_dialog_ok, null)
+        dialogView.findViewById<TextView>(R.id.tvDialogTitle).text = title
+        dialogView.findViewById<TextView>(R.id.tvDialogDesc).text = message
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setCancelable(false)
+            .show()
+        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener { dialog.dismiss() }
     }
 }

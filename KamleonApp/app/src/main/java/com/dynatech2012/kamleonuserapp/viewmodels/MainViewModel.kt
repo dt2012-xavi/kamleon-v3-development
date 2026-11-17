@@ -34,6 +34,7 @@ import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import com.dynatech2012.kamleonuserapp.security.PasswordPolicy
 import com.dynatech2012.kamleonuserapp.security.PasswordPolicyException
 import com.dynatech2012.kamleonuserapp.security.PasswordPolicyResult
+import com.dynatech2012.kamleonuserapp.security.PasswordStrength
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.utils.SharedPrefUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -215,17 +216,30 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private val _pwdChanging = MutableLiveData(false)
+    /** True while a password change (policy check plus reauthentication) is in flight. */
+    val pwdChanging: LiveData<Boolean> = _pwdChanging
+
+    /** Live strength feedback for the new password field. */
+    suspend fun passwordStrength(password: String): PasswordStrength = passwordPolicy.estimateStrength(password)
+
     fun changePwd(oldPwd: String, newPwd: String) {
+        if (_pwdChanging.value == true) return
+        _pwdChanging.value = true
         viewModelScope.launch(Dispatchers.IO) {
-            // The new password must pass the policy before the account is touched.
-            val policy = passwordPolicy.validate(newPwd)
-            if (policy is PasswordPolicyResult.Rejected) {
-                _userUpdated.postValue(Response.Failure(PasswordPolicyException(policy.reason)))
-                return@launch
+            try {
+                // The new password must pass the policy before the account is touched.
+                val policy = passwordPolicy.validate(newPwd)
+                if (policy is PasswordPolicyResult.Rejected) {
+                    _userUpdated.postValue(Response.Failure(PasswordPolicyException(policy.reason)))
+                    return@launch
+                }
+                val response = userRepository.changePwd(oldPwd, newPwd)
+                //_userUpdated.postValue(true)
+                _userUpdated.postValue(response)
+            } finally {
+                _pwdChanging.postValue(false)
             }
-            val response = userRepository.changePwd(oldPwd, newPwd)
-            //_userUpdated.postValue(true)
-            _userUpdated.postValue(response)
         }
     }
 

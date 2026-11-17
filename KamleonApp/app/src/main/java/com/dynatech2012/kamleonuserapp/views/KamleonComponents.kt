@@ -76,6 +76,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -178,7 +179,8 @@ fun KamleonTextLink(
  * field).
  *
  * Keyboard actions are the defaults (Next moves focus to the following field, Done hides the
- * keyboard) unless [onImeAction] is given: then Done/Go/Send call it, e.g. to submit the form.
+ * keyboard) unless [onImeAction] is given: then any action (Done/Go/Send, and Next for keyboards
+ * that lag behind the focus change) calls it, e.g. to submit the form from the last field.
  */
 @Composable
 fun KamleonTextField(
@@ -244,7 +246,14 @@ fun KamleonTextField(
                 imeAction = imeAction
             ),
             keyboardActions = if (onImeAction != null) {
-                KeyboardActions(onDone = { onImeAction() }, onGo = { onImeAction() }, onSend = { onImeAction() })
+                // Next too: the Samsung keyboard can still be showing (and sending) the previous field's
+                // action right after focus moves here.
+                KeyboardActions(
+                    onDone = { onImeAction() },
+                    onGo = { onImeAction() },
+                    onSend = { onImeAction() },
+                    onNext = { onImeAction() }
+                )
             } else {
                 KeyboardActions.Default
             },
@@ -420,15 +429,17 @@ fun KamleonProgressBar(progress: Float, modifier: Modifier = Modifier) {
 @Composable
 fun KamleonFormLayout(
     bottomBar: @Composable ColumnScope.(imeVisible: Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    barHorizontalPadding: Dp = 44.dp,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val imeVisible = WindowInsets.isImeVisible
-    Column(Modifier.fillMaxSize().background(colorResource(R.color.white))) {
+    Column(modifier.fillMaxSize().background(colorResource(R.color.white))) {
         Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()), content = content)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 44.dp)
+                .padding(horizontal = barHorizontalPadding)
                 .padding(top = 8.dp, bottom = if (imeVisible) 12.dp else 40.dp),
             content = { bottomBar(imeVisible) }
         )
@@ -437,11 +448,16 @@ fun KamleonFormLayout(
 
 /**
  * Password strength feedback shown under a password field: the usage hint while it is empty, then
- * a three-segment bar with a label. [strength] null (not scored yet) keeps the hint.
+ * a three-segment bar with a label. [strength] null (not scored yet) keeps the hint. [inset] is the
+ * horizontal indent; it defaults to the text inset of [KamleonTextField].
  */
 @Composable
-fun KamleonPasswordStrengthMeter(password: String, strength: PasswordStrength?, modifier: Modifier = Modifier) {
-    val inset = dimensionResource(R.dimen.input_text_box_padding_h) + 4.dp
+fun KamleonPasswordStrengthMeter(
+    password: String,
+    strength: PasswordStrength?,
+    modifier: Modifier = Modifier,
+    inset: Dp = dimensionResource(R.dimen.input_text_box_padding_h) + 4.dp
+) {
     if (password.isEmpty() || strength == null) {
         Text(
             text = stringResource(R.string.password_hint),

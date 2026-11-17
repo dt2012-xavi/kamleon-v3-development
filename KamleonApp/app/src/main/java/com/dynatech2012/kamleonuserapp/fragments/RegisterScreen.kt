@@ -133,7 +133,9 @@ fun RegisterScreen(
             }
         )
     }
-    val fieldErrors = errors(force = false)
+    // Before the first submit only the live checks show; afterwards every rule is judged live, so
+    // the message that blocked the submit stays next to its field until it is fixed.
+    val fieldErrors = errors(force = submitted)
 
     // Pressing the button never fails silently: if something is wrong, say it next to the field
     // and move focus to the first offending one; otherwise submit.
