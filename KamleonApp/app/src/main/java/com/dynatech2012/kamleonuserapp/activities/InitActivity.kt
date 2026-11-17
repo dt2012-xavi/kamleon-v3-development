@@ -79,32 +79,24 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
 
     private fun route(state: AuthViewModel.StartupState?) {
         if (viewModel.splashDurationCompleted.value != true || viewModel.mainOpened) return
-        when (state) {
-            AuthViewModel.StartupState.Ready -> openMain()
-            AuthViewModel.StartupState.NeedsLogin, AuthViewModel.StartupState.NeedsPolicy -> {
-                if (resetRestoredFlow || navController.currentDestination?.id == R.id.splashFragment) {
-                    resetRestoredFlow = false
-                    if (navController.currentDestination?.id != R.id.loginFragment) {
-                        navController.navigate(R.id.action_global_loginFragment)
-                    }
-                }
-            }
-            AuthViewModel.StartupState.NeedsProfile -> {
-                if (resetRestoredFlow || navController.currentDestination?.id == R.id.splashFragment ||
-                    navController.currentDestination?.id == R.id.loginFragment) {
-                    resetRestoredFlow = false
-                    if (navController.currentDestination?.id != R.id.registerFragment) {
-                        navController.navigate(R.id.action_global_registerFragment)
-                    }
-                }
-            }
-            AuthViewModel.StartupState.RetryableError -> {
-                if (resetRestoredFlow || navController.currentDestination?.id == R.id.splashFragment) {
-                    showStartupErrorSheet()
-                }
-            }
-            else -> Unit
+        val route = startupRouteFor(state, currentScreen(), resetRestoredFlow)
+        if (route.endsRestoredFlow) resetRestoredFlow = false
+        when (val action = route.action) {
+            StartupAction.None -> Unit
+            StartupAction.OpenMain -> openMain()
+            StartupAction.ShowError -> showStartupErrorSheet()
+            is StartupAction.GoTo -> navController.navigate(
+                if (action.screen == StartupScreen.Register) R.id.action_global_registerFragment
+                else R.id.action_global_loginFragment
+            )
         }
+    }
+
+    private fun currentScreen() = when (navController.currentDestination?.id) {
+        R.id.splashFragment -> StartupScreen.Splash
+        R.id.loginFragment -> StartupScreen.Login
+        R.id.registerFragment -> StartupScreen.Register
+        else -> StartupScreen.Other
     }
 
     /** The account could not be loaded: the only way on is to try again, so the sheet is not dismissible. */
