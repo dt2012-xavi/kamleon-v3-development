@@ -304,7 +304,6 @@
     <string name="dialog_deactive_y">Deactivate</string>
     <string name="dialog_deactive_n">Cancel</string>
     <string name="dialog_profile_date_not_allowed">You have to be at least 14 years old</string>
-    <string name="dialog_reset_pwd_success_title">Success</string>
     <string name="dialog_reset_pwd_success_description">You\’ve successfully changed your password</string>
     <string name="dialog_reset_pwd_error_title">Error</string>
     <string name="dialog_reset_pwd_error_description">User not found</string>

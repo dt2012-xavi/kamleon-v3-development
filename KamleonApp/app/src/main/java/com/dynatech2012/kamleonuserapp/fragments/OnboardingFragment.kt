@@ -1,20 +1,16 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -25,6 +21,10 @@ import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.extensions.addYears
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
+import com.dynatech2012.kamleonuserapp.views.SheetResult
+import com.dynatech2012.kamleonuserapp.views.SheetSpec
+import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
+import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import com.google.android.material.snackbar.Snackbar
 import com.ozcanalasalvar.datepicker.model.Date as PickerDate
 import dagger.hilt.android.AndroidEntryPoint
@@ -122,6 +122,18 @@ class OnboardingFragment : Fragment() {
                     onNext = ::onNext,
                     onSkip = ::onSkip
                 )
+            }
+        }
+        onKamleonSheetResult("onboarding_verify") {
+            when (it) {
+                SheetResult.PRIMARY -> {
+                    Timber.d("Verification sheet acknowledged")
+                    step = OnboardingSteps.BIRTH_DATE
+                    resetView()
+                    findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)
+                }
+                SheetResult.SECONDARY -> viewModel.sendVerificationEmail()
+                SheetResult.DISMISSED -> Unit
             }
         }
         viewModel.uiState.observe(viewLifecycleOwner, this::onStateReceived)
@@ -293,26 +305,17 @@ class OnboardingFragment : Fragment() {
     }
 
     private fun showVerificationDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.layout_dialog_email_verification, null)
-        dialogView.findViewById<TextView>(R.id.tv_dialog_verify_desc).text =
-            getString(R.string.dialog_verify_desc, viewModel.email)
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .setCancelable(false)
-            .show()
-        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-        Timber.d("Showing verification email dialog")
-        dialogView.findViewById<TextView>(R.id.tv_dialog_verify_ok).setOnClickListener {
-            Timber.d("Verification dialog acknowledged")
-            step = OnboardingSteps.BIRTH_DATE
-            resetView()
-            dialog.dismiss()
-            findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)
-        }
-        dialogView.findViewById<TextView>(R.id.tv_dialog_verify_resend).setOnClickListener {
-            dialog.dismiss()
-            viewModel.sendVerificationEmail()
-        }
+        Timber.d("Showing verification email sheet")
+        childFragmentManager.showKamleonSheet(
+            "onboarding_verify",
+            SheetSpec(
+                title = getString(R.string.dialog_verify_title),
+                message = getString(R.string.dialog_verify_desc, viewModel.email),
+                primary = getString(R.string.dialog_ok),
+                secondary = getText(R.string.dialog_verify_resend).toString(),
+                dismissible = false
+            )
+        )
     }
 
     private companion object {

@@ -1,12 +1,9 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -16,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -27,6 +23,9 @@ import com.dynatech2012.kamleonuserapp.security.PasswordPolicyException
 import com.dynatech2012.kamleonuserapp.security.PasswordStrength
 import com.dynatech2012.kamleonuserapp.security.messageRes
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
+import com.dynatech2012.kamleonuserapp.views.SheetSpec
+import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -122,25 +121,17 @@ class PwdFragment : Fragment() {
     }
 
     private fun showSuccessDialog() {
-        showReadyDialog(
-            getString(R.string.dialog_reset_pwd_success_title),
-            getString(R.string.dialog_reset_pwd_success_description)
-        )
+        Snackbar.make(requireView(), R.string.dialog_reset_pwd_success_description, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun showErrorDialog(message: String) {
-        showReadyDialog(getString(R.string.pwd_error_title), message)
-    }
-
-    private fun showReadyDialog(title: String, message: String) {
-        val dialogView = layoutInflater.inflate(R.layout.layout_dialog_ok, null)
-        dialogView.findViewById<TextView>(R.id.tvDialogTitle).text = title
-        dialogView.findViewById<TextView>(R.id.tvDialogDesc).text = message
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .setCancelable(false)
-            .show()
-        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-        dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener { dialog.dismiss() }
+        childFragmentManager.showKamleonSheet(
+            "pwd_error",
+            SheetSpec(
+                title = getString(R.string.pwd_error_title),
+                message = message,
+                primary = getString(R.string.dialog_ok)
+            )
+        )
     }
 }

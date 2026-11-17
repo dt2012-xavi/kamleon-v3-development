@@ -1,14 +1,9 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,8 +13,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.app.ActivityCompat
-import androidx.core.graphics.drawable.toDrawable
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -28,6 +21,10 @@ import com.dynatech2012.kamleonuserapp.activities.InitActivity
 import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.constants.UrlConstants
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
+import com.dynatech2012.kamleonuserapp.views.SheetResult
+import com.dynatech2012.kamleonuserapp.views.SheetSpec
+import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
+import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -69,6 +66,14 @@ class LoginFragment : Fragment() {
                 )
             }
         }
+        onKamleonSheetResult("login_verify") { if (it == SheetResult.SECONDARY) viewModel.sendVerificationEmail() }
+        onKamleonSheetResult("login_policy") {
+            when (it) {
+                SheetResult.PRIMARY -> viewModel.acceptPolicy()
+                SheetResult.SECONDARY -> ActivityCompat.finishAffinity(requireActivity())
+                SheetResult.DISMISSED -> Unit
+            }
+        }
         viewModel.uiState.observe(viewLifecycleOwner, this::handleState)
     }
 
@@ -96,58 +101,50 @@ class LoginFragment : Fragment() {
             showVerificationDialog()
             return
         }
-        val dialogView = layoutInflater.inflate(R.layout.layout_dialog_ok, null)
-        dialogView.findViewById<TextView>(R.id.tvDialogTitle).text =
-            getString(if (errorType == -7) R.string.signup_existing_account_title else R.string.login_alert_title_login_error)
-        dialogView.findViewById<TextView>(R.id.tvDialogDesc).text = when (errorType) {
-            -7 -> getString(R.string.signup_existing_account_message)
-            -6 -> getString(R.string.startup_network_error)
-            -4 -> getString(R.string.login_alert_description_not_valid_email)
-            -3 -> getString(R.string.login_alert_description_user_not_found)
-            -2 -> getString(R.string.login_alert_description_wrong_pass)
-            -1 -> getString(R.string.login_alert_description_login_error_unknown)
-            else -> ""
-        }
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .setCancelable(false)
-            .show()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener { dialog.dismiss() }
+        childFragmentManager.showKamleonSheet(
+            "login_error",
+            SheetSpec(
+                title = getString(
+                    if (errorType == -7) R.string.signup_existing_account_title else R.string.login_alert_title_login_error
+                ),
+                message = when (errorType) {
+                    -7 -> getString(R.string.signup_existing_account_message)
+                    -6 -> getString(R.string.startup_network_error)
+                    -4 -> getString(R.string.login_alert_description_not_valid_email)
+                    -3 -> getString(R.string.login_alert_description_user_not_found)
+                    -2 -> getString(R.string.login_alert_description_wrong_pass)
+                    -1 -> getString(R.string.login_alert_description_login_error_unknown)
+                    else -> ""
+                },
+                primary = getString(R.string.dialog_ok)
+            )
+        )
     }
 
     private fun showVerificationDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.layout_dialog_email_verification, null)
-        dialogView.findViewById<TextView>(R.id.tv_dialog_verify_desc).text =
-            getString(R.string.login_alert_description_not_verified_email)
-        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).create()
-        dialogView.findViewById<TextView>(R.id.tv_dialog_verify_ok).setOnClickListener {
-            dialog.dismiss()
-        }
-        dialogView.findViewById<TextView>(R.id.tv_dialog_verify_resend).setOnClickListener {
-            viewModel.sendVerificationEmail()
-            dialog.dismiss()
-        }
-        dialog.show()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        childFragmentManager.showKamleonSheet(
+            "login_verify",
+            SheetSpec(
+                title = getString(R.string.dialog_verify_title),
+                message = getString(R.string.login_alert_description_not_verified_email),
+                primary = getString(R.string.dialog_ok),
+                secondary = getText(R.string.dialog_verify_resend).toString(),
+                dismissible = false
+            )
+        )
     }
 
     private fun showPolicyDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.layout_dialog_policy, null)
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .setCancelable(false)
-            .show()
-        dialogView.findViewById<TextView>(R.id.tv_dialog_policy_desc).setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, UrlConstants.URL_POLICY_APP.toUri()))
-        }
-        dialogView.findViewById<TextView>(R.id.tv_dialog_policy_disagree).setOnClickListener {
-            ActivityCompat.finishAffinity(requireActivity())
-        }
-        dialogView.findViewById<TextView>(R.id.tv_dialog_policy_agree).setOnClickListener {
-            viewModel.acceptPolicy()
-            dialog.dismiss()
-        }
-        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        childFragmentManager.showKamleonSheet(
+            "login_policy",
+            SheetSpec(
+                title = getString(R.string.dialog_policy_title),
+                message = getText(R.string.dialog_policy_desc),
+                primary = getString(R.string.dialog_policy_agree),
+                secondary = getText(R.string.dialog_policy_disagree).toString(),
+                dismissible = false,
+                linkUrl = UrlConstants.URL_POLICY_APP
+            )
+        )
     }
 }
