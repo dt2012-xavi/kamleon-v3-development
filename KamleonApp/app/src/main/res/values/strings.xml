@@ -296,12 +296,9 @@
     <string name="dialog_saved_text">Your modifications have been saved successfully</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">CANCEL</string>
-    <string name="dialog_profile_ready">Now you are a member of the Spinning Team in Dir Diagonal!</string>
     <string name="dialog_logout_msg">Are you sure you want to log out of your account?</string>
     <string name="dialog_logout_y">Log Out</string>
     <string name="dialog_logout_n">Cancel</string>
-    <string name="dialog_deactive_msg">Are you sure you want to deactivate your account?</string>
-    <string name="dialog_deactive_y">Deactivate</string>
     <string name="dialog_deactive_n">Cancel</string>
     <string name="dialog_profile_date_not_allowed">You have to be at least 14 years old</string>
     <string name="dialog_reset_pwd_success_description">You\’ve successfully changed your password</string>

@@ -5,16 +5,13 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -34,6 +31,11 @@ import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.utils.notificationPermissionAsked
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
+import com.dynatech2012.kamleonuserapp.views.SheetResult
+import com.dynatech2012.kamleonuserapp.views.SheetSpec
+import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
+import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
+import com.google.android.material.snackbar.Snackbar
 import com.ozcanalasalvar.datepicker.view.datepicker.DateChangeListener
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
@@ -121,6 +123,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
         setupAdapter()
         initObservers()
+        onKamleonSheetResult(SHEET_LOGOUT) { if (it == SheetResult.PRIMARY) logout() }
+        onKamleonSheetResult(SHEET_NOTIFICATIONS_BLOCKED) { if (it == SheetResult.PRIMARY) openNotificationSettings() }
         viewModel.getUserData()
     }
 
@@ -212,114 +216,40 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     }
 
     private fun showSavedDialog() {
-        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        val inflater = this.layoutInflater
-        val dialogView: View = inflater.inflate(R.layout.layout_dialog_ok, null)
-
-        dialog.setView(dialogView)
-        dialog.setCancelable(false)
-        val savedDialog = dialog.show()
-        savedDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialogView.findViewById<TextView>(R.id.tvDialogTitle).visibility = View.GONE
-        dialogView.findViewById<TextView>(R.id.tvDialogDesc).setText(R.string.dialog_saved_text)
-        dialogView.findViewById<TextView>(R.id.tvBtnOk).setText(R.string.dialog_ok)
-        dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener {
-            savedDialog.dismiss()
-        }
+        Snackbar.make(binding.root, R.string.dialog_saved_text, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun showLogoutDialog() {
-        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        val inflater = this.layoutInflater
-        val dialogView: View = inflater.inflate(R.layout.layout_dialog_yn, null)
-
-        dialog.setView(dialogView)
-        dialog.setCancelable(false)
-        val logoutDialog = dialog.show()
-        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialogView.findViewById<TextView>(R.id.tvDialogDesc).setText(R.string.dialog_logout_msg)
-        dialogView.findViewById<TextView>(R.id.tvBtnY).setText(R.string.dialog_logout_y)
-        dialogView.findViewById<TextView>(R.id.tvBtnY).setOnClickListener {
-            Log.i(TAG, "logout 1")
-            //viewModel.logoutStatus.observe(viewLifecycleOwner, {
-            //    if (it) {
-            //        logoutDialog.dismiss()
-            //        activity?.startActivity(Intent(requireContext(), InitActivity::class.java))
-            //        activity?.finish()
-            //    }
-            //}
-            viewModel.logoutStatus.observe(viewLifecycleOwner) {
-                if (it) {
-                    Log.i(TAG, "logout 2")
-                    logoutDialog.dismiss()
-                    Log.i(TAG, "logout 3")
-                    activity?.startActivity(Intent(requireContext(), InitActivity::class.java))
-                    activity?.finish()
-                }
-            }
-            viewModel.logout()
-        }
-
-        dialogView.findViewById<TextView>(R.id.tvBtnN).setText(R.string.dialog_logout_n)
-        dialogView.findViewById<TextView>(R.id.tvBtnN).setOnClickListener {
-            logoutDialog.dismiss()
-        }
+        childFragmentManager.showKamleonSheet(
+            SHEET_LOGOUT,
+            SheetSpec(
+                message = getString(R.string.dialog_logout_msg),
+                primary = getString(R.string.dialog_logout_y),
+                secondary = getString(R.string.dialog_logout_n),
+                destructive = true,
+                dismissible = false
+            )
+        )
     }
 
-    private fun showReadyDialog() {
-        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        val inflater = this.layoutInflater
-        val dialogView: View = inflater.inflate(R.layout.layout_dialog_profile_ready, null)
-
-        dialog.setView(dialogView)
-        dialog.setCancelable(false)
-        val logoutDialog = dialog.show()
-        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        val tvDescr = dialogView.findViewById<TextView>(R.id.tvDialogDesc)
-        tvDescr.text = getString(R.string.dialog_profile_ready)
-        tvDescr.setOnClickListener {
-            logoutDialog.dismiss()
+    private fun logout() {
+        viewModel.logoutStatus.observe(viewLifecycleOwner) {
+            if (it) {
+                activity?.startActivity(Intent(requireContext(), InitActivity::class.java))
+                activity?.finish()
+            }
         }
+        viewModel.logout()
     }
 
     private fun showDateNotAllowedDialog() {
-        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        val inflater = this.layoutInflater
-        val dialogView: View = inflater.inflate(R.layout.layout_dialog_ok, null)
-
-        dialog.setView(dialogView)
-        dialog.setCancelable(false)
-        val logoutDialog = dialog.show()
-        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialogView.findViewById<TextView>(R.id.tvDialogTitle).visibility = View.GONE
-        val tvDescr = dialogView.findViewById<TextView>(R.id.tvDialogDesc)
-        tvDescr.text = getString(R.string.dialog_profile_date_not_allowed)
-        val tvOk = dialogView.findViewById<TextView>(R.id.tvBtnOk)
-        tvOk.setOnClickListener {
-            logoutDialog.dismiss()
-        }
-    }
-
-    private fun showDeleteAccountDialog() {
-        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        val inflater = this.layoutInflater
-        val dialogView: View = inflater.inflate(R.layout.layout_dialog_yn_delete, null)
-
-        dialog.setView(dialogView)
-        dialog.setCancelable(false)
-        val logoutDialog = dialog.show()
-        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialogView.findViewById<TextView>(R.id.tvDialogDesc).setText(R.string.dialog_deactive_msg)
-        dialogView.findViewById<TextView>(R.id.tvBtnY).setText(R.string.dialog_deactive_y)
-        dialogView.findViewById<TextView>(R.id.tvBtnY).setOnClickListener {
-            logoutDialog.dismiss()
-        }
-
-        dialogView.findViewById<TextView>(R.id.tvBtnN).setText(R.string.dialog_deactive_n)
-        dialogView.findViewById<TextView>(R.id.tvBtnN).setOnClickListener {
-            logoutDialog.dismiss()
-        }
+        childFragmentManager.showKamleonSheet(
+            SHEET_DATE_NOT_ALLOWED,
+            SheetSpec(
+                message = getString(R.string.dialog_profile_date_not_allowed),
+                primary = getString(R.string.dialog_ok)
+            )
+        )
     }
 
     override fun onSwitchChanged(menuView: SettingMenuItemView, isOn: Boolean) {
@@ -521,24 +451,22 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     }
 
     private fun showNotificationsBlockedDialog() {
-        val dialogView: View = layoutInflater.inflate(R.layout.layout_dialog_yn_delete, null)
-        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).setCancelable(false).show()
-        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
-        dialogView.findViewById<TextView>(R.id.tvDialogDesc).setText(R.string.setting_noti_blocked_msg)
-        dialogView.findViewById<TextView>(R.id.tvBtnY).apply {
-            setText(R.string.setting_noti_open_settings)
-            setOnClickListener {
-                dialog.dismiss()
-                startActivity(
-                    Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                        .putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
-                )
-            }
-        }
-        dialogView.findViewById<TextView>(R.id.tvBtnN).apply {
-            setText(R.string.dialog_deactive_n)
-            setOnClickListener { dialog.dismiss() }
-        }
+        childFragmentManager.showKamleonSheet(
+            SHEET_NOTIFICATIONS_BLOCKED,
+            SheetSpec(
+                message = getString(R.string.setting_noti_blocked_msg),
+                primary = getString(R.string.setting_noti_open_settings),
+                secondary = getString(R.string.dialog_deactive_n),
+                dismissible = false
+            )
+        )
+    }
+
+    private fun openNotificationSettings() {
+        startActivity(
+            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                .putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
+        )
     }
 
     private fun onUserProfilesChanged(organizations: ArrayList<Organization>) {
@@ -595,6 +523,9 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
     companion object {
         val TAG: String = SettingFragment::class.java.simpleName
+        private const val SHEET_LOGOUT = "settings_logout"
+        private const val SHEET_DATE_NOT_ALLOWED = "settings_date_not_allowed"
+        private const val SHEET_NOTIFICATIONS_BLOCKED = "settings_notifications_blocked"
     }
 
     override fun onDateChanged(date: Long, day: Int, month: Int, year: Int) {
