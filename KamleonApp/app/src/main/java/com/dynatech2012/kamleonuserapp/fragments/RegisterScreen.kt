@@ -4,9 +4,7 @@ import android.util.Patterns
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,8 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,8 +42,8 @@ import com.dynatech2012.kamleonuserapp.security.PasswordStrength
 import com.dynatech2012.kamleonuserapp.views.KamleonFormLayout
 import com.dynatech2012.kamleonuserapp.views.KamleonPasswordStrengthMeter
 import com.dynatech2012.kamleonuserapp.views.KamleonRoundButton
+import com.dynatech2012.kamleonuserapp.views.KamleonSwitchRow
 import com.dynatech2012.kamleonuserapp.views.KamleonTextField
-import com.dynatech2012.kamleonuserapp.views.KamleonTextLink
 import com.dynatech2012.kamleonuserapp.views.kamleonBody
 import com.dynatech2012.kamleonuserapp.views.kamleonBodySmall
 import com.dynatech2012.kamleonuserapp.views.kamleonTitle
@@ -88,7 +86,6 @@ fun RegisterScreen(
     onLogin: () -> Unit
 ) {
     val darkGrey = colorResource(R.color.kamleon_dark_grey)
-    val grey60 = colorResource(R.color.kamleon_secondary_grey_60)
 
     // A field counts as "visited" once it has had focus and lost it; only then is it judged live.
     var emailVisited by remember { mutableStateOf(false) }
@@ -197,26 +194,12 @@ fun RegisterScreen(
             )
             // Secondary action hidden while typing so the keyboard leaves room for the fields.
             AnimatedVisibility(visible = !imeVisible) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.signup_have_account),
-                        style = kamleonBodySmall(),
-                        color = grey60
-                    )
-                    KamleonTextLink(
-                        text = stringResource(R.string.signup_login),
-                        onClick = onLogin,
-                        style = kamleonBodySmall(),
-                        color = colorResource(R.color.kamleon_blue),
-                        underline = true,
-                        contentPadding = PaddingValues(horizontal = 10.dp),
-                        modifier = Modifier.testTag("register_login")
-                    )
-                }
+                KamleonSwitchRow(
+                    prompt = stringResource(R.string.signup_have_account),
+                    action = stringResource(R.string.signup_login),
+                    onClick = onLogin,
+                    actionTestTag = "register_login"
+                )
             }
         }
     ) {
@@ -297,16 +280,16 @@ fun RegisterScreen(
                     contentType = ContentType.NewPassword,
                     errorText = fieldErrors.password?.let { stringResource(it) },
                     focusRequester = passwordFocus,
+                    supportingContent = {
+                        KamleonPasswordStrengthMeter(
+                            password = password,
+                            strength = passwordStrength,
+                            modifier = Modifier.testTag("register_password_strength")
+                        )
+                    },
                     modifier = Modifier.padding(top = 12.dp),
                     testTag = "register_password"
                 )
-                if (fieldErrors.password == null) {
-                    KamleonPasswordStrengthMeter(
-                        password = password,
-                        strength = passwordStrength,
-                        modifier = Modifier.testTag("register_password_strength")
-                    )
-                }
                 KamleonTextField(
                     value = repeatPassword,
                     onValueChange = onRepeatPasswordChange,

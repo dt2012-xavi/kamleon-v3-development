@@ -2,10 +2,8 @@ package com.dynatech2012.kamleonuserapp.fragments
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,10 +29,10 @@ import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.views.KamleonFormLayout
 import com.dynatech2012.kamleonuserapp.views.KamleonRoundButton
+import com.dynatech2012.kamleonuserapp.views.KamleonSwitchRow
 import com.dynatech2012.kamleonuserapp.views.KamleonTextField
 import com.dynatech2012.kamleonuserapp.views.KamleonTextLink
 import com.dynatech2012.kamleonuserapp.views.kamleonBody
-import com.dynatech2012.kamleonuserapp.views.kamleonBodySmall
 import com.dynatech2012.kamleonuserapp.views.kamleonCaption
 import com.dynatech2012.kamleonuserapp.views.kamleonTitle
 
@@ -85,26 +83,12 @@ fun LoginScreen(
             )
             // Secondary action hidden while typing so the keyboard leaves room for the fields.
             AnimatedVisibility(visible = !imeVisible) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.login_not_have_account),
-                        style = kamleonBodySmall(),
-                        color = grey60
-                    )
-                    KamleonTextLink(
-                        text = stringResource(R.string.login_signup),
-                        onClick = onRegister,
-                        style = kamleonBodySmall(),
-                        color = colorResource(R.color.kamleon_blue),
-                        underline = true,
-                        contentPadding = PaddingValues(horizontal = 10.dp),
-                        modifier = Modifier.testTag("login_register")
-                    )
-                }
+                KamleonSwitchRow(
+                    prompt = stringResource(R.string.login_not_have_account),
+                    action = stringResource(R.string.login_signup),
+                    onClick = onRegister,
+                    actionTestTag = "login_register"
+                )
             }
         }
     ) {

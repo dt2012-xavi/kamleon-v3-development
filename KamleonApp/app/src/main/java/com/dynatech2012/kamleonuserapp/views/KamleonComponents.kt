@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.rememberScrollState
@@ -168,7 +169,8 @@ fun KamleonTextLink(
  * A disabled field (`enabled = false`) is read-only and greyed out; `isError` draws a red outline.
  * [errorText] shows the message right under the field (red outline included), announces it to
  * accessibility services and scrolls it into view when the field has focus, so it never ends up
- * hidden behind the keyboard. [contentType] marks the field for autofill, [onFocusChange] reports
+ * hidden behind the keyboard. [supportingContent] (e.g. a strength meter) takes the error's place
+ * while there is no error and is kept in view the same way. [contentType] marks the field for autofill, [onFocusChange] reports
  * focus changes and [focusRequester] lets the screen move focus here (e.g. to the first invalid
  * field).
  *
@@ -193,6 +195,7 @@ fun KamleonTextField(
     errorText: String? = null,
     focusRequester: FocusRequester? = null,
     onImeAction: (() -> Unit)? = null,
+    supportingContent: (@Composable () -> Unit)? = null,
     testTag: String? = null
 ) {
     var secureOn by rememberSaveable { mutableStateOf(true) }
@@ -203,8 +206,12 @@ fun KamleonTextField(
     }
     val bringIntoView = remember { BringIntoViewRequester() }
     val showError = isError || errorText != null
-    LaunchedEffect(errorText, focused) {
-        if (errorText != null && focused) bringIntoView.bringIntoView()
+    // Keep the whole block (field plus its error or supporting content) in view while the field
+    // has focus, so neither ends up under the keyboard or the fixed action bar. The key includes
+    // `value.isEmpty()` because supporting content such as a strength bar changes height once
+    // typing starts.
+    LaunchedEffect(errorText, focused, value.isEmpty()) {
+        if (focused && (errorText != null || supportingContent != null)) bringIntoView.bringIntoView()
     }
     val shape = RoundedCornerShape(dimensionResource(R.dimen.input_text_box_corner_radius))
     val textStyle = kamleonBodySmall().copy(
@@ -313,6 +320,8 @@ fun KamleonTextField(
                     .semantics { liveRegion = LiveRegionMode.Polite }
                     .then(if (testTag != null) Modifier.testTag(testTag + "_error") else Modifier)
             )
+        } else {
+            supportingContent?.invoke()
         }
     }
 }
@@ -459,5 +468,31 @@ fun KamleonPasswordStrengthMeter(password: String, strength: PasswordStrength?, 
             }
         }
         Text(text = text, style = kamleonCaption(), color = color, modifier = Modifier.padding(top = 4.dp))
+    }
+}
+
+/**
+ * "Prompt + link" row (e.g. "Don't you have an account yet? Register") centred under the primary
+ * button. It wraps to a second line instead of squeezing the link when the font is large.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun KamleonSwitchRow(prompt: String, action: String, onClick: () -> Unit, modifier: Modifier = Modifier, actionTestTag: String? = null) {
+    FlowRow(
+        modifier = modifier.fillMaxWidth().padding(top = 16.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Center,
+        itemVerticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = prompt, style = kamleonBodySmall(), color = colorResource(R.color.kamleon_secondary_grey_60))
+        KamleonTextLink(
+            text = action,
+            onClick = onClick,
+            style = kamleonBodySmall(),
+            color = colorResource(R.color.kamleon_blue),
+            underline = true,
+            contentPadding = PaddingValues(horizontal = 10.dp),
+            modifier = if (actionTestTag != null) Modifier.testTag(actionTestTag) else Modifier
+        )
     }
 }
