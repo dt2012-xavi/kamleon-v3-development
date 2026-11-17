@@ -328,7 +328,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             NOTIFICATIONS_INTRO_SHEET,
             SheetSpec(
                 title = getString(com.dynatech2012.kamleonuserapp.R.string.onboard_noti_sub1),
-                message = getString(com.dynatech2012.kamleonuserapp.R.string.notifications_intro_message),
+                // Same text as the onboarding step: one explanation wherever it is asked.
+                message = getString(com.dynatech2012.kamleonuserapp.R.string.onboard_noti_sub2),
                 primary = getString(com.dynatech2012.kamleonuserapp.R.string.notifications_intro_activate),
                 secondary = getString(com.dynatech2012.kamleonuserapp.R.string.notifications_intro_later),
                 dismissible = false

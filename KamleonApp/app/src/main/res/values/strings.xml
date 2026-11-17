@@ -105,7 +105,7 @@
     <string name="onboard_bottom_later">Skip, I\'ll fill it later</string>
     <string name="onboard_noti_title">Stay updated with your latest sample</string>
     <string name="onboard_noti_sub1">Activate your notifications</string>
-    <string name="onboard_noti_sub2">Activate notifications to ensure you\'re always up to date.</string>
+    <string name="onboard_noti_sub2">We’ll send you your Kamleon score right after every urinal use. You can change this any time in Settings.</string>
     <string name="onboard_location_title">Tailor hydration to weather conditions</string>
     <string name="onboard_location_sub1">Activate your location</string>
     <string name="onboard_location_sub2">Enable Kamleon to use location data for personalized services, while considering privacy implications.</string>
@@ -166,7 +166,7 @@
     <string name="setting_label_not_allow">DON\'T ALLOW</string>
 
     <string name="setting_desc_pref1">The user data is essential to deliver personalized and precise metric results and recommendations.</string>
-    <string name="setting_desc_pref2">You will receive Kamleon notifcation with the score you have had after every urinal use.</string>
+    <string name="setting_desc_pref2">You will receive a Kamleon notification with the score you have had after every urinal use.</string>
     <string name="setting_desc_pref3">Enable Kamleon to use location data for personalized services, while considering privacy implications.</string>
 
     <string name="setting_display_name">%1$s %2$s</string>
@@ -312,7 +312,6 @@
     <string name="dialog_scan_scanned">QR scanned correctly</string>
     <string name="dialog_scan_failed_title">We couldn’t link the QR code</string>
     <string name="dialog_scan_failed_message">Check your connection and scan it again.</string>
-    <string name="notifications_intro_message">We’ll send you your Kamleon score right after every urinal use. You can change this any time in Settings.</string>
     <string name="notifications_intro_activate">Activate</string>
     <string name="notifications_intro_later">Not now</string>
     <string name="dialog_policy_title">Privacy Policy</string>
