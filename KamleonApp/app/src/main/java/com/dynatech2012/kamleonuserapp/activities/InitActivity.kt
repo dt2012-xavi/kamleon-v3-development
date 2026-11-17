@@ -37,7 +37,9 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
         super.onCreate(savedInstanceState)
         resetRestoredFlow = savedInstanceState != null && !viewModel.appInitializationStarted &&
             navController.currentDestination?.id != R.id.splashFragment
-        handleIntent(intent)
+        // On a restore the scan is already in the saved state with its original time; reading the
+        // launch intent again would restart the clock and keep an old scan alive.
+        if (savedInstanceState == null) handleIntent(intent)
         viewModel.splashDurationCompleted.observe(this) { completed ->
             if (completed == true) route(viewModel.startupState.value)
         }

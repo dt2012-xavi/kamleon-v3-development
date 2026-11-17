@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.viewmodels
 
+import android.os.SystemClock
 import android.text.TextUtils
 import timber.log.Timber
 import android.util.Patterns
@@ -47,14 +48,26 @@ class AuthViewModel @Inject constructor(
     fun pendingScan(unitId: String, sessionId: String) {
         savedStateHandle["scanUnitId"] = unitId
         savedStateHandle["scanSessionId"] = sessionId
+        savedStateHandle["scanSavedAt"] = SystemClock.elapsedRealtime()
     }
 
+    /** The scan still waiting for login or registration, if it has not expired. */
+    private fun currentPendingScan(): Pair<String, String>? = pendingScanFor(
+        savedStateHandle.get<String>("scanUnitId"),
+        savedStateHandle.get<String>("scanSessionId"),
+        savedStateHandle.get<Long>("scanSavedAt"),
+        SystemClock.elapsedRealtime()
+    )
+
+    val hasPendingScan: Boolean get() = currentPendingScan() != null
+
     fun consumePendingScan(): Pair<String, String>? {
-        val unitId = savedStateHandle.get<String>("scanUnitId")
-        val sessionId = savedStateHandle.get<String>("scanSessionId")
+        val scan = currentPendingScan()
         savedStateHandle.remove<String>("scanUnitId")
         savedStateHandle.remove<String>("scanSessionId")
-        return if (!unitId.isNullOrEmpty() && !sessionId.isNullOrEmpty()) unitId to sessionId else null
+        savedStateHandle.remove<Long>("scanSavedAt")
+        if (scan == null) Timber.d("No pending scan to deliver, or it expired")
+        return scan
     }
 
     @Volatile
