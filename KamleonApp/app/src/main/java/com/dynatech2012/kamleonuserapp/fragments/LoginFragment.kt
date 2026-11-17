@@ -128,7 +128,7 @@ class LoginFragment : Fragment() {
                 title = getString(R.string.dialog_verify_title),
                 message = getString(R.string.login_alert_description_not_verified_email),
                 primary = getString(R.string.dialog_ok),
-                secondary = getText(R.string.dialog_verify_resend).toString(),
+                secondary = getText(R.string.dialog_verify_resend),
                 dismissible = false
             )
         )
@@ -141,7 +141,7 @@ class LoginFragment : Fragment() {
                 title = getString(R.string.dialog_policy_title),
                 message = getText(R.string.dialog_policy_desc),
                 primary = getString(R.string.dialog_policy_agree),
-                secondary = getText(R.string.dialog_policy_disagree).toString(),
+                secondary = getText(R.string.dialog_policy_disagree),
                 dismissible = false,
                 linkUrl = UrlConstants.URL_POLICY_APP
             )

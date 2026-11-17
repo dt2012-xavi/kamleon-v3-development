@@ -66,7 +66,7 @@ data class SheetSpec(
     val message: CharSequence,
     val primary: String,
     val title: CharSequence? = null,
-    val secondary: String? = null,
+    val secondary: CharSequence? = null,
     val destructive: Boolean = false,
     val dismissible: Boolean = true,
     val linkUrl: String? = null
@@ -76,7 +76,7 @@ data class SheetSpec(
         putCharSequence(ARG_MESSAGE, message)
         putString(ARG_PRIMARY, primary)
         putCharSequence(ARG_TITLE, title)
-        putString(ARG_SECONDARY, secondary)
+        putCharSequence(ARG_SECONDARY, secondary)
         putBoolean(ARG_DESTRUCTIVE, destructive)
         putBoolean(ARG_DISMISSIBLE, dismissible)
         putString(ARG_LINK, linkUrl)
@@ -96,7 +96,7 @@ data class SheetSpec(
             message = b.getCharSequence(ARG_MESSAGE) ?: "",
             primary = b.getString(ARG_PRIMARY).orEmpty(),
             title = b.getCharSequence(ARG_TITLE),
-            secondary = b.getString(ARG_SECONDARY),
+            secondary = b.getCharSequence(ARG_SECONDARY),
             destructive = b.getBoolean(ARG_DESTRUCTIVE),
             dismissible = b.getBoolean(ARG_DISMISSIBLE, true),
             linkUrl = b.getString(ARG_LINK)
@@ -121,6 +121,9 @@ internal fun CharSequence.toAnnotatedMarkup(): AnnotatedString = buildAnnotatedS
         }
     }
 }
+
+private fun CharSequence.hasUnderline() =
+    this is Spanned && getSpans(0, length, UnderlineSpan::class.java).isNotEmpty()
 
 /**
  * The sheet's look: white surface with rounded top corners, optional title, a scrollable message
@@ -162,32 +165,35 @@ fun KamleonSheetContent(spec: SheetSpec, onAction: (SheetResult) -> Unit) {
             )
         }
         val message = remember(spec.message) { spec.message.toAnnotatedMarkup() }
-        // The sheet can be dragged, so the scrolling message must hand its gestures to the sheet's
-        // behaviour through the nested-scroll interop instead of being intercepted by it.
-        Column(
-            Modifier
-                .weight(1f, fill = false)
-                .nestedScroll(rememberNestedScrollInteropConnection())
-                .verticalScroll(rememberScrollState())
-        ) {
-            Text(
-                text = message,
-                style = kamleonBody(),
-                color = darkGrey,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .then(
-                        if (spec.linkUrl != null) {
-                            Modifier.clickable {
-                                context.startActivity(Intent(Intent.ACTION_VIEW, spec.linkUrl.toUri()))
-                            }
-                        } else Modifier
-                    )
-                    .testTag("sheet_message")
-            )
+        // A sheet with only a title has no message block, so no blank line is left over.
+        if (message.isNotEmpty()) {
+            // The sheet can be dragged, so the scrolling message must hand its gestures to the sheet's
+            // behaviour through the nested-scroll interop instead of being intercepted by it.
+            Column(
+                Modifier
+                    .weight(1f, fill = false)
+                    .nestedScroll(rememberNestedScrollInteropConnection())
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Text(
+                    text = message,
+                    style = kamleonBody(),
+                    color = darkGrey,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .then(
+                            if (spec.linkUrl != null) {
+                                Modifier.clickable {
+                                    context.startActivity(Intent(Intent.ACTION_VIEW, spec.linkUrl.toUri()))
+                                }
+                            } else Modifier
+                        )
+                        .testTag("sheet_message")
+                )
+            }
+            Spacer(Modifier.height(24.dp))
         }
-        Spacer(Modifier.height(24.dp))
         KamleonRoundButton(
             text = spec.primary,
             onClick = { onAction(SheetResult.PRIMARY) },
@@ -197,7 +203,8 @@ fun KamleonSheetContent(spec: SheetSpec, onAction: (SheetResult) -> Unit) {
         )
         spec.secondary?.let { secondary ->
             KamleonTextLink(
-                text = secondary,
+                text = secondary.toString(),
+                underline = secondary.hasUnderline(),
                 onClick = { onAction(SheetResult.SECONDARY) },
                 style = kamleonBodyBold(),
                 color = colorResource(R.color.kamleon_blue),
@@ -254,6 +261,11 @@ class KamleonSheet : BottomSheetDialogFragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        tag?.let { PendingSheets.release(parentFragmentManager, it) }
+    }
+
     override fun onCancel(dialog: android.content.DialogInterface) {
         super.onCancel(dialog)
         report(SheetResult.DISMISSED)
@@ -277,10 +289,22 @@ class KamleonSheet : BottomSheetDialogFragment() {
     }
 }
 
+/** Tags of sheets that were requested and have not been destroyed yet, per manager (main thread only). */
+private object PendingSheets {
+    private val tags = java.util.WeakHashMap<FragmentManager, MutableSet<String>>()
+
+    fun claim(fm: FragmentManager, tag: String) = tags.getOrPut(fm) { mutableSetOf() }.add(tag)
+
+    fun release(fm: FragmentManager, tag: String) {
+        tags[fm]?.remove(tag)
+    }
+}
+
 /** Shows a [KamleonSheet]; a sheet with the same [requestKey] already on screen is kept. */
 fun FragmentManager.showKamleonSheet(requestKey: String, spec: SheetSpec) {
     val tag = "kamleon_sheet_$requestKey"
-    if (findFragmentByTag(tag) != null) return
+    // findFragmentByTag misses a sheet whose transaction has not run yet, so those are tracked too.
+    if (findFragmentByTag(tag) != null || !PendingSheets.claim(this, tag)) return
     val sheet = KamleonSheet().apply { arguments = spec.toBundle(requestKey) }
     // Allow state loss: sheets are shown from LiveData callbacks that can arrive after onStop.
     beginTransaction().add(sheet, tag).commitAllowingStateLoss()

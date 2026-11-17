@@ -40,7 +40,6 @@ import java.util.concurrent.ExecutionException
 
 @AndroidEntryPoint
 class TabFragment : BaseFragment<ActivityTabBinding>() {
-    private var qrFragment: ScanIntroFragment? = null
     private val viewModel: MainViewModel by activityViewModels()
     override fun setBinding(): ActivityTabBinding = ActivityTabBinding.inflate(layoutInflater)
 
@@ -198,12 +197,12 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
 
 
     private fun showQRIntroFragment() {
-        qrFragment = ScanIntroFragment.newInstance(onDismissScanIntro)
-        qrFragment?.show(parentFragmentManager, "QR")
+        ScanIntroFragment.newInstance(onDismissScanIntro).show(parentFragmentManager, QR_TAG)
     }
 
     companion object {
         val TAG: String = TabFragment::class.java.simpleName
+        private const val QR_TAG = "QR"
     }
 
 
@@ -321,7 +320,8 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
     }
 
     private fun onScannedAcknowledged() {
-        qrFragment?.dismiss()
+        // Looked up by tag so it also works after the activity was recreated.
+        (parentFragmentManager.findFragmentByTag(QR_TAG) as? ScanIntroFragment)?.dismiss()
         selectTab(0)
         binding.navHostFragmentTab.visibility = View.VISIBLE
         val navHostFragment = binding.navHostFragmentTab.getFragment<NavHostFragment>()

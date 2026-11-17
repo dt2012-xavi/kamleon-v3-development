@@ -312,7 +312,7 @@ class OnboardingFragment : Fragment() {
                 title = getString(R.string.dialog_verify_title),
                 message = getString(R.string.dialog_verify_desc, viewModel.email),
                 primary = getString(R.string.dialog_ok),
-                secondary = getText(R.string.dialog_verify_resend).toString(),
+                secondary = getText(R.string.dialog_verify_resend),
                 dismissible = false
             )
         )
