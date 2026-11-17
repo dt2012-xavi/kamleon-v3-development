@@ -352,8 +352,11 @@ class AuthViewModel @Inject constructor(
             val profile = if (authenticated) firestoreRepo.getUserData(Source.SERVER) else null
             val state = startupStateFor(authenticated, authRepo.isEmailVerified, profile)
             if (request == startupCheck) {
-                recoveringProfile = state == StartupState.NeedsProfile
-                profileCreated = false
+                val flags = registrationFlagsAfterCheck(
+                    authenticated, state, RegistrationFlags(recoveringProfile, profileCreated)
+                )
+                recoveringProfile = flags.recoveringProfile
+                profileCreated = flags.profileCreated
                 Timber.d("Startup authentication state: %s", state)
                 _startupState.postValue(state)
             }
