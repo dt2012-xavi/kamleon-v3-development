@@ -168,7 +168,8 @@ class OnboardingFragment : Fragment() {
                 // The account is created here. Stay on this step (with the button spinning) until
                 // the result arrives: state 2 moves on, an error leaves the user here to retry.
                 nextLoading = true
-                viewModel.signup()
+                // Coming back to this step after the account exists: only the date changes.
+                if (viewModel.profileCreated) viewModel.updateBirthDate() else viewModel.signup()
                 return
             }
 
@@ -193,8 +194,9 @@ class OnboardingFragment : Fragment() {
     private fun onSkip() {
         Timber.d("Skipping onboarding step: %s", step)
         when (step) {
-            OnboardingSteps.HEIGHT -> viewModel.height = 0f
-            OnboardingSteps.WEIGHT -> viewModel.weight = 0f
+            // Optional data: skipping leaves it empty (null), not a made-up 0.
+            OnboardingSteps.HEIGHT -> viewModel.height = null
+            OnboardingSteps.WEIGHT -> viewModel.weight = null
             OnboardingSteps.GENDER -> viewModel.gender = Gender.none
         }
         checkIfGoNextStep()
@@ -229,8 +231,8 @@ class OnboardingFragment : Fragment() {
         selectedGender = DEFAULT_GENDER
         pickerKey += 1
         viewModel.gender = Gender.none
-        viewModel.height = 0f
-        viewModel.weight = 0f
+        viewModel.height = null
+        viewModel.weight = null
         viewModel.birthday = Date()
     }
 

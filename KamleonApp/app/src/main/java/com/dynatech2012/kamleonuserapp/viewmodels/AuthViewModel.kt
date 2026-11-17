@@ -84,6 +84,23 @@ class AuthViewModel @Inject constructor(
         appInitializationStarted = false
     }
 
+    /**
+     * True once the profile document exists. From then on, going back in the onboarding and
+     * changing the birth date must update that document ([updateBirthDate]) instead of running the
+     * registration again, which would also send another verification email.
+     */
+    var profileCreated = false
+        private set
+
+    /** Saves a birth date chosen after the profile was created; reports state 2 or -1. */
+    fun updateBirthDate() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = firestoreRepo.updateUser(hashMapOf("dateOfBirth" to birthday))
+            Timber.d("Birth date update succeeded: %s", result.isSuccess)
+            _uiState.postValue(if (result.isSuccess) 2 else -1)
+        }
+    }
+
     fun signup() {
         Timber.d("Registration requested")
         viewModelScope.launch(Dispatchers.IO) {
@@ -111,6 +128,7 @@ class AuthViewModel @Inject constructor(
                             appPrivacy = true
                         )
                     if (registerResult.isSuccess && registerResult.dataValue != null) {
+                        profileCreated = true
                         _uiState.postValue(2)
                         if (authRepo.isEmailVerified) _uiState.postValue(3) else sendVerificationEmail()
                     } else {
@@ -250,6 +268,7 @@ class AuthViewModel @Inject constructor(
 
     fun login(email: String, pass: String) {
         recoveringProfile = false
+        profileCreated = false
         Timber.d("Login requested")
         _uiState.value = 1
         if (!isValidEmail(email)) {
@@ -318,6 +337,7 @@ class AuthViewModel @Inject constructor(
             val state = startupStateFor(authenticated, authRepo.isEmailVerified, profile)
             if (request == startupCheck) {
                 recoveringProfile = state == StartupState.NeedsProfile
+                profileCreated = false
                 Timber.d("Startup authentication state: %s", state)
                 _startupState.postValue(state)
             }
