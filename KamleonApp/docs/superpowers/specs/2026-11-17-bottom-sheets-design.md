@@ -4,7 +4,7 @@ Aprobado por Xavi el 2026-11-17 en conversación. Documento corto: recoge lo aco
 
 ## Intención
 
-Los 25 diálogos de la app (`AlertDialog` con 6 layouts XML en `layout_dialog_*`) pasan a ser hojas inferiores. Motivos: coherencia con las hojas que ya existen (selectores de fecha/altura/peso, intro del escáner, invitaciones, detalles de recomendación), alcance con el pulgar en móviles altos y un único componente en lugar de seis layouts.
+Los 14 diálogos vivos de la app (16 llamadas a `AlertDialog`, dos de ellas código muerto; 6 layouts XML en `layout_dialog_*`) pasan a ser hojas inferiores. Motivos: coherencia con las hojas que ya existen (selectores de fecha/altura/peso, intro del escáner, invitaciones, detalles de recomendación), alcance con el pulgar en móviles altos y un único componente en lugar de seis layouts.
 
 ## Objetivos
 
@@ -28,7 +28,7 @@ Los 25 diálogos de la app (`AlertDialog` con 6 layouts XML en `layout_dialog_*`
 1. **Componente.** `KamleonSheet : BottomSheetDialogFragment` con contenido Compose. Parámetros: título opcional, mensaje (admite texto con marcado), acción principal, acción secundaria opcional, `destructive` (acción principal en rojo) y `dismissible`.
 2. **Resultado.** Por la API de resultados de fragmentos (`setFragmentResult`); un helper en `Fragment` y en `FragmentActivity` registra el listener y entrega `PRIMARY`, `SECONDARY` o `DISMISSED`. Un cierre por arrastre o toque exterior entrega `DISMISSED`.
 3. **No cancelables** (`dismissible = false`: sin asa, sin arrastre, sin toque exterior ni botón Atrás; solo se sale con sus botones): desactivar cuenta, cerrar sesión, verificar email, aceptar política y el aviso de notificaciones bloqueadas (que ya era no cancelable). El resto (errores, información) es cancelable.
-4. **Avisos de éxito como Snackbar**, no como hoja: «cambios guardados» de Ajustes y otros avisos de éxito sin decisión. Ver el plan para la lista exacta.
+4. **Avisos de éxito como Snackbar**, no como hoja: «cambios guardados» de Ajustes, PIN cambiado y contraseña cambiada (todos los avisos «Success» sin decisión). Los errores sí son hoja.
 5. **Aspecto.** Hoja clara (superficie blanca, texto oscuro) como las pantallas Compose, no la tarjeta oscura de los diálogos antiguos. Es decisión mía; se cambia en un solo sitio.
 6. **Migración en tres tandas**, cada una con su commit y prueba en el Samsung: (1) pantallas Compose (Pwd, Forgot, Login, Onboarding), (2) Ajustes, (3) Main, Tab, Pin y Help. Al terminar se borran los layouts `layout_dialog_*` y los `bg_modal_*` que queden sin uso.
 
@@ -40,6 +40,6 @@ Los 25 diálogos de la app (`AlertDialog` con 6 layouts XML en `layout_dialog_*`
 
 ## Pendiente para quien construya
 
-- Mapa exacto de los 25 sitios y su tipo (información, confirmación, bloqueante), en el plan.
+- Mapa exacto de los 14 sitios y su tipo (información, confirmación, bloqueante), en el plan.
 - Cómo comportar el teclado y las barras del sistema transparentes dentro de la hoja.
 - Si el marcado de los textos (`<b>`, `<u>`) se conserva con `CharSequence` en el `Bundle`.
