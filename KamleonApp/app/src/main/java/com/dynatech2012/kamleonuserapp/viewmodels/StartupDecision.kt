@@ -3,13 +3,29 @@ package com.dynatech2012.kamleonuserapp.viewmodels
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserProfileMissingException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.firestore.FirebaseFirestoreException
 import java.util.concurrent.TimeoutException
 import kotlinx.coroutines.withTimeoutOrNull
+
+/**
+ * The server answered, and refused the signed-in user: the account was disabled or deleted, or the
+ * session revoked. Retrying cannot fix that, only logging in again can, so it must not be shown as
+ * a connection problem. Network and server trouble (unavailable, timeout, ...) stays retryable.
+ */
+internal fun isSessionRejected(e: Exception): Boolean = when (e) {
+    is FirebaseAuthInvalidUserException -> true
+    is FirebaseFirestoreException ->
+        e.code == FirebaseFirestoreException.Code.PERMISSION_DENIED ||
+            e.code == FirebaseFirestoreException.Code.UNAUTHENTICATED
+    else -> false
+}
 
 internal fun startupStateFor(
     authenticated: Boolean,
     verified: Boolean,
-    profile: Response<CustomUser>?
+    profile: Response<CustomUser>?,
+    sessionRejected: (Exception) -> Boolean = ::isSessionRejected
 ): AuthViewModel.StartupState {
     if (!authenticated) return AuthViewModel.StartupState.NeedsLogin
     return when (profile) {
@@ -18,9 +34,11 @@ internal fun startupStateFor(
             profile.data.legal.privacyPolicyApp -> AuthViewModel.StartupState.Ready
             else -> AuthViewModel.StartupState.NeedsPolicy
         }
-        is Response.Failure ->
-            if (profile.exception is UserProfileMissingException) AuthViewModel.StartupState.NeedsProfile
-            else AuthViewModel.StartupState.RetryableError
+        is Response.Failure -> when {
+            profile.exception is UserProfileMissingException -> AuthViewModel.StartupState.NeedsProfile
+            sessionRejected(profile.exception) -> AuthViewModel.StartupState.NeedsLogin
+            else -> AuthViewModel.StartupState.RetryableError
+        }
         else -> AuthViewModel.StartupState.RetryableError
     }
 }
