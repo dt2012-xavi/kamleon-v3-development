@@ -35,6 +35,12 @@ class RegisterFragment : Fragment() {
     // Validation message currently shown under the form (null = none).
     private var error by mutableStateOf<Int?>(null)
 
+    // Passwords live in the fragment, not in the composition: the view is destroyed while Privacy
+    // is on top, but the fragment survives, so they come back when the user returns. They are
+    // deliberately not saved in instance state, so they never outlive the process.
+    private var password by mutableStateOf("")
+    private var repeatPassword by mutableStateOf("")
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,10 +59,6 @@ class RegisterFragment : Fragment() {
             var firstName by rememberSaveable { mutableStateOf("") }
             var lastName by rememberSaveable { mutableStateOf("") }
             var email by rememberSaveable { mutableStateOf(if (recovering) viewModel.recoveryEmail.orEmpty() else "") }
-            // Passwords are deliberately not saved in instance state.
-            var password by remember { mutableStateOf("") }
-            var repeatPassword by remember { mutableStateOf("") }
-
             val checking by viewModel.registerChecking.observeAsState(false)
             // Live strength feedback: debounced so it is not recomputed on every keystroke.
             var strength by remember { mutableStateOf<PasswordStrength?>(null) }

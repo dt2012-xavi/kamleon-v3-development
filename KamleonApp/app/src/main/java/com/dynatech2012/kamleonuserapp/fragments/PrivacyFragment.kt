@@ -30,9 +30,8 @@ class PrivacyFragment : Fragment() {
         (view as ComposeView).setContent {
             AppTheme(useDarkTheme = false) {
                 PrivacyScreen(
-                    onBack = {
-                        findNavController().navigate(R.id.action_privacyFragment_to_registerFragment)
-                    },
+                    // Pop instead of navigating forward: the Register screen below keeps what was typed.
+                    onBack = { findNavController().popBackStack() },
                     onNext = {
                         Timber.d("Privacy consent accepted; opening onboarding")
                         findNavController().navigate(R.id.action_privacyFragment_to_onboardingFragment)

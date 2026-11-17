@@ -63,13 +63,26 @@ class OnboardingFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.let { step = it.getInt(KEY_STEP, OnboardingSteps.BIRTH_DATE) }
+        savedInstanceState?.let {
+            step = it.getInt(KEY_STEP, OnboardingSteps.BIRTH_DATE)
+            if (it.containsKey(KEY_BIRTH_MILLIS)) birthDate = PickerDate(it.getLong(KEY_BIRTH_MILLIS))
+            selectedHeight = it.getString(KEY_HEIGHT, "")
+            selectedWeight = it.getString(KEY_WEIGHT, "")
+            selectedGender = it.getString(KEY_GENDER, "")
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(KEY_STEP, step)
+        outState.putLong(KEY_BIRTH_MILLIS, birthDateMillis())
+        outState.putString(KEY_HEIGHT, selectedHeight)
+        outState.putString(KEY_WEIGHT, selectedWeight)
+        outState.putString(KEY_GENDER, selectedGender)
     }
+
+    private fun birthDateMillis(): Long =
+        GregorianCalendar(birthDate.year, birthDate.month - 1, birthDate.day).timeInMillis
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -113,6 +126,8 @@ class OnboardingFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
+                    // The account or profile is being saved: leaving now would orphan the result.
+                    if (nextLoading) return
                     if (step > OnboardingSteps.BIRTH_DATE) {
                         step -= 1
                     } else {
@@ -126,6 +141,7 @@ class OnboardingFragment : Fragment() {
 
     private fun onBack() {
         Timber.d("Onboarding back requested at step: %s", step)
+        if (nextLoading) return
         if (step == OnboardingSteps.BIRTH_DATE) {
             findNavController().popBackStack()
         } else {
@@ -134,6 +150,7 @@ class OnboardingFragment : Fragment() {
     }
 
     private fun onNext() {
+        if (nextLoading) return
         when (step) {
             OnboardingSteps.NOTIFICATIONS -> {
                 activity?.supportFragmentManager?.setFragmentResult(
@@ -143,8 +160,12 @@ class OnboardingFragment : Fragment() {
             }
 
             OnboardingSteps.BIRTH_DATE -> {
-                viewModel.birthday = GregorianCalendar(birthDate.year, birthDate.month - 1, birthDate.day).time
+                viewModel.birthday = Date(birthDateMillis())
+                // The account is created here. Stay on this step (with the button spinning) until
+                // the result arrives: state 2 moves on, an error leaves the user here to retry.
+                nextLoading = true
                 viewModel.signup()
+                return
             }
 
             OnboardingSteps.HEIGHT -> {
@@ -217,9 +238,17 @@ class OnboardingFragment : Fragment() {
             // finishing step, which shows the confirmation dialog again.
             3 -> if (step == OnboardingSteps.COUNT - 1) checkIfGoNextStep()
 
-            4 -> goNextStep()
+            // Profile document created: the account exists, so the questionnaire can continue.
+            2 -> if (step == OnboardingSteps.BIRTH_DATE && nextLoading) {
+                nextLoading = false
+                goNextStep()
+            }
 
-            5 -> {
+            // The LiveData replays its last value when the view is recreated, so each state is
+            // only acted on while the step that is waiting for it is on screen.
+            4 -> if (step == OnboardingSteps.NOTIFICATIONS) goNextStep()
+
+            5 -> if (nextLoading) {
                 nextLoading = false
                 showVerificationDialog()
             }
@@ -268,5 +297,9 @@ class OnboardingFragment : Fragment() {
 
     private companion object {
         const val KEY_STEP = "onboarding_step"
+        const val KEY_BIRTH_MILLIS = "onboarding_birth_millis"
+        const val KEY_HEIGHT = "onboarding_height"
+        const val KEY_WEIGHT = "onboarding_weight"
+        const val KEY_GENDER = "onboarding_gender"
     }
 }
