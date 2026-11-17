@@ -16,7 +16,6 @@ import android.os.Environment
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -141,13 +140,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         viewModel.updateUserToken()
 
         qrViewModel.qrUploaded.observeEvent(this) { success ->
-            if (success) {
-                DebugLog.d(TAG) { "QR Upload successful, showing popup." }
-                showScannedDialog()
-            } else {
-                DebugLog.d(TAG) { "QR Upload event received with false, or re-observed." }
-                Toast.makeText(this, "Processing QR...", Toast.LENGTH_SHORT).show()
-            }
+            DebugLog.d(TAG) { "QR Upload finished; success: $success" }
+            if (success) showScannedDialog() else showScanFailedDialog()
         }
     }
 
@@ -159,6 +153,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 message = "",
                 primary = getString(com.dynatech2012.kamleonuserapp.R.string.dialog_ok),
                 dismissible = false
+            )
+        )
+    }
+
+    private fun showScanFailedDialog() {
+        supportFragmentManager.showKamleonSheet(
+            "scan_failed",
+            SheetSpec(
+                title = getString(com.dynatech2012.kamleonuserapp.R.string.dialog_scan_failed_title),
+                message = getString(com.dynatech2012.kamleonuserapp.R.string.dialog_scan_failed_message),
+                primary = getString(com.dynatech2012.kamleonuserapp.R.string.dialog_ok)
             )
         )
     }

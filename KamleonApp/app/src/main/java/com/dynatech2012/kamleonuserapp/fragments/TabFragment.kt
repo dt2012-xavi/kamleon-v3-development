@@ -56,6 +56,8 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
 
     override fun initView() {
         onKamleonSheetResult("scanned") { onScannedAcknowledged() }
+        // The analyzer stops after reading a code; resume it so the user can scan again.
+        onKamleonSheetResult("scan_failed") { qrViewModel.startAnalyzing() }
         Log.d(TAG, "initView")
         getFirstLogin()
         bindViews()
@@ -161,10 +163,9 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
             }
         }
         qrViewModel.qrResponse.observe(viewLifecycleOwner, this::uploadQr)
-        qrViewModel.qrUploaded.observeEvent(viewLifecycleOwner) {
-            Log.d(TAG, "qrScanner, qrUploaded")
-            appendDebugText("QR debug -- uploaded to realtime, showing success dialog")
-            showScannedDialog()
+        qrViewModel.qrUploaded.observeEvent(viewLifecycleOwner) { success ->
+            appendDebugText("QR debug -- upload finished, success: $success")
+            if (success) showScannedDialog() else showScanFailedDialog()
         }
     }
 
@@ -315,6 +316,17 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
                 message = "",
                 primary = getString(R.string.dialog_ok),
                 dismissible = false
+            )
+        )
+    }
+
+    private fun showScanFailedDialog() {
+        childFragmentManager.showKamleonSheet(
+            "scan_failed",
+            SheetSpec(
+                title = getString(R.string.dialog_scan_failed_title),
+                message = getString(R.string.dialog_scan_failed_message),
+                primary = getString(R.string.dialog_ok)
             )
         )
     }

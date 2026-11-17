@@ -40,13 +40,13 @@ class QrViewModel @Inject constructor(
     }*/
 
     private var _qrUploaded: MutableLiveData<Event<Boolean>> = MutableLiveData()
+    /** One event per upload: true if Firestore saved the scan, false if it failed. */
     val qrUploaded: LiveData<Event<Boolean>> = _qrUploaded
 
     fun uploadQRtoFirestore(qrResponse: QRResponse?) {
         viewModelScope.launch {
-            firestoreDataSource.uploadQrId(qrResponse)
-            val currentValue = qrUploaded.value?.peek() ?: false
-            _qrUploaded.postValue(Event(!currentValue))
+            val result = firestoreDataSource.uploadQrId(qrResponse)
+            _qrUploaded.postValue(Event(result.isSuccess))
         }
     }
 
