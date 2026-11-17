@@ -46,6 +46,9 @@ class OnboardingFragment : Fragment() {
     private var nextLoading by mutableStateOf(false)
     private var pickerKey by mutableIntStateOf(0)
 
+    // "Resend" was pressed and its confirmation (state 3) has not arrived yet.
+    private var resendPending = false
+
     // Users must meet the minimum age: that is both the default and the latest allowed date.
     private val maxBirthDate = PickerDate(Date().addYears(-OnboardingSteps.MIN_AGE).time)
     private val birthYearsRange =
@@ -73,6 +76,7 @@ class OnboardingFragment : Fragment() {
             selectedHeight = it.getString(KEY_HEIGHT, DEFAULT_HEIGHT)
             selectedWeight = it.getString(KEY_WEIGHT, DEFAULT_WEIGHT)
             selectedGender = it.getString(KEY_GENDER, DEFAULT_GENDER)
+            resendPending = it.getBoolean(KEY_RESEND_PENDING, false)
         }
     }
 
@@ -83,6 +87,7 @@ class OnboardingFragment : Fragment() {
         outState.putString(KEY_HEIGHT, selectedHeight)
         outState.putString(KEY_WEIGHT, selectedWeight)
         outState.putString(KEY_GENDER, selectedGender)
+        outState.putBoolean(KEY_RESEND_PENDING, resendPending)
     }
 
     private fun birthDateMillis(): Long =
@@ -132,7 +137,10 @@ class OnboardingFragment : Fragment() {
                     resetView()
                     findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)
                 }
-                SheetResult.SECONDARY -> viewModel.sendVerificationEmail()
+                SheetResult.SECONDARY -> {
+                    resendPending = true
+                    viewModel.sendVerificationEmail()
+                }
                 SheetResult.DISMISSED -> Unit
             }
         }
@@ -262,10 +270,15 @@ class OnboardingFragment : Fragment() {
     private fun onStateReceived(state: Int) {
         Timber.d("Onboarding observed registration state: %s", state)
         when (state) {
-            // "Verification email sent". It must not move the questionnaire along: it can arrive
-            // while the user is on any step. After a resend from the final dialog it re-runs the
-            // finishing step, which shows the confirmation dialog again.
-            3 -> if (step == OnboardingSteps.COUNT - 1) checkIfGoNextStep()
+            // "Verification email sent". It must not move the questionnaire along: the first one
+            // can arrive while the user is on any step, and the LiveData replays it when the view
+            // is recreated. Only after a resend from the final dialog does it re-run the finishing
+            // step, which shows the confirmation dialog again.
+            3 -> {
+                val finish = finishAfterVerificationEmailSent(step, resendPending)
+                resendPending = false
+                if (finish) checkIfGoNextStep()
+            }
 
             // Profile document created: the account exists, so the questionnaire can continue.
             2 -> if (step == OnboardingSteps.BIRTH_DATE && nextLoading) {
@@ -328,5 +341,6 @@ class OnboardingFragment : Fragment() {
         const val KEY_HEIGHT = "onboarding_height"
         const val KEY_WEIGHT = "onboarding_weight"
         const val KEY_GENDER = "onboarding_gender"
+        const val KEY_RESEND_PENDING = "onboarding_resend_pending"
     }
 }
