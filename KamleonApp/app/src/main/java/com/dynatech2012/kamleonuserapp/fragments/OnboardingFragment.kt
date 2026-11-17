@@ -166,6 +166,8 @@ class OnboardingFragment : Fragment() {
         if (nextLoading) return
         when (step) {
             OnboardingSteps.NOTIFICATIONS -> {
+                // The system dialog is up until state 4 arrives: keep the button inert meanwhile.
+                nextLoading = true
                 activity?.supportFragmentManager?.setFragmentResult(
                     Constants.GRANT_NOTIFICATION,
                     Bundle().apply { putBoolean(Constants.GRANT_NOTIFICATION_BUNDLE, true) }
@@ -261,7 +263,10 @@ class OnboardingFragment : Fragment() {
 
             // The LiveData replays its last value when the view is recreated, so each state is
             // only acted on while the step that is waiting for it is on screen.
-            4 -> if (step == OnboardingSteps.NOTIFICATIONS) goNextStep()
+            4 -> if (step == OnboardingSteps.NOTIFICATIONS) {
+                nextLoading = false
+                goNextStep()
+            }
 
             5 -> if (nextLoading) {
                 nextLoading = false

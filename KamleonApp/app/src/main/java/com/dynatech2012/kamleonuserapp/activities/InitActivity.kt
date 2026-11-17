@@ -15,6 +15,7 @@ import com.dynatech2012.kamleonuserapp.base.BaseActivity
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityInitBinding
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
+import com.dynatech2012.kamleonuserapp.utils.notificationPermissionAsked
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -111,6 +112,8 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
 
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { _ ->
+            // Granted or not, the user has answered: MainActivity must not ask again.
+            notificationPermissionAsked = true
             viewModel.notificationPermissionGranted()
         }
 
@@ -119,6 +122,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
             PackageManager.PERMISSION_GRANTED
         ) {
+            notificationPermissionAsked = true
             viewModel.notificationPermissionGranted()
         } else {
             requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)

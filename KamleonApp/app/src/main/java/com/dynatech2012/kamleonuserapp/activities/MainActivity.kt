@@ -38,6 +38,7 @@ import com.dynatech2012.kamleonuserapp.databinding.ActivityMainBinding
 import com.dynatech2012.kamleonuserapp.extensions.px
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.models.observeEvent
+import com.dynatech2012.kamleonuserapp.utils.notificationPermissionAsked
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.viewmodels.QrViewModel
@@ -325,25 +326,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun savePreferencesUserAskerForPermission() {
-        val sharedPref: SharedPreferences = getSharedPreferences(
-            "Shared Prefs", Context.MODE_PRIVATE
-        )
-        with(sharedPref.edit()) {
-            putBoolean(PreferenceConstants.PREF_USER_ASKED_FOR_PERMISSION, true)
-            apply()
-        }
+        notificationPermissionAsked = true
     }
 
     private val getPreferencesUserAskerForPermission: Boolean
-        get() {
-            val sharedPref: SharedPreferences = getSharedPreferences(
-                "Shared Prefs", Context.MODE_PRIVATE
-            )
-            return sharedPref.getBoolean(PreferenceConstants.PREF_USER_ASKED_FOR_PERMISSION, false)
-        }
-
-
-
+        get() = notificationPermissionAsked
 
     companion object {
         val TAG: String = MainActivity::class.java.simpleName
