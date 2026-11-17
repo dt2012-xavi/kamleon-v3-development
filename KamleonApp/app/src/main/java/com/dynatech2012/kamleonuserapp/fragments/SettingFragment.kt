@@ -242,7 +242,11 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         // local data are being cleared must not cancel the redirect to the login.
         viewModel.logoutStatus.observe(requireActivity()) {
             if (it) {
-                activity?.startActivity(Intent(requireContext(), InitActivity::class.java))
+                // Clear the whole task: no screen of the previous session may stay underneath.
+                activity?.startActivity(
+                    Intent(requireContext(), InitActivity::class.java)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                )
                 activity?.finish()
             }
         }

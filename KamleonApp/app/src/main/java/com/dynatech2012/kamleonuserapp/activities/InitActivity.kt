@@ -107,7 +107,10 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     fun openMain() {
         if (mainOpened) return
         mainOpened = true
+        // A scan link opens InitActivity on top of a running MainActivity: reuse it (onNewIntent)
+        // instead of stacking another one for every link.
         val mainIntent = Intent(this, MainActivity::class.java)
+            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         viewModel.consumePendingScan()?.let { (unitId, sessionId) ->
             mainIntent.action = Constants.SCAN_ACTION
             mainIntent.putExtra(Constants.SCAN_UNIT_ID, unitId)
