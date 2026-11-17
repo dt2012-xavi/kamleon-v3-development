@@ -50,9 +50,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
@@ -74,6 +76,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.dynatech2012.kamleonuserapp.R
@@ -207,11 +210,14 @@ fun KamleonTextField(
     val bringIntoView = remember { BringIntoViewRequester() }
     val showError = isError || errorText != null
     // Keep the whole block (field plus its error or supporting content) in view while the field
-    // has focus, so neither ends up under the keyboard or the fixed action bar. The key includes
-    // `value.isEmpty()` because supporting content such as a strength bar changes height once
-    // typing starts.
-    LaunchedEffect(errorText, focused, value.isEmpty()) {
-        if (focused && (errorText != null || supportingContent != null)) bringIntoView.bringIntoView()
+    // has focus, with some breathing room below, so neither ends up under the keyboard or the fixed
+    // action bar. Re-run when the block changes height (e.g. a strength bar replacing the hint).
+    var blockSize by remember { mutableStateOf(IntSize.Zero) }
+    val extraBelow = with(LocalDensity.current) { 16.dp.toPx() }
+    LaunchedEffect(errorText, focused, blockSize.height) {
+        if (focused && blockSize.height > 0 && (errorText != null || supportingContent != null)) {
+            bringIntoView.bringIntoView(Rect(0f, 0f, blockSize.width.toFloat(), blockSize.height + extraBelow))
+        }
     }
     val shape = RoundedCornerShape(dimensionResource(R.dimen.input_text_box_corner_radius))
     val textStyle = kamleonBodySmall().copy(
@@ -222,7 +228,7 @@ fun KamleonTextField(
         dimensionResource(R.dimen.input_text_box_eye_height)
     )
 
-    Column(modifier.bringIntoViewRequester(bringIntoView)) {
+    Column(modifier.onSizeChanged { blockSize = it }.bringIntoViewRequester(bringIntoView)) {
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
