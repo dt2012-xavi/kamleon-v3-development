@@ -33,8 +33,12 @@ import com.dynatech2012.kamleonuserapp.databinding.ActivityMainBinding
 import com.dynatech2012.kamleonuserapp.extensions.px
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.models.observeEvent
+import com.dynatech2012.kamleonuserapp.utils.NotificationAsk
+import com.dynatech2012.kamleonuserapp.utils.notificationAskFor
 import com.dynatech2012.kamleonuserapp.utils.notificationPermissionAsked
+import com.dynatech2012.kamleonuserapp.views.SheetResult
 import com.dynatech2012.kamleonuserapp.views.SheetSpec
+import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
 import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
@@ -123,6 +127,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             //binding.root.findNavController().navigateUp()
         }
 
+        onKamleonSheetResult(NOTIFICATIONS_INTRO_SHEET) {
+            // The sheet is only shown from Android 13, where this permission exists.
+            if (it == SheetResult.PRIMARY && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
         askNotificationPermission()
     }
 
@@ -294,17 +304,36 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         }
 
     private fun askNotificationPermission() {
-        if (getPreferencesUserAskerForPermission) return
-        // This is only necessary for API level >= 33 (TIRAMISU)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(
-                    this, Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                savePreferencesUserAskerForPermission()
-                return
-            } else requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        } else savePreferencesUserAskerForPermission()
+        val granted = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+            PackageManager.PERMISSION_GRANTED
+        when (notificationAskFor(
+            sdkInt = Build.VERSION.SDK_INT,
+            alreadyAsked = getPreferencesUserAskerForPermission,
+            granted = granted,
+            fromScanLink = intent.hasExtra(Constants.SCAN_UNIT_ID)
+        )) {
+            NotificationAsk.Skip -> Unit
+            NotificationAsk.MarkAsked -> savePreferencesUserAskerForPermission()
+            NotificationAsk.ExplainFirst -> showNotificationsIntroSheet()
+        }
+    }
+
+    /**
+     * Users who arrive with an account that already exists never saw the onboarding step that
+     * explains the notifications. "Not now" leaves the flag unset, so it is offered again next time.
+     */
+    private fun showNotificationsIntroSheet() {
+        supportFragmentManager.showKamleonSheet(
+            NOTIFICATIONS_INTRO_SHEET,
+            SheetSpec(
+                title = getString(com.dynatech2012.kamleonuserapp.R.string.onboard_noti_sub1),
+                message = getString(com.dynatech2012.kamleonuserapp.R.string.notifications_intro_message),
+                primary = getString(com.dynatech2012.kamleonuserapp.R.string.notifications_intro_activate),
+                secondary = getString(com.dynatech2012.kamleonuserapp.R.string.notifications_intro_later),
+                dismissible = false
+            )
+        )
     }
 
     private fun savePreferencesUserAskerForPermission() {
@@ -316,6 +345,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     companion object {
         val TAG: String = MainActivity::class.java.simpleName
+        private const val NOTIFICATIONS_INTRO_SHEET = "notifications_intro"
     }
 
     private var exclusionRects: MutableList<Rect> = ArrayList()

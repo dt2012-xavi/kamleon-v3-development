@@ -312,6 +312,9 @@
     <string name="dialog_scan_scanned">QR scanned correctly</string>
     <string name="dialog_scan_failed_title">We couldn’t link the QR code</string>
     <string name="dialog_scan_failed_message">Check your connection and scan it again.</string>
+    <string name="notifications_intro_message">We’ll send you your Kamleon score right after every urinal use. You can change this any time in Settings.</string>
+    <string name="notifications_intro_activate">Activate</string>
+    <string name="notifications_intro_later">Not now</string>
     <string name="dialog_policy_title">Privacy Policy</string>
     <string name="dialog_policy_desc">Protecting your privacy is crucial. Before using the app, kindly agree to the policy. For more details, refer to the <u>Privacy Policy</u></string>
     <string name="dialog_policy_agree">Agree</string>
