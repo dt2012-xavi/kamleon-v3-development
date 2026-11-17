@@ -1,16 +1,14 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.text.Editable
 import android.text.InputType
 import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.UnderlineSpan
-import android.view.View
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
+import com.dynatech2012.kamleonuserapp.views.SheetSpec
+import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
+import com.google.android.material.snackbar.Snackbar
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
@@ -128,33 +126,18 @@ class PinFragment : BaseFragment<ActivityPinBinding>() {
     }
 
     private fun showSuccessDialog() {
-        val title = getString(R.string.dialog_reset_pin_success_title)
-        val message = getString(R.string.dialog_reset_pin_success_description)
-        showReadyDialog(title, message)
+        Snackbar.make(binding.root, R.string.dialog_reset_pin_success_description, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun showErrorDialog(titleResource: Int, messageResource: Int) {
-        val title = getString(titleResource)
-        val message = getString(messageResource)
-        showReadyDialog(title, message)
-    }
-
-    private fun showReadyDialog(title: String, message: String) {
-        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        val inflater = this.layoutInflater
-        val dialogView: View = inflater.inflate(R.layout.layout_dialog_ok, null)
-
-        dialog.setView(dialogView)
-        dialog.setCancelable(false)
-        // -3 is email not valid, -2 is password not valid, -1 is firebase error
-        dialogView.findViewById<TextView>(R.id.tvDialogTitle).text = title
-        dialogView.findViewById<TextView>(R.id.tvDialogDesc).text = message
-        val logoutDialog = dialog.show()
-        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener {
-            logoutDialog.dismiss()
-        }
+        childFragmentManager.showKamleonSheet(
+            "pin_error",
+            SheetSpec(
+                title = getString(titleResource),
+                message = getString(messageResource),
+                primary = getString(R.string.dialog_ok)
+            )
+        )
     }
 
     private fun onPinUpdated(response: Response<Unit>?) {

@@ -8,9 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,12 +16,10 @@ import android.os.Environment
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -39,6 +35,8 @@ import com.dynatech2012.kamleonuserapp.extensions.px
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.models.observeEvent
 import com.dynatech2012.kamleonuserapp.utils.notificationPermissionAsked
+import com.dynatech2012.kamleonuserapp.views.SheetSpec
+import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.viewmodels.QrViewModel
@@ -166,23 +164,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun showScannedDialog() {
-        val dialog: AlertDialog.Builder = AlertDialog.Builder(this)
-        val inflater = this.layoutInflater
-        val dialogView: View = inflater.inflate(com.dynatech2012.kamleonuserapp.R.layout.layout_dialog_ok, null)
-
-        dialog.setView(dialogView)
-        dialog.setCancelable(false)
-        val logoutDialog = dialog.show()
-        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        val tvTitle = dialogView.findViewById<TextView>(com.dynatech2012.kamleonuserapp.R.id.tvDialogTitle)
-        tvTitle.text = getString(com.dynatech2012.kamleonuserapp.R.string.dialog_scan_scanned)
-
-        val tvDescr = dialogView.findViewById<TextView>(com.dynatech2012.kamleonuserapp.R.id.tvDialogDesc)
-        tvDescr.text = ""
-        dialogView.findViewById<TextView>(com.dynatech2012.kamleonuserapp.R.id.tvBtnOk).setOnClickListener {
-            logoutDialog.dismiss()
-        }
+        supportFragmentManager.showKamleonSheet(
+            "scanned",
+            SheetSpec(
+                title = getString(com.dynatech2012.kamleonuserapp.R.string.dialog_scan_scanned),
+                message = "",
+                primary = getString(com.dynatech2012.kamleonuserapp.R.string.dialog_ok),
+                dismissible = false
+            )
+        )
     }
 
     private var firebaseMessagingReceiver: BroadcastReceiver? = null

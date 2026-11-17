@@ -3,14 +3,11 @@ package com.dynatech2012.kamleonuserapp.fragments
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -24,6 +21,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.NavHostFragment
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.views.SheetSpec
+import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
+import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.constants.UrlConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityTabBinding
@@ -56,6 +56,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
     private val preview by lazy { Preview.Builder().build() }
 
     override fun initView() {
+        onKamleonSheetResult("scanned") { onScannedAcknowledged() }
         Log.d(TAG, "initView")
         getFirstLogin()
         bindViews()
@@ -308,30 +309,24 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
     }
 
     private fun showScannedDialog() {
-        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        val inflater = this.layoutInflater
-        val dialogView: View = inflater.inflate(R.layout.layout_dialog_ok, null)
+        childFragmentManager.showKamleonSheet(
+            "scanned",
+            SheetSpec(
+                title = getString(R.string.dialog_scan_scanned),
+                message = "",
+                primary = getString(R.string.dialog_ok),
+                dismissible = false
+            )
+        )
+    }
 
-        dialog.setView(dialogView)
-        dialog.setCancelable(false)
-        val logoutDialog = dialog.show()
-        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-
-        val tvTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
-        tvTitle.text = getString(R.string.dialog_scan_scanned)
-
-        val tvDescr = dialogView.findViewById<TextView>(R.id.tvDialogDesc)
-        tvDescr.text = ""
-        dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener {
-            qrFragment?.dismiss()
-            logoutDialog.dismiss()
-            selectTab(0)
-            binding.navHostFragmentTab.visibility = View.VISIBLE
-            val navHostFragment = binding.navHostFragmentTab.getFragment<NavHostFragment>()
-            val navController = navHostFragment.navController
-            navController.popBackStack()
-            navController.navigate(R.id.action_to_homeFragment)
-        }
+    private fun onScannedAcknowledged() {
+        qrFragment?.dismiss()
+        selectTab(0)
+        binding.navHostFragmentTab.visibility = View.VISIBLE
+        val navHostFragment = binding.navHostFragmentTab.getFragment<NavHostFragment>()
+        val navController = navHostFragment.navController
+        navController.popBackStack()
+        navController.navigate(R.id.action_to_homeFragment)
     }
 }

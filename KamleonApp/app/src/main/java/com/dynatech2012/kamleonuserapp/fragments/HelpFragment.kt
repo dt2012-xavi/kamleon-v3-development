@@ -1,12 +1,7 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.view.View
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
@@ -55,35 +50,8 @@ class HelpFragment : BaseFragment<ActivityHelpBinding>() {
     }
 
 
-    private fun showSuccessDialog() {
-        val title = getString(R.string.dialog_reset_pin_success_title)
-        val message = getString(R.string.dialog_reset_pin_success_description)
-        showReadyDialog(title, message)
-    }
 
-    private fun showErrorDialog() {
-        val title = getString(R.string.dialog_reset_pin_error_title)
-        val message = getString(R.string.dialog_reset_pin_error_description)
-        showReadyDialog(title, message)
-    }
 
-    private fun showReadyDialog(title: String, message: String) {
-        val dialog: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        val inflater = this.layoutInflater
-        val dialogView: View = inflater.inflate(R.layout.layout_dialog_ok, null)
-
-        dialog.setView(dialogView)
-        dialog.setCancelable(false)
-        // -3 is email not valid, -2 is password not valid, -1 is firebase error
-        dialogView.findViewById<TextView>(R.id.tvDialogTitle).text = title
-        dialogView.findViewById<TextView>(R.id.tvDialogDesc).text = message
-        val logoutDialog = dialog.show()
-        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-        dialogView.findViewById<TextView>(R.id.tvBtnOk).setOnClickListener {
-            logoutDialog.dismiss()
-        }
-    }
 
     private fun startActivity(updated: Boolean) {
         if (updated) {

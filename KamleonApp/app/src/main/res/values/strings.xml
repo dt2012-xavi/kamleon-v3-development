@@ -304,9 +304,7 @@
     <string name="dialog_reset_pwd_success_description">You\’ve successfully changed your password</string>
     <string name="dialog_reset_pwd_error_title">Error</string>
     <string name="dialog_reset_pwd_error_description">User not found</string>
-    <string name="dialog_reset_pin_success_title">Success</string>
     <string name="dialog_reset_pin_success_description">You\'ve successfully changed your PIN</string>
-    <string name="dialog_reset_pin_error_title">Error</string>
     <string name="dialog_reset_pin_error_description">There was an error changing your PIN</string>
     <string name="dialog_scan_scanned">QR scanned correctly</string>
     <string name="dialog_policy_title">Privacy Policy</string>

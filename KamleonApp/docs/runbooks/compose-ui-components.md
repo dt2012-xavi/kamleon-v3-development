@@ -61,3 +61,13 @@ Corrección aplicada también a `RegisterScreen`: los errores que solo se evalú
 - Los selectores arrancan en valores típicos (170 cm, 70 kg) y el género en «Prefer not to say»: pulsar «Siguiente» sin tocar la rueda ya no registra 140 cm, 30 kg ni «Male». Los valores usan el formato `valor.decimal` que devuelve `WheelDataPicker`.
 - La edad mínima (`OnboardingSteps.MIN_AGE`, 14) se explica bajo el título de la fecha de nacimiento y gobierna el valor por defecto y la fecha máxima.
 - Los pasos hacen un fundido (`AnimatedContent`, 90 ms de salida y 220 ms de entrada) en vez de cambiar de golpe.
+
+## Hojas en lugar de diálogos (2026-11-17)
+
+Los `AlertDialog` y los layouts `layout_dialog_*` ya no existen: se usa `KamleonSheet` (`views/KamleonSheet.kt`), un `BottomSheetDialogFragment` con contenido Compose.
+
+- **Cuándo hoja:** errores y confirmaciones. **Cuándo Snackbar:** avisos de éxito sin decisión («cambios guardados», PIN o contraseña cambiados).
+- **Mostrar:** `childFragmentManager.showKamleonSheet(clave, SheetSpec(...))` desde un fragmento, `supportFragmentManager.showKamleonSheet(...)` desde una actividad. Si hay que reaccionar al botón, `onKamleonSheetResult(clave) { ... }` en `onViewCreated` (fragmento) o `onCreate` (actividad); el resultado es `PRIMARY`, `SECONDARY` o `DISMISSED` y llega una sola vez, también tras recrear la pantalla.
+- **No cancelable** (`dismissible = false`: sin asa, sin arrastre, sin Atrás ni toque exterior): cuando la decisión es obligatoria (cerrar sesión, aceptar la política, verificar el email, notificaciones bloqueadas, «QR scanned» cuyo OK navega). Verificado en el Samsung con la hoja de cierre de sesión.
+- `destructive = true` pinta el botón principal en rojo. `linkUrl` hace que tocar el mensaje abra esa URL.
+- El mensaje y el título conservan negrita y subrayado de los recursos (`getText`, no `getString`).
