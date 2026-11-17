@@ -29,9 +29,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.AnnotatedString
@@ -160,7 +162,14 @@ fun KamleonSheetContent(spec: SheetSpec, onAction: (SheetResult) -> Unit) {
             )
         }
         val message = remember(spec.message) { spec.message.toAnnotatedMarkup() }
-        Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState())) {
+        // The sheet can be dragged, so the scrolling message must hand its gestures to the sheet's
+        // behaviour through the nested-scroll interop instead of being intercepted by it.
+        Column(
+            Modifier
+                .weight(1f, fill = false)
+                .nestedScroll(rememberNestedScrollInteropConnection())
+                .verticalScroll(rememberScrollState())
+        ) {
             Text(
                 text = message,
                 style = kamleonBody(),
@@ -236,12 +245,12 @@ class KamleonSheet : BottomSheetDialogFragment() {
         // The content draws its own rounded surface.
         sheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
             ?.setBackgroundColor(Color.TRANSPARENT)
-        if (!spec.dismissible) {
-            sheetDialog.behavior.apply {
-                isDraggable = false
-                skipCollapsed = true
-                state = BottomSheetBehavior.STATE_EXPANDED
-            }
+        // Always fully expanded: the collapsed peek height can be shorter than the content, which
+        // would leave the buttons below the screen edge until the user drags the sheet up.
+        sheetDialog.behavior.apply {
+            skipCollapsed = true
+            state = BottomSheetBehavior.STATE_EXPANDED
+            if (!spec.dismissible) isDraggable = false
         }
     }
 

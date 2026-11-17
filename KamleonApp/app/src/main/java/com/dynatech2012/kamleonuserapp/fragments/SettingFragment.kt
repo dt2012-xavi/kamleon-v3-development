@@ -232,8 +232,15 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         )
     }
 
+    private var loggingOut = false
+
     private fun logout() {
-        viewModel.logoutStatus.observe(viewLifecycleOwner) {
+        // The sheet closes at once, so a second tap could start a second logout.
+        if (loggingOut) return
+        loggingOut = true
+        // Observe with the activity, not the view: leaving this screen while the session and the
+        // local data are being cleared must not cancel the redirect to the login.
+        viewModel.logoutStatus.observe(requireActivity()) {
             if (it) {
                 activity?.startActivity(Intent(requireContext(), InitActivity::class.java))
                 activity?.finish()
