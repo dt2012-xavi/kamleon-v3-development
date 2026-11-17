@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -23,6 +24,7 @@ class OnboardingScreenTest {
     private fun Screen(
         step: Int,
         nextLoading: Boolean = false,
+        showBack: Boolean = true,
         onBack: () -> Unit = {},
         onNext: () -> Unit = {},
         onSkip: () -> Unit = {}
@@ -36,7 +38,8 @@ class OnboardingScreenTest {
                 genderValues = listOf("Male", "Female", "Other", "Prefer not to say"),
                 selectedHeight = "", selectedWeight = "", selectedGender = "",
                 onBirthDateChange = { _, _, _, _ -> }, onHeightChange = {}, onWeightChange = {},
-                onGenderChange = {}, onBack = onBack, onNext = onNext, onSkip = onSkip
+                onGenderChange = {}, onBack = onBack, onNext = onNext, onSkip = onSkip,
+                showBack = showBack
             )
         }
     }
@@ -49,6 +52,13 @@ class OnboardingScreenTest {
         composeRule.onNodeWithTag("onboarding_skip").assertDoesNotExist()
         step = OnboardingSteps.HEIGHT
         composeRule.onNodeWithTag("onboarding_skip").assertExists()
+    }
+
+    @Test
+    fun backButtonIsHiddenWhenThereIsNothingToGoBackTo() {
+        composeRule.setContent { Screen(OnboardingSteps.NOTIFICATIONS, showBack = false) }
+        composeRule.onNodeWithTag("onboarding_back").assertDoesNotExist()
+        composeRule.onNodeWithTag("onboarding_next").assertIsDisplayed()
     }
 
     @Test

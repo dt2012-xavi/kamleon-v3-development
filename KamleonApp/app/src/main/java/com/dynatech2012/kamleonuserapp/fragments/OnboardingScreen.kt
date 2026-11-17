@@ -93,7 +93,8 @@ fun OnboardingScreen(
     onGenderChange: (String) -> Unit,
     onBack: () -> Unit,
     onNext: () -> Unit,
-    onSkip: () -> Unit
+    onSkip: () -> Unit,
+    showBack: Boolean = true
 ) {
     val darkGrey = colorResource(R.color.kamleon_dark_grey)
 
@@ -114,7 +115,8 @@ fun OnboardingScreen(
                 modifier = Modifier.align(Alignment.Center)
             )
         }
-        Box(
+        // Hidden once the account exists and the user is on the first optional step.
+        if (showBack) Box(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(start = dimensionResource(R.dimen.nav_back_button_left), top = backTop)

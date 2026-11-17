@@ -103,6 +103,7 @@ class OnboardingFragment : Fragment() {
                 OnboardingScreen(
                     step = step,
                     nextLoading = nextLoading,
+                    showBack = canGoBack,
                     pickerKey = pickerKey,
                     birthDate = birthDate,
                     birthYearsRange = birthYearsRange,
@@ -130,8 +131,9 @@ class OnboardingFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    // The account or profile is being saved: leaving now would orphan the result.
-                    if (nextLoading) return
+                    // The account or profile is being saved, or it already exists and there is
+                    // nothing to go back to: the system Back button does nothing.
+                    if (nextLoading || !canGoBack) return
                     if (step > OnboardingSteps.BIRTH_DATE) {
                         step -= 1
                     } else {
@@ -143,9 +145,16 @@ class OnboardingFragment : Fragment() {
         )
     }
 
+    /**
+     * Once the account exists the registration steps (Register, Privacy, birth date) are behind the
+     * user: Back is only available between the optional steps that follow.
+     */
+    private val canGoBack: Boolean
+        get() = !(viewModel.profileCreated && step <= OnboardingSteps.NOTIFICATIONS)
+
     private fun onBack() {
         Timber.d("Onboarding back requested at step: %s", step)
-        if (nextLoading) return
+        if (nextLoading || !canGoBack) return
         if (step == OnboardingSteps.BIRTH_DATE) {
             findNavController().popBackStack()
         } else {
