@@ -50,7 +50,9 @@ fun LoginScreen(
     onPasswordChange: (String) -> Unit,
     onSignIn: () -> Unit,
     onForgotPassword: () -> Unit,
-    onRegister: () -> Unit
+    onRegister: () -> Unit,
+    // A /scan link is waiting for this login: say so, or the user may not know why to log in.
+    pendingScan: Boolean = false
 ) {
     val darkGrey = colorResource(R.color.kamleon_dark_grey)
     val grey60 = colorResource(R.color.kamleon_secondary_grey_60)
@@ -115,11 +117,12 @@ fun LoginScreen(
                 modifier = Modifier.padding(top = 8.dp)
             )
             Text(
-                text = stringResource(R.string.login_desc),
+                text = stringResource(if (pendingScan) R.string.login_desc_pending_scan else R.string.login_desc),
                 style = kamleonBody(),
                 color = darkGrey,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 8.dp)
+                    .testTag(if (pendingScan) "login_desc_pending_scan" else "login_desc")
             )
         }
 

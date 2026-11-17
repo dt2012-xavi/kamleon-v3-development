@@ -23,10 +23,12 @@ class LoginScreenTest {
     private var email by mutableStateOf("")
     private var password by mutableStateOf("")
     private var submissions = mutableListOf<Pair<String, String>>()
+    private var pendingScan by mutableStateOf(false)
 
     private fun setScreen() = composeRule.setContent {
         AppTheme(useDarkTheme = false) {
             LoginScreen(
+                pendingScan = pendingScan,
                 email = email,
                 password = password,
                 isLoading = false,
@@ -74,5 +76,16 @@ class LoginScreenTest {
         composeRule.onNodeWithTag("login_password").performTextInput("secret123")
         composeRule.onNodeWithTag("login_password").performImeAction()
         composeRule.runOnIdle { assertEquals(listOf("test@example.com" to "secret123"), submissions) }
+    }
+
+    @Test
+    fun pendingScanExplainsWhyToLogIn() {
+        setScreen()
+        composeRule.onNodeWithTag("login_desc").assertIsDisplayed()
+        composeRule.onNodeWithTag("login_desc_pending_scan").assertDoesNotExist()
+
+        pendingScan = true
+        composeRule.onNodeWithTag("login_desc_pending_scan").assertIsDisplayed()
+        composeRule.onNodeWithTag("login_desc").assertDoesNotExist()
     }
 }

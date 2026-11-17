@@ -61,6 +61,9 @@ class AuthViewModel @Inject constructor(
 
     val hasPendingScan: Boolean get() = currentPendingScan() != null
 
+    /** Changes whenever a scan link is saved or consumed, so screens can react to it. */
+    val pendingScanSavedAt: LiveData<Long?> = savedStateHandle.getLiveData("scanSavedAt")
+
     fun consumePendingScan(): Pair<String, String>? {
         val scan = currentPendingScan()
         savedStateHandle.remove<String>("scanUnitId")

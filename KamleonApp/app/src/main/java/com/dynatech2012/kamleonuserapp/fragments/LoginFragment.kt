@@ -48,9 +48,12 @@ class LoginFragment : Fragment() {
             var email by rememberSaveable { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
             val state by viewModel.uiState.observeAsState(0)
+            // Observed so a link that arrives while Login is open updates the text.
+            val scanSavedAt by viewModel.pendingScanSavedAt.observeAsState()
 
             AppTheme(useDarkTheme = false) {
                 LoginScreen(
+                    pendingScan = scanSavedAt != null && viewModel.hasPendingScan,
                     email = email,
                     password = password,
                     isLoading = state == 1 || state == 6,
