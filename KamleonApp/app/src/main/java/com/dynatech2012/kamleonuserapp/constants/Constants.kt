@@ -23,4 +23,9 @@ object Constants {
 
     // Notifications
     const val NOTIFICATION_KEY_TITLE = "title"
+
+    // Scan links: query parameters of https://<host>/scan, reused as MainActivity extras.
+    const val SCAN_ACTION = "scan"
+    const val SCAN_UNIT_ID = "unitId"
+    const val SCAN_SESSION_ID = "sessionId"
 }

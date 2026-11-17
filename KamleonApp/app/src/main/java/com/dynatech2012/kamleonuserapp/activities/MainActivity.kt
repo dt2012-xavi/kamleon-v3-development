@@ -69,11 +69,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         //TODO get the logic 
 
-        val unitId = intent.getStringExtra("unitId")
-        val sessionId = intent.getStringExtra("sessionId")
+        val unitId = intent.getStringExtra(Constants.SCAN_UNIT_ID)
+        val sessionId = intent.getStringExtra(Constants.SCAN_SESSION_ID)
         if (!unitId.isNullOrEmpty() && !sessionId.isNullOrEmpty()) {
-            intent.removeExtra("unitId")
-            intent.removeExtra("sessionId")
+            intent.removeExtra(Constants.SCAN_UNIT_ID)
+            intent.removeExtra(Constants.SCAN_SESSION_ID)
             DebugLog.d(TAG) { "Scan link received by main activity" }
             // Use the parameters as needed
             val qrResponse = QRResponse(

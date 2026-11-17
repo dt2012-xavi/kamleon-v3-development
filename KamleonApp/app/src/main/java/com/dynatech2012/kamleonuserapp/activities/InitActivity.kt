@@ -60,8 +60,8 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     private fun handleIntent(intent: Intent) {
         val data = intent.data
         if (data?.path != "/scan") return
-        val unitId = data.getQueryParameter("unitId")
-        val sessionId = data.getQueryParameter("sessionId")
+        val unitId = data.getQueryParameter(Constants.SCAN_UNIT_ID)
+        val sessionId = data.getQueryParameter(Constants.SCAN_SESSION_ID)
         if (!unitId.isNullOrBlank() && !sessionId.isNullOrBlank()) {
             viewModel.pendingScan(unitId, sessionId)
             Timber.d("Scan link accepted for later delivery")
@@ -107,9 +107,9 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
         mainOpened = true
         val mainIntent = Intent(this, MainActivity::class.java)
         viewModel.consumePendingScan()?.let { (unitId, sessionId) ->
-            mainIntent.action = "scan"
-            mainIntent.putExtra("unitId", unitId)
-            mainIntent.putExtra("sessionId", sessionId)
+            mainIntent.action = Constants.SCAN_ACTION
+            mainIntent.putExtra(Constants.SCAN_UNIT_ID, unitId)
+            mainIntent.putExtra(Constants.SCAN_SESSION_ID, sessionId)
         }
         // Cross-fade into the main screen instead of the system's default activity transition.
         startActivity(mainIntent, ActivityOptions.makeCustomAnimation(this, R.anim.fade_in, R.anim.fade_hold).toBundle())

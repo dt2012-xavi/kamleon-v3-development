@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dynatech2012.kamleonuserapp.camera.QRCodeImageAnalyzerMLKitKotlin
+import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.models.Event
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
@@ -90,8 +91,8 @@ class QrViewModel @Inject constructor(
 
     fun parseQrString(qrString: String): QRResponse {
         val uri = qrString.toUri()
-        val unitId = uri.getQueryParameter("unitId")
-        val sessionId = uri.getQueryParameter("sessionId")
+        val unitId = uri.getQueryParameter(Constants.SCAN_UNIT_ID)
+        val sessionId = uri.getQueryParameter(Constants.SCAN_SESSION_ID)
 
         if (unitId.isNullOrEmpty() || sessionId.isNullOrEmpty()) {
             throw IllegalArgumentException("unitId or sessionId missing in QR string")
