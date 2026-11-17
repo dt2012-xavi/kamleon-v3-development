@@ -1,9 +1,5 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.graphics.Typeface
-import android.text.Spanned
-import android.text.style.StyleSpan
-import android.text.style.UnderlineSpan
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -64,8 +60,6 @@ import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -85,6 +79,7 @@ import com.dynatech2012.kamleonuserapp.views.KamleonFormLayout
 import com.dynatech2012.kamleonuserapp.views.KamleonPasswordStrengthMeter
 import com.dynatech2012.kamleonuserapp.views.KamleonRoundButton
 import com.dynatech2012.kamleonuserapp.views.KamleonTextLink
+import com.dynatech2012.kamleonuserapp.views.toAnnotatedMarkup
 import com.dynatech2012.kamleonuserapp.views.kamleonBodySmall
 import com.dynatech2012.kamleonuserapp.views.kamleonCaption
 
@@ -495,23 +490,7 @@ private fun PasswordRow(
 @Composable
 private fun annotatedStringResource(@StringRes id: Int): AnnotatedString {
     val text = LocalResources.current.getText(id)
-    return remember(text) {
-        buildAnnotatedString {
-            append(text.toString())
-            if (text is Spanned) {
-                text.getSpans(0, text.length, Any::class.java).forEach { span ->
-                    val start = text.getSpanStart(span)
-                    val end = text.getSpanEnd(span)
-                    when {
-                        span is StyleSpan && span.style == Typeface.BOLD ->
-                            addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
-                        span is UnderlineSpan ->
-                            addStyle(SpanStyle(textDecoration = TextDecoration.Underline), start, end)
-                    }
-                }
-            }
-        }
-    }
+    return remember(text) { text.toAnnotatedMarkup() }
 }
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 740)

@@ -343,7 +343,8 @@ fun KamleonTextField(
 
 /**
  * Primary pill button: filled teal, translucent when pressed, outlined when disabled. While
- * [loading] the label is replaced by a small spinner and the button is inert.
+ * [loading] the label is replaced by a small spinner and the button is inert. With [destructive]
+ * it is red instead of teal (confirming something that cannot be undone).
  */
 @Composable
 fun KamleonRoundButton(
@@ -352,6 +353,7 @@ fun KamleonRoundButton(
     enabled: Boolean,
     modifier: Modifier = Modifier,
     loading: Boolean = false,
+    destructive: Boolean = false,
     testTag: String? = null
 ) {
     val interaction = remember { MutableInteractionSource() }
@@ -361,6 +363,7 @@ fun KamleonRoundButton(
     val grey40 = colorResource(R.color.kamleon_secondary_grey_40)
     val container = when {
         !active -> Color.Transparent
+        destructive -> colorResource(R.color.kmln_red).copy(alpha = if (pressed) 0.8f else 1f)
         pressed -> colorResource(R.color.kamleon_blue_pressed)
         else -> colorResource(R.color.kamleon_blue)
     }
