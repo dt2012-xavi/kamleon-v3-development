@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -76,6 +77,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.MatTheme
+import com.dynatech2012.kamleonuserapp.security.PasswordStrength
 
 // Shared building blocks for the Compose screens: one type scale, one text field, one button and
 // one text link. Sizes and colors come from the existing dimen/color resources.
@@ -415,5 +417,47 @@ fun KamleonFormLayout(
                 .padding(top = 8.dp, bottom = if (imeVisible) 12.dp else 40.dp),
             content = { bottomBar(imeVisible) }
         )
+    }
+}
+
+/**
+ * Password strength feedback shown under a password field: the usage hint while it is empty, then
+ * a three-segment bar with a label. [strength] null (not scored yet) keeps the hint.
+ */
+@Composable
+fun KamleonPasswordStrengthMeter(password: String, strength: PasswordStrength?, modifier: Modifier = Modifier) {
+    val inset = dimensionResource(R.dimen.input_text_box_padding_h) + 4.dp
+    if (password.isEmpty() || strength == null) {
+        Text(
+            text = stringResource(R.string.password_hint),
+            style = kamleonCaption(),
+            color = colorResource(R.color.kamleon_secondary_grey_60),
+            modifier = modifier.padding(start = inset, top = 4.dp)
+        )
+        return
+    }
+    val (filled, color, label) = when (strength) {
+        PasswordStrength.WEAK -> Triple(1, colorResource(R.color.kmln_red), R.string.password_strength_weak)
+        PasswordStrength.GOOD -> Triple(2, colorResource(R.color.kamleon_strength_good), R.string.password_strength_good)
+        PasswordStrength.STRONG -> Triple(3, colorResource(R.color.kamleon_blue), R.string.password_strength_strong)
+    }
+    val text = stringResource(label)
+    Column(
+        modifier = modifier
+            .padding(start = inset, end = inset, top = 6.dp)
+            .semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite }
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            repeat(3) { index ->
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .height(4.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(if (index < filled) color else colorResource(R.color.kamleon_progress_track))
+                )
+            }
+        }
+        Text(text = text, style = kamleonCaption(), color = color, modifier = Modifier.padding(top = 4.dp))
     }
 }

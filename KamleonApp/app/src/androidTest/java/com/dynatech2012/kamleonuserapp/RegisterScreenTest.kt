@@ -15,6 +15,7 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.requestFocus
 import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.fragments.RegisterScreen
+import com.dynatech2012.kamleonuserapp.security.PasswordStrength
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -29,12 +30,18 @@ class RegisterScreenTest {
     private var repeat by mutableStateOf("")
     private var created = 0
 
-    private fun setScreen(recovering: Boolean = false, error: Int? = null) = composeRule.setContent {
+    private fun setScreen(
+        recovering: Boolean = false,
+        error: Int? = null,
+        strength: PasswordStrength? = null,
+        checking: Boolean = false
+    ) = composeRule.setContent {
         AppTheme(useDarkTheme = false) {
             RegisterScreen(
                 firstName = firstName, lastName = lastName, email = email,
                 password = password, repeatPassword = repeat,
                 recovering = recovering, error = error,
+                checking = checking, passwordStrength = strength,
                 onFirstNameChange = { firstName = it }, onLastNameChange = { lastName = it },
                 onEmailChange = { email = it }, onPasswordChange = { password = it },
                 onRepeatPasswordChange = { repeat = it },
@@ -45,7 +52,7 @@ class RegisterScreenTest {
 
     private fun fillValid() {
         firstName = "Ana"; lastName = "Gil"; email = "ana@example.com"
-        password = "secret1"; repeat = "secret1"
+        password = "correct-horse-1"; repeat = "correct-horse-1"
     }
 
     @Test
@@ -108,10 +115,47 @@ class RegisterScreenTest {
     @Test
     fun viewModelErrorIsShownNextToItsFieldAndFocused() {
         fillValid()
-        password = "abc"; repeat = "abc"
-        setScreen(error = R.string.signup_error_password)
+        setScreen(error = R.string.password_error_breached)
         composeRule.onNodeWithTag("register_password_error").assertIsDisplayed()
         composeRule.onNodeWithTag("register_password").assertIsFocused()
+    }
+
+    @Test
+    fun shortPasswordBlocksSubmitWithTheLengthMessage() {
+        fillValid()
+        password = "abc"; repeat = "abc"
+        setScreen()
+        composeRule.onNodeWithTag("register_create").performClick()
+        composeRule.onNodeWithTag("register_password_error").assertIsDisplayed()
+        composeRule.onNodeWithTag("register_password").assertIsFocused()
+        composeRule.runOnIdle { assertEquals(0, created) }
+    }
+
+    @Test
+    fun weakPasswordBlocksSubmitUntilItIsStrongEnough() {
+        fillValid()
+        setScreen(strength = PasswordStrength.WEAK)
+        composeRule.onNodeWithTag("register_password_strength").assertIsDisplayed()
+        composeRule.onNodeWithTag("register_create").performClick()
+        composeRule.onNodeWithTag("register_password_error").assertIsDisplayed()
+        composeRule.runOnIdle { assertEquals(0, created) }
+    }
+
+    @Test
+    fun strongPasswordShowsTheMeterAndSubmits() {
+        fillValid()
+        setScreen(strength = PasswordStrength.STRONG)
+        composeRule.onNodeWithTag("register_password_strength").assertIsDisplayed()
+        composeRule.onNodeWithTag("register_create").performClick()
+        composeRule.runOnIdle { assertEquals(1, created) }
+    }
+
+    @Test
+    fun whileCheckingThePolicyTheButtonIsInert() {
+        fillValid()
+        setScreen(strength = PasswordStrength.STRONG, checking = true)
+        composeRule.onNodeWithTag("register_create").performClick()
+        composeRule.runOnIdle { assertEquals(0, created) }
     }
 
     @Test

@@ -31,6 +31,9 @@ import com.dynatech2012.kamleonuserapp.repositories.MeasuresRepository
 import com.dynatech2012.kamleonuserapp.repositories.RealtimeDataSource
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
+import com.dynatech2012.kamleonuserapp.security.PasswordPolicy
+import com.dynatech2012.kamleonuserapp.security.PasswordPolicyException
+import com.dynatech2012.kamleonuserapp.security.PasswordPolicyResult
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.utils.SharedPrefUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,7 +52,8 @@ class MainViewModel @Inject constructor(
     private val measuresRepository: MeasuresRepository,
     private val databaseRepository: DatabaseDataSource,
     private val realtime: RealtimeDataSource,
-    private val cloudFunctions: CloudFunctions
+    private val cloudFunctions: CloudFunctions,
+    private val passwordPolicy: PasswordPolicy
 ) : ViewModel() {
 
     var graphicType: Int = -1
@@ -213,6 +217,12 @@ class MainViewModel @Inject constructor(
 
     fun changePwd(oldPwd: String, newPwd: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            // The new password must pass the policy before the account is touched.
+            val policy = passwordPolicy.validate(newPwd)
+            if (policy is PasswordPolicyResult.Rejected) {
+                _userUpdated.postValue(Response.Failure(PasswordPolicyException(policy.reason)))
+                return@launch
+            }
             val response = userRepository.changePwd(oldPwd, newPwd)
             //_userUpdated.postValue(true)
             _userUpdated.postValue(response)

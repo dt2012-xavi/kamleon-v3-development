@@ -14,6 +14,8 @@ import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.ActivityPwdBinding
 import com.dynatech2012.kamleonuserapp.repositories.Response
+import com.dynatech2012.kamleonuserapp.security.PasswordPolicyException
+import com.dynatech2012.kamleonuserapp.security.messageRes
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -56,6 +58,10 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
             val oldPwd = binding.etPwd.text.toString()
             if (binding.etPwdNew.text.toString() != binding.etPwdConf.text.toString()) {
                 showErrorDialog(R.string.pwd_error_title, R.string.pwd_error_dontmatch)
+                return@setOnClickListener
+            }
+            if (binding.etPwdNew.text.toString() == oldPwd) {
+                showErrorDialog(R.string.pwd_error_title, R.string.pwd_error_same_as_current)
                 return@setOnClickListener
             }
             viewModel.changePwd(oldPwd, binding.etPwdNew.text.toString())
@@ -164,7 +170,12 @@ class PwdFragment : BaseFragment<ActivityPwdBinding>() {
             }
 
             is Response.Failure -> {
-                showErrorDialog(R.string.pwd_error_title, 0, response.errorMessage ?: "")
+                val policy = response.exception as? PasswordPolicyException
+                if (policy != null) {
+                    showErrorDialog(R.string.pwd_error_title, policy.reason.messageRes())
+                } else {
+                    showErrorDialog(R.string.pwd_error_title, 0, response.errorMessage ?: "")
+                }
             }
 
             else -> {}

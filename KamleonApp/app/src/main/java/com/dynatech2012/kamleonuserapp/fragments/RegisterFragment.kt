@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -16,13 +18,19 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.AppTheme
+import com.dynatech2012.kamleonuserapp.security.PasswordStrength
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import timber.log.Timber
 
 @AndroidEntryPoint
 class RegisterFragment : Fragment() {
     private val viewModel: AuthViewModel by activityViewModels()
+
+    private companion object {
+        const val STRENGTH_DEBOUNCE_MS = 150L
+    }
 
     // Validation message currently shown under the form (null = none).
     private var error by mutableStateOf<Int?>(null)
@@ -49,6 +57,18 @@ class RegisterFragment : Fragment() {
             var password by remember { mutableStateOf("") }
             var repeatPassword by remember { mutableStateOf("") }
 
+            val checking by viewModel.registerChecking.observeAsState(false)
+            // Live strength feedback: debounced so it is not recomputed on every keystroke.
+            var strength by remember { mutableStateOf<PasswordStrength?>(null) }
+            LaunchedEffect(password) {
+                if (password.isEmpty()) {
+                    strength = null
+                } else {
+                    delay(STRENGTH_DEBOUNCE_MS)
+                    strength = viewModel.passwordStrength(password)
+                }
+            }
+
             AppTheme(useDarkTheme = false) {
                 RegisterScreen(
                     firstName = firstName,
@@ -58,6 +78,8 @@ class RegisterFragment : Fragment() {
                     repeatPassword = repeatPassword,
                     recovering = recovering,
                     error = error,
+                    checking = checking,
+                    passwordStrength = strength,
                     onFirstNameChange = { firstName = it; error = null },
                     onLastNameChange = { lastName = it; error = null },
                     onEmailChange = { email = it; error = null },
@@ -88,7 +110,10 @@ class RegisterFragment : Fragment() {
                 }
                 0, 1 -> error = R.string.signup_error_empty_fields
                 2, 3 -> error = R.string.signup_error_email_pattern
-                4 -> error = R.string.signup_error_password
+                4 -> error = R.string.password_error_too_short
+                5 -> error = R.string.password_error_too_long
+                7 -> error = R.string.password_error_weak
+                8 -> error = R.string.password_error_breached
                 -3 -> error = R.string.signup_session_expired
             }
         }

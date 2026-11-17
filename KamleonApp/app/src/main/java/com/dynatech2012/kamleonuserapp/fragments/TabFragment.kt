@@ -35,7 +35,6 @@ import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.viewmodels.QrViewModel
 import com.google.common.util.concurrent.ListenableFuture
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.internal.wait
 import java.util.concurrent.ExecutionException
 
 

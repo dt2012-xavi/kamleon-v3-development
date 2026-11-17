@@ -39,15 +39,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.AppTheme
+import com.dynatech2012.kamleonuserapp.security.PasswordLength
+import com.dynatech2012.kamleonuserapp.security.PasswordStrength
 import com.dynatech2012.kamleonuserapp.views.KamleonFormLayout
+import com.dynatech2012.kamleonuserapp.views.KamleonPasswordStrengthMeter
 import com.dynatech2012.kamleonuserapp.views.KamleonRoundButton
 import com.dynatech2012.kamleonuserapp.views.KamleonTextField
 import com.dynatech2012.kamleonuserapp.views.KamleonTextLink
 import com.dynatech2012.kamleonuserapp.views.kamleonBody
 import com.dynatech2012.kamleonuserapp.views.kamleonBodySmall
 import com.dynatech2012.kamleonuserapp.views.kamleonTitle
-
-private const val MIN_PASSWORD_LENGTH = 6
 
 /**
  * Compose version of `activity_register.xml`. Layout margins are the XML's literal values (90dp
@@ -57,8 +58,10 @@ private const val MIN_PASSWORD_LENGTH = 6
  * Feedback: every problem is shown right under the field that causes it (red outline plus message),
  * so it is never hidden behind the keyboard. Pressing the button with something missing or invalid
  * moves focus to the first offending field instead of failing silently; while typing, the screen
- * also explains on its own (invalid email after leaving the field, short password, passwords that
- * differ). [error] is the result reported back by the ViewModel; errors that belong to no field
+ * also explains on its own (invalid email after leaving the field, a strength bar under the
+ * password, passwords that differ). The password policy (length 8..128, strength, breach check) is
+ * enforced by the ViewModel; [error] carries its verdict and [checking] shows the button spinner
+ * while it runs. [passwordStrength] feeds the strength bar and blocks weak passwords on submit. [error] is the result reported back by the ViewModel; errors that belong to no field
  * (expired session) appear above the button. The primary button sits in a fixed bar above the
  * keyboard and the "Log in" link is hidden while the keyboard is open.
  *
@@ -74,6 +77,8 @@ fun RegisterScreen(
     repeatPassword: String,
     recovering: Boolean,
     @StringRes error: Int?,
+    checking: Boolean = false,
+    passwordStrength: PasswordStrength? = null,
     onFirstNameChange: (String) -> Unit,
     onLastNameChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
@@ -87,9 +92,7 @@ fun RegisterScreen(
 
     // A field counts as "visited" once it has had focus and lost it; only then is it judged live.
     var emailVisited by remember { mutableStateOf(false) }
-    var passwordVisited by remember { mutableStateOf(false) }
     var emailHadFocus by remember { mutableStateOf(false) }
-    var passwordHadFocus by remember { mutableStateOf(false) }
     // Set once the user pressed the button: blank fields are then reported next to the field.
     var submitted by remember { mutableStateOf(false) }
 
@@ -104,7 +107,6 @@ fun RegisterScreen(
     fun errors(force: Boolean): RegisterFieldErrors {
         val showBlank = force || submitted
         val emailInvalid = email.isNotBlank() && !Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches()
-        val passwordShort = password.isNotEmpty() && password.length < MIN_PASSWORD_LENGTH
         val passwordsDiffer = password.isNotEmpty() && repeatPassword.isNotEmpty() && password != repeatPassword
         return RegisterFieldErrors(
             firstName = if (showBlank && firstName.isBlank()) R.string.signup_error_first_name_required else null,
@@ -118,8 +120,12 @@ fun RegisterScreen(
             password = when {
                 recovering -> null
                 showBlank && password.isEmpty() -> R.string.field_error_password_required
-                passwordShort && (force || passwordVisited || error == R.string.signup_error_password) ->
-                    R.string.signup_error_password
+                // Policy result reported back by the ViewModel (length, strength, breach).
+                error in PASSWORD_ERRORS -> error
+                // On submit, anything the local rules already know is not acceptable.
+                force && password.length < PasswordLength.MIN -> R.string.password_error_too_short
+                force && password.length > PasswordLength.MAX -> R.string.password_error_too_long
+                force && passwordStrength == PasswordStrength.WEAK -> R.string.password_error_weak
                 else -> null
             },
             repeat = when {
@@ -134,11 +140,11 @@ fun RegisterScreen(
 
     // Pressing the button never fails silently: if something is wrong, say it next to the field
     // and move focus to the first offending one; otherwise submit.
-    val submit: () -> Unit = {
+    val submit: () -> Unit = submit@{
+        if (checking) return@submit
         val e = errors(force = true)
         submitted = true
         emailVisited = true
-        passwordVisited = true
         when {
             e.firstName != null -> firstNameFocus.requestFocus()
             e.lastName != null -> lastNameFocus.requestFocus()
@@ -153,7 +159,7 @@ fun RegisterScreen(
     LaunchedEffect(error) {
         when (error) {
             R.string.signup_error_email_pattern -> emailFocus.requestFocus()
-            R.string.signup_error_password -> passwordFocus.requestFocus()
+            in PASSWORD_ERRORS -> passwordFocus.requestFocus()
             R.string.signup_error_empty_fields -> {
                 submitted = true
                 if (firstName.isBlank()) firstNameFocus.requestFocus() else lastNameFocus.requestFocus()
@@ -186,6 +192,7 @@ fun RegisterScreen(
                 ),
                 onClick = submit,
                 enabled = true,
+                loading = checking,
                 testTag = "register_create"
             )
             // Secondary action hidden while typing so the keyboard leaves room for the fields.
@@ -290,12 +297,16 @@ fun RegisterScreen(
                     contentType = ContentType.NewPassword,
                     errorText = fieldErrors.password?.let { stringResource(it) },
                     focusRequester = passwordFocus,
-                    onFocusChange = { focused ->
-                        if (focused) passwordHadFocus = true else if (passwordHadFocus) passwordVisited = true
-                    },
                     modifier = Modifier.padding(top = 12.dp),
                     testTag = "register_password"
                 )
+                if (fieldErrors.password == null) {
+                    KamleonPasswordStrengthMeter(
+                        password = password,
+                        strength = passwordStrength,
+                        modifier = Modifier.testTag("register_password_strength")
+                    )
+                }
                 KamleonTextField(
                     value = repeatPassword,
                     onValueChange = onRepeatPasswordChange,
@@ -318,6 +329,13 @@ fun RegisterScreen(
     }
 }
 
+private val PASSWORD_ERRORS = setOf(
+    R.string.password_error_too_short,
+    R.string.password_error_too_long,
+    R.string.password_error_weak,
+    R.string.password_error_breached
+)
+
 private class RegisterFieldErrors(
     @StringRes val firstName: Int?,
     @StringRes val lastName: Int?,
@@ -332,7 +350,7 @@ private fun RegisterScreenPreview() {
     AppTheme(useDarkTheme = false) {
         RegisterScreen(
             firstName = "", lastName = "", email = "", password = "", repeatPassword = "",
-            recovering = false, error = R.string.signup_error_password,
+            recovering = false, error = R.string.password_error_weak,
             onFirstNameChange = {}, onLastNameChange = {}, onEmailChange = {},
             onPasswordChange = {}, onRepeatPasswordChange = {}, onCreate = {}, onLogin = {}
         )

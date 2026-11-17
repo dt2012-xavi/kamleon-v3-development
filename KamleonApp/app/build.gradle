@@ -241,5 +241,8 @@ dependencies {
 
     // Logging and splash
     implementation libs.timber
+
+    // Password policy: strength estimation
+    implementation libs.zxcvbn
     implementation libs.core.splashscreen
 }

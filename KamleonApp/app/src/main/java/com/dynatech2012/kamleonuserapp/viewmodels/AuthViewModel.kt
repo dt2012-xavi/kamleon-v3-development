@@ -13,6 +13,11 @@ import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import com.dynatech2012.kamleonuserapp.repositories.UserProfileMissingException
+import com.dynatech2012.kamleonuserapp.security.PasswordLength
+import com.dynatech2012.kamleonuserapp.security.PasswordPolicy
+import com.dynatech2012.kamleonuserapp.security.PasswordPolicyReason
+import com.dynatech2012.kamleonuserapp.security.PasswordPolicyResult
+import com.dynatech2012.kamleonuserapp.security.PasswordStrength
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.google.firebase.firestore.Source
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -26,6 +31,7 @@ class AuthViewModel @Inject constructor(
     private val authRepo: UserRepository,
     private val firestoreRepo: FirestoreDataSource,
     private val cloudFuctions: CloudFunctions,
+    private val passwordPolicy: PasswordPolicy,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -123,15 +129,25 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    // Result of the last registration validation: 0/1 name missing, 2/3 email missing/invalid,
+    // 4 password too short, 5 too long, 7 too weak, 8 found in a breach, 6 all good, -3 session lost.
     private val _registerInputs = MutableLiveData(-1)
     val registerInputs: LiveData<Int> = _registerInputs
+
+    // True while the password policy (which may query the breach service) is being evaluated.
+    private val _registerChecking = MutableLiveData(false)
+    val registerChecking: LiveData<Boolean> = _registerChecking
 
     fun resetRegisterInputs() {
         _registerInputs.value = -1
     }
 
+    /** Live strength feedback for the password field. */
+    suspend fun passwordStrength(password: String): PasswordStrength = passwordPolicy.estimateStrength(password)
+
     fun checkRegisterInputs() {
         Timber.d("Validating registration inputs")
+        if (_registerChecking.value == true) return
         //check every input
         if (fName.isNullOrEmpty()) { //first name is empty or null
             _registerInputs.postValue(0)
@@ -150,16 +166,29 @@ class AuthViewModel @Inject constructor(
             _registerInputs.postValue(3)
             return
         }
-        // A signed-in account with no profile does not need a new password.
-        if (!recoveringProfile && (pass.isNullOrEmpty() || pass!!.length < 6)) {
-            _registerInputs.postValue(4)
+        if (recoveringProfile) {
+            // A signed-in account with no profile does not need a new password.
+            _registerInputs.value = if (!authRepo.checkLogged || authRepo.email != email) -3 else 6
             return
         }
-        if (recoveringProfile && (!authRepo.checkLogged || authRepo.email != email)) {
-            _registerInputs.value = -3
-            return
+        val password = pass.orEmpty()
+        _registerChecking.value = true
+        viewModelScope.launch {
+            val code = try {
+                when (val result = passwordPolicy.validate(password)) {
+                    PasswordPolicyResult.Valid -> 6
+                    is PasswordPolicyResult.Rejected -> when (result.reason) {
+                        PasswordPolicyReason.TOO_SHORT -> 4
+                        PasswordPolicyReason.TOO_LONG -> 5
+                        PasswordPolicyReason.WEAK -> 7
+                        PasswordPolicyReason.BREACHED -> 8
+                    }
+                }
+            } finally {
+                _registerChecking.value = false
+            }
+            _registerInputs.value = code
         }
-        _registerInputs.value = 6
     }
 
     fun notificationPermissionGranted() {

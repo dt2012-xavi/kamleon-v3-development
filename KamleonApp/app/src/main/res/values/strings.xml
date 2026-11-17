@@ -39,7 +39,15 @@
     <string name="signup_have_account">Do you already have an account?</string>
     <string name="signup_login"><u>Log in</u></string>
     <string name="signup_error_empty_fields">Please enter your first name and last name</string>
-    <string name="signup_error_password">Password must be at least 6 characters long</string>
+    <string name="password_hint">Use 8 or more letters, numbers and symbols</string>
+    <string name="password_strength_weak">Weak password</string>
+    <string name="password_strength_good">Good password</string>
+    <string name="password_strength_strong">Strong password</string>
+    <string name="password_error_too_short">Password must be at least 8 characters long</string>
+    <string name="password_error_too_long">Password must be 128 characters or fewer</string>
+    <string name="password_error_weak">This password is too easy to guess. Try a longer or less common one</string>
+    <string name="password_error_breached">This password has appeared in a data breach. Choose a different one</string>
+    <string name="pwd_error_same_as_current">The new password must be different from the current one</string>
     <string name="field_error_email_required">Enter your email</string>
     <string name="field_error_password_required">Enter your password</string>
     <string name="signup_error_first_name_required">Enter your first name</string>

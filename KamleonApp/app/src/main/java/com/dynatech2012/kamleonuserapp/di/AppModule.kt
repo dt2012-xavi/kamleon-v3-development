@@ -16,6 +16,9 @@ import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.MeasuresRepository
 import com.dynatech2012.kamleonuserapp.repositories.RealtimeDataSource
+import com.dynatech2012.kamleonuserapp.security.HibpPasswordBreachChecker
+import com.dynatech2012.kamleonuserapp.security.PasswordPolicy
+import com.dynatech2012.kamleonuserapp.security.ZxcvbnPasswordStrengthEstimator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -99,6 +102,11 @@ object AppModule {
             "AverageMonthReader"
         )
             .build()
+
+    @Provides
+    @Singleton
+    fun providePasswordPolicy(): PasswordPolicy =
+        PasswordPolicy(ZxcvbnPasswordStrengthEstimator(), HibpPasswordBreachChecker())
 
     @Provides
     @Singleton
