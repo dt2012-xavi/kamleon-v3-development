@@ -9,7 +9,8 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.navigation.findNavController
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseActivity
 import com.dynatech2012.kamleonuserapp.constants.Constants
@@ -26,10 +27,16 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     private var mainOpened = false
     private var resetRestoredFlow = false
 
+    // Ask the NavHostFragment, not the view: after process death onCreate runs before the
+    // container view has its NavController, and findNavController(viewId) throws there.
+    private val navController: NavController
+        get() = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment_init) as NavHostFragment)
+            .navController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         resetRestoredFlow = savedInstanceState != null && !viewModel.appInitializationStarted &&
-            findNavController(R.id.nav_host_fragment_init).currentDestination?.id != R.id.splashFragment
+            navController.currentDestination?.id != R.id.splashFragment
         handleIntent(intent)
         viewModel.splashDurationCompleted.observe(this) { completed ->
             if (completed == true) route(viewModel.startupState.value)
@@ -65,7 +72,6 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
 
     private fun route(state: AuthViewModel.StartupState?) {
         if (viewModel.splashDurationCompleted.value != true || mainOpened) return
-        val navController = findNavController(R.id.nav_host_fragment_init)
         when (state) {
             AuthViewModel.StartupState.Ready -> openMain()
             AuthViewModel.StartupState.NeedsLogin, AuthViewModel.StartupState.NeedsPolicy -> {
