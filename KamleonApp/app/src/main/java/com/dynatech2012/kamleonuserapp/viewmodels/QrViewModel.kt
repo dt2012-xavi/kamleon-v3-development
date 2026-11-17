@@ -65,7 +65,6 @@ class QrViewModel @Inject constructor(
             ContextCompat.getMainExecutor(appContext),
             analyzer
         )
-        DebugLog.d(TAG) { "qqqq1" }
         val ioDispatcher = Dispatchers.IO
         viewModelScope.launch(ioDispatcher) {
             analyzer.qrStingFlow.collect { qrString ->
@@ -102,13 +101,13 @@ class QrViewModel @Inject constructor(
     }
 
     fun stopAnalyzing() {
-        DebugLog.d(TAG) { "qqqq5 qrScanner: resetting qrString to null" }
+        DebugLog.d(TAG) { "QR analysis stopped" }
         analyzer.stopAnalyzing()
         //_qrString.value = null
     }
 
     fun startAnalyzing() {
-        DebugLog.d(TAG) { "qqqq5 qrScanner: resetting qrString to null" }
+        DebugLog.d(TAG) { "QR analysis started" }
         analyzer.startAnalyzing()
         //_qrString.value = null
     }

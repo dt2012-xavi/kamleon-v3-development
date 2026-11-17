@@ -52,38 +52,26 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "XXX init activity main")
         if (savedInstanceState == null) handleIntent(intent)
         initObservers()
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        Log.d(TAG, "XXX init activity main on new intent")
         setIntent(intent) // Update the intent
         handleIntent(intent)
     }
 
+    /** Uploads the scan that InitActivity passed on from a /scan link, if there is one. */
     private fun handleIntent(intent: Intent) {
-        DebugLog.d(TAG) { "XXX handleIntent called with action: ${intent.action}" }
-
-        //TODO get the logic 
-
         val unitId = intent.getStringExtra(Constants.SCAN_UNIT_ID)
         val sessionId = intent.getStringExtra(Constants.SCAN_SESSION_ID)
-        if (!unitId.isNullOrEmpty() && !sessionId.isNullOrEmpty()) {
-            intent.removeExtra(Constants.SCAN_UNIT_ID)
-            intent.removeExtra(Constants.SCAN_SESSION_ID)
-            DebugLog.d(TAG) { "Scan link received by main activity" }
-            // Use the parameters as needed
-            val qrResponse = QRResponse(
-                unitId = unitId,
-                sessionId = sessionId
-            )
-            qrViewModel.uploadQRtoFirestore(qrResponse)
-        } else {
-            DebugLog.d(TAG) { "XXX No unitId/sessionId in intent" }
-        }
+        if (unitId.isNullOrEmpty() || sessionId.isNullOrEmpty()) return
+        // Remove the extras so a recreated activity does not upload the same scan again.
+        intent.removeExtra(Constants.SCAN_UNIT_ID)
+        intent.removeExtra(Constants.SCAN_SESSION_ID)
+        DebugLog.d(TAG) { "Scan link received by main activity" }
+        qrViewModel.uploadQRtoFirestore(QRResponse(unitId = unitId, sessionId = sessionId))
     }
 
     override fun setBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -154,10 +142,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         qrViewModel.qrUploaded.observeEvent(this) { success ->
             if (success) {
-                Log.d(TAG, "QR Upload successful, showing popup.")
+                DebugLog.d(TAG) { "QR Upload successful, showing popup." }
                 showScannedDialog()
             } else {
-                Log.d(TAG, "QR Upload event received with false, or re-observed.")
+                DebugLog.d(TAG) { "QR Upload event received with false, or re-observed." }
                 Toast.makeText(this, "Processing QR...", Toast.LENGTH_SHORT).show()
             }
         }
@@ -282,7 +270,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "XXX init activity main on resume")
         LocalBroadcastManager.getInstance(this).registerReceiver(
             firebaseMessagingReceiver!!,
             IntentFilter(PUSH_NOTIFICATION)
