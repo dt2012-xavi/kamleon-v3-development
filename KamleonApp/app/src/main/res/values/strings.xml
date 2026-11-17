@@ -154,6 +154,8 @@
     <string name="setting_label_user_birthdate">DATE OF BIRTH</string>
 
     <string name="setting_label_noti">NOTIFICATIONS</string>
+    <string name="setting_noti_blocked_msg">Notifications are turned off for Kamleon in your phone\'s settings. Open them to turn notifications on.</string>
+    <string name="setting_noti_open_settings">Open settings</string>
     <string name="setting_label_analytics">ANALYTICS</string>
     <string name="setting_label_location">LOCATION</string>
     <string name="setting_label_awuta">ALLOW WHILE USING THE APP</string>

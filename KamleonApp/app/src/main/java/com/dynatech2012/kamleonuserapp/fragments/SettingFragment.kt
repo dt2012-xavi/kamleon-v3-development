@@ -1,6 +1,9 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import android.Manifest
 import android.content.Intent
+import android.os.Build
+import android.provider.Settings
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -8,7 +11,10 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -25,6 +31,7 @@ import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.Organization
 import com.dynatech2012.kamleonuserapp.repositories.Response
+import com.dynatech2012.kamleonuserapp.utils.notificationPermissionAsked
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
 import com.ozcanalasalvar.datepicker.view.datepicker.DateChangeListener
@@ -45,6 +52,19 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     private var isSettingAccount: Boolean = true
     private val viewModel: MainViewModel by activityViewModels()
     private var dataTypeToChange: String? = null
+
+    // What the profile says about notifications. The switch shows it only while the system also
+    // lets the app post notifications (see [refreshNotificationSwitch]).
+    private var notificationsEnabledInProfile = true
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            requireContext().notificationPermissionAsked = true
+            if (granted) {
+                notificationsEnabledInProfile = true
+                viewModel.updateNotificationStatus(true)
+            }
+            refreshNotificationSwitch()
+        }
     private val onDismissPickImage = object : BottomFragmentDismissListener {
         override fun onDismissFragment() {
 
@@ -304,9 +324,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
     override fun onSwitchChanged(menuView: SettingMenuItemView, isOn: Boolean) {
         when (menuView) {
-            binding.smNotiSwitch -> {
-                viewModel.updateNotificationStatus(isOn)
-            }
+            binding.smNotiSwitch -> onNotificationsSwitched(isOn)
         }
     }
 
@@ -456,8 +474,71 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         val formattedDate = localDate.format(formatter)
 
         binding.prefMenuItemBirth.setValue(formattedDate)
+        notificationsEnabledInProfile = userData.notifications["analytics"] ?: true
+        refreshNotificationSwitch()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // The user may have changed the permission in the system settings and come back.
+        refreshNotificationSwitch()
+    }
+
+    private val notificationsAllowedBySystem: Boolean
+        get() = NotificationManagerCompat.from(requireContext()).areNotificationsEnabled()
+
+    /** On only when the profile wants notifications and the system lets the app show them. */
+    private fun refreshNotificationSwitch() {
+        if (view == null) return
         binding.smNotiSwitch.getSwitchComp()?.isChecked =
-            userData.notifications["analytics"] ?: true
+            notificationsEnabledInProfile && notificationsAllowedBySystem
+    }
+
+    private fun onNotificationsSwitched(isOn: Boolean) {
+        if (!isOn) {
+            notificationsEnabledInProfile = false
+            viewModel.updateNotificationStatus(false)
+            return
+        }
+        if (notificationsAllowedBySystem) {
+            notificationsEnabledInProfile = true
+            viewModel.updateNotificationStatus(true)
+            return
+        }
+        // The system blocks notifications: the switch stays off until that changes.
+        refreshNotificationSwitch()
+        // Android 13+ can show the permission dialog, but stops doing so after the user has said
+        // no twice (or once, if it was refused from the system settings); then only the system
+        // settings can turn it back on.
+        val canAsk = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            (!requireContext().notificationPermissionAsked ||
+                shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS))
+        if (canAsk) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            showNotificationsBlockedDialog()
+        }
+    }
+
+    private fun showNotificationsBlockedDialog() {
+        val dialogView: View = layoutInflater.inflate(R.layout.layout_dialog_yn_delete, null)
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).setCancelable(false).show()
+        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        dialogView.findViewById<TextView>(R.id.tvDialogDesc).setText(R.string.setting_noti_blocked_msg)
+        dialogView.findViewById<TextView>(R.id.tvBtnY).apply {
+            setText(R.string.setting_noti_open_settings)
+            setOnClickListener {
+                dialog.dismiss()
+                startActivity(
+                    Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                        .putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
+                )
+            }
+        }
+        dialogView.findViewById<TextView>(R.id.tvBtnN).apply {
+            setText(R.string.dialog_deactive_n)
+            setOnClickListener { dialog.dismiss() }
+        }
     }
 
     private fun onUserProfilesChanged(organizations: ArrayList<Organization>) {
