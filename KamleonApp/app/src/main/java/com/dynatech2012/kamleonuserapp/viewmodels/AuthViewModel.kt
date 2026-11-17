@@ -349,7 +349,11 @@ class AuthViewModel @Inject constructor(
         _startupState.value = StartupState.Checking
         viewModelScope.launch(Dispatchers.IO) {
             val authenticated = authRepo.checkLogged
-            val profile = if (authenticated) firestoreRepo.getUserData(Source.SERVER) else null
+            val profile = if (authenticated) {
+                profileOrTimeout(PROFILE_CHECK_TIMEOUT_MS) { firestoreRepo.getUserData(Source.SERVER) }
+            } else {
+                null
+            }
             val state = startupStateFor(authenticated, authRepo.isEmailVerified, profile)
             if (request == startupCheck) {
                 val flags = registrationFlagsAfterCheck(

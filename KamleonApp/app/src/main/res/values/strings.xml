@@ -64,6 +64,8 @@
     <string name="signup_error_server_error">There was a problem with the signup, please try again</string>
     <string name="signup_complete_profile">Complete profile</string>
     <string name="startup_network_error">Could not load your account. Check your connection and try again.</string>
+    <string name="startup_error_title">We couldn’t load your account</string>
+    <string name="startup_error_message">Check your connection and try again.</string>
     <string name="retry">Retry</string>
     <string name="verification_email_sent">Verification email sent. Check your inbox.</string>
 

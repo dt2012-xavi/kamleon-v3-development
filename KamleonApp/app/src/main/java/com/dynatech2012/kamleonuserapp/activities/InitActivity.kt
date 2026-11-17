@@ -9,6 +9,7 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.dynatech2012.kamleonuserapp.R
@@ -17,8 +18,13 @@ import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityInitBinding
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import com.dynatech2012.kamleonuserapp.utils.notificationPermissionAsked
-import com.google.android.material.snackbar.Snackbar
+import com.dynatech2012.kamleonuserapp.views.SheetResult
+import com.dynatech2012.kamleonuserapp.views.SheetSpec
+import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
+import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -95,12 +101,33 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             }
             AuthViewModel.StartupState.RetryableError -> {
                 if (resetRestoredFlow || navController.currentDestination?.id == R.id.splashFragment) {
-                    Snackbar.make(binding.root, R.string.startup_network_error, Snackbar.LENGTH_INDEFINITE)
-                        .setAction(R.string.retry) { viewModel.checkLogin() }
-                        .show()
+                    showStartupErrorSheet()
                 }
             }
             else -> Unit
+        }
+    }
+
+    /** The account could not be loaded: the only way on is to try again, so the sheet is not dismissible. */
+    private fun showStartupErrorSheet() {
+        supportFragmentManager.showKamleonSheet(
+            STARTUP_ERROR_SHEET,
+            SheetSpec(
+                title = getString(R.string.startup_error_title),
+                message = getString(R.string.startup_error_message),
+                primary = getString(R.string.retry),
+                dismissible = false
+            )
+        )
+    }
+
+    private fun retryStartupCheck() {
+        lifecycleScope.launch {
+            // showKamleonSheet ignores a sheet that is still on screen, and this one takes a moment
+            // to close: a failure that comes back at once would leave no message at all. The pause
+            // also makes the retry visible (the logo keeps playing) instead of a flicker.
+            delay(RETRY_FEEDBACK_MS)
+            viewModel.checkLogin()
         }
     }
 
@@ -146,7 +173,13 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
         supportFragmentManager.setFragmentResultListener(Constants.GRANT_NOTIFICATION, this) { _, bundle ->
             if (bundle.getBoolean(Constants.GRANT_NOTIFICATION_BUNDLE)) askNotificationPermission()
         }
+        onKamleonSheetResult(STARTUP_ERROR_SHEET) { if (it == SheetResult.PRIMARY) retryStartupCheck() }
     }
 
     override fun initEvent() {}
+
+    private companion object {
+        const val STARTUP_ERROR_SHEET = "startup_error"
+        const val RETRY_FEEDBACK_MS = 600L
+    }
 }
