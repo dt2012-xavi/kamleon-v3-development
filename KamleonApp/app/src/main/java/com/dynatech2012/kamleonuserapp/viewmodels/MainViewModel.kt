@@ -29,6 +29,7 @@ import com.dynatech2012.kamleonuserapp.repositories.DatabaseDataSource
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.MeasuresRepository
 import com.dynatech2012.kamleonuserapp.repositories.RealtimeDataSource
+import com.dynatech2012.kamleonuserapp.repositories.SessionCleaner
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import com.dynatech2012.kamleonuserapp.security.PasswordPolicy
@@ -54,7 +55,8 @@ class MainViewModel @Inject constructor(
     private val databaseRepository: DatabaseDataSource,
     private val realtime: RealtimeDataSource,
     private val cloudFunctions: CloudFunctions,
-    private val passwordPolicy: PasswordPolicy
+    private val passwordPolicy: PasswordPolicy,
+    private val sessionCleaner: SessionCleaner
 ) : ViewModel() {
 
     var graphicType: Int = -1
@@ -164,9 +166,7 @@ class MainViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch(Dispatchers.IO) {
-            firestoreRepo.deleteToken()
-            databaseRepository.deleteAllMeasures()
-            SharedPrefUtil(appContext).removeUser()
+            sessionCleaner.clearLocalData()
             //measuresRepository.closeChannels()
             withContext(Dispatchers.Main) {
                 userRepository.logoutStatus.observeForever() {

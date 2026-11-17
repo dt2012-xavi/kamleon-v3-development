@@ -66,6 +66,14 @@
     <string name="startup_network_error">Could not load your account. Check your connection and try again.</string>
     <string name="startup_error_title">We couldn’t load your account</string>
     <string name="startup_error_message">Check your connection and try again.</string>
+    <string name="login_error_title_generic">Couldn’t sign in</string>
+    <string name="login_error_title_network">No connection</string>
+    <string name="login_error_title_too_many">Too many attempts</string>
+    <string name="login_error_message_too_many">Wait a few minutes and try again.</string>
+    <string name="login_error_title_disabled">Account disabled</string>
+    <string name="login_error_message_disabled">Your account has been disabled. Contact your organization or Kamleon support to recover access.</string>
+    <string name="login_account_rejected_title">We couldn’t open your account</string>
+    <string name="login_account_rejected_message">Your account can’t be accessed right now. Contact your organization or Kamleon support if this keeps happening.</string>
     <string name="retry">Retry</string>
     <string name="verification_email_sent">Verification email sent. Check your inbox.</string>
 

@@ -21,6 +21,7 @@ import com.dynatech2012.kamleonuserapp.activities.InitActivity
 import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.constants.UrlConstants
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
+import com.dynatech2012.kamleonuserapp.viewmodels.LoginState
 import com.dynatech2012.kamleonuserapp.views.SheetResult
 import com.dynatech2012.kamleonuserapp.views.SheetSpec
 import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
@@ -70,6 +71,15 @@ class LoginFragment : Fragment() {
             }
         }
         onKamleonSheetResult("login_verify") { if (it == SheetResult.SECONDARY) viewModel.sendVerificationEmail() }
+        // Signed in, but the profile is refused: staying signed in would bring the user back here.
+        onKamleonSheetResult("login_account_rejected") { if (it == SheetResult.PRIMARY) viewModel.logOut() }
+        onKamleonSheetResult("login_profile_retry") {
+            when (it) {
+                SheetResult.PRIMARY -> viewModel.retryProfileAfterLogin()
+                SheetResult.SECONDARY -> viewModel.logOut()
+                SheetResult.DISMISSED -> Unit
+            }
+        }
         onKamleonSheetResult("login_policy") {
             when (it) {
                 SheetResult.PRIMARY -> viewModel.acceptPolicy()
@@ -84,7 +94,9 @@ class LoginFragment : Fragment() {
         when (state) {
             in Int.MIN_VALUE..-1 -> {
                 showReadyDialog(state)
-                if (state == -7) viewModel.resetUiState()
+                // These sheets lead somewhere on their own: the state must not replay them when the
+                // view is recreated.
+                if (state in STATES_SHOWN_ONCE) viewModel.resetUiState()
             }
             3 -> Snackbar.make(requireView(), R.string.verification_email_sent, Snackbar.LENGTH_SHORT).show()
             5 -> Timber.d("Registration step completed; login available")
@@ -100,26 +112,65 @@ class LoginFragment : Fragment() {
     }
 
     private fun showReadyDialog(errorType: Int) {
-        if (errorType == -5) {
-            showVerificationDialog()
-            return
+        when (errorType) {
+            LoginState.EMAIL_NOT_VERIFIED -> showVerificationDialog()
+            LoginState.ACCOUNT_REJECTED -> showAccountRejectedDialog()
+            LoginState.PROFILE_RETRY -> showProfileRetryDialog()
+            else -> showLoginErrorDialog(errorType)
+        }
+    }
+
+    /** A failed sign-in: no session exists, so the user only needs to know what went wrong. */
+    private fun showLoginErrorDialog(errorType: Int) {
+        val (title, message) = when (errorType) {
+            LoginState.ACCOUNT_EXISTS ->
+                R.string.signup_existing_account_title to R.string.signup_existing_account_message
+            LoginState.NETWORK -> R.string.login_error_title_network to R.string.startup_error_message
+            LoginState.TOO_MANY_ATTEMPTS ->
+                R.string.login_error_title_too_many to R.string.login_error_message_too_many
+            LoginState.ACCOUNT_DISABLED ->
+                R.string.login_error_title_disabled to R.string.login_error_message_disabled
+            LoginState.INVALID_EMAIL ->
+                R.string.login_alert_title_login_error to R.string.login_alert_description_not_valid_email
+            LoginState.USER_NOT_FOUND ->
+                R.string.login_error_title_generic to R.string.login_alert_description_user_not_found
+            LoginState.WRONG_PASSWORD ->
+                R.string.login_error_title_generic to R.string.login_alert_description_wrong_pass
+            else -> R.string.login_error_title_generic to R.string.login_alert_description_login_error_unknown
         }
         childFragmentManager.showKamleonSheet(
             "login_error",
             SheetSpec(
-                title = getString(
-                    if (errorType == -7) R.string.signup_existing_account_title else R.string.login_alert_title_login_error
-                ),
-                message = when (errorType) {
-                    -7 -> getString(R.string.signup_existing_account_message)
-                    -6 -> getString(R.string.startup_network_error)
-                    -4 -> getString(R.string.login_alert_description_not_valid_email)
-                    -3 -> getString(R.string.login_alert_description_user_not_found)
-                    -2 -> getString(R.string.login_alert_description_wrong_pass)
-                    -1 -> getString(R.string.login_alert_description_login_error_unknown)
-                    else -> ""
-                },
+                title = getString(title),
+                message = getString(message),
                 primary = getString(R.string.dialog_ok)
+            )
+        )
+    }
+
+    /** Signed in, but the server refuses the profile and retrying cannot help: leave cleanly. */
+    private fun showAccountRejectedDialog() {
+        childFragmentManager.showKamleonSheet(
+            "login_account_rejected",
+            SheetSpec(
+                title = getString(R.string.login_account_rejected_title),
+                message = getString(R.string.login_account_rejected_message),
+                primary = getString(R.string.dialog_ok),
+                dismissible = false
+            )
+        )
+    }
+
+    /** Signed in a moment ago, so there is network: the profile may load on a second try, or the user can leave. */
+    private fun showProfileRetryDialog() {
+        childFragmentManager.showKamleonSheet(
+            "login_profile_retry",
+            SheetSpec(
+                title = getString(R.string.startup_error_title),
+                message = getString(R.string.startup_error_message),
+                primary = getString(R.string.retry),
+                secondary = getString(R.string.dialog_logout_y),
+                dismissible = false
             )
         )
     }
@@ -148,6 +199,16 @@ class LoginFragment : Fragment() {
                 dismissible = false,
                 linkUrl = UrlConstants.URL_POLICY_APP
             )
+        )
+    }
+
+    private companion object {
+        val STATES_SHOWN_ONCE = setOf(
+            LoginState.ACCOUNT_EXISTS,
+            LoginState.ACCOUNT_DISABLED,
+            LoginState.TOO_MANY_ATTEMPTS,
+            LoginState.ACCOUNT_REJECTED,
+            LoginState.PROFILE_RETRY
         )
     }
 }

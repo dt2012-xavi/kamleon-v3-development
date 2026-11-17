@@ -12,8 +12,9 @@ import androidx.lifecycle.viewModelScope
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
+import com.dynatech2012.kamleonuserapp.repositories.Response
+import com.dynatech2012.kamleonuserapp.repositories.SessionCleaner
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
-import com.dynatech2012.kamleonuserapp.repositories.UserProfileMissingException
 import com.dynatech2012.kamleonuserapp.security.PasswordLength
 import com.dynatech2012.kamleonuserapp.security.PasswordPolicy
 import com.dynatech2012.kamleonuserapp.security.PasswordPolicyReason
@@ -33,6 +34,7 @@ class AuthViewModel @Inject constructor(
     private val firestoreRepo: FirestoreDataSource,
     private val cloudFuctions: CloudFunctions,
     private val passwordPolicy: PasswordPolicy,
+    private val sessionCleaner: SessionCleaner,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -283,9 +285,8 @@ class AuthViewModel @Inject constructor(
     fun acceptPolicy() {
         viewModelScope.launch(Dispatchers.IO) {
             val policyResponse = firestoreRepo.updateLegal(false, true, false)
-            if (policyResponse.isSuccess) {
-                _uiState.postValue(7)
-            }
+            // Without an answer on failure the sign-in button kept spinning for ever.
+            _uiState.postValue(if (policyResponse.isSuccess) 7 else LoginState.NETWORK)
         }
     }
 
@@ -301,49 +302,58 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val authResult = authRepo.login(email, pass)
             if (authResult.isSuccess && authResult.dataValue != null) {
-                when (val userResponse = firestoreRepo.getUserData(Source.SERVER)) {
-                    is com.dynatech2012.kamleonuserapp.repositories.Response.Success -> {
-                        fName = userResponse.data.name
-                        lName = userResponse.data.lastName
-                        _uiState.postValue(
-                            if (!authRepo.isEmailVerified) -5
-                            else if (userResponse.data.legal.privacyPolicyApp) 7
-                            else 6
-                        )
-                    }
-                    is com.dynatech2012.kamleonuserapp.repositories.Response.Failure -> {
-                        if (userResponse.exception is UserProfileMissingException) {
-                            recoveringProfile = true
-                            _uiState.postValue(8)
-                        } else {
-                            _uiState.postValue(-6)
-                        }
-                    }
-                    else -> _uiState.postValue(-6)
-                }
-            }
-            else if (authResult.isFailure) {
-                when (val e = authResult.error) {
-                    is com.google.firebase.auth.FirebaseAuthInvalidUserException -> {
-                        // user invalid
-                        Timber.w("Login failed: user invalid")
-                        _uiState.postValue(-3)
-                    }
-
-                    is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> {
-                        // Pass wrong
-                        Timber.w("Login failed: credentials invalid")
-                        _uiState.postValue(-2)
-                    }
-
-                    else -> {
-                        Timber.w("Login failed: %s", e?.javaClass?.simpleName ?: "Unknown")
-                        _uiState.postValue(-1)
-                    }
-                }
+                loadProfileAfterSignIn()
+            } else if (authResult.isFailure) {
+                val kind = authErrorKindOf(authResult.error)
+                Timber.w("Login failed: %s", kind)
+                _uiState.postValue(loginStateFor(kind))
             } else {
                 _uiState.postValue(0)
             }
+        }
+    }
+
+    /** The user signed in: read their profile and say where they go next. */
+    private suspend fun loadProfileAfterSignIn() {
+        val profile = profileOrTimeout(PROFILE_CHECK_TIMEOUT_MS) { firestoreRepo.getUserData(Source.SERVER) }
+        when (profile) {
+            is Response.Success -> {
+                fName = profile.data.name
+                lName = profile.data.lastName
+                _uiState.postValue(
+                    if (!authRepo.isEmailVerified) LoginState.EMAIL_NOT_VERIFIED
+                    else if (profile.data.legal.privacyPolicyApp) 7
+                    else 6
+                )
+            }
+            is Response.Failure -> {
+                val state = loginStateForProfileFailure(profile.exception)
+                Timber.w("Profile after sign-in not available: %s", state)
+                if (state == LoginState.PROFILE_MISSING) recoveringProfile = true
+                _uiState.postValue(state)
+            }
+            else -> _uiState.postValue(LoginState.PROFILE_RETRY)
+        }
+    }
+
+    /** Another try at the profile after a sign-in that worked: no need to type the password again. */
+    fun retryProfileAfterLogin() {
+        _uiState.value = 1
+        viewModelScope.launch(Dispatchers.IO) { loadProfileAfterSignIn() }
+    }
+
+    /**
+     * Ends the session and wipes what belongs to the user on this phone; the login screen, where
+     * they already are, shows the progress. Used when staying signed in makes no sense.
+     */
+    fun logOut() {
+        _uiState.value = 1
+        viewModelScope.launch(Dispatchers.IO) {
+            sessionCleaner.clearLocalData()
+            authRepo.signOutSuspend()
+            fName = ""
+            lName = ""
+            _uiState.postValue(0)
         }
     }
 
