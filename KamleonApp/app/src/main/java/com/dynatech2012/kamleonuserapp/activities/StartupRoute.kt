@@ -10,6 +10,7 @@ internal sealed interface StartupAction {
     data object None : StartupAction
     data object OpenMain : StartupAction
     data object ShowError : StartupAction
+    data object ShowServerError : StartupAction
     data class GoTo(val screen: StartupScreen) : StartupAction
 }
 
@@ -45,6 +46,10 @@ internal fun startupRouteFor(
         // The restored flow stays on: the user still has to get past the error.
         StartupState.RetryableError ->
             if (fromSplash) StartupRoute(StartupAction.ShowError) else StartupRoute(StartupAction.None)
+
+        // Same places as the network error, with a sheet that also offers to log out.
+        StartupState.ServerError ->
+            if (fromSplash) StartupRoute(StartupAction.ShowServerError) else StartupRoute(StartupAction.None)
 
         StartupState.Checking, null -> StartupRoute(StartupAction.None)
     }

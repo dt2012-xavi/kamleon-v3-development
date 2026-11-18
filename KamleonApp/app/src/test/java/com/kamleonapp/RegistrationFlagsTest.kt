@@ -25,6 +25,13 @@ class RegistrationFlagsTest {
         )
     }
 
+    @Test fun aServerErrorKeepsTheRegistrationStateToo() {
+        assertEquals(
+            midRegistration,
+            registrationFlagsAfterCheck(authenticated = true, StartupState.ServerError, midRegistration)
+        )
+    }
+
     @Test fun missingProfileStartsRecovery() {
         assertEquals(
             RegistrationFlags(recoveringProfile = true, profileCreated = false),

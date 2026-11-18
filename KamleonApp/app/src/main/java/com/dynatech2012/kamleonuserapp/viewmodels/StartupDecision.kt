@@ -3,8 +3,10 @@ package com.dynatech2012.kamleonuserapp.viewmodels
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserProfileMissingException
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.firestore.FirebaseFirestoreException
+import java.io.IOException
 import java.util.concurrent.TimeoutException
 import kotlinx.coroutines.withTimeoutOrNull
 
@@ -21,11 +23,31 @@ internal fun isSessionRejected(e: Exception): Boolean = when (e) {
     else -> false
 }
 
+/**
+ * The profile could not be read because of the network or a busy server, which a new attempt can
+ * fix. Anything else (an internal error, a profile that cannot be parsed) may never go away by
+ * retrying, so it also offers a logout. Codes are matched inside the function, not in a constant,
+ * because Firestore's enum needs real Android classes to load.
+ */
+internal fun isTransientFailure(e: Exception): Boolean = when (e) {
+    is TimeoutException, is IOException, is FirebaseNetworkException -> true
+    is FirebaseFirestoreException -> when (e.code) {
+        FirebaseFirestoreException.Code.UNAVAILABLE,
+        FirebaseFirestoreException.Code.DEADLINE_EXCEEDED,
+        FirebaseFirestoreException.Code.ABORTED,
+        FirebaseFirestoreException.Code.RESOURCE_EXHAUSTED,
+        FirebaseFirestoreException.Code.CANCELLED -> true
+        else -> false
+    }
+    else -> false
+}
+
 internal fun startupStateFor(
     authenticated: Boolean,
     verified: Boolean,
     profile: Response<CustomUser>?,
-    sessionRejected: (Exception) -> Boolean = ::isSessionRejected
+    sessionRejected: (Exception) -> Boolean = ::isSessionRejected,
+    transient: (Exception) -> Boolean = ::isTransientFailure
 ): AuthViewModel.StartupState {
     if (!authenticated) return AuthViewModel.StartupState.NeedsLogin
     return when (profile) {
@@ -37,7 +59,8 @@ internal fun startupStateFor(
         is Response.Failure -> when {
             profile.exception is UserProfileMissingException -> AuthViewModel.StartupState.NeedsProfile
             sessionRejected(profile.exception) -> AuthViewModel.StartupState.NeedsLogin
-            else -> AuthViewModel.StartupState.RetryableError
+            transient(profile.exception) -> AuthViewModel.StartupState.RetryableError
+            else -> AuthViewModel.StartupState.ServerError
         }
         else -> AuthViewModel.StartupState.RetryableError
     }
@@ -58,7 +81,7 @@ internal fun registrationFlagsAfterCheck(
     current: RegistrationFlags
 ): RegistrationFlags = when {
     state == AuthViewModel.StartupState.NeedsProfile -> RegistrationFlags(recoveringProfile = true, profileCreated = false)
-    state == AuthViewModel.StartupState.RetryableError -> current
+    state == AuthViewModel.StartupState.RetryableError || state == AuthViewModel.StartupState.ServerError -> current
     authenticated && state == AuthViewModel.StartupState.NeedsLogin -> current
     else -> RegistrationFlags(recoveringProfile = false, profileCreated = false)
 }

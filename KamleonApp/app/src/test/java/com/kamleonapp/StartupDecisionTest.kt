@@ -24,7 +24,7 @@ class StartupDecisionTest {
     @Test fun networkFailureIsRetryable() {
         assertEquals(
             AuthViewModel.StartupState.RetryableError,
-            startupStateFor(true, true, Response.Failure(Exception("offline")))
+            startupStateFor(true, true, Response.Failure(java.io.IOException("offline")))
         )
     }
 

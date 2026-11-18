@@ -29,10 +29,26 @@ class StartupFailureTest {
         assertEquals(StartupState.NeedsLogin, stateAfter(Refused()))
     }
 
-    @Test fun anythingElseIsRetryable() {
+    @Test fun networkTroubleIsRetryable() {
         assertEquals(StartupState.RetryableError, stateAfter(TimeoutException("slow")))
         assertEquals(StartupState.RetryableError, stateAfter(IOException("offline")))
-        assertEquals(StartupState.RetryableError, stateAfter(Exception("unknown")))
+    }
+
+    @Test fun aPersistentFailureThatIsNotTheNetworkOffersALogoutToo() {
+        // The server answered, or the profile cannot be read: retrying alone may never get out of it.
+        assertEquals(StartupState.ServerError, stateAfter(Exception("unknown")))
+        assertEquals(StartupState.ServerError, stateAfter(IllegalStateException("User profile could not be parsed")))
+    }
+
+    @Test fun anInjectedClassifierDecidesWhatIsTransient() {
+        val state = startupStateFor(
+            authenticated = true,
+            verified = true,
+            profile = Response.Failure(Exception("x")),
+            sessionRejected = { false },
+            transient = { true }
+        )
+        assertEquals(StartupState.RetryableError, state)
     }
 
     @Test fun aMissingProfileIsStillRecoveredNotTreatedAsRefusal() {
@@ -44,9 +60,9 @@ class StartupFailureTest {
         assertEquals(StartupState.NeedsLogin, startupStateFor(false, false, null))
     }
 
-    @Test fun theDefaultClassifierTreatsPlainErrorsAsRetryable() {
+    @Test fun theDefaultClassifierTreatsPlainNetworkErrorsAsRetryable() {
         // No Firebase classes involved: these are what a bad network produces.
-        listOf(TimeoutException("slow"), IOException("offline"), Exception("unknown")).forEach {
+        listOf(TimeoutException("slow"), IOException("offline")).forEach {
             assertEquals(
                 StartupState.RetryableError,
                 startupStateFor(authenticated = true, verified = true, profile = Response.Failure(it))

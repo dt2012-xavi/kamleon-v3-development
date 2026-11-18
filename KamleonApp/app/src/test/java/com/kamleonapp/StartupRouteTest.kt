@@ -83,6 +83,15 @@ class StartupRouteTest {
         )
     }
 
+    @Test fun aServerErrorIsShownWhereANetworkErrorIs_withItsOwnSheet() {
+        val showServerError = StartupRoute(StartupAction.ShowServerError)
+        assertEquals(showServerError, route(StartupState.ServerError, StartupScreen.Splash))
+        assertEquals(showServerError, route(StartupState.ServerError, StartupScreen.Login, restored = true))
+        listOf(StartupScreen.Login, StartupScreen.Register, StartupScreen.Other).forEach { screen ->
+            assertEquals(none, route(StartupState.ServerError, screen))
+        }
+    }
+
     @Test fun errorIsShownOnTheSplashOrInARestoredFlowOnly() {
         val showError = StartupRoute(StartupAction.ShowError)
         assertEquals(showError, route(StartupState.RetryableError, StartupScreen.Splash))

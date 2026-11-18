@@ -85,6 +85,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             StartupAction.None -> Unit
             StartupAction.OpenMain -> openMain()
             StartupAction.ShowError -> showStartupErrorSheet()
+            StartupAction.ShowServerError -> showStartupServerErrorSheet()
             is StartupAction.GoTo -> navController.navigate(
                 if (action.screen == StartupScreen.Register) R.id.action_global_registerFragment
                 else R.id.action_global_loginFragment
@@ -107,6 +108,24 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
                 title = getString(R.string.startup_error_title),
                 message = getString(R.string.startup_error_message),
                 primary = getString(R.string.retry),
+                dismissible = false
+            )
+        )
+    }
+
+    /**
+     * The account could not be loaded for a reason that is not the network, so retrying may never be
+     * enough: the user can also log out (which wipes this phone's data) and sign in again. The
+     * server answered, so there is network for that.
+     */
+    private fun showStartupServerErrorSheet() {
+        supportFragmentManager.showKamleonSheet(
+            STARTUP_SERVER_ERROR_SHEET,
+            SheetSpec(
+                title = getString(R.string.startup_server_error_title),
+                message = getString(R.string.startup_server_error_message),
+                primary = getString(R.string.retry),
+                secondary = getString(R.string.dialog_logout_y),
                 dismissible = false
             )
         )
@@ -165,12 +184,20 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             if (bundle.getBoolean(Constants.GRANT_NOTIFICATION_BUNDLE)) askNotificationPermission()
         }
         onKamleonSheetResult(STARTUP_ERROR_SHEET) { if (it == SheetResult.PRIMARY) retryStartupCheck() }
+        onKamleonSheetResult(STARTUP_SERVER_ERROR_SHEET) {
+            when (it) {
+                SheetResult.PRIMARY -> retryStartupCheck()
+                SheetResult.SECONDARY -> viewModel.logOut(restartStartupCheck = true)
+                SheetResult.DISMISSED -> Unit
+            }
+        }
     }
 
     override fun initEvent() {}
 
     private companion object {
         const val STARTUP_ERROR_SHEET = "startup_error"
+        const val STARTUP_SERVER_ERROR_SHEET = "startup_server_error"
         const val RETRY_FEEDBACK_MS = 600L
     }
 }

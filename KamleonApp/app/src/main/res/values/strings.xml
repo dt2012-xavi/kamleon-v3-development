@@ -66,6 +66,8 @@
     <string name="startup_network_error">Could not load your account. Check your connection and try again.</string>
     <string name="startup_error_title">We couldn’t load your account</string>
     <string name="startup_error_message">Check your connection and try again.</string>
+    <string name="startup_server_error_title">Something went wrong</string>
+    <string name="startup_server_error_message">We couldn’t load your account because of a problem on our side. You can try again, or log out and sign in again. Logging out clears the data stored on this phone.</string>
     <string name="login_error_title_generic">Couldn’t sign in</string>
     <string name="login_error_title_network">No connection</string>
     <string name="login_error_title_too_many">Too many attempts</string>

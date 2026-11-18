@@ -25,6 +25,7 @@ import com.google.firebase.firestore.Source
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Date
 import javax.inject.Inject
 
@@ -38,7 +39,7 @@ class AuthViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    enum class StartupState { Checking, NeedsLogin, NeedsProfile, NeedsPolicy, Ready, RetryableError }
+    enum class StartupState { Checking, NeedsLogin, NeedsProfile, NeedsPolicy, Ready, RetryableError, ServerError }
 
     private val _startupState = MutableLiveData(StartupState.Checking)
     val startupState: LiveData<StartupState> = _startupState
@@ -345,8 +346,9 @@ class AuthViewModel @Inject constructor(
     /**
      * Ends the session and wipes what belongs to the user on this phone; the login screen, where
      * they already are, shows the progress. Used when staying signed in makes no sense.
+     * [restartStartupCheck]: from the splash, check again once signed out so that it leads to Login.
      */
-    fun logOut() {
+    fun logOut(restartStartupCheck: Boolean = false) {
         _uiState.value = 1
         viewModelScope.launch(Dispatchers.IO) {
             sessionCleaner.clearLocalData()
@@ -354,6 +356,8 @@ class AuthViewModel @Inject constructor(
             fName = ""
             lName = ""
             _uiState.postValue(0)
+            // checkLogin() sets LiveData values, which must happen on the main thread.
+            if (restartStartupCheck) withContext(Dispatchers.Main) { checkLogin() }
         }
     }
 

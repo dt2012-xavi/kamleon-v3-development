@@ -39,11 +39,20 @@ class SessionRejectedTest {
         )
     }
 
-    @Test fun everyOtherFirestoreCodeIsRetryable() {
-        Code.values()
-            .filter { it != Code.OK && it != Code.PERMISSION_DENIED && it != Code.UNAUTHENTICATED }
+    @Test fun networkAndBusyServerCodesAreRetryable() {
+        listOf(Code.UNAVAILABLE, Code.DEADLINE_EXCEEDED, Code.ABORTED, Code.RESOURCE_EXHAUSTED, Code.CANCELLED)
             .forEach {
                 assertEquals(it.name, StartupState.RetryableError, stateAfter(FirebaseFirestoreException("test", it)))
             }
+    }
+
+    @Test fun everyOtherCodeOffersALogoutToo() {
+        val handled = setOf(
+            Code.OK, Code.PERMISSION_DENIED, Code.UNAUTHENTICATED,
+            Code.UNAVAILABLE, Code.DEADLINE_EXCEEDED, Code.ABORTED, Code.RESOURCE_EXHAUSTED, Code.CANCELLED
+        )
+        Code.values().filter { it !in handled }.forEach {
+            assertEquals(it.name, StartupState.ServerError, stateAfter(FirebaseFirestoreException("test", it)))
+        }
     }
 }
