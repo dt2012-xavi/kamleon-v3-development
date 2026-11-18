@@ -12,9 +12,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.InitActivity
@@ -28,6 +28,8 @@ import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
 import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -75,7 +77,14 @@ class LoginFragment : Fragment() {
         onKamleonSheetResult("login_account_rejected") { if (it == SheetResult.PRIMARY) viewModel.logOut() }
         onKamleonSheetResult("login_profile_retry") {
             when (it) {
-                SheetResult.PRIMARY -> viewModel.retryProfileAfterLogin()
+                SheetResult.PRIMARY -> retryAfterSheetCloses { viewModel.retryProfileAfterLogin() }
+                SheetResult.SECONDARY -> viewModel.logOut()
+                SheetResult.DISMISSED -> Unit
+            }
+        }
+        onKamleonSheetResult("login_policy_retry") {
+            when (it) {
+                SheetResult.PRIMARY -> retryAfterSheetCloses { viewModel.acceptPolicy() }
                 SheetResult.SECONDARY -> viewModel.logOut()
                 SheetResult.DISMISSED -> Unit
             }
@@ -83,11 +92,24 @@ class LoginFragment : Fragment() {
         onKamleonSheetResult("login_policy") {
             when (it) {
                 SheetResult.PRIMARY -> viewModel.acceptPolicy()
-                SheetResult.SECONDARY -> ActivityCompat.finishAffinity(requireActivity())
+                // Refusing means this account cannot be used: leave it clean instead of a button that closes the app.
+                SheetResult.SECONDARY -> viewModel.logOut()
                 SheetResult.DISMISSED -> Unit
             }
         }
         viewModel.uiState.observe(viewLifecycleOwner, this::handleState)
+    }
+
+    /**
+     * showKamleonSheet ignores a sheet whose tag is still on screen, and a sheet takes a moment to
+     * close: a retry that fails at once would come back with no message at all. The pause also makes
+     * the retry visible instead of a flicker.
+     */
+    private fun retryAfterSheetCloses(retry: () -> Unit) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(RETRY_FEEDBACK_MS)
+            retry()
+        }
     }
 
     private fun handleState(state: Int) {
@@ -116,6 +138,7 @@ class LoginFragment : Fragment() {
             LoginState.EMAIL_NOT_VERIFIED -> showVerificationDialog()
             LoginState.ACCOUNT_REJECTED -> showAccountRejectedDialog()
             LoginState.PROFILE_RETRY -> showProfileRetryDialog()
+            LoginState.POLICY_RETRY -> showPolicyRetryDialog()
             else -> showLoginErrorDialog(errorType)
         }
     }
@@ -180,6 +203,20 @@ class LoginFragment : Fragment() {
         )
     }
 
+    /** The answer could not be saved: try again, or log out. There is no way to continue without it. */
+    private fun showPolicyRetryDialog() {
+        childFragmentManager.showKamleonSheet(
+            "login_policy_retry",
+            SheetSpec(
+                title = getString(R.string.policy_retry_title),
+                message = getString(R.string.policy_retry_message),
+                primary = getString(R.string.retry),
+                secondary = getString(R.string.dialog_logout_y),
+                dismissible = false
+            )
+        )
+    }
+
     private fun showVerificationDialog() {
         childFragmentManager.showKamleonSheet(
             "login_verify",
@@ -208,12 +245,14 @@ class LoginFragment : Fragment() {
     }
 
     private companion object {
+        const val RETRY_FEEDBACK_MS = 600L
         val STATES_SHOWN_ONCE = setOf(
             LoginState.ACCOUNT_EXISTS,
             LoginState.ACCOUNT_DISABLED,
             LoginState.TOO_MANY_ATTEMPTS,
             LoginState.ACCOUNT_REJECTED,
-            LoginState.PROFILE_RETRY
+            LoginState.PROFILE_RETRY,
+            LoginState.POLICY_RETRY
         )
     }
 }

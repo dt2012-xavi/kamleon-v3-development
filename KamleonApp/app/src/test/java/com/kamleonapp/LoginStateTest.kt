@@ -34,7 +34,8 @@ class LoginStateTest {
             LoginState.ACCOUNT_DISABLED,
             LoginState.TOO_MANY_ATTEMPTS,
             LoginState.ACCOUNT_REJECTED,
-            LoginState.PROFILE_RETRY
+            LoginState.PROFILE_RETRY,
+            LoginState.POLICY_RETRY
         ).forEach { assertEquals(it.toString(), false, it in inUse) }
     }
 

@@ -53,14 +53,18 @@ class StartupRouteTest {
         )
     }
 
-    @Test fun pendingPolicyIsRoutedLikeSignedOut() {
+    @Test fun pendingPolicyIsShownRightAwayFromTheSplashOrARestoredFlow() {
+        // The user is already signed in: they must not type the password just to see the sheet.
+        val showPolicy = StartupRoute(StartupAction.ShowPolicy, endsRestoredFlow = true)
+        assertEquals(showPolicy, route(StartupState.NeedsPolicy, StartupScreen.Splash))
         StartupScreen.entries.forEach { screen ->
-            listOf(false, true).forEach { restored ->
-                assertEquals(
-                    route(StartupState.NeedsLogin, screen, restored),
-                    route(StartupState.NeedsPolicy, screen, restored)
-                )
-            }
+            assertEquals(showPolicy, route(StartupState.NeedsPolicy, screen, restored = true))
+        }
+    }
+
+    @Test fun pendingPolicyDoesNotInterruptAScreenTheUserIsUsing() {
+        listOf(StartupScreen.Login, StartupScreen.Register, StartupScreen.Other).forEach { screen ->
+            assertEquals(none, route(StartupState.NeedsPolicy, screen))
         }
     }
 

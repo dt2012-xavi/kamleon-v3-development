@@ -30,6 +30,9 @@ internal object LoginState {
     /** Signed in, but the profile could not be read right now: worth another try. */
     const val PROFILE_RETRY = -11
 
+    /** The answer to the privacy policy could not be saved right now: worth another try. */
+    const val POLICY_RETRY = -12
+
     const val PROFILE_MISSING = 8
 }
 

@@ -87,6 +87,10 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             StartupAction.ShowError -> showStartupErrorSheet()
             StartupAction.ShowServerError -> showStartupServerErrorSheet()
             StartupAction.ShowSessionEnded -> showSessionEndedSheet()
+            StartupAction.ShowPolicy -> {
+                if (currentScreen() != StartupScreen.Login) navController.navigate(R.id.action_global_loginFragment)
+                viewModel.showPolicy()
+            }
             is StartupAction.GoTo -> navController.navigate(
                 if (action.screen == StartupScreen.Register) R.id.action_global_registerFragment
                 else R.id.action_global_loginFragment

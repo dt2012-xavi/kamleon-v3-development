@@ -302,11 +302,17 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    /** The startup check found a signed-in user who has not accepted the policy: ask, no password needed. */
+    fun showPolicy() {
+        _uiState.value = 6
+    }
+
     fun acceptPolicy() {
+        _uiState.value = 1
         viewModelScope.launch(Dispatchers.IO) {
             val policyResponse = firestoreRepo.updateLegal(false, true, false)
             // Without an answer on failure the sign-in button kept spinning for ever.
-            _uiState.postValue(if (policyResponse.isSuccess) 7 else LoginState.NETWORK)
+            _uiState.postValue(if (policyResponse.isSuccess) 7 else LoginState.POLICY_RETRY)
         }
     }
 

@@ -12,6 +12,7 @@ internal sealed interface StartupAction {
     data object ShowError : StartupAction
     data object ShowServerError : StartupAction
     data object ShowSessionEnded : StartupAction
+    data object ShowPolicy : StartupAction
     data class GoTo(val screen: StartupScreen) : StartupAction
 }
 
@@ -36,8 +37,13 @@ internal fun startupRouteFor(
     return when (state) {
         StartupState.Ready -> StartupRoute(StartupAction.OpenMain)
 
-        StartupState.NeedsLogin, StartupState.NeedsPolicy ->
+        StartupState.NeedsLogin ->
             if (fromSplash) moveTo(StartupScreen.Login, current) else StartupRoute(StartupAction.None)
+
+        // Already signed in: the policy sheet opens over Login without asking for the password.
+        StartupState.NeedsPolicy ->
+            if (fromSplash) StartupRoute(StartupAction.ShowPolicy, endsRestoredFlow = true)
+            else StartupRoute(StartupAction.None)
 
         // A missing profile is also recovered from the login, where the user may have signed in.
         StartupState.NeedsProfile ->
