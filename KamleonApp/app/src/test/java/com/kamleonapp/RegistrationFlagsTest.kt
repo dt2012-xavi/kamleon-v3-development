@@ -32,6 +32,11 @@ class RegistrationFlagsTest {
         )
     }
 
+    @Test fun anEndedSessionLosesTheRegistrationState() {
+        // The session is wiped right after the message, so nothing of the registration survives.
+        assertEquals(nothing, registrationFlagsAfterCheck(true, StartupState.SessionRejected, midRegistration))
+    }
+
     @Test fun missingProfileStartsRecovery() {
         assertEquals(
             RegistrationFlags(recoveringProfile = true, profileCreated = false),

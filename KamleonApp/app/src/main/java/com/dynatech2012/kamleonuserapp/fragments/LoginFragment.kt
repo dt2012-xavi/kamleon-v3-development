@@ -138,15 +138,20 @@ class LoginFragment : Fragment() {
                 R.string.login_error_title_generic to R.string.login_alert_description_wrong_pass
             else -> R.string.login_error_title_generic to R.string.login_alert_description_login_error_unknown
         }
+        val text = getString(message)
         childFragmentManager.showKamleonSheet(
             "login_error",
             SheetSpec(
                 title = getString(title),
-                message = getString(message),
+                message = if (errorType == LoginState.ACCOUNT_DISABLED) withErrorCode(text) else text,
                 primary = getString(R.string.dialog_ok)
             )
         )
     }
+
+    private fun withErrorCode(message: String): String =
+        viewModel.loginErrorCode?.let { message + "\n\n" + getString(R.string.error_code_line, it.label) }
+            ?: message
 
     /** Signed in, but the server refuses the profile and retrying cannot help: leave cleanly. */
     private fun showAccountRejectedDialog() {
@@ -154,7 +159,7 @@ class LoginFragment : Fragment() {
             "login_account_rejected",
             SheetSpec(
                 title = getString(R.string.login_account_rejected_title),
-                message = getString(R.string.login_account_rejected_message),
+                message = withErrorCode(getString(R.string.login_account_rejected_message)),
                 primary = getString(R.string.dialog_ok),
                 dismissible = false
             )

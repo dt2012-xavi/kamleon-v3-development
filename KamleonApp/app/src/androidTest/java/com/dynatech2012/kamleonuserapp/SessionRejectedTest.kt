@@ -3,6 +3,8 @@ package com.dynatech2012.kamleonuserapp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel.StartupState
+import com.dynatech2012.kamleonuserapp.viewmodels.ErrorCode
+import com.dynatech2012.kamleonuserapp.viewmodels.errorCodeOf
 import com.dynatech2012.kamleonuserapp.viewmodels.startupStateFor
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -23,18 +25,18 @@ class SessionRejectedTest {
         profile = Response.Failure(failure)
     )
 
-    @Test fun serverRefusingTheUserSendsThemToLogin() {
-        assertEquals(StartupState.NeedsLogin, stateAfter(FirebaseFirestoreException("test", Code.PERMISSION_DENIED)))
-        assertEquals(StartupState.NeedsLogin, stateAfter(FirebaseFirestoreException("test", Code.UNAUTHENTICATED)))
+    @Test fun serverRefusingTheUserEndsTheSession() {
+        assertEquals(StartupState.SessionRejected, stateAfter(FirebaseFirestoreException("test", Code.PERMISSION_DENIED)))
+        assertEquals(StartupState.SessionRejected, stateAfter(FirebaseFirestoreException("test", Code.UNAUTHENTICATED)))
     }
 
-    @Test fun disabledOrDeletedAccountSendsTheUserToLogin() {
+    @Test fun disabledOrDeletedAccountEndsTheSession() {
         assertEquals(
-            StartupState.NeedsLogin,
+            StartupState.SessionRejected,
             stateAfter(FirebaseAuthInvalidUserException("ERROR_USER_DISABLED", "test"))
         )
         assertEquals(
-            StartupState.NeedsLogin,
+            StartupState.SessionRejected,
             stateAfter(FirebaseAuthInvalidUserException("ERROR_USER_NOT_FOUND", "test"))
         )
     }
@@ -54,5 +56,14 @@ class SessionRejectedTest {
         Code.values().filter { it !in handled }.forEach {
             assertEquals(it.name, StartupState.ServerError, stateAfter(FirebaseFirestoreException("test", it)))
         }
+    }
+
+    @Test fun eachCauseHasItsOwnCode() {
+        assertEquals(ErrorCode.SessionUnauthenticated, errorCodeOf(FirebaseFirestoreException("t", Code.UNAUTHENTICATED)))
+        assertEquals(ErrorCode.SessionPermissionDenied, errorCodeOf(FirebaseFirestoreException("t", Code.PERMISSION_DENIED)))
+        assertEquals(ErrorCode.AccountDisabled, errorCodeOf(FirebaseAuthInvalidUserException("ERROR_USER_DISABLED", "t")))
+        assertEquals(ErrorCode.AccountNotFound, errorCodeOf(FirebaseAuthInvalidUserException("ERROR_USER_NOT_FOUND", "t")))
+        assertEquals(ErrorCode.ServerError, errorCodeOf(FirebaseFirestoreException("t", Code.INTERNAL)))
+        assertEquals(ErrorCode.ServerError, errorCodeOf(IllegalStateException("unparseable profile")))
     }
 }

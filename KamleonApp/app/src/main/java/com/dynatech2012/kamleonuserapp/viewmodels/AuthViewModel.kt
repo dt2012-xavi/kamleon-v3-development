@@ -1,6 +1,7 @@
 package com.dynatech2012.kamleonuserapp.viewmodels
 
 import android.os.SystemClock
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import android.text.TextUtils
 import timber.log.Timber
 import android.util.Patterns
@@ -39,10 +40,28 @@ class AuthViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    enum class StartupState { Checking, NeedsLogin, NeedsProfile, NeedsPolicy, Ready, RetryableError, ServerError }
+    enum class StartupState {
+        Checking, NeedsLogin, NeedsProfile, NeedsPolicy, Ready, RetryableError, ServerError, SessionRejected
+    }
 
     private val _startupState = MutableLiveData(StartupState.Checking)
     val startupState: LiveData<StartupState> = _startupState
+
+    /** The code to show with the startup error sheet that has no way out; set before the state is posted. */
+    @Volatile
+    internal var startupErrorCode: ErrorCode? = null
+        private set
+
+    /** The code to show with a login sheet that has no way out; set before the state is posted. */
+    @Volatile
+    internal var loginErrorCode: ErrorCode? = null
+        private set
+
+    private fun report(code: ErrorCode, e: Exception) {
+        // Only the code and the kind of failure: no account data.
+        Timber.w("Error %s (%s)", code.label, e.javaClass.simpleName)
+        FirebaseCrashlytics.getInstance().setCustomKey("error_code", code.label)
+    }
     @Volatile
     var recoveringProfile = false
         private set
@@ -307,6 +326,12 @@ class AuthViewModel @Inject constructor(
             } else if (authResult.isFailure) {
                 val kind = authErrorKindOf(authResult.error)
                 Timber.w("Login failed: %s", kind)
+                if (kind == AuthErrorKind.UserDisabled) {
+                    errorCodeOf(authResult.error!!).also { code ->
+                        loginErrorCode = code
+                        report(code, authResult.error!!)
+                    }
+                }
                 _uiState.postValue(loginStateFor(kind))
             } else {
                 _uiState.postValue(0)
@@ -330,6 +355,12 @@ class AuthViewModel @Inject constructor(
             is Response.Failure -> {
                 val state = loginStateForProfileFailure(profile.exception)
                 Timber.w("Profile after sign-in not available: %s", state)
+                if (state == LoginState.ACCOUNT_REJECTED) {
+                    errorCodeOf(profile.exception).also { code ->
+                        loginErrorCode = code
+                        report(code, profile.exception)
+                    }
+                }
                 if (state == LoginState.PROFILE_MISSING) recoveringProfile = true
                 _uiState.postValue(state)
             }
@@ -383,6 +414,14 @@ class AuthViewModel @Inject constructor(
                 recoveringProfile = flags.recoveringProfile
                 profileCreated = flags.profileCreated
                 Timber.d("Startup authentication state: %s", state)
+                if ((state == StartupState.SessionRejected || state == StartupState.ServerError) &&
+                    profile is Response.Failure
+                ) {
+                    errorCodeOf(profile.exception).also { code ->
+                        startupErrorCode = code
+                        report(code, profile.exception)
+                    }
+                }
                 _startupState.postValue(state)
             }
         }

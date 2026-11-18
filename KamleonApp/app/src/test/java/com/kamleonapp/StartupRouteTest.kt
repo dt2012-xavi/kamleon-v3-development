@@ -92,6 +92,15 @@ class StartupRouteTest {
         }
     }
 
+    @Test fun anEndedSessionIsExplainedWhereTheOtherStartupErrorsAre() {
+        val showEnded = StartupRoute(StartupAction.ShowSessionEnded)
+        assertEquals(showEnded, route(StartupState.SessionRejected, StartupScreen.Splash))
+        assertEquals(showEnded, route(StartupState.SessionRejected, StartupScreen.Login, restored = true))
+        listOf(StartupScreen.Login, StartupScreen.Register, StartupScreen.Other).forEach { screen ->
+            assertEquals(none, route(StartupState.SessionRejected, screen))
+        }
+    }
+
     @Test fun errorIsShownOnTheSplashOrInARestoredFlowOnly() {
         val showError = StartupRoute(StartupAction.ShowError)
         assertEquals(showError, route(StartupState.RetryableError, StartupScreen.Splash))

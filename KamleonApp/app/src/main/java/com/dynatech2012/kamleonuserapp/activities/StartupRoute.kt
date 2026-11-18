@@ -11,6 +11,7 @@ internal sealed interface StartupAction {
     data object OpenMain : StartupAction
     data object ShowError : StartupAction
     data object ShowServerError : StartupAction
+    data object ShowSessionEnded : StartupAction
     data class GoTo(val screen: StartupScreen) : StartupAction
 }
 
@@ -50,6 +51,10 @@ internal fun startupRouteFor(
         // Same places as the network error, with a sheet that also offers to log out.
         StartupState.ServerError ->
             if (fromSplash) StartupRoute(StartupAction.ShowServerError) else StartupRoute(StartupAction.None)
+
+        // The server refused the session: explain it before the data is wiped and Login opens.
+        StartupState.SessionRejected ->
+            if (fromSplash) StartupRoute(StartupAction.ShowSessionEnded) else StartupRoute(StartupAction.None)
 
         StartupState.Checking, null -> StartupRoute(StartupAction.None)
     }

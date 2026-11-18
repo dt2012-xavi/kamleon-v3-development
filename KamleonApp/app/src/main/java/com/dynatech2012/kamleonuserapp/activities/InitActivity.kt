@@ -86,6 +86,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             StartupAction.OpenMain -> openMain()
             StartupAction.ShowError -> showStartupErrorSheet()
             StartupAction.ShowServerError -> showStartupServerErrorSheet()
+            StartupAction.ShowSessionEnded -> showSessionEndedSheet()
             is StartupAction.GoTo -> navController.navigate(
                 if (action.screen == StartupScreen.Register) R.id.action_global_registerFragment
                 else R.id.action_global_loginFragment
@@ -123,13 +124,33 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             STARTUP_SERVER_ERROR_SHEET,
             SheetSpec(
                 title = getString(R.string.startup_server_error_title),
-                message = getString(R.string.startup_server_error_message),
+                message = withErrorCode(getString(R.string.startup_server_error_message)),
                 primary = getString(R.string.retry),
                 secondary = getString(R.string.dialog_logout_y),
                 dismissible = false
             )
         )
     }
+
+    /**
+     * The server refused the session and only a new login can fix it. The only way on is OK, which
+     * wipes this phone's data and signs out, so the next person to use the phone does not inherit it.
+     */
+    private fun showSessionEndedSheet() {
+        supportFragmentManager.showKamleonSheet(
+            SESSION_ENDED_SHEET,
+            SheetSpec(
+                title = getString(R.string.session_ended_title),
+                message = withErrorCode(getString(R.string.session_ended_message)),
+                primary = getString(R.string.dialog_ok),
+                dismissible = false
+            )
+        )
+    }
+
+    private fun withErrorCode(message: String): String =
+        viewModel.startupErrorCode?.let { message + "\n\n" + getString(R.string.error_code_line, it.label) }
+            ?: message
 
     private fun retryStartupCheck() {
         lifecycleScope.launch {
@@ -184,6 +205,9 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             if (bundle.getBoolean(Constants.GRANT_NOTIFICATION_BUNDLE)) askNotificationPermission()
         }
         onKamleonSheetResult(STARTUP_ERROR_SHEET) { if (it == SheetResult.PRIMARY) retryStartupCheck() }
+        onKamleonSheetResult(SESSION_ENDED_SHEET) {
+            if (it == SheetResult.PRIMARY) viewModel.logOut(restartStartupCheck = true)
+        }
         onKamleonSheetResult(STARTUP_SERVER_ERROR_SHEET) {
             when (it) {
                 SheetResult.PRIMARY -> retryStartupCheck()
@@ -198,6 +222,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     private companion object {
         const val STARTUP_ERROR_SHEET = "startup_error"
         const val STARTUP_SERVER_ERROR_SHEET = "startup_server_error"
+        const val SESSION_ENDED_SHEET = "startup_session_ended"
         const val RETRY_FEEDBACK_MS = 600L
     }
 }

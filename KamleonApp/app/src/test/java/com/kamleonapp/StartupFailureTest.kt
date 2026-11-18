@@ -25,8 +25,8 @@ class StartupFailureTest {
             sessionRejected = { it is Refused }
         )
 
-    @Test fun aRefusedUserGoesToLoginInsteadOfRetryingForEver() {
-        assertEquals(StartupState.NeedsLogin, stateAfter(Refused()))
+    @Test fun aRefusedUserIsToldTheSessionEndedInsteadOfRetryingForEver() {
+        assertEquals(StartupState.SessionRejected, stateAfter(Refused()))
     }
 
     @Test fun networkTroubleIsRetryable() {

@@ -58,7 +58,7 @@ internal fun startupStateFor(
         }
         is Response.Failure -> when {
             profile.exception is UserProfileMissingException -> AuthViewModel.StartupState.NeedsProfile
-            sessionRejected(profile.exception) -> AuthViewModel.StartupState.NeedsLogin
+            sessionRejected(profile.exception) -> AuthViewModel.StartupState.SessionRejected
             transient(profile.exception) -> AuthViewModel.StartupState.RetryableError
             else -> AuthViewModel.StartupState.ServerError
         }
