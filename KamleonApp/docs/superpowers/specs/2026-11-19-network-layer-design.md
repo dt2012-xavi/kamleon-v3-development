@@ -172,9 +172,12 @@ termine antes de poder volver a mostrarla). Solo `RetryableError`; `ServerError`
 - Las que usan `suspendCoroutine` + listeners (`getUserProfiles`, `updateToken`, `deleteToken`,
   `UserRepository` en parte) se pasan a `Task.await()` dentro de `safeCall`; es un cambio pequeño y deja
   un solo camino.
-- Los `Flow`/`callbackFlow` (medidas y medias, Realtime Database) **no necesitan** volver a suscribirse:
-  los listeners del SDK se reconectan solos. Solo se mapea el error terminal a `Response.Failure`. (A
-  verificar en la implementación.)
+- **Corregido tras revisar el código (2026-11-19):** los `callbackFlow` de `MeasuresRepository` están
+  comentados (código muerto). El único `Flow` real es `FirestoreDataSource.getUserMeasures`, que lee por
+  páginas con `get().await()` y ya emite `Response.Failure` ante un error y termina. No hay listeners de
+  larga vida, así que no existe la suposición de reconexión. Además `RealtimeDataSource.getDaysAverages`
+  y `getMonthsAverages` devuelven hoy `Success` con una lista vacía aunque todas las lecturas fallen; se
+  corrige para que devuelvan `Failure` si fallaron todas.
 
 ### 6. Arranque (cierra el caso 10)
 
@@ -193,7 +196,7 @@ Cada etapa: tests primero, build + lint + tests de dispositivo, comprobación en
 3. **Perfil y autenticación:** `FirestoreDataSource` (usuario), `CloudFunctions`, `UserRepository`.
    Las hojas de login/política/verificación usan `FailureKind` y los errores tipados.
 4. **Medidas y QR:** lecturas de Realtime Database y Firestore, `uploadQrId` como `Action`.
-5. **`Flow`:** mapeo de errores terminales.
+5. **Medidas y QR:** lecturas de Firestore y Realtime Database y `uploadQrId` como `Action`.
 
 ## Pruebas
 
@@ -220,12 +223,11 @@ Cada etapa: tests primero, build + lint + tests de dispositivo, comprobación en
 - Solo dos tipos de llamada (`Read`, `Action`); login y envío de correo cuentan como `Action`.
 - `Response`/`ResponseNullable` no cambian; el `FailureKind` se calcula al leer, no al capturar.
 - Tiempo agotado de una escritura = resultado incierto, aceptado por ser idempotente.
-- Los `Flow` no se vuelven a suscribir.
+- No hay listeners que reconectar (ver sección 5 corregida).
 - Migración en cinco etapas, empezando por el arranque.
 
 ## Lo que queda al implementador
 
 Valores de los tiempos máximos (partir de 10 s para `Read`, el límite actual del arranque, y 15 s para
 `Action`, ajustables); si conviene amortiguar el parpadeo `Online`→`Offline` en redes inestables;
-comprobar los dos puntos marcados «a verificar» (cola de escrituras de Firestore y reconexión de los
-listeners); y revisar cada llamada de los repositorios para asignarle `Read` o `Action`.
+comprobar el punto marcado «a verificar» (cola de escrituras de Firestore, Task 1 del plan); y revisar cada llamada de los repositorios para asignarle `Read` o `Action`.
