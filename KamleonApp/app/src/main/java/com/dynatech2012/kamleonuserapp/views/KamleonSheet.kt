@@ -326,6 +326,11 @@ fun FragmentManager.showKamleonSheet(requestKey: String, spec: SheetSpec) {
     beginTransaction().add(sheet, tag).commitAllowingStateLoss()
 }
 
+/** Closes the sheet shown with [requestKey] from code, if it is on screen. No result is delivered. */
+fun FragmentManager.dismissKamleonSheet(requestKey: String) {
+    (findFragmentByTag("kamleon_sheet_$requestKey") as? KamleonSheet)?.dismissAllowingStateLoss()
+}
+
 private fun Bundle.toSheetResult() =
     SheetResult.valueOf(getString(KamleonSheet.RESULT) ?: SheetResult.DISMISSED.name)
 

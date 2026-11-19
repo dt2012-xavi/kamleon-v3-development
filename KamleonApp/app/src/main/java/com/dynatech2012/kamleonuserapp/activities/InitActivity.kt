@@ -15,14 +15,19 @@ import androidx.navigation.fragment.NavHostFragment
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseActivity
 import com.dynatech2012.kamleonuserapp.constants.Constants
+import com.dynatech2012.kamleonuserapp.network.NetworkMonitor
+import com.dynatech2012.kamleonuserapp.network.retryWhenOnline
 import com.dynatech2012.kamleonuserapp.databinding.ActivityInitBinding
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
 import com.dynatech2012.kamleonuserapp.utils.notificationPermissionAsked
 import com.dynatech2012.kamleonuserapp.views.SheetResult
+import com.dynatech2012.kamleonuserapp.views.dismissKamleonSheet
 import com.dynatech2012.kamleonuserapp.views.SheetSpec
 import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
 import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -30,6 +35,8 @@ import timber.log.Timber
 @AndroidEntryPoint
 class InitActivity : BaseActivity<ActivityInitBinding>() {
     private val viewModel: AuthViewModel by viewModels()
+    @Inject lateinit var networkMonitor: NetworkMonitor
+    private var autoRetryJob: Job? = null
     private var resetRestoredFlow = false
     private var verificationNotice: String? = null
 
@@ -112,6 +119,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
 
     /** The account could not be loaded: the only way on is to try again, so the sheet is not dismissible. */
     private fun showStartupErrorSheet() {
+        waitForTheNetworkToRetry()
         supportFragmentManager.showKamleonSheet(
             STARTUP_ERROR_SHEET,
             SheetSpec(
@@ -124,6 +132,23 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
                 dismissible = false
             )
         )
+    }
+
+    /**
+     * With no network, the check repeats itself when it returns and the sheet closes. Not when the
+     * network is up: then the failure was a timeout or a busy server, and repeating at once would loop.
+     */
+    private fun waitForTheNetworkToRetry() {
+        autoRetryJob?.cancel()
+        if (networkMonitor.isOnline) return
+        autoRetryJob = lifecycleScope.launch {
+            networkMonitor.retryWhenOnline {
+                supportFragmentManager.dismissKamleonSheet(STARTUP_ERROR_SHEET)
+                // The sheet takes a moment to leave: a check that fails at once could not show a new one.
+                delay(RETRY_FEEDBACK_MS)
+                viewModel.checkLogin()
+            }
+        }
     }
 
     /**
@@ -259,6 +284,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             if (bundle.getBoolean(Constants.GRANT_NOTIFICATION_BUNDLE)) askNotificationPermission()
         }
         onKamleonSheetResult(STARTUP_ERROR_SHEET) {
+            autoRetryJob?.cancel()
             when (it) {
                 SheetResult.PRIMARY -> retryStartupCheck()
                 // The account was checked when it was last online; the server is asked again next time.
