@@ -216,7 +216,17 @@ Fichero: `app/src/main/java/com/dynatech2012/kamleonuserapp/activities/InitActiv
      `FirebaseAuthInvalidUserException` en cualquier llamada), el usuario no recibe explicación, ni
      limpieza, ni vuelta a Login. Hay que añadirlo: hoja «Your session has ended» con su código
      (`ErrorCode`) y `SessionCleaner` + cierre de sesión. La misma nota está en el KDoc de
-     `canContinueOffline`. **Sigue pendiente:** 10, 11.
+     `canContinueOffline`.
+   - **Caso 10 y capa de red (2026-11-19).** Diseño en `docs/superpowers/specs/2026-11-19-network-layer-design.md`,
+     plan en `docs/superpowers/plans/2026-11-19-network-layer.md`. Hecho: `NetworkMonitor` (sin exigir
+     `VALIDATED`), `FailureKind`, `NetworkGate.safeCall`, arranque sin red inmediato, «Retry» que llama de
+     verdad aunque el monitor diga `Offline`, reintento automático al volver la red, todos los repositorios
+     sobre `safeCall` y un criterio único de «problema de conexión» en las pantallas (QR, contraseña, PIN,
+     correos de restablecimiento, selectores y Ajustes). Descubierto: sin red Firestore falla en menos de 1 s
+     (la «espera de 10 s» no se reproduce); las medias devolvían éxito vacío aunque fallaran todas las
+     lecturas; el logout sin red lanzaba una excepción. Sin ver en el móvil por falta de sesión: QR sin red,
+     analítica sin red, hojas nuevas y logout sin red. **Sigue pendiente:** caso 11 y tratar la sesión
+     rechazada en `MainActivity`.
 8. **Transiciones.** El fundido a Main usa `ActivityOptions.makeCustomAnimation` (`fade_in`,
    `fade_hold`). Verificar que Main no parpadea en blanco con la barra de estado transparente.
 
