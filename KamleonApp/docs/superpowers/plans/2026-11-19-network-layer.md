@@ -6,7 +6,7 @@
 
 **Architecture:** Paquete `network` con el monitor, los fallos tipados y `NetworkGate` (inyectado en los repositorios remotos). `safeCall` aplica el monitor y un tiempo máximo y devuelve `Response.Failure`; el `FailureKind` se calcula al leer la excepción. Las acciones sin red fallan al momento, solo las lecturas pueden reintentarse al volver la red.
 
-**Tech Stack:** Kotlin, Hilt (`di/AppModule.kt`, `@Provides` manuales), Firebase (Firestore, Auth, Functions, Realtime Database), `ConnectivityManager.registerDefaultNetworkCallback`, JUnit 4 (sin `kotlinx-coroutines-test`: los tests usan `runBlocking` con tiempos cortos, como `ProfileTimeoutTest`).
+**Tech Stack:** Kotlin, Hilt (`di/AppModule.kt`, `@Provides` manuales), Firebase (Firestore, Auth, Functions, Realtime Database), `ConnectivityManager.registerDefaultNetworkCallback`, JUnit 4 y `kotlinx-coroutines-test` 1.9.0 (la misma versión de coroutines que ya resuelve el proyecto, añadida al catálogo y a `testImplementation`): los tests nuevos con tiempo usan `runTest` y tiempo virtual; los existentes con `runBlocking` no se tocan.
 
 **Spec:** `docs/superpowers/specs/2026-11-19-network-layer-design.md` (aprobado). Allí `safeCall` aparece como extensión de `NetworkGate`; aquí es un método miembro, equivalente.
 
@@ -76,7 +76,7 @@ git commit -m "docs: record the verified behaviour of offline Firestore writes"
   - Test: `class FakeNetworkMonitor(initial: NetworkStatus = NetworkStatus.Online) : NetworkMonitor { fun set(status: NetworkStatus) }`
   - DI: `networkMonitorProvider(@ApplicationContext appContext: Context): NetworkMonitor` en `AppModule` (`@Provides @Singleton`); el proveedor del `NetworkGate` llega en la Task 4.
 
-- [ ] **Step 1: Test que falla** (`NetworkMonitorTest`): `networkStatusFor(true, true) == Online`; `networkStatusFor(true, false) == Offline`; `networkStatusFor(false, true) == Offline`; `awaitOnline` con el falso en `Online` vuelve ya (`withTimeout(500)`); con `Offline` no vuelve hasta que `set(Online)` (lanzar `awaitOnline` en una corrutina, comprobar que sigue activa a los 50 ms, `set(Online)`, comprobar que termina).
+- [ ] **Step 1: Test que falla** (`NetworkMonitorTest`): `networkStatusFor(true, true) == Online`; `networkStatusFor(true, false) == Offline`; `networkStatusFor(false, true) == Offline`; `awaitOnline` (con `runTest`) con el falso en `Online` vuelve ya; con `Offline` no vuelve hasta que `set(Online)` (lanzar `awaitOnline` con `launch`, `advanceTimeBy(1_000)` y comprobar que sigue activa, `set(Online)`, `runCurrent()` y comprobar que terminó).
 - [ ] **Step 2: Ver que falla** — `./gradlew -q :app:testDevelopmentDebugUnitTest --tests 'com.kamleonapp.NetworkMonitorTest'`. Esperado: FAIL (no compila: referencias sin resolver).
 - [ ] **Step 3: Implementar** las firmas de arriba. `AndroidNetworkMonitor`: `MutableStateFlow` inicial desde `activeNetwork`/`getNetworkCapabilities`; `registerDefaultNetworkCallback` una vez en `init`, con `onCapabilitiesChanged` y `onLost` actualizando el flujo (`onLost` → `Offline`). Singleton para toda la vida de la app, sin `unregister`.
 - [ ] **Step 4: Ver que pasa** el test anterior. Esperado: PASS.
@@ -126,7 +126,7 @@ git commit -m "docs: record the verified behaviour of offline Firestore writes"
     - `suspend fun <T : Any> safeCall(kind: CallKind, trustMonitor: Boolean = true, timeoutMs: Long = kind.defaultTimeoutMs, block: suspend () -> T): Response<T>`
     - `suspend fun safeCallNullable(kind: CallKind, trustMonitor: Boolean = true, timeoutMs: Long = kind.defaultTimeoutMs, block: suspend () -> Unit): ResponseNullable<Nothing>`
 
-- [ ] **Step 1: Tests que fallan** (`NetworkGateTest`, `FakeNetworkMonitor`, `runBlocking`, tiempos de 50 ms): 
+- [ ] **Step 1: Tests que fallan** (`NetworkGateTest`, `FakeNetworkMonitor`, `runTest` con tiempo virtual: los tiempos agotados se simulan con `delay` y `advanceTimeBy`): 
   - monitor `Offline` y `trustMonitor = true`: devuelve `Failure(NetworkUnavailableException)` y el `block` **no se ejecuta** (contador en 0), también con `CallKind.Read`;
   - monitor `Offline` y `trustMonitor = false`: el `block` **sí** se ejecuta y su resultado se devuelve (Review Focus 1);
   - monitor `Online`: devuelve `Success` con el valor del `block`;
@@ -172,7 +172,7 @@ git commit -m "docs: record the verified behaviour of offline Firestore writes"
 - Consumes: `NetworkMonitor.awaitOnline()`, `checkLogin(trustMonitor)`.
 - Produces: `suspend fun NetworkMonitor.retryWhenOnline(pauseMs: Long = 600L, action: suspend () -> Unit)` (espera `awaitOnline`, la pausa, y ejecuta `action` **una vez**); `dismissKamleonSheet` cierra la hoja con esa clave si está en pantalla y entrega `SheetResult.DISMISSED`.
 
-- [ ] **Step 1: Tests que fallan** (`NetworkRetryTest`): con el monitor en `Offline`, `retryWhenOnline { count++ }` no ejecuta; tras `set(Online)` ejecuta una vez; alternar `Online → Offline → Online` tres veces rápido antes de que corra la pausa ejecuta **una** vez (Review Focus 4: la corrutina espera una sola vez).
+- [ ] **Step 1: Tests que fallan** (`NetworkRetryTest`, `runTest` con tiempo virtual): con el monitor en `Offline`, `retryWhenOnline { count++ }` no ejecuta; tras `set(Online)` ejecuta una vez; alternar `Online → Offline → Online` tres veces rápido antes de que corra la pausa ejecuta **una** vez (Review Focus 4: la corrutina espera una sola vez).
 - [ ] **Step 2: Ver que falla** con `--tests 'com.kamleonapp.NetworkRetryTest'`. Esperado: FAIL.
 - [ ] **Step 3: Implementar** `retryWhenOnline` y `dismissKamleonSheet`. En `InitActivity`: al mostrar la hoja `STARTUP_ERROR_SHEET`, lanzar `lifecycleScope.launch { monitor.retryWhenOnline { dismissKamleonSheet(STARTUP_ERROR_SHEET); viewModel.checkLogin() } }` y cancelar ese `Job` al pulsar un botón o al parar la actividad; `NetworkMonitor` llega a la actividad por Hilt (`@Inject lateinit var networkMonitor`). Solo para `RetryableError`, no para `ServerError`.
 - [ ] **Step 4: Ver que pasa** y suite completa.
