@@ -116,8 +116,11 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             STARTUP_ERROR_SHEET,
             SheetSpec(
                 title = getString(R.string.startup_error_title),
-                message = getString(R.string.startup_error_message),
+                message = getString(
+                    if (viewModel.continueOffline) R.string.startup_error_message_offline else R.string.startup_error_message
+                ),
                 primary = getString(R.string.retry),
+                secondary = if (viewModel.continueOffline) getString(R.string.startup_continue_offline) else null,
                 dismissible = false
             )
         )
@@ -254,7 +257,14 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
         supportFragmentManager.setFragmentResultListener(Constants.GRANT_NOTIFICATION, this) { _, bundle ->
             if (bundle.getBoolean(Constants.GRANT_NOTIFICATION_BUNDLE)) askNotificationPermission()
         }
-        onKamleonSheetResult(STARTUP_ERROR_SHEET) { if (it == SheetResult.PRIMARY) retryStartupCheck() }
+        onKamleonSheetResult(STARTUP_ERROR_SHEET) {
+            when (it) {
+                SheetResult.PRIMARY -> retryStartupCheck()
+                // The account was checked when it was last online; the server is asked again next time.
+                SheetResult.SECONDARY -> openMain()
+                SheetResult.TERTIARY, SheetResult.DISMISSED -> Unit
+            }
+        }
         onKamleonSheetResult(STARTUP_VERIFY_SHEET) {
             when (it) {
                 SheetResult.PRIMARY -> recheckVerification()

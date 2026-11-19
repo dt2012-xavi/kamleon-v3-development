@@ -66,6 +66,8 @@
     <string name="startup_network_error">Could not load your account. Check your connection and try again.</string>
     <string name="startup_error_title">We couldn’t load your account</string>
     <string name="startup_error_message">Check your connection and try again.</string>
+    <string name="startup_error_message_offline">Check your connection and try again. You can also continue offline with the data on this phone.</string>
+    <string name="startup_continue_offline">Continue offline</string>
     <string name="startup_server_error_title">Something went wrong</string>
     <string name="startup_server_error_message">We couldn’t load your account because of a problem on our side. You can try again, or log out and sign in again. Logging out clears the data stored on this phone.</string>
     <string name="policy_retry_title">We couldn’t save your answer</string>

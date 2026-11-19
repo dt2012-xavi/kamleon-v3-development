@@ -66,6 +66,21 @@ internal fun startupStateFor(
     }
 }
 
+/**
+ * Whether the user may open the app with the profile cached on the phone because the server could not
+ * be reached. Only for a network failure ([StartupState.RetryableError]) and a complete cached account
+ * (verified, policy accepted): any state where the server did answer must not skip its check.
+ *
+ * NOTE: nothing checks the account again when the connection returns. MainActivity has no handling for
+ * a refused session (see StartupState.SessionRejected); add it when MainActivity is next touched.
+ */
+internal fun canContinueOffline(
+    state: AuthViewModel.StartupState,
+    cached: Response<CustomUser>?,
+    verified: Boolean
+): Boolean = state == AuthViewModel.StartupState.RetryableError && verified &&
+    cached is Response.Success && cached.data.legal.privacyPolicyApp
+
 /** What the registration flow remembers: the account exists / the profile document exists. */
 internal data class RegistrationFlags(val recoveringProfile: Boolean, val profileCreated: Boolean)
 

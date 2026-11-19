@@ -432,6 +432,12 @@ class AuthViewModel @Inject constructor(
                         report(code, profile.exception)
                     }
                 }
+                // The server could not be asked: see whether the phone has a complete account to open with.
+                continueOffline = if (state == StartupState.RetryableError && authenticated) {
+                    canContinueOffline(state, firestoreRepo.getUserData(Source.CACHE), authRepo.isEmailVerified)
+                } else {
+                    false
+                }
                 // Before the state, so a screen that reacts to it (the policy sheet) is not overwritten.
                 if (emailRecheck) {
                     emailRecheck = false
@@ -444,6 +450,11 @@ class AuthViewModel @Inject constructor(
 
     @Volatile
     private var emailRecheck = false
+
+    /** Whether the startup error sheet can offer to open the app with the data on this phone; set before the state. */
+    @Volatile
+    var continueOffline = false
+        private set
 
     /** The user says they verified their email: check again, with the login's spinner meanwhile. */
     fun recheckVerification() {
