@@ -8,9 +8,12 @@ import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.REALTIME_FOLD
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USER_UID_DEBUG
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
+import com.dynatech2012.kamleonuserapp.network.CallKind
+import com.dynatech2012.kamleonuserapp.network.NetworkGate
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 import java.text.DecimalFormat
@@ -25,7 +28,10 @@ import javax.inject.Inject
  * to manage access to Realtime Database <br></br>
  * It holds a reference to Realtime FirebaseDatabase instance
 </font> */
-class RealtimeDataSource @Inject constructor(private val userRepository: UserRepository){
+class RealtimeDataSource @Inject constructor(
+    private val userRepository: UserRepository,
+    private val gate: NetworkGate
+) {
     private val db =  Firebase.database
     private val averagesRef = db.reference.child(REALTIME_COLLECTION_AVERAGES)
 
@@ -69,30 +75,25 @@ class RealtimeDataSource @Inject constructor(private val userRepository: UserRep
         Log.d(TAG, "getDaysAverage")
         if (userId == null) return Response.Failure(Exception())
         val ref = averagesRef.child(userId).child(REALTIME_FOLDER_DAILY)
-        Log.d(TAG, "averagesRef = $ref")
-        val daysAverages = ArrayList<AverageDailyMeasureData>()
-        return coroutineScope {
+        val numberFormat = DecimalFormat("00")
+        val results = coroutineScope {
             dayArray.map { dayItem ->
                 async {
                     val year = dayItem.year
                     val monthInt = dayItem.monthValue
-                    val numberFormat = DecimalFormat("00")
-                    val month = numberFormat.format(monthInt)
                     val dayInt = dayItem.dayOfMonth
+                    val month = numberFormat.format(monthInt)
                     val day = numberFormat.format(dayInt)
-                    try {
-                        val map = ref.child(year.toString()).child(month.toString())
-                            .child(day.toString()).get().await()
-                        val dailyAverage = AverageDailyMeasureData(map, year, monthInt, dayInt)
-                        return@async daysAverages.add(dailyAverage)
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Daily average measure with null parameters date: ${day}/${month}/${year}")
-                        return@async Response.Failure(e)
+                    val read = gate.safeCall(CallKind.Read) {
+                        val map = ref.child(year.toString()).child(month).child(day).get().await()
+                        AverageDailyMeasureData(map, year, monthInt, dayInt)
                     }
+                    read.dataValue?.let { Result.success(it) }
+                        ?: Result.failure(read.error ?: IllegalStateException("No daily average"))
                 }
-            }.forEach { it.await() }
-            return@coroutineScope Response.Success(daysAverages)
+            }.awaitAll()
         }
+        return averagesResult(results)
     }
 
     /**
@@ -106,29 +107,24 @@ class RealtimeDataSource @Inject constructor(private val userRepository: UserRep
         Log.d(TAG, "getMonthAverage")
         if (userId == null) return Response.Failure(Exception())
         val ref = averagesRef.child(userId).child(REALTIME_FOLDER_MONTHLY)
-        Log.d(TAG, "averagesRef = $ref")
-        val monthsAverages = ArrayList<AverageMonthlyMeasureData>()
-        return coroutineScope {
+        val numberFormat = DecimalFormat("00")
+        val results = coroutineScope {
             monthArray.map { monthItem ->
                 async {
-                val year = monthItem.year
-                val monthInt = monthItem.monthValue
-                val numberFormat = DecimalFormat("00")
-                val month = numberFormat.format(monthInt)
-                    try {
-                        val map = ref.child(year.toString()).child(month.toString()).get().await()
-                        val monthAverage = AverageMonthlyMeasureData(map, year, monthInt)
-                        return@async monthsAverages.add(monthAverage)
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Monthly average measure with null parameters date: ${month}/${year}")
-                        return@async Response.Failure(e)
+                    val year = monthItem.year
+                    val monthInt = monthItem.monthValue
+                    val month = numberFormat.format(monthInt)
+                    val read = gate.safeCall(CallKind.Read) {
+                        val map = ref.child(year.toString()).child(month).get().await()
+                        AverageMonthlyMeasureData(map, year, monthInt)
                     }
+                    read.dataValue?.let { Result.success(it) }
+                        ?: Result.failure(read.error ?: IllegalStateException("No monthly average"))
                 }
-            }.forEach { it.await() }
-            return@coroutineScope Response.Success(monthsAverages)
+            }.awaitAll()
         }
+        return averagesResult(results)
     }
-
 
     /*
     fun closeChannels() {
@@ -141,5 +137,19 @@ class RealtimeDataSource @Inject constructor(private val userRepository: UserRep
 
     companion object {
         private val TAG = RealtimeDataSource::class.java.simpleName
+    }
+}
+
+/**
+ * The outcome of reading each day or month on its own: what was read, or the first failure when
+ * **every** read failed. A network failure must not look like "no data" (an empty success).
+ */
+internal fun <T : Any> averagesResult(results: List<Result<T>>): Response<ArrayList<T>> {
+    val values = results.mapNotNull { it.getOrNull() }
+    val firstFailure = results.firstNotNullOfOrNull { it.exceptionOrNull() }
+    return if (values.isEmpty() && firstFailure != null) {
+        Response.Failure(firstFailure as Exception)
+    } else {
+        Response.Success(ArrayList(values))
     }
 }

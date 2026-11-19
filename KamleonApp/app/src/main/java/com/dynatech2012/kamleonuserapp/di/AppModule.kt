@@ -50,7 +50,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun realtimeRepositoryProvider(userRepository: UserRepository): RealtimeDataSource = RealtimeDataSource(userRepository)
+    fun realtimeRepositoryProvider(userRepository: UserRepository, gate: NetworkGate): RealtimeDataSource = RealtimeDataSource(userRepository, gate)
 
     @Provides
     @Singleton

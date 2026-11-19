@@ -150,7 +150,7 @@ class FirestoreDataSource @Inject constructor(
         userId: String?,
         lastDate: Long?,
         limit: Long?
-    ): Response<ArrayList<MeasureData>> = suspendCoroutine { continuation ->
+    ): Response<ArrayList<MeasureData>> {
         val query: Query = db.collection(FirebaseConstants.MEASURES_COLLECTION)
         val date = Date(lastDate?.plus(1) ?: 0)
         val timestamp = com.google.firebase.Timestamp(date)
@@ -165,36 +165,15 @@ class FirestoreDataSource @Inject constructor(
             .orderBy(FirebaseConstants.kANALYSIS_DATE, Query.Direction.DESCENDING)
         if (limit != null)
             task.limit(limit)
-        task.get()
-            .addOnSuccessListener { snapshot ->
-                Log.d(TAG, "got measures from FS size: ${snapshot.documents.size}")
-                val measuresRaw: List<RawMeasureData> =
-                    snapshot.toObjects(RawMeasureData::class.java)
-                Log.d(TAG, "got measures from FS parsed size: ${measuresRaw.size}")
-                val measures: ArrayList<MeasureData> =
-                    ArrayList(measuresRaw.map { MeasureData(it) })
-
-
-                /*
-                for (m in measures) {
-                    val date = Date(m.analysisDate)
-                    if (m.analysisDate in 170714827041..1707148270379) {
-                        Log.d(TAG, "got measures dates: $m _ id: ${m.measureId} _ prec: ${m.precision} _ isPrec: ${m.isPrecise} _ date: $date")
-                    }
-                }
-
-                 */
-
-                Log.d(
-                    TAG,
-                    "got measures from FS 23 converted to MeasureData size: ${measures.size}"
-                )
-                continuation.resume(Response.Success(measures))
-            }
-            .addOnFailureListener { e ->
-                continuation.resume(Response.Failure(e))
-                DebugLog.e(TAG) { "Fetching measurements failed: ${e.javaClass.simpleName}" }
-            }
+        return gate.safeCall(CallKind.Read) {
+            val snapshot = task.get().await()
+            Log.d(TAG, "got measures from FS size: ${snapshot.documents.size}")
+            val measuresRaw: List<RawMeasureData> = snapshot.toObjects(RawMeasureData::class.java)
+            Log.d(TAG, "got measures from FS parsed size: ${measuresRaw.size}")
+            val measures: ArrayList<MeasureData> = ArrayList(measuresRaw.map { MeasureData(it) })
+            Log.d(TAG, "got measures from FS 23 converted to MeasureData size: ${measures.size}")
+            measures
+        }
     }
 
     fun getUserMeasures(
@@ -207,7 +186,6 @@ class FirestoreDataSource @Inject constructor(
         val query: Query = db.collection(FirebaseConstants.MEASURES_COLLECTION)
         DebugLog.d(TAG) { "Fetching paged measurements" }
         val date = lastDate ?: 0
-        var lastVisible: DocumentSnapshot? = null
         val measures = arrayListOf<MeasureData>()
         while (lastPageSize == limit) {
             val task = query.whereEqualTo(FirebaseConstants.kUSERID_FIELD, userId)
@@ -227,30 +205,22 @@ class FirestoreDataSource @Inject constructor(
             */
             task.limit(limit.toLong())
 
-            try {
+            val page = gate.safeCall(CallKind.Read) {
                 val documentSnapshot = task.get().await()
                 Log.d(TAG, "got measures 66 size: ${documentSnapshot.documents.size}")
-                Log.d(TAG, "got measures 21 counter of times requested: ${countDebug + 1}")
-                //val newPage = documentSnapshot.toObjects(RawMeasureData::class.java) as ArrayList<MeasureData>
-
                 val measuresRawPage: List<RawMeasureData> =
                     documentSnapshot.toObjects(RawMeasureData::class.java)
-                Log.d(TAG, "got measures 99 size: ${measuresRawPage.size}")
-                val measuresPage: ArrayList<MeasureData> =
-                    ArrayList(measuresRawPage.map { MeasureData(it) })
-
-                Log.d(TAG, "got measures 22 size of measures got: ${measuresRawPage.size}")
-                measures.addAll(measuresPage)
-                lastPageSize = 0//measuresRawPage.size ///0
-                countDebug++
-                if (lastPageSize < limit) {
-                    emit(Response.Success(measures))
-                    break
-                }
-                lastVisible = documentSnapshot.documents[documentSnapshot.size() - 1]
-            } catch (e: Exception) {
-                emit(Response.Failure(e))
-                DebugLog.e(TAG) { "Fetching paged measurements failed: ${e.javaClass.simpleName}" }
+                ArrayList(measuresRawPage.map { MeasureData(it) })
+            }
+            if (page is Response.Failure) {
+                emit(page)
+                break
+            }
+            measures.addAll(page.dataValue ?: arrayListOf())
+            lastPageSize = 0//measuresRawPage.size ///0
+            countDebug++
+            if (lastPageSize < limit) {
+                emit(Response.Success(measures))
                 break
             }
         }
@@ -309,24 +279,22 @@ class FirestoreDataSource @Inject constructor(
     }
 
     suspend fun uploadQrId(qrResponse: QRResponse?): Response<Boolean> {
-        if (uuid == null) {
-            return Response.Failure(Exception("User not logged in"))
-        }
+        val userId = uuid ?: return Response.Failure(Exception("User not logged in"))
         if (qrResponse == null) {
             return Response.Failure(Exception("QR response is null"))
         }
-        return try {
+        // An action: with no network it fails at once (Firestore would queue the write and never answer).
+        // A write that times out may still be applied later; it is a set() of the same document, so
+        // repeating it is harmless.
+        return gate.safeCall(CallKind.Action) {
             db.collection(FirebaseConstants.QR_COLLECTION).document(qrResponse.unitId).set(
                 hashMapOf(
                     "sessionId" to qrResponse.sessionId,
-                    "userId" to uuid
+                    "userId" to userId
                 )
             ).await()
             Log.d(TAG, "qr upload success")
-            Response.Success(true)
-        } catch (e: Exception) {
-            DebugLog.e(TAG) { "Uploading scan failed: ${e.javaClass.simpleName}" }
-            Response.Failure(e)
+            true
         }
     }
 
