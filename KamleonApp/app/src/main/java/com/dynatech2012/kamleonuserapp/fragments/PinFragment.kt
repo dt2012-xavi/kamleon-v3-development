@@ -6,6 +6,8 @@ import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.UnderlineSpan
 import androidx.fragment.app.activityViewModels
+import com.dynatech2012.kamleonuserapp.network.actionFailureText
+import com.dynatech2012.kamleonuserapp.network.isConnectionProblem
 import com.dynatech2012.kamleonuserapp.views.SheetSpec
 import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import com.google.android.material.snackbar.Snackbar
@@ -118,8 +120,11 @@ class PinFragment : BaseFragment<ActivityPinBinding>() {
     private fun initObservers() {
         viewModel.userUpdated.observe(this, this::onPinUpdated)
         viewModel.resetPINSuccess.observe(this) {
-            if (it) showSuccessDialog()
-            else {
+            if (it.success) showSuccessDialog()
+            else if (it.failure?.isConnectionProblem() == true) {
+                val (title, message) = actionFailureText(it.failure)
+                showErrorDialog(title, message)
+            } else {
                 showErrorDialog(R.string.pin_error_title, R.string.dialog_reset_pin_error_description)
             }
         }
@@ -152,7 +157,10 @@ class PinFragment : BaseFragment<ActivityPinBinding>() {
             is Response.Failure -> {
                 if(response.errorMessage == Constants.UNMATCHING_PIN)
                     showErrorDialog(R.string.pin_error_title, R.string.pin_error_pin)
-                else
+                else if (response.exception.isConnectionProblem()) {
+                    val (title, message) = actionFailureText(response.exception)
+                    showErrorDialog(title, message)
+                } else
                     showErrorDialog(R.string.pin_error_title, R.string.dialog_reset_pin_error_description)
             }
             else -> {}

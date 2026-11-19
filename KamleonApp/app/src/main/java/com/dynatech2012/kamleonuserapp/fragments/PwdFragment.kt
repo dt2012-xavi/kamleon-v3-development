@@ -16,6 +16,8 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.dynatech2012.kamleonuserapp.network.actionFailureText
+import com.dynatech2012.kamleonuserapp.network.isConnectionProblem
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.repositories.Response
@@ -92,8 +94,8 @@ class PwdFragment : Fragment() {
 
         viewModel.userUpdated.observe(viewLifecycleOwner, this::onPwdUpdated)
         viewModel.resetPwdSuccess.observe(viewLifecycleOwner) {
-            if (it) showSuccessDialog()
-            else showErrorDialog(getString(R.string.pwd_error_generic))
+            if (it.success) showSuccessDialog()
+            else showErrorDialog(connectionOr(it.failure, getString(R.string.pwd_error_generic)))
         }
     }
 
@@ -112,7 +114,7 @@ class PwdFragment : Fragment() {
                 // Shown next to the field that needs fixing.
                 is PasswordPolicyException -> newError = e.reason.messageRes()
                 is FirebaseAuthInvalidCredentialsException -> currentError = R.string.login_alert_description_wrong_pass
-                else -> showErrorDialog(response.errorMessage ?: getString(R.string.pwd_error_generic))
+                else -> showErrorDialog(connectionOr(e, response.errorMessage ?: getString(R.string.pwd_error_generic)))
             }
 
             else -> {}
@@ -123,6 +125,10 @@ class PwdFragment : Fragment() {
     private fun showSuccessDialog() {
         Snackbar.make(requireView(), R.string.dialog_reset_pwd_success_description, Snackbar.LENGTH_SHORT).show()
     }
+
+    /** A connection problem is told the same on every screen; otherwise this screen's own [message]. */
+    private fun connectionOr(failure: Exception?, message: String): String =
+        if (failure?.isConnectionProblem() == true) getString(actionFailureText(failure).second) else message
 
     private fun showErrorDialog(message: String) {
         childFragmentManager.showKamleonSheet(

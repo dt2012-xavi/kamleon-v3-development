@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.NavHostFragment
+import com.dynatech2012.kamleonuserapp.network.scanFailureText
 import com.dynatech2012.kamleonuserapp.base.BaseActivity
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.PUSH_NOTIFICATION
@@ -149,9 +150,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         setupFirebaseMessagingReceiver()
         viewModel.updateUserToken()
 
-        qrViewModel.qrUploaded.observeEvent(this) { success ->
-            DebugLog.d(TAG) { "QR Upload finished; success: $success" }
-            if (success) showScannedDialog() else showScanFailedDialog()
+        qrViewModel.qrUploaded.observeEvent(this) { result ->
+            DebugLog.d(TAG) { "QR Upload finished; success: ${result.success}" }
+            if (result.success) showScannedDialog() else showScanFailedDialog(result.failure)
         }
     }
 
@@ -167,12 +168,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         )
     }
 
-    private fun showScanFailedDialog() {
+    private fun showScanFailedDialog(failure: Exception?) {
+        val (title, message) = scanFailureText(failure)
         supportFragmentManager.showKamleonSheet(
             "scan_failed",
             SheetSpec(
-                title = getString(com.dynatech2012.kamleonuserapp.R.string.dialog_scan_failed_title),
-                message = getString(com.dynatech2012.kamleonuserapp.R.string.dialog_scan_failed_message),
+                title = getString(title),
+                message = getString(message),
                 primary = getString(com.dynatech2012.kamleonuserapp.R.string.dialog_ok)
             )
         )

@@ -48,6 +48,13 @@ internal fun failureKindOf(
 }
 
 /**
+ * A failure about the connection or a busy server, where "check your connection and try again" is the
+ * right thing to say and trying again later can work. The one criterion every screen shares.
+ */
+internal fun Exception.isConnectionProblem(): Boolean =
+    failureKindOf(this).let { it == FailureKind.Network || it == FailureKind.Busy }
+
+/**
  * The kind of a Firebase exception, or null when it is not one. Firestore's codes are matched inside
  * the function, not in a constant, because its enum does not load on the JVM.
  */

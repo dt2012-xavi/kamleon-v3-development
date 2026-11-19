@@ -13,6 +13,8 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.dynatech2012.kamleonuserapp.network.actionFailureText
+import com.dynatech2012.kamleonuserapp.network.isConnectionProblem
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.viewmodels.ForgotPwdViewModel
@@ -52,7 +54,7 @@ class ForgotPwdFragment : Fragment() {
             }
         }
         viewModel.resetPwdSuccess.observe(viewLifecycleOwner) {
-            if (it) showSuccessDialog() else showErrorDialog()
+            if (it.success) showSuccessDialog() else showErrorDialog(it.failure)
         }
     }
 
@@ -60,12 +62,15 @@ class ForgotPwdFragment : Fragment() {
         Snackbar.make(requireView(), R.string.dialog_reset_pwd_success_description, Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun showErrorDialog() {
+    private fun showErrorDialog(failure: Exception?) {
+        // A connection problem is told the same everywhere; anything else keeps this screen's own text.
+        val (title, message) = if (failure?.isConnectionProblem() == true) actionFailureText(failure)
+        else R.string.dialog_reset_pwd_error_title to R.string.dialog_reset_pwd_error_description
         childFragmentManager.showKamleonSheet(
             "forgot_error",
             SheetSpec(
-                title = getString(R.string.dialog_reset_pwd_error_title),
-                message = getString(R.string.dialog_reset_pwd_error_description),
+                title = getString(title),
+                message = getString(message),
                 primary = getString(R.string.dialog_ok)
             )
         )

@@ -13,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.dynatech2012.kamleonuserapp.views.showActionFailedSheet
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.repositories.Response
@@ -147,6 +148,8 @@ class DataPickerFragment : BottomSheetDialogFragment() {
         viewModel.resetUserUpdated()
         if (response.isSuccess)
             dismiss()
+        else
+            showActionFailedSheet(response.error)
     }
 
     companion object {

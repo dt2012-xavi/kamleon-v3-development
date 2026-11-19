@@ -20,6 +20,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.NavHostFragment
+import com.dynatech2012.kamleonuserapp.network.scanFailureText
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.views.SheetSpec
 import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
@@ -163,9 +164,9 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
             }
         }
         qrViewModel.qrResponse.observe(viewLifecycleOwner, this::uploadQr)
-        qrViewModel.qrUploaded.observeEvent(viewLifecycleOwner) { success ->
-            appendDebugText("QR debug -- upload finished, success: $success")
-            if (success) showScannedDialog() else showScanFailedDialog()
+        qrViewModel.qrUploaded.observeEvent(viewLifecycleOwner) { result ->
+            appendDebugText("QR debug -- upload finished, success: ${result.success}")
+            if (result.success) showScannedDialog() else showScanFailedDialog(result.failure)
         }
     }
 
@@ -320,12 +321,13 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         )
     }
 
-    private fun showScanFailedDialog() {
+    private fun showScanFailedDialog(failure: Exception?) {
+        val (title, message) = scanFailureText(failure)
         childFragmentManager.showKamleonSheet(
             "scan_failed",
             SheetSpec(
-                title = getString(R.string.dialog_scan_failed_title),
-                message = getString(R.string.dialog_scan_failed_message),
+                title = getString(title),
+                message = getString(message),
                 primary = getString(R.string.dialog_ok)
             )
         )

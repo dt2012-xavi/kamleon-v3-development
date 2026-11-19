@@ -1,6 +1,6 @@
 # Capa de red: monitor, clasificador de fallos y `safeCall`
 
-Estado: **borrador pendiente de aprobación** (2026-11-19). Nada de esto está implementado.
+Estado: **aprobado e implementado** (2026-11-19), salvo lo listado en «Estado de la implementación».
 
 ## Intención y por qué
 
@@ -234,3 +234,42 @@ Cada etapa: tests primero, build + lint + tests de dispositivo, comprobación en
 Valores de los tiempos máximos (partir de 10 s para `Read`, el límite actual del arranque, y 15 s para
 `Action`, ajustables); si conviene amortiguar el parpadeo `Online`→`Offline` en redes inestables;
 comprobar el punto marcado «a verificar» (cola de escrituras de Firestore, Task 1 del plan); y revisar cada llamada de los repositorios para asignarle `Read` o `Action`.
+
+## Estado de la implementación (2026-11-19)
+
+Hecho (commits en `codex/gradle-modernization`): monitor, `FailureKind`, `NetworkGate.safeCall`, arranque
+con fallo rápido y reintento al volver la red, y todas las llamadas de los repositorios sobre `safeCall`
+(Firestore, Realtime Database, Cloud Functions, Auth, Storage).
+
+**Criterios unificados**
+
+- Un solo tiempo máximo por llamada: el de `CallKind` (o el que se pasa a `safeCall`). Se eliminaron
+  `profileOrTimeout`, `PROFILE_CHECK_TIMEOUT_MS` y el límite propio de `verifiedAfterReload`; el `reload` del
+  correo pasa por `safeCall` con 5 s.
+- Un solo criterio de «problema de conexión»: `Exception.isConnectionProblem()` (`Network` o `Busy`).
+  `isTransientFailure` lo usa. Lo que ve el usuario sale de `actionFailureText` / `scanFailureText`
+  (`network/ActionFailure.kt`) y `Fragment.showActionFailedSheet`.
+- `ActionResult` lleva el fallo de una acción del usuario (subida de QR, correos de contraseña y PIN) hasta
+  la pantalla, en vez de un `Boolean` que lo perdía.
+- Las pantallas que fallaban en silencio (selectores de altura, peso, género y fecha, y el perfil en Ajustes)
+  muestran ahora una hoja (`action_failed`, una sola aunque reaccionen dos pantallas).
+- Arreglo de un fallo de ruta de error: el logout sin red leía `task.result` de una tarea fallida de
+  Firebase Installations (lanza excepción). Ahora se avisa de la salida sin esperar a ese refresco.
+
+**Fuera de `safeCall`, a propósito**
+
+- `NotificationService.onNewToken` (FCM): escritura idempotente en segundo plano, sin interfaz; que Firestore
+  la encole y la aplique al volver la red es justo lo deseado.
+- `HibpPasswordBreachChecker`: HTTP a un servicio externo, falla en abierto por diseño y su límite se hace
+  desconectando la conexión (el IO bloqueante no se cancela con un tiempo máximo de corrutinas).
+- Carga de la imagen de perfil (Coil): gestionada por la librería, con su caché; si falla, no hay imagen.
+- `EmailFragment` y `DeleteFragment` no se usan en ninguna navegación (sus `changeEmail`/`deleteUser` no
+  tienen pantalla); no se tocaron.
+
+**Pendiente**
+
+- `MainActivity` no trata una sesión rechazada en mitad del uso. Hay que decidir qué cuenta como «sesión
+  terminada» fuera del arranque: `UNAUTHENTICATED` y las excepciones de cuenta de Auth sí; un
+  `PERMISSION_DENIED` de una sola operación puede ser una regla y no la sesión.
+- Sin ver en el móvil (hacen falta sesión real): QR sin red y sin escritura retrasada, medidas y analítica
+  sin red, las hojas nuevas de los selectores y Ajustes, y el logout sin red.

@@ -17,6 +17,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
+import com.dynatech2012.kamleonuserapp.views.showActionFailedSheet
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.InitActivity
 import com.dynatech2012.kamleonuserapp.adapters.OrganizationsListAdapter
@@ -503,8 +504,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
     private fun onUserDataUpdated(response: Response<Unit>?) {
         if (response == null) return
-        if (response.isSuccess)
-            showSavedDialog()
+        if (response.isSuccess) showSavedDialog() else showActionFailedSheet(response.error)
         viewModel.resetUserUpdated()
     }
 

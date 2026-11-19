@@ -345,7 +345,7 @@ class AuthViewModel @Inject constructor(
 
     /** The user signed in: read their profile and say where they go next. */
     private suspend fun loadProfileAfterSignIn(trustMonitor: Boolean = true) {
-        val profile = profileOrTimeout(PROFILE_CHECK_TIMEOUT_MS) { firestoreRepo.getUserData(Source.SERVER, trustMonitor) }
+        val profile = firestoreRepo.getUserData(Source.SERVER, trustMonitor)
         when (profile) {
             is Response.Success -> {
                 fName = profile.data.name
@@ -410,13 +410,13 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val authenticated = authRepo.checkLogged
             val profile = if (authenticated) {
-                profileOrTimeout(PROFILE_CHECK_TIMEOUT_MS) { firestoreRepo.getUserData(Source.SERVER, trustMonitor) }
+                firestoreRepo.getUserData(Source.SERVER, trustMonitor)
             } else {
                 null
             }
             // The email is verified outside the app: ask the server instead of trusting the cached user.
             val verified = if (authenticated && profile is Response.Success) {
-                verifiedAfterReload(authRepo.isEmailVerified, EMAIL_RELOAD_TIMEOUT_MS) { authRepo.reloadEmailVerified() }
+                verifiedAfterReload(authRepo.isEmailVerified) { authRepo.reloadEmailVerified() }
             } else {
                 authRepo.isEmailVerified
             }

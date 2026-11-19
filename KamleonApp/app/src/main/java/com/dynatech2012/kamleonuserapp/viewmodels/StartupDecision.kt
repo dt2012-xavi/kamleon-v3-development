@@ -3,10 +3,9 @@ package com.dynatech2012.kamleonuserapp.viewmodels
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.network.FailureKind
 import com.dynatech2012.kamleonuserapp.network.failureKindOf
+import com.dynatech2012.kamleonuserapp.network.isConnectionProblem
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserProfileMissingException
-import java.util.concurrent.TimeoutException
-import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * The server answered, and refused the signed-in user: the account was disabled or deleted, or the
@@ -20,8 +19,7 @@ internal fun isSessionRejected(e: Exception): Boolean = failureKindOf(e) == Fail
  * fix. Anything else (an internal error, a profile that cannot be parsed) may never go away by
  * retrying, so it also offers a logout.
  */
-internal fun isTransientFailure(e: Exception): Boolean =
-    failureKindOf(e).let { it == FailureKind.Network || it == FailureKind.Busy }
+internal fun isTransientFailure(e: Exception): Boolean = e.isConnectionProblem()
 
 internal fun startupStateFor(
     authenticated: Boolean,
@@ -83,40 +81,13 @@ internal fun registrationFlagsAfterCheck(
     else -> RegistrationFlags(recoveringProfile = false, profileCreated = false)
 }
 
-/** How long the startup check waits for the server to say whether the email is verified now. */
-internal const val EMAIL_RELOAD_TIMEOUT_MS = 5_000L
-
 /**
  * Whether the email counts as verified. The signed-in user is cached, and the email is verified
  * outside the app (a link), so a cached "not verified" may be stale: ask the server with [reload],
- * which answers null when it cannot. No answer, an error or [timeoutMs] count as not verified, so the
- * user is asked instead of the splash waiting.
+ * which answers null when it has no answer (the network layer applies the time limit and catches
+ * errors). No answer counts as not verified, so the user is asked instead of the splash waiting.
  */
 internal suspend fun verifiedAfterReload(
     cachedVerified: Boolean,
-    timeoutMs: Long,
     reload: suspend () -> Boolean?
-): Boolean {
-    if (cachedVerified) return true
-    return try {
-        withTimeoutOrNull(timeoutMs) { reload() } ?: false
-    } catch (e: kotlinx.coroutines.CancellationException) {
-        throw e
-    } catch (e: Exception) {
-        false
-    }
-}
-
-/** How long the startup check waits for the profile before offering a retry. */
-internal const val PROFILE_CHECK_TIMEOUT_MS = 10_000L
-
-/**
- * Runs [load], or gives up after [timeoutMs] with a failure that is not "profile missing", so
- * [startupStateFor] reports it as retryable. Without it a slow network that neither answers nor
- * fails leaves the splash up for ever, with no message and no way to retry.
- */
-internal suspend fun profileOrTimeout(
-    timeoutMs: Long,
-    load: suspend () -> Response<CustomUser>
-): Response<CustomUser> =
-    withTimeoutOrNull(timeoutMs) { load() } ?: Response.Failure(TimeoutException("Profile check timed out"))
+): Boolean = cachedVerified || (reload() ?: false)

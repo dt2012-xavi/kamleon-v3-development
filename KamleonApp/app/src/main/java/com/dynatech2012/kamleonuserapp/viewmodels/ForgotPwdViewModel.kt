@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dynatech2012.kamleonuserapp.network.ActionResult
+import com.dynatech2012.kamleonuserapp.network.actionResultOf
 import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -20,18 +22,14 @@ class ForgotPwdViewModel @Inject constructor(
 
 ) : ViewModel() {
 
-    private val _resetPwdSuccess = MutableLiveData<Boolean>()
-    val resetPwdSuccess: LiveData<Boolean> = _resetPwdSuccess
+    private val _resetPwdSuccess = MutableLiveData<ActionResult>()
+    val resetPwdSuccess: LiveData<ActionResult> = _resetPwdSuccess
     fun resetPwd(email: String) {
         Timber.d("Password reset requested")
         viewModelScope.launch(Dispatchers.IO) {
             val response = cloudFunctions.resetPwd(email)
             Timber.d("Password reset request completed: success=%s", response.isSuccess)
-            if (response.isSuccess) {
-                _resetPwdSuccess.postValue(true)
-            } else {
-                _resetPwdSuccess.postValue(false)
-            }
+            _resetPwdSuccess.postValue(actionResultOf(response))
         }
     }
 

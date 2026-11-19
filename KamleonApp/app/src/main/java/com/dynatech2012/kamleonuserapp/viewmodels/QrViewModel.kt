@@ -14,6 +14,8 @@ import com.dynatech2012.kamleonuserapp.camera.QRCodeImageAnalyzerMLKitKotlin
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.models.Event
 import com.dynatech2012.kamleonuserapp.models.QRResponse
+import com.dynatech2012.kamleonuserapp.network.ActionResult
+import com.dynatech2012.kamleonuserapp.network.actionResultOf
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.RealtimeDataSource
 import com.dynatech2012.kamleonuserapp.repositories.Response
@@ -39,14 +41,14 @@ class QrViewModel @Inject constructor(
         realtime.uploadQrId(qrId)
     }*/
 
-    private var _qrUploaded: MutableLiveData<Event<Boolean>> = MutableLiveData()
-    /** One event per upload: true if Firestore saved the scan, false if it failed. */
-    val qrUploaded: LiveData<Event<Boolean>> = _qrUploaded
+    private var _qrUploaded: MutableLiveData<Event<ActionResult>> = MutableLiveData()
+    /** One event per upload: whether Firestore saved the scan and, if not, why. */
+    val qrUploaded: LiveData<Event<ActionResult>> = _qrUploaded
 
     fun uploadQRtoFirestore(qrResponse: QRResponse?) {
         viewModelScope.launch {
             val result = firestoreDataSource.uploadQrId(qrResponse)
-            _qrUploaded.postValue(Event(result.isSuccess))
+            _qrUploaded.postValue(Event(actionResultOf(result)))
         }
     }
 

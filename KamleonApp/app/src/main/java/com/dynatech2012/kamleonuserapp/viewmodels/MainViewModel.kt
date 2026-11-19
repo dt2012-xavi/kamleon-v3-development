@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
 import coil.request.ImageRequest
+import com.dynatech2012.kamleonuserapp.network.ActionResult
+import com.dynatech2012.kamleonuserapp.network.actionResultOf
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_FIRST_LOGIN
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_NEW_MEASURE
@@ -391,36 +393,26 @@ class MainViewModel @Inject constructor(
 
     }
 
-    private val _resetPwdSuccess = MutableLiveData<Boolean>()
-    val resetPwdSuccess: LiveData<Boolean> = _resetPwdSuccess
+    private val _resetPwdSuccess = MutableLiveData<ActionResult>()
+    val resetPwdSuccess: LiveData<ActionResult> = _resetPwdSuccess
     fun resetPwd() {
         viewModelScope.launch(Dispatchers.IO) {
             val userEmail = userRepository.email
             if (!userEmail.isNullOrEmpty()) {
-                val response = cloudFunctions.resetPwd(userEmail)
-                if (response.isSuccess) {
-                    _resetPwdSuccess.postValue(true)
-                } else {
-                    _resetPwdSuccess.postValue(false)
-                }
+                _resetPwdSuccess.postValue(actionResultOf(cloudFunctions.resetPwd(userEmail)))
             }
         }
     }
 
-    private val _resetPINSuccess = MutableLiveData<Boolean>()
-    val resetPINSuccess: LiveData<Boolean> = _resetPINSuccess
+    private val _resetPINSuccess = MutableLiveData<ActionResult>()
+    val resetPINSuccess: LiveData<ActionResult> = _resetPINSuccess
 
     fun resetPIN() {
         viewModelScope.launch(Dispatchers.IO) {
             val userEmail = userRepository.email
             val userUUid = userRepository.uuid
             if (!userEmail.isNullOrEmpty() && !userUUid.isNullOrEmpty()) {
-                val response = cloudFunctions.resetPin(userEmail, userUUid)
-                if (response.isSuccess) {
-                    _resetPINSuccess.postValue(true)
-                } else {
-                    _resetPINSuccess.postValue(false)
-                }
+                _resetPINSuccess.postValue(actionResultOf(cloudFunctions.resetPin(userEmail, userUUid)))
             }
         }
     }

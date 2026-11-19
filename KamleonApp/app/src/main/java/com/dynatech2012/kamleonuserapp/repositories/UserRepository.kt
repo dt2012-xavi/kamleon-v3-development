@@ -28,18 +28,13 @@ class UserRepository(private val gate: NetworkGate) {
     val isEmailVerified: Boolean
         get() = auth.currentUser?.isEmailVerified ?: true
 
-    /** Asks the server about the signed-in user again; null when that is not possible (no user, no network). */
+    /** Asks the server about the signed-in user again; null when that is not possible (no user, no network, no answer in time). */
     suspend fun reloadEmailVerified(): Boolean? {
         val user = auth.currentUser ?: return null
-        return try {
+        return gate.safeCall(CallKind.Read, timeoutMs = EMAIL_RELOAD_TIMEOUT_MS) {
             user.reload().await()
-            auth.currentUser?.isEmailVerified
-        } catch (e: kotlinx.coroutines.CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Timber.w("Reloading the user failed: %s", e.javaClass.simpleName)
-            null
-        }
+            auth.currentUser?.isEmailVerified ?: throw IllegalStateException("No signed-in user")
+        }.dataValue
     }
 
     suspend fun signup(email: String, pass: String): Response<CustomUser> = gate.safeCall(CallKind.Action) {
@@ -72,12 +67,14 @@ class UserRepository(private val gate: NetworkGate) {
 
     val authStateListener = FirebaseAuth.AuthStateListener {
         if (it.currentUser == null) {
+            Timber.d("Firebase user signed out")
+            // The user is out: the screen must not wait for anything else. The installation token
+            // refresh is best effort, its result is not used, and with no network it fails (reading
+            // task.result of a failed task throws, which crashed the logout without a connection).
+            logoutStatus.postValue(true)
             FirebaseInstallations.getInstance().getToken(true)
                 .addOnCompleteListener { task: Task<InstallationTokenResult> ->
-                    Timber.d("Firebase user signed out")
-                    val tokenS = task.result
-                    val tokenS2 = tokenS.token
-                    logoutStatus.postValue(true)
+                    Timber.d("Installation token refresh after sign-out: success=%s", task.isSuccessful)
                 }
         }
     }
@@ -125,5 +122,8 @@ class UserRepository(private val gate: NetworkGate) {
 
     companion object {
         val TAG = FirestoreDataSource::class.simpleName
+
+        /** The startup check does not wait longer than this to learn whether the email was verified. */
+        private const val EMAIL_RELOAD_TIMEOUT_MS = 5_000L
     }
 }
