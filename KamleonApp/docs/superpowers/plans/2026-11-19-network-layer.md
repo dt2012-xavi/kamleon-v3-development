@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - `minSdk = 30`. Flavor de trabajo: `development`; paquete `com.dynatech2012.kamleonuserapp`; tests JVM en `app/src/test/java/com/kamleonapp/` (paquete `com.kamleonapp`), de dispositivo en `app/src/androidTest/java/com/dynatech2012/kamleonuserapp/`.
-- `Online` = red por defecto con `NET_CAPABILITY_INTERNET` **y** `NET_CAPABILITY_VALIDATED`. Se declara `ACCESS_NETWORK_STATE` en el manifest.
+- `Offline` = ninguna red por defecto con `NET_CAPABILITY_INTERNET`; **no** se exige `NET_CAPABILITY_VALIDATED` (ver spec, sección 1). Se declara `ACCESS_NETWORK_STATE` en el manifest.
 - Tiempos máximos: `Read` 10 s, `Action` 15 s. Dos tipos de llamada: `Read` y `Action`.
 - Una acción sin red falla al momento; no se encola. Solo las lecturas se reintentan solas, y solo desde ViewModels/UI, nunca dentro del repositorio.
 - El monitor se consulta, no se obedece: un «Retry» del usuario llama con `trustMonitor = false`.

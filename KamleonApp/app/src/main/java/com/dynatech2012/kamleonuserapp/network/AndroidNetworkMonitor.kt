@@ -34,7 +34,6 @@ class AndroidNetworkMonitor(context: Context) : NetworkMonitor {
     }
 
     private fun statusOf(capabilities: NetworkCapabilities?) = networkStatusFor(
-        hasInternet = capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true,
-        validated = capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == true
+        hasInternet = capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
     )
 }

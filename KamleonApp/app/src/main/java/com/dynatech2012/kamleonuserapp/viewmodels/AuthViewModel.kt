@@ -11,8 +11,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dynatech2012.kamleonuserapp.models.Gender
-import com.dynatech2012.kamleonuserapp.network.NetworkMonitor
-import com.dynatech2012.kamleonuserapp.network.awaitOnlineFor
 import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.Response
@@ -39,7 +37,6 @@ class AuthViewModel @Inject constructor(
     private val cloudFuctions: CloudFunctions,
     private val passwordPolicy: PasswordPolicy,
     private val sessionCleaner: SessionCleaner,
-    private val networkMonitor: NetworkMonitor,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -413,8 +410,6 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val authenticated = authRepo.checkLogged
             val profile = if (authenticated) {
-                // A network connected a moment ago may not be validated yet: give it a short while, not 10 s.
-                if (trustMonitor) networkMonitor.awaitOnlineFor(STARTUP_NETWORK_GRACE_MS)
                 profileOrTimeout(PROFILE_CHECK_TIMEOUT_MS) { firestoreRepo.getUserData(Source.SERVER, trustMonitor) }
             } else {
                 null

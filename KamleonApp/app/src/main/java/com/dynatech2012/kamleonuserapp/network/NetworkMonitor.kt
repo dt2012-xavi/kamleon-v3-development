@@ -2,7 +2,6 @@ package com.dynatech2012.kamleonuserapp.network
 
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.withTimeoutOrNull
 
 enum class NetworkStatus { Online, Offline }
 
@@ -21,10 +20,11 @@ suspend fun NetworkMonitor.awaitOnline() {
     status.first { it == NetworkStatus.Online }
 }
 
-/** Waits up to [timeoutMs] for the network: true if it is online by then. */
-suspend fun NetworkMonitor.awaitOnlineFor(timeoutMs: Long): Boolean =
-    withTimeoutOrNull(timeoutMs) { awaitOnline(); true } ?: false
-
-/** Online means the default network reaches the Internet and the system has validated it. */
-internal fun networkStatusFor(hasInternet: Boolean, validated: Boolean): NetworkStatus =
-    if (hasInternet && validated) NetworkStatus.Online else NetworkStatus.Offline
+/**
+ * Offline only when there is no network with Internet capability at all (airplane mode, no Wi-Fi and
+ * no data). The system's "validated" flag is deliberately NOT required: a captive portal or a network
+ * that blocks Android's connectivity check never gets it, yet Firebase may work, and calling those
+ * users offline would lock them out.
+ */
+internal fun networkStatusFor(hasInternet: Boolean): NetworkStatus =
+    if (hasInternet) NetworkStatus.Online else NetworkStatus.Offline

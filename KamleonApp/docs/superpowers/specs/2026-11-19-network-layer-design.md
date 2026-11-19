@@ -84,8 +84,11 @@ interface NetworkMonitor {
 ```
 
 `AndroidNetworkMonitor` (singleton Hilt, `@ApplicationContext`): `registerDefaultNetworkCallback` una vez
-para toda la vida de la app. `Online` = red por defecto con `NET_CAPABILITY_INTERNET` **y**
-`NET_CAPABILITY_VALIDATED`. El estado inicial sale de `activeNetwork` y sus capacidades. Declarar
+para toda la vida de la app. `Offline` = ninguna red por defecto con `NET_CAPABILITY_INTERNET` (modo
+avión, sin wifi ni datos). **Se decidió no exigir `NET_CAPABILITY_VALIDATED`** (corregido el 2026-11-19
+tras empezar la migración): un portal cautivo o una red que bloquea la comprobación de conectividad de
+Android nunca la obtiene aunque Firebase funcione, y llamarlas «sin conexión» dejaría a esos usuarios
+sin poder entrar (el antiobjetivo del propio diseño). El estado inicial sale de `activeNetwork` y sus capacidades. Declarar
 `ACCESS_NETWORK_STATE` en el manifest (permiso normal; Firebase ya lo añade al manifest fusionado, se
 hace explícito). Un `FakeNetworkMonitor` para tests.
 
@@ -219,7 +222,7 @@ Cada etapa: tests primero, build + lint + tests de dispositivo, comprobación en
 ## Decisiones mías (a revisar)
 
 - Paquete `network` y nombres (`NetworkMonitor`, `NetworkGate`, `safeCall`, `CallKind`, `FailureKind`).
-- `Online` = `INTERNET` + `VALIDATED`; el monitor vive toda la app.
+- `Offline` = sin red con `INTERNET` (sin exigir `VALIDATED`, ver sección 1); el monitor vive toda la app.
 - Solo dos tipos de llamada (`Read`, `Action`); login y envío de correo cuentan como `Action`.
 - `Response`/`ResponseNullable` no cambian; el `FailureKind` se calcula al leer, no al capturar.
 - Tiempo agotado de una escritura = resultado incierto, aceptado por ser idempotente.
