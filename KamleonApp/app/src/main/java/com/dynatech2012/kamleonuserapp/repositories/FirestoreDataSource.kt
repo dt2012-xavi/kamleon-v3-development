@@ -61,7 +61,7 @@ class FirestoreDataSource @Inject constructor(
                 dateOfBirth = birthday,
                 legal = KamleonLegal(healthConsent = healthConsent, privacyPolicyApp = appPrivacy)
             )
-            return try {
+            return gate.safeCall(CallKind.Action) {
                 val profile = db.runTransaction { transaction ->
                     val existing = transaction.get(doc)
                     if (existing.exists()) {
@@ -73,9 +73,7 @@ class FirestoreDataSource @Inject constructor(
                     }
                 }.await()
                 user = profile
-                Response.Success(profile)
-            } catch (e: Exception) {
-                Response.Failure(e)
+                profile
             }
         }
         return Response.Failure(Exception("User not logged in"))
@@ -85,28 +83,24 @@ class FirestoreDataSource @Inject constructor(
         height: Float?, weight: Float?, gender: Gender
     ): Response<CustomUser> {
         val userId = uuid ?: return Response.Failure(Exception("User not logged in"))
-        return try {
-            val doc = db.collection(USERS_COLLECTION).document(userId)
+        val doc = db.collection(USERS_COLLECTION).document(userId)
+        val update = gate.safeCall(CallKind.Action) {
             doc.update(mapOf("height" to height, "weight" to weight, "gender" to gender)).await()
-            val result = getUserData()
-            if (result is Response.Success) result else Response.Failure(Exception("User profile unavailable"))
-        } catch (e: Exception) {
-            Response.Failure(e)
+            Unit
         }
+        if (update is Response.Failure) return update
+        val result = getUserData()
+        return if (result is Response.Success) result else Response.Failure(Exception("User profile unavailable"))
     }
 
     suspend fun updateUser(data: HashMap<String, Any>): Response<Unit> {
-        if (uuid == null) {
-            return Response.Failure(Exception("User not logged in"))
-        }
+        val userId = uuid ?: return Response.Failure(Exception("User not logged in"))
         DebugLog.i("PIN") { "Updating user profile" }
         DebugLog.i("PIN") { "User profile update requested" }
-        val doc = db.collection(USERS_COLLECTION).document(uuid!!)
-        return try {
+        val doc = db.collection(USERS_COLLECTION).document(userId)
+        return gate.safeCall(CallKind.Action) {
             doc.update(data).await()
-            Response.Success(Unit)
-        } catch (e: Exception) {
-            Response.Failure(e)
+            Unit
         }
     }
 
@@ -125,26 +119,27 @@ class FirestoreDataSource @Inject constructor(
     }
 
     suspend fun updateUserImage(uri: Uri): Response<Boolean> {
-        uuid?.let { uuid ->
-            val doc = db.collection(USERS_COLLECTION).document(uuid)
-            val ref = storage.reference.child("users/$uuid/profile.jpeg")
+        val userId = uuid ?: return Response.Failure(Exception())
+        val doc = db.collection(USERS_COLLECTION).document(userId)
+        val ref = storage.reference.child("users/$userId/profile.jpeg")
+        // A photo can take longer than the default time limit on a slow connection.
+        return gate.safeCall(CallKind.Action, timeoutMs = IMAGE_UPLOAD_TIMEOUT_MS) {
             ref.putFile(uri).await()
             val url = ref.downloadUrl.await()
             doc.update(hashMapOf("imageUrl" to url.toString()) as Map<String, Any>).await()
-            return Response.Success(true)
+            true
         }
-        return Response.Failure(Exception())
     }
 
     suspend fun removeUserImage(): Response<Boolean> {
-        uuid?.let { uuid ->
-            val doc = db.collection(USERS_COLLECTION).document(uuid)
-            val ref = storage.reference.child("users/$uuid/profile.jpeg")
+        val userId = uuid ?: return Response.Failure(Exception())
+        val doc = db.collection(USERS_COLLECTION).document(userId)
+        val ref = storage.reference.child("users/$userId/profile.jpeg")
+        return gate.safeCall(CallKind.Action) {
             ref.delete().await()
             doc.update(hashMapOf("imageUrl" to "") as Map<String, Any>).await()
-            return Response.Success(true)
+            true
         }
-        return Response.Failure(Exception())
     }
 
     suspend fun getUserLastMeasure(userId: String?): Response<ArrayList<MeasureData>> {
@@ -268,54 +263,26 @@ class FirestoreDataSource @Inject constructor(
             .whereEqualTo("email", userRepository.email)
             .whereEqualTo("status", InvitationStatus.SENT.rawValue)
             .count()
-        return try {
-            doc.get(AggregateSource.SERVER).await().count.toInt()
-        } catch (e: Exception) {
-            DebugLog.e(TAG) { "Fetching invitation count failed: ${e.javaClass.simpleName}" }
-            0
+        return gate.safeCall(CallKind.Read) { doc.get(AggregateSource.SERVER).await().count.toInt() }.dataValue ?: 0
+    }
+
+    suspend fun updateToken(): Response<Boolean> {
+        val userId = uuid ?: return Response.Failure(Exception("User not logged in"))
+        return gate.safeCall(CallKind.Action) {
+            // Get new FCM registration token
+            val token = FirebaseMessaging.getInstance().token.await()
+            DebugLog.d(TAG) { "Updating FCM registration token" }
+            db.collection(USERS_COLLECTION).document(userId).update(USERS_TOKEN, token).await()
+            true
         }
     }
 
-    suspend fun updateToken(): Response<Boolean> = suspendCoroutine { continuation ->
-        if (uuid == null) {
-            continuation.resume(Response.Failure(Exception("User not logged in")))
-            return@suspendCoroutine
+    suspend fun deleteToken(): Response<Boolean> {
+        val userId = uuid ?: return Response.Failure(Exception("User not logged in"))
+        return gate.safeCall(CallKind.Action) {
+            db.collection(USERS_COLLECTION).document(userId).update(USERS_TOKEN, "").await()
+            true
         }
-        FirebaseMessaging.getInstance().token
-            .addOnCompleteListener { task1 ->
-                if (!task1.isSuccessful) {
-                    continuation.resume(Response.Failure(Exception("Could not get firebase messaging token")))
-                } else {
-                    // Get new FCM registration token
-                    val token = task1.result
-                    DebugLog.d(TAG) { "Updating FCM registration token" }
-                    db.collection(USERS_COLLECTION).document(uuid!!)
-                        .update(USERS_TOKEN, token)
-                        .addOnCompleteListener { task2 ->
-                            if (task2.isSuccessful) {
-                                continuation.resume(Response.Success(true))
-                            } else {
-                                continuation.resume(Response.Failure(Exception("Could not update firebase messaging token")))
-                            }
-                        }
-                }
-            }
-    }
-
-    suspend fun deleteToken(): Response<Boolean> = suspendCoroutine { continuation ->
-        if (uuid == null) {
-            continuation.resume(Response.Failure(Exception("User not logged in")))
-            return@suspendCoroutine
-        }
-        db.collection(USERS_COLLECTION).document(uuid!!)
-            .update(USERS_TOKEN, "")
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    continuation.resume(Response.Success(true))
-                } else {
-                    continuation.resume(Response.Failure(Exception("Could not delete firebase messaging token")))
-                }
-            }
     }
 
     //suspend fun updateLegal(isAdmin: Boolean): Response<Boolean> {
@@ -324,10 +291,8 @@ class FirestoreDataSource @Inject constructor(
         policyApp: Boolean,
         consent: Boolean
     ): Response<Boolean> {
-        if (uuid == null) {
-            return Response.Failure(Exception("User not logged in"))
-        }
-        return try {
+        val userId = uuid ?: return Response.Failure(Exception("User not logged in"))
+        return gate.safeCall(CallKind.Action) {
             val mutableMap = mutableMapOf<String, Boolean>()
             if (policyAdmin)
                 mutableMap["legal.privacyPolicyAdmin"] = true
@@ -336,13 +301,10 @@ class FirestoreDataSource @Inject constructor(
             if (consent)
                 mutableMap["legal.healthConsent"] = true
             val map = mutableMap.toMap()
-            db.collection(USERS_COLLECTION).document(uuid!!)
+            db.collection(USERS_COLLECTION).document(userId)
                 .update(map).await()
             Log.d(TAG, "update legal success")
-            Response.Success(true)
-        } catch (e: Exception) {
-            DebugLog.e(TAG) { "Updating legal consent failed: ${e.javaClass.simpleName}" }
-            Response.Failure(e)
+            true
         }
     }
 
@@ -371,5 +333,6 @@ class FirestoreDataSource @Inject constructor(
 
     companion object {
         val TAG = FirestoreDataSource::class.simpleName
+        private const val IMAGE_UPLOAD_TIMEOUT_MS = 60_000L
     }
 }

@@ -3,6 +3,8 @@ package com.dynatech2012.kamleonuserapp.repositories
 import timber.log.Timber
 import androidx.lifecycle.MutableLiveData
 import com.dynatech2012.kamleonuserapp.models.CustomUser
+import com.dynatech2012.kamleonuserapp.network.CallKind
+import com.dynatech2012.kamleonuserapp.network.NetworkGate
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
@@ -14,7 +16,7 @@ import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class UserRepository {
+class UserRepository(private val gate: NetworkGate) {
     private val auth = Firebase.auth
 
     private var logged = false
@@ -40,53 +42,17 @@ class UserRepository {
         }
     }
 
-    suspend fun signup(
-        email: String,
-        pass: String
-    ): Response<CustomUser> {//= suspendCoroutine { continuation ->
-        return try {
-            auth.createUserWithEmailAndPassword(email, pass).await()
-            Timber.d("Firebase account creation succeeded")
-            val user = auth.currentUser
-            val customUser = CustomUser(email)
-            Response.Success(customUser)
-        } catch (e: Exception) {
-            Timber.w("Firebase account creation failed: %s", e.javaClass.simpleName)
-            Response.Failure(e)
-        }
+    suspend fun signup(email: String, pass: String): Response<CustomUser> = gate.safeCall(CallKind.Action) {
+        auth.createUserWithEmailAndPassword(email, pass).await()
+        Timber.d("Firebase account creation succeeded")
+        CustomUser(email)
     }
 
-    suspend fun login(
-        email: String,
-        pass: String
-    ): Response<CustomUser> {// = suspendCoroutine { continuation ->
+    suspend fun login(email: String, pass: String): Response<CustomUser> = gate.safeCall(CallKind.Action) {
         Timber.d("Firebase sign-in requested")
-        try {
-            auth.signInWithEmailAndPassword(email, pass).await()
-            Timber.d("Firebase sign-in succeeded")
-            val user = auth.currentUser
-            val customUser = CustomUser(email)
-            return Response.Success(customUser)
-        } catch (e: Exception) {
-            when (e) {
-                is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> {
-                    // Pass wrong
-                    Timber.w("Firebase sign-in failed: invalid credentials")
-                    return Response.Failure(e)
-                }
-
-                is com.google.firebase.auth.FirebaseAuthInvalidUserException -> {
-                    // user invalid
-                    Timber.w("Firebase sign-in failed: invalid user")
-                    return Response.Failure(e)
-                }
-
-                else -> {
-                    Timber.w("Firebase sign-in failed: %s", e.javaClass.simpleName)
-                    return Response.Failure(e)
-                }
-            }
-        }
+        auth.signInWithEmailAndPassword(email, pass).await()
+        Timber.d("Firebase sign-in succeeded")
+        CustomUser(email)
     }
 
     val checkLogged: Boolean
@@ -129,39 +95,31 @@ class UserRepository {
 
     suspend fun changeEmail(currentPwd: String, newEmail: String): Response<Unit> {
         val oldEmail = auth.currentUser?.email ?: return Response.Failure(Exception("No email"))
-        return try {
+        return gate.safeCall(CallKind.Action) {
             val credential = EmailAuthProvider.getCredential(oldEmail, currentPwd)
             // Prompt the user to re-provide their sign-in credentials
             auth.currentUser?.reauthenticate(credential)?.await()
             auth.currentUser?.updateEmail(newEmail)?.await()
-            Response.Success(Unit)
-        }
-        catch (e: Exception) {
-            Response.Failure(e)
+            Unit
         }
     }
 
     suspend fun changePwd(oldPwd: String, newPwd: String): Response<Unit> {
         val oldEmail = auth.currentUser?.email ?: return Response.Failure(Exception("No email"))
-        val credential = EmailAuthProvider
-            .getCredential(oldEmail, oldPwd)
-        // Prompt the user to re-provide their sign-in credentials
-        return try {
+        val credential = EmailAuthProvider.getCredential(oldEmail, oldPwd)
+        return gate.safeCall(CallKind.Action) {
+            // Prompt the user to re-provide their sign-in credentials
             auth.currentUser?.reauthenticate(credential)?.await()
             auth.currentUser?.updatePassword(newPwd)?.await()
-            Response.Success(Unit)
-        } catch (e: Exception) {
-            Response.Failure(e)
+            Unit
         }
     }
 
     suspend fun deleteUser(): Response<Unit> {
         val user = auth.currentUser ?: return Response.Failure(Exception("No user"))
-        return try {
+        return gate.safeCall(CallKind.Action) {
             user.delete().await()
-            Response.Success(Unit)
-        } catch (e: Exception) {
-            Response.Failure(e)
+            Unit
         }
     }
 

@@ -1,6 +1,9 @@
 package com.kamleonapp
 
+import com.dynatech2012.kamleonuserapp.network.NetworkTimeoutException
+import com.dynatech2012.kamleonuserapp.network.NetworkUnavailableException
 import com.dynatech2012.kamleonuserapp.repositories.UserProfileMissingException
+import com.dynatech2012.kamleonuserapp.viewmodels.authErrorKindOf
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthErrorKind
 import com.dynatech2012.kamleonuserapp.viewmodels.LoginState
 import com.dynatech2012.kamleonuserapp.viewmodels.loginStateFor
@@ -60,5 +63,20 @@ class LoginStateTest {
             )
             assertNotEquals(LoginState.ACCOUNT_REJECTED, loginStateForProfileFailure(it, sessionRejected = { false }))
         }
+    }
+
+    @Test fun noNetworkAtLoginIsShownAsNoConnectionNotAsUnknown() {
+        // The failures the network layer produces itself must reach the user as "No connection".
+        listOf(NetworkUnavailableException(), NetworkTimeoutException(15_000), IOException("offline")).forEach {
+            assertEquals(AuthErrorKind.Network, authErrorKindOf(it))
+            assertEquals(LoginState.NETWORK, loginStateFor(authErrorKindOf(it)))
+        }
+    }
+
+    @Test fun noNetworkRightAfterSigningInOffersARetryOfTheProfile() {
+        assertEquals(
+            LoginState.PROFILE_RETRY,
+            loginStateForProfileFailure(NetworkUnavailableException(), sessionRejected = { false })
+        )
     }
 }

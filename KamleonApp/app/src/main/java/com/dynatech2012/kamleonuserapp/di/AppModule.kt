@@ -43,7 +43,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun userRepositoryProvider(): UserRepository = UserRepository()
+    fun userRepositoryProvider(gate: NetworkGate): UserRepository = UserRepository(gate)
     @Provides
     @Singleton
     fun firestoreRepositoryProvider(userRepository: UserRepository, gate: NetworkGate): FirestoreDataSource = FirestoreDataSource(userRepository, gate)
@@ -61,7 +61,7 @@ object AppModule {
     //fun databaseDataSourceProvider(/*measureDataDao: MeasureDataDao*/): DatabaseDataSource = DatabaseDataSource(/*measureDataDao*/)
     @Provides
     @Singleton
-    fun clodFunctionsProvider(userRepository: UserRepository): CloudFunctions = CloudFunctions(userRepository)
+    fun clodFunctionsProvider(userRepository: UserRepository, gate: NetworkGate): CloudFunctions = CloudFunctions(userRepository, gate)
 
 
     @Provides
