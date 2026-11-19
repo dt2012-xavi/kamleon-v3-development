@@ -52,7 +52,7 @@ Antiobjetivos (el cambio fracasa aunque «funcione» si pasa esto):
   clasificación real se prueba en dispositivo con `am instrument` (nunca `connected…AndroidTest`, que
   desinstala la app y pierde la sesión). Mismo patrón ya usado en `SessionRejectedTest`.
 - Firestore con persistencia por defecto: una escritura sin red se **encola** y su `await()` no termina
-  hasta que el servidor la confirma (comportamiento documentado del SDK; **no probado aquí**). Cloud
+  hasta que el servidor la confirma (comportamiento documentado del SDK; **verificado el 2026-11-19 en el Samsung con una sonda desechable: con la red cortada, tras 5 s `set().await()` ni completó ni falló**). Cloud
   Functions (HTTP) y Firebase Auth sí fallan sin red.
 
 ## Alternativas consideradas
