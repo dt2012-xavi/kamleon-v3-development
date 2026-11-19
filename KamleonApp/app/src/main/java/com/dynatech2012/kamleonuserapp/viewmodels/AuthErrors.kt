@@ -1,7 +1,8 @@
 package com.dynatech2012.kamleonuserapp.viewmodels
 
+import com.dynatech2012.kamleonuserapp.network.FailureKind
+import com.dynatech2012.kamleonuserapp.network.failureKindOf
 import com.dynatech2012.kamleonuserapp.repositories.UserProfileMissingException
-import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -39,12 +40,12 @@ internal object LoginState {
 /** Why a sign-in failed, in the terms the user needs: what to do differs for each. */
 internal enum class AuthErrorKind { InvalidCredentials, UserNotFound, UserDisabled, TooManyRequests, Network, Other }
 
-internal fun authErrorKindOf(e: Exception?): AuthErrorKind = when (e) {
-    is FirebaseNetworkException -> AuthErrorKind.Network
-    is FirebaseTooManyRequestsException -> AuthErrorKind.TooManyRequests
-    is FirebaseAuthInvalidUserException ->
+internal fun authErrorKindOf(e: Exception?): AuthErrorKind = when {
+    e is FirebaseTooManyRequestsException -> AuthErrorKind.TooManyRequests
+    e is FirebaseAuthInvalidUserException ->
         if (e.errorCode == "ERROR_USER_DISABLED") AuthErrorKind.UserDisabled else AuthErrorKind.UserNotFound
-    is FirebaseAuthInvalidCredentialsException -> AuthErrorKind.InvalidCredentials
+    e is FirebaseAuthInvalidCredentialsException -> AuthErrorKind.InvalidCredentials
+    e != null && failureKindOf(e) == FailureKind.Network -> AuthErrorKind.Network
     else -> AuthErrorKind.Other
 }
 

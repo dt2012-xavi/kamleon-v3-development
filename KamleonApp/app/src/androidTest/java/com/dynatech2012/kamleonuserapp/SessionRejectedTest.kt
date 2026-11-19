@@ -3,9 +3,12 @@ package com.dynatech2012.kamleonuserapp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel.StartupState
+import com.dynatech2012.kamleonuserapp.network.FailureKind
+import com.dynatech2012.kamleonuserapp.network.failureKindOf
 import com.dynatech2012.kamleonuserapp.viewmodels.ErrorCode
 import com.dynatech2012.kamleonuserapp.viewmodels.errorCodeOf
 import com.dynatech2012.kamleonuserapp.viewmodels.startupStateFor
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.FirebaseFirestoreException.Code
@@ -65,5 +68,20 @@ class SessionRejectedTest {
         assertEquals(ErrorCode.AccountNotFound, errorCodeOf(FirebaseAuthInvalidUserException("ERROR_USER_NOT_FOUND", "t")))
         assertEquals(ErrorCode.ServerError, errorCodeOf(FirebaseFirestoreException("t", Code.INTERNAL)))
         assertEquals(ErrorCode.ServerError, errorCodeOf(IllegalStateException("unparseable profile")))
+    }
+
+    @Test fun failureKindsOfRealFirebaseExceptions() {
+        fun kind(e: Exception) = failureKindOf(e)
+        assertEquals(FailureKind.Network, kind(FirebaseFirestoreException("t", Code.UNAVAILABLE)))
+        assertEquals(FailureKind.Network, kind(FirebaseFirestoreException("t", Code.DEADLINE_EXCEEDED)))
+        assertEquals(FailureKind.Network, kind(FirebaseNetworkException("t")))
+        assertEquals(FailureKind.Busy, kind(FirebaseFirestoreException("t", Code.ABORTED)))
+        assertEquals(FailureKind.Busy, kind(FirebaseFirestoreException("t", Code.RESOURCE_EXHAUSTED)))
+        assertEquals(FailureKind.Busy, kind(FirebaseFirestoreException("t", Code.CANCELLED)))
+        assertEquals(FailureKind.SessionRejected, kind(FirebaseFirestoreException("t", Code.PERMISSION_DENIED)))
+        assertEquals(FailureKind.SessionRejected, kind(FirebaseFirestoreException("t", Code.UNAUTHENTICATED)))
+        assertEquals(FailureKind.SessionRejected, kind(FirebaseAuthInvalidUserException("ERROR_USER_DISABLED", "t")))
+        assertEquals(FailureKind.Server, kind(FirebaseFirestoreException("t", Code.INTERNAL)))
+        assertEquals(FailureKind.Unknown, kind(IllegalStateException("unparseable profile")))
     }
 }

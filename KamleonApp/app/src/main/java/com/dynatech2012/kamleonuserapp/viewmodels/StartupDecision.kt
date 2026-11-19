@@ -1,12 +1,10 @@
 package com.dynatech2012.kamleonuserapp.viewmodels
 
 import com.dynatech2012.kamleonuserapp.models.CustomUser
+import com.dynatech2012.kamleonuserapp.network.FailureKind
+import com.dynatech2012.kamleonuserapp.network.failureKindOf
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserProfileMissingException
-import com.google.firebase.FirebaseNetworkException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.firestore.FirebaseFirestoreException
-import java.io.IOException
 import java.util.concurrent.TimeoutException
 import kotlinx.coroutines.withTimeoutOrNull
 
@@ -15,32 +13,15 @@ import kotlinx.coroutines.withTimeoutOrNull
  * session revoked. Retrying cannot fix that, only logging in again can, so it must not be shown as
  * a connection problem. Network and server trouble (unavailable, timeout, ...) stays retryable.
  */
-internal fun isSessionRejected(e: Exception): Boolean = when (e) {
-    is FirebaseAuthInvalidUserException -> true
-    is FirebaseFirestoreException ->
-        e.code == FirebaseFirestoreException.Code.PERMISSION_DENIED ||
-            e.code == FirebaseFirestoreException.Code.UNAUTHENTICATED
-    else -> false
-}
+internal fun isSessionRejected(e: Exception): Boolean = failureKindOf(e) == FailureKind.SessionRejected
 
 /**
  * The profile could not be read because of the network or a busy server, which a new attempt can
  * fix. Anything else (an internal error, a profile that cannot be parsed) may never go away by
- * retrying, so it also offers a logout. Codes are matched inside the function, not in a constant,
- * because Firestore's enum needs real Android classes to load.
+ * retrying, so it also offers a logout.
  */
-internal fun isTransientFailure(e: Exception): Boolean = when (e) {
-    is TimeoutException, is IOException, is FirebaseNetworkException -> true
-    is FirebaseFirestoreException -> when (e.code) {
-        FirebaseFirestoreException.Code.UNAVAILABLE,
-        FirebaseFirestoreException.Code.DEADLINE_EXCEEDED,
-        FirebaseFirestoreException.Code.ABORTED,
-        FirebaseFirestoreException.Code.RESOURCE_EXHAUSTED,
-        FirebaseFirestoreException.Code.CANCELLED -> true
-        else -> false
-    }
-    else -> false
-}
+internal fun isTransientFailure(e: Exception): Boolean =
+    failureKindOf(e).let { it == FailureKind.Network || it == FailureKind.Busy }
 
 internal fun startupStateFor(
     authenticated: Boolean,
