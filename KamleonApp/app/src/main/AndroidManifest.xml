@@ -15,6 +15,7 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- Session and measurement data: backups disabled with explicit cloud/D2D exclusions.
          hardwareAccelerated enables GPU rendering; it does not fix memory errors.

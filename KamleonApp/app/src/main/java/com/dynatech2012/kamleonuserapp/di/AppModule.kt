@@ -22,6 +22,8 @@ import com.dynatech2012.kamleonuserapp.security.ZxcvbnPasswordStrengthEstimator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import com.dynatech2012.kamleonuserapp.network.AndroidNetworkMonitor
+import com.dynatech2012.kamleonuserapp.network.NetworkMonitor
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -30,6 +32,10 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
     //val intVectorTypeConverter = IntVectorTypeConverter()
+    @Provides
+    @Singleton
+    fun networkMonitorProvider(@ApplicationContext appContext: Context): NetworkMonitor = AndroidNetworkMonitor(appContext)
+
     @Provides
     @Singleton
     fun userRepositoryProvider(): UserRepository = UserRepository()
