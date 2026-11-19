@@ -43,7 +43,7 @@ class StartupDecisionTest {
             startupStateFor(true, true, Response.Success(user))
         )
         assertEquals(
-            AuthViewModel.StartupState.NeedsLogin,
+            AuthViewModel.StartupState.NeedsVerification,
             startupStateFor(true, false, Response.Success(user))
         )
     }

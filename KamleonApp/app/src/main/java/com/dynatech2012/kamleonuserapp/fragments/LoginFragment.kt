@@ -79,14 +79,14 @@ class LoginFragment : Fragment() {
             when (it) {
                 SheetResult.PRIMARY -> retryAfterSheetCloses { viewModel.retryProfileAfterLogin() }
                 SheetResult.SECONDARY -> viewModel.logOut()
-                SheetResult.DISMISSED -> Unit
+                SheetResult.TERTIARY, SheetResult.DISMISSED -> Unit
             }
         }
         onKamleonSheetResult("login_policy_retry") {
             when (it) {
                 SheetResult.PRIMARY -> retryAfterSheetCloses { viewModel.acceptPolicy() }
                 SheetResult.SECONDARY -> viewModel.logOut()
-                SheetResult.DISMISSED -> Unit
+                SheetResult.TERTIARY, SheetResult.DISMISSED -> Unit
             }
         }
         onKamleonSheetResult("login_policy") {
@@ -94,7 +94,7 @@ class LoginFragment : Fragment() {
                 SheetResult.PRIMARY -> viewModel.acceptPolicy()
                 // Refusing means this account cannot be used: leave it clean instead of a button that closes the app.
                 SheetResult.SECONDARY -> viewModel.logOut()
-                SheetResult.DISMISSED -> Unit
+                SheetResult.TERTIARY, SheetResult.DISMISSED -> Unit
             }
         }
         viewModel.uiState.observe(viewLifecycleOwner, this::handleState)

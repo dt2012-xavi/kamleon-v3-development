@@ -30,6 +30,19 @@ class KamleonSheetContentTest {
     }
 
     @Test
+    fun tertiaryReportsItsResultAndIsOnlyShownWhenGiven() {
+        setSheet(SheetSpec(message = "m", primary = "Yes", secondary = "Maybe", tertiary = "No"))
+        composeRule.onNodeWithTag("sheet_tertiary").performClick()
+        composeRule.runOnIdle { assertEquals(listOf(SheetResult.TERTIARY), results) }
+    }
+
+    @Test
+    fun tertiaryIsNotShownByDefault() {
+        setSheet(SheetSpec(message = "m", primary = "OK", secondary = "No"))
+        composeRule.onNodeWithTag("sheet_tertiary").assertDoesNotExist()
+    }
+
+    @Test
     fun secondaryIsOnlyShownWhenGiven() {
         setSheet(SheetSpec(message = "Done", primary = "OK"))
         composeRule.onNodeWithTag("sheet_secondary").assertDoesNotExist()

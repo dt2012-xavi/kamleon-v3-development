@@ -13,6 +13,7 @@ internal sealed interface StartupAction {
     data object ShowServerError : StartupAction
     data object ShowSessionEnded : StartupAction
     data object ShowPolicy : StartupAction
+    data object ShowVerification : StartupAction
     data class GoTo(val screen: StartupScreen) : StartupAction
 }
 
@@ -43,6 +44,11 @@ internal fun startupRouteFor(
         // Already signed in: the policy sheet opens over Login without asking for the password.
         StartupState.NeedsPolicy ->
             if (fromSplash) StartupRoute(StartupAction.ShowPolicy, endsRestoredFlow = true)
+            else StartupRoute(StartupAction.None)
+
+        // Signed in but the email is not verified: say so over Login instead of asking for the password.
+        StartupState.NeedsVerification ->
+            if (fromSplash) StartupRoute(StartupAction.ShowVerification, endsRestoredFlow = true)
             else StartupRoute(StartupAction.None)
 
         // A missing profile is also recovered from the login, where the user may have signed in.

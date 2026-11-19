@@ -31,6 +31,7 @@ import timber.log.Timber
 class InitActivity : BaseActivity<ActivityInitBinding>() {
     private val viewModel: AuthViewModel by viewModels()
     private var resetRestoredFlow = false
+    private var verificationNotice: String? = null
 
     // Ask the NavHostFragment, not the view: after process death onCreate runs before the
     // container view has its NavController, and findNavController(viewId) throws there.
@@ -87,6 +88,10 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             StartupAction.ShowError -> showStartupErrorSheet()
             StartupAction.ShowServerError -> showStartupServerErrorSheet()
             StartupAction.ShowSessionEnded -> showSessionEndedSheet()
+            StartupAction.ShowVerification -> {
+                if (currentScreen() != StartupScreen.Login) navController.navigate(R.id.action_global_loginFragment)
+                showVerificationSheet()
+            }
             StartupAction.ShowPolicy -> {
                 if (currentScreen() != StartupScreen.Login) navController.navigate(R.id.action_global_loginFragment)
                 viewModel.showPolicy()
@@ -152,6 +157,47 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
         )
     }
 
+    /**
+     * Signed in, but the email is not verified: three ways on, so the user is never stuck with an
+     * address they mistyped. [verificationNotice] tells what happened to the last thing they tried.
+     */
+    private fun showVerificationSheet() {
+        val email = viewModel.signedInEmail
+        val base = if (email != null) getString(R.string.dialog_verify_desc, email)
+        else getString(R.string.login_alert_description_not_verified_email)
+        supportFragmentManager.showKamleonSheet(
+            STARTUP_VERIFY_SHEET,
+            SheetSpec(
+                title = getString(R.string.dialog_verify_title),
+                message = verificationNotice?.let { it + "\n\n" + base } ?: base,
+                primary = getString(R.string.verify_done),
+                secondary = getText(R.string.dialog_verify_resend),
+                tertiary = getString(R.string.dialog_logout_y),
+                dismissible = false
+            )
+        )
+    }
+
+    /** "I've verified it": ask the server again; if it is still not verified the sheet comes back saying so. */
+    private fun recheckVerification() {
+        lifecycleScope.launch {
+            delay(RETRY_FEEDBACK_MS)
+            verificationNotice = getString(R.string.verification_still_pending)
+            // The user asked for this answer: show it wherever they are, as on the splash.
+            resetRestoredFlow = true
+            viewModel.recheckVerification()
+        }
+    }
+
+    private fun resendVerification() {
+        lifecycleScope.launch {
+            delay(RETRY_FEEDBACK_MS)
+            val sent = viewModel.requestVerificationEmail() == true
+            verificationNotice = getString(if (sent) R.string.verification_email_sent else R.string.verification_email_failed)
+            showVerificationSheet()
+        }
+    }
+
     private fun withErrorCode(message: String): String =
         viewModel.startupErrorCode?.let { message + "\n\n" + getString(R.string.error_code_line, it.label) }
             ?: message
@@ -209,6 +255,14 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             if (bundle.getBoolean(Constants.GRANT_NOTIFICATION_BUNDLE)) askNotificationPermission()
         }
         onKamleonSheetResult(STARTUP_ERROR_SHEET) { if (it == SheetResult.PRIMARY) retryStartupCheck() }
+        onKamleonSheetResult(STARTUP_VERIFY_SHEET) {
+            when (it) {
+                SheetResult.PRIMARY -> recheckVerification()
+                SheetResult.SECONDARY -> resendVerification()
+                SheetResult.TERTIARY -> viewModel.logOut(restartStartupCheck = true)
+                SheetResult.DISMISSED -> Unit
+            }
+        }
         onKamleonSheetResult(SESSION_ENDED_SHEET) {
             if (it == SheetResult.PRIMARY) viewModel.logOut(restartStartupCheck = true)
         }
@@ -216,7 +270,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             when (it) {
                 SheetResult.PRIMARY -> retryStartupCheck()
                 SheetResult.SECONDARY -> viewModel.logOut(restartStartupCheck = true)
-                SheetResult.DISMISSED -> Unit
+                SheetResult.TERTIARY, SheetResult.DISMISSED -> Unit
             }
         }
     }
@@ -226,6 +280,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     private companion object {
         const val STARTUP_ERROR_SHEET = "startup_error"
         const val STARTUP_SERVER_ERROR_SHEET = "startup_server_error"
+        const val STARTUP_VERIFY_SHEET = "startup_verify"
         const val SESSION_ENDED_SHEET = "startup_session_ended"
         const val RETRY_FEEDBACK_MS = 600L
     }

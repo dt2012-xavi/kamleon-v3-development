@@ -55,18 +55,19 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 /** What the user did with a [KamleonSheet]. */
-enum class SheetResult { PRIMARY, SECONDARY, DISMISSED }
+enum class SheetResult { PRIMARY, SECONDARY, TERTIARY, DISMISSED }
 
 /**
  * Content of a [KamleonSheet]. [message] and [title] keep bold and underline markup. With
  * [destructive] the primary action is red. A sheet that is not [dismissible] can only be left
- * through its buttons. [linkUrl], when set, opens that URL when the message is tapped.
+ * through its buttons. [secondary] and [tertiary] are text links under the primary button. [linkUrl], when set, opens that URL when the message is tapped.
  */
 data class SheetSpec(
     val message: CharSequence,
     val primary: String,
     val title: CharSequence? = null,
     val secondary: CharSequence? = null,
+    val tertiary: CharSequence? = null,
     val destructive: Boolean = false,
     val dismissible: Boolean = true,
     val linkUrl: String? = null
@@ -77,6 +78,7 @@ data class SheetSpec(
         putString(ARG_PRIMARY, primary)
         putCharSequence(ARG_TITLE, title)
         putCharSequence(ARG_SECONDARY, secondary)
+        putCharSequence(ARG_TERTIARY, tertiary)
         putBoolean(ARG_DESTRUCTIVE, destructive)
         putBoolean(ARG_DISMISSIBLE, dismissible)
         putString(ARG_LINK, linkUrl)
@@ -88,6 +90,7 @@ data class SheetSpec(
         private const val ARG_PRIMARY = "sheet_primary"
         private const val ARG_TITLE = "sheet_title"
         private const val ARG_SECONDARY = "sheet_secondary"
+        private const val ARG_TERTIARY = "sheet_tertiary"
         private const val ARG_DESTRUCTIVE = "sheet_destructive"
         private const val ARG_DISMISSIBLE = "sheet_dismissible"
         private const val ARG_LINK = "sheet_link"
@@ -97,6 +100,7 @@ data class SheetSpec(
             primary = b.getString(ARG_PRIMARY).orEmpty(),
             title = b.getCharSequence(ARG_TITLE),
             secondary = b.getCharSequence(ARG_SECONDARY),
+            tertiary = b.getCharSequence(ARG_TERTIARY),
             destructive = b.getBoolean(ARG_DESTRUCTIVE),
             dismissible = b.getBoolean(ARG_DISMISSIBLE, true),
             linkUrl = b.getString(ARG_LINK)
@@ -211,6 +215,18 @@ fun KamleonSheetContent(spec: SheetSpec, onAction: (SheetResult) -> Unit) {
                 pressedColor = colorResource(R.color.kamleon_blue_pressed),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
                 modifier = Modifier.padding(top = 8.dp).testTag("sheet_secondary")
+            )
+        }
+        spec.tertiary?.let { tertiary ->
+            KamleonTextLink(
+                text = tertiary.toString(),
+                underline = tertiary.hasUnderline(),
+                onClick = { onAction(SheetResult.TERTIARY) },
+                style = kamleonBodyBold(),
+                color = colorResource(R.color.kamleon_blue),
+                pressedColor = colorResource(R.color.kamleon_blue_pressed),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                modifier = Modifier.testTag("sheet_tertiary")
             )
         }
     }

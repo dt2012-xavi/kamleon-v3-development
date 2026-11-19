@@ -96,6 +96,18 @@ class StartupRouteTest {
         }
     }
 
+    @Test fun anUnverifiedEmailIsExplainedFromTheSplashOrARestoredFlow() {
+        val showVerification = StartupRoute(StartupAction.ShowVerification, endsRestoredFlow = true)
+        assertEquals(showVerification, route(StartupState.NeedsVerification, StartupScreen.Splash))
+        StartupScreen.entries.forEach { screen ->
+            assertEquals(showVerification, route(StartupState.NeedsVerification, screen, restored = true))
+        }
+        // A registration in progress (or a login being typed) is not interrupted by a scan link.
+        listOf(StartupScreen.Login, StartupScreen.Register, StartupScreen.Other).forEach { screen ->
+            assertEquals(none, route(StartupState.NeedsVerification, screen))
+        }
+    }
+
     @Test fun anEndedSessionIsExplainedWhereTheOtherStartupErrorsAre() {
         val showEnded = StartupRoute(StartupAction.ShowSessionEnded)
         assertEquals(showEnded, route(StartupState.SessionRejected, StartupScreen.Splash))

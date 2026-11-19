@@ -18,6 +18,13 @@ class RegistrationFlagsTest {
         )
     }
 
+    @Test fun anUnverifiedEmailKeepsTheRegistrationStateToo() {
+        assertEquals(
+            midRegistration,
+            registrationFlagsAfterCheck(authenticated = true, StartupState.NeedsVerification, midRegistration)
+        )
+    }
+
     @Test fun inconclusiveCheckKeepsTheRegistrationState() {
         assertEquals(
             midRegistration,

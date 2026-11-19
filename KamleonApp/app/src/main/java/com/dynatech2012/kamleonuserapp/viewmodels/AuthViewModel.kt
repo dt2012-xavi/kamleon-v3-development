@@ -41,7 +41,8 @@ class AuthViewModel @Inject constructor(
 ) : ViewModel() {
 
     enum class StartupState {
-        Checking, NeedsLogin, NeedsProfile, NeedsPolicy, Ready, RetryableError, ServerError, SessionRejected
+        Checking, NeedsLogin, NeedsProfile, NeedsPolicy, Ready, RetryableError, ServerError, SessionRejected,
+        NeedsVerification
     }
 
     private val _startupState = MutableLiveData(StartupState.Checking)
@@ -278,28 +279,25 @@ class AuthViewModel @Inject constructor(
 
     fun sendVerificationEmail() {
         viewModelScope.launch(Dispatchers.IO) {
-            val userId = authRepo.uuid ?: return@launch
-            val emailAddress = authRepo.email ?: return@launch
-            val username = if (!fName.isNullOrBlank() && !lName.isNullOrBlank()) {
-                "$fName $lName"
-            } else {
-                val profile = firestoreRepo.getUserData().dataValue
-                if (profile == null) {
-                    _uiState.postValue(-6)
-                    return@launch
-                }
-                "${profile.name} ${profile.lastName}"
-            }
-            Timber.d("Requesting verification email")
-            val verificationResponse =
-                cloudFuctions.sendVerificationEmail(userId, emailAddress, username)
-            if (verificationResponse.isSuccess) {
-                Timber.d("Verification email request succeeded")
-                _uiState.postValue(3)
-            } else {
-                _uiState.postValue(-6)
-            }
+            val sent = requestVerificationEmail() ?: return@launch
+            _uiState.postValue(if (sent) 3 else -6)
         }
+    }
+
+    /** Asks for a new verification email: whether it was sent, or null when nobody is signed in. */
+    suspend fun requestVerificationEmail(): Boolean? = withContext(Dispatchers.IO) {
+        val userId = authRepo.uuid ?: return@withContext null
+        val emailAddress = authRepo.email ?: return@withContext null
+        val username = if (!fName.isNullOrBlank() && !lName.isNullOrBlank()) {
+            "$fName $lName"
+        } else {
+            val profile = firestoreRepo.getUserData().dataValue ?: return@withContext false
+            "${profile.name} ${profile.lastName}"
+        }
+        Timber.d("Requesting verification email")
+        val sent = cloudFuctions.sendVerificationEmail(userId, emailAddress, username).isSuccess
+        Timber.d("Verification email request succeeded: %s", sent)
+        sent
     }
 
     /** The startup check found a signed-in user who has not accepted the policy: ask, no password needed. */
@@ -412,7 +410,13 @@ class AuthViewModel @Inject constructor(
             } else {
                 null
             }
-            val state = startupStateFor(authenticated, authRepo.isEmailVerified, profile)
+            // The email is verified outside the app: ask the server instead of trusting the cached user.
+            val verified = if (authenticated && profile is Response.Success) {
+                verifiedAfterReload(authRepo.isEmailVerified, EMAIL_RELOAD_TIMEOUT_MS) { authRepo.reloadEmailVerified() }
+            } else {
+                authRepo.isEmailVerified
+            }
+            val state = startupStateFor(authenticated, verified, profile)
             if (request == startupCheck) {
                 val flags = registrationFlagsAfterCheck(
                     authenticated, state, RegistrationFlags(recoveringProfile, profileCreated)
@@ -428,10 +432,28 @@ class AuthViewModel @Inject constructor(
                         report(code, profile.exception)
                     }
                 }
+                // Before the state, so a screen that reacts to it (the policy sheet) is not overwritten.
+                if (emailRecheck) {
+                    emailRecheck = false
+                    _uiState.postValue(0)
+                }
                 _startupState.postValue(state)
             }
         }
     }
+
+    @Volatile
+    private var emailRecheck = false
+
+    /** The user says they verified their email: check again, with the login's spinner meanwhile. */
+    fun recheckVerification() {
+        emailRecheck = true
+        _uiState.value = 1
+        checkLogin()
+    }
+
+    /** The email of the signed-in account, to tell the user where the verification email went. */
+    val signedInEmail: String? get() = authRepo.email
 
 
     private fun isValidEmail(target: CharSequence): Boolean {

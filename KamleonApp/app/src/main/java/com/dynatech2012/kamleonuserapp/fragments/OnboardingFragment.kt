@@ -141,7 +141,7 @@ class OnboardingFragment : Fragment() {
                     resendPending = true
                     viewModel.sendVerificationEmail()
                 }
-                SheetResult.DISMISSED -> Unit
+                SheetResult.TERTIARY, SheetResult.DISMISSED -> Unit
             }
         }
         viewModel.uiState.observe(viewLifecycleOwner, this::onStateReceived)

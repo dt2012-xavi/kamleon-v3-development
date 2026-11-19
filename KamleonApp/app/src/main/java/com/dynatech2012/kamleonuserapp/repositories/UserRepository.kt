@@ -26,6 +26,20 @@ class UserRepository {
     val isEmailVerified: Boolean
         get() = auth.currentUser?.isEmailVerified ?: true
 
+    /** Asks the server about the signed-in user again; null when that is not possible (no user, no network). */
+    suspend fun reloadEmailVerified(): Boolean? {
+        val user = auth.currentUser ?: return null
+        return try {
+            user.reload().await()
+            auth.currentUser?.isEmailVerified
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Timber.w("Reloading the user failed: %s", e.javaClass.simpleName)
+            null
+        }
+    }
+
     suspend fun signup(
         email: String,
         pass: String

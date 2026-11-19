@@ -52,7 +52,7 @@ internal fun startupStateFor(
     if (!authenticated) return AuthViewModel.StartupState.NeedsLogin
     return when (profile) {
         is Response.Success -> when {
-            !verified -> AuthViewModel.StartupState.NeedsLogin
+            !verified -> AuthViewModel.StartupState.NeedsVerification
             profile.data.legal.privacyPolicyApp -> AuthViewModel.StartupState.Ready
             else -> AuthViewModel.StartupState.NeedsPolicy
         }
@@ -82,8 +82,33 @@ internal fun registrationFlagsAfterCheck(
 ): RegistrationFlags = when {
     state == AuthViewModel.StartupState.NeedsProfile -> RegistrationFlags(recoveringProfile = true, profileCreated = false)
     state == AuthViewModel.StartupState.RetryableError || state == AuthViewModel.StartupState.ServerError -> current
-    authenticated && state == AuthViewModel.StartupState.NeedsLogin -> current
+    authenticated && (state == AuthViewModel.StartupState.NeedsLogin ||
+        state == AuthViewModel.StartupState.NeedsVerification) -> current
     else -> RegistrationFlags(recoveringProfile = false, profileCreated = false)
+}
+
+/** How long the startup check waits for the server to say whether the email is verified now. */
+internal const val EMAIL_RELOAD_TIMEOUT_MS = 5_000L
+
+/**
+ * Whether the email counts as verified. The signed-in user is cached, and the email is verified
+ * outside the app (a link), so a cached "not verified" may be stale: ask the server with [reload],
+ * which answers null when it cannot. No answer, an error or [timeoutMs] count as not verified, so the
+ * user is asked instead of the splash waiting.
+ */
+internal suspend fun verifiedAfterReload(
+    cachedVerified: Boolean,
+    timeoutMs: Long,
+    reload: suspend () -> Boolean?
+): Boolean {
+    if (cachedVerified) return true
+    return try {
+        withTimeoutOrNull(timeoutMs) { reload() } ?: false
+    } catch (e: kotlinx.coroutines.CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        false
+    }
 }
 
 /** How long the startup check waits for the profile before offering a retry. */
