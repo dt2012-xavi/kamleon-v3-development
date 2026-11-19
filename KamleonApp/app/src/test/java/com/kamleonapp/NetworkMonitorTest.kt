@@ -2,6 +2,7 @@ package com.kamleonapp
 
 import com.dynatech2012.kamleonuserapp.network.NetworkStatus
 import com.dynatech2012.kamleonuserapp.network.awaitOnline
+import com.dynatech2012.kamleonuserapp.network.awaitOnlineFor
 import com.dynatech2012.kamleonuserapp.network.networkStatusFor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -47,5 +48,21 @@ class NetworkMonitorTest {
         runCurrent()
         assertTrue(done)
         job.join()
+    }
+
+    @Test fun awaitOnlineForGivesUpAfterTheTimeout() = runTest {
+        // A network that was just connected may not be validated yet: wait a moment, but not for ever.
+        assertFalse(FakeNetworkMonitor(NetworkStatus.Offline).awaitOnlineFor(1_500))
+        assertTrue(FakeNetworkMonitor(NetworkStatus.Online).awaitOnlineFor(1_500))
+    }
+
+    @Test fun awaitOnlineForReturnsTrueWhenTheNetworkComesBackInTime() = runTest {
+        val monitor = FakeNetworkMonitor(NetworkStatus.Offline)
+        var result: Boolean? = null
+        launch { result = monitor.awaitOnlineFor(1_500) }
+        advanceTimeBy(500)
+        monitor.set(NetworkStatus.Online)
+        runCurrent()
+        assertEquals(true, result)
     }
 }

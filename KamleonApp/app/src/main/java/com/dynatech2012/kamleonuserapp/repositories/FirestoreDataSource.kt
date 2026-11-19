@@ -15,6 +15,8 @@ import com.dynatech2012.kamleonuserapp.models.KamleonLegal
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.models.RawMeasureData
 import com.dynatech2012.kamleonuserapp.models.UserStatus
+import com.dynatech2012.kamleonuserapp.network.CallKind
+import com.dynatech2012.kamleonuserapp.network.NetworkGate
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.google.firebase.Firebase
 
@@ -34,7 +36,10 @@ import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class FirestoreDataSource @Inject constructor(private val userRepository: UserRepository) {
+class FirestoreDataSource @Inject constructor(
+    private val userRepository: UserRepository,
+    private val gate: NetworkGate
+) {
     private val db = Firebase.firestore
     private lateinit var user: CustomUser
     private val storage = Firebase.storage
@@ -105,18 +110,17 @@ class FirestoreDataSource @Inject constructor(private val userRepository: UserRe
         }
     }
 
-    suspend fun getUserData(source: Source = Source.DEFAULT): Response<CustomUser> {
+    /** [trustMonitor] false: a retry the user asked for, which must try for real even if the monitor says offline. */
+    suspend fun getUserData(source: Source = Source.DEFAULT, trustMonitor: Boolean = true): Response<CustomUser> {
         val userId = uuid ?: return Response.Failure(Exception("User not logged in"))
-        return try {
+        return gate.safeCall(CallKind.Read, trustMonitor) {
             val snapshot = db.collection(USERS_COLLECTION).document(userId).get(source).await()
-            if (!snapshot.exists()) return Response.Failure(UserProfileMissingException())
+            if (!snapshot.exists()) throw UserProfileMissingException()
             val profile = snapshot.toObject<CustomUser>()
-                ?: return Response.Failure(Exception("User profile could not be parsed"))
+                ?: throw IllegalStateException("User profile could not be parsed")
             user = profile
             DebugLog.d(TAG) { "User profile loaded" }
-            Response.Success(profile)
-        } catch (e: Exception) {
-            Response.Failure(e)
+            profile
         }
     }
 

@@ -83,6 +83,9 @@ internal fun registrationFlagsAfterCheck(
     else -> RegistrationFlags(recoveringProfile = false, profileCreated = false)
 }
 
+/** How long the startup check waits for a network that is not validated yet before asking the server. */
+internal const val STARTUP_NETWORK_GRACE_MS = 1_500L
+
 /** How long the startup check waits for the server to say whether the email is verified now. */
 internal const val EMAIL_RELOAD_TIMEOUT_MS = 5_000L
 

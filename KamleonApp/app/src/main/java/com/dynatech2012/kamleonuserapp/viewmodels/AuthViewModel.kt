@@ -11,6 +11,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dynatech2012.kamleonuserapp.models.Gender
+import com.dynatech2012.kamleonuserapp.network.NetworkMonitor
+import com.dynatech2012.kamleonuserapp.network.awaitOnlineFor
 import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.Response
@@ -37,6 +39,7 @@ class AuthViewModel @Inject constructor(
     private val cloudFuctions: CloudFunctions,
     private val passwordPolicy: PasswordPolicy,
     private val sessionCleaner: SessionCleaner,
+    private val networkMonitor: NetworkMonitor,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -344,8 +347,8 @@ class AuthViewModel @Inject constructor(
     }
 
     /** The user signed in: read their profile and say where they go next. */
-    private suspend fun loadProfileAfterSignIn() {
-        val profile = profileOrTimeout(PROFILE_CHECK_TIMEOUT_MS) { firestoreRepo.getUserData(Source.SERVER) }
+    private suspend fun loadProfileAfterSignIn(trustMonitor: Boolean = true) {
+        val profile = profileOrTimeout(PROFILE_CHECK_TIMEOUT_MS) { firestoreRepo.getUserData(Source.SERVER, trustMonitor) }
         when (profile) {
             is Response.Success -> {
                 fName = profile.data.name
@@ -375,7 +378,7 @@ class AuthViewModel @Inject constructor(
     /** Another try at the profile after a sign-in that worked: no need to type the password again. */
     fun retryProfileAfterLogin() {
         _uiState.value = 1
-        viewModelScope.launch(Dispatchers.IO) { loadProfileAfterSignIn() }
+        viewModelScope.launch(Dispatchers.IO) { loadProfileAfterSignIn(trustMonitor = false) }
     }
 
     /**
@@ -400,13 +403,19 @@ class AuthViewModel @Inject constructor(
         _uiState.value = 0
     }
 
-    fun checkLogin() {
+    /**
+     * Checks the session and the account. [trustMonitor] false is for a retry the user asked for: the
+     * server is tried for real even if the monitor says there is no network.
+     */
+    fun checkLogin(trustMonitor: Boolean = true) {
         val request = ++startupCheck
         _startupState.value = StartupState.Checking
         viewModelScope.launch(Dispatchers.IO) {
             val authenticated = authRepo.checkLogged
             val profile = if (authenticated) {
-                profileOrTimeout(PROFILE_CHECK_TIMEOUT_MS) { firestoreRepo.getUserData(Source.SERVER) }
+                // A network connected a moment ago may not be validated yet: give it a short while, not 10 s.
+                if (trustMonitor) networkMonitor.awaitOnlineFor(STARTUP_NETWORK_GRACE_MS)
+                profileOrTimeout(PROFILE_CHECK_TIMEOUT_MS) { firestoreRepo.getUserData(Source.SERVER, trustMonitor) }
             } else {
                 null
             }
@@ -434,7 +443,12 @@ class AuthViewModel @Inject constructor(
                 }
                 // The server could not be asked: see whether the phone has a complete account to open with.
                 continueOffline = if (state == StartupState.RetryableError && authenticated) {
-                    canContinueOffline(state, firestoreRepo.getUserData(Source.CACHE), authRepo.isEmailVerified)
+                    canContinueOffline(
+                        state,
+                        // Reading the cache needs no network: the monitor must not block it.
+                        firestoreRepo.getUserData(Source.CACHE, trustMonitor = false),
+                        authRepo.isEmailVerified
+                    )
                 } else {
                     false
                 }
@@ -460,7 +474,7 @@ class AuthViewModel @Inject constructor(
     fun recheckVerification() {
         emailRecheck = true
         _uiState.value = 1
-        checkLogin()
+        checkLogin(trustMonitor = false)
     }
 
     /** The email of the signed-in account, to tell the user where the verification email went. */

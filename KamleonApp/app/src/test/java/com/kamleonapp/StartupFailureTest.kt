@@ -1,5 +1,7 @@
 package com.kamleonapp
 
+import com.dynatech2012.kamleonuserapp.network.NetworkTimeoutException
+import com.dynatech2012.kamleonuserapp.network.NetworkUnavailableException
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserProfileMissingException
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel.StartupState
@@ -32,6 +34,16 @@ class StartupFailureTest {
     @Test fun networkTroubleIsRetryable() {
         assertEquals(StartupState.RetryableError, stateAfter(TimeoutException("slow")))
         assertEquals(StartupState.RetryableError, stateAfter(IOException("offline")))
+    }
+
+    @Test fun noNetworkAndATimedOutCallAreRetryable() {
+        // The failures the network layer produces itself, with the default classifiers.
+        listOf(NetworkUnavailableException(), NetworkTimeoutException(10_000)).forEach {
+            assertEquals(
+                StartupState.RetryableError,
+                startupStateFor(authenticated = true, verified = true, profile = Response.Failure(it))
+            )
+        }
     }
 
     @Test fun aPersistentFailureThatIsNotTheNetworkOffersALogoutToo() {

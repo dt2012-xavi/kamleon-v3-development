@@ -2,6 +2,7 @@ package com.dynatech2012.kamleonuserapp.network
 
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withTimeoutOrNull
 
 enum class NetworkStatus { Online, Offline }
 
@@ -19,6 +20,10 @@ interface NetworkMonitor {
 suspend fun NetworkMonitor.awaitOnline() {
     status.first { it == NetworkStatus.Online }
 }
+
+/** Waits up to [timeoutMs] for the network: true if it is online by then. */
+suspend fun NetworkMonitor.awaitOnlineFor(timeoutMs: Long): Boolean =
+    withTimeoutOrNull(timeoutMs) { awaitOnline(); true } ?: false
 
 /** Online means the default network reaches the Internet and the system has validated it. */
 internal fun networkStatusFor(hasInternet: Boolean, validated: Boolean): NetworkStatus =

@@ -211,7 +211,8 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             // to close: a failure that comes back at once would leave no message at all. The pause
             // also makes the retry visible (the logo keeps playing) instead of a flicker.
             delay(RETRY_FEEDBACK_MS)
-            viewModel.checkLogin()
+            // The user asked for this: try the server for real even if the monitor says there is no network.
+            viewModel.checkLogin(trustMonitor = false)
         }
     }
 
