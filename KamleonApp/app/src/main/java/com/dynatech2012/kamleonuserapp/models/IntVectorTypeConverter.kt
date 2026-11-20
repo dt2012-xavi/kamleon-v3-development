@@ -1,6 +1,5 @@
 package com.dynatech2012.kamleonuserapp.models
 
-import android.util.Log
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.google.common.reflect.TypeToken
@@ -12,7 +11,6 @@ class IntVectorTypeConverter {
     fun fromString(value: String?): IntArray? {
         //val type = object : TypeToken<IntArray>() {}.type
         val type = IntArray::class.java
-        Log.d("TAG", "fromString: $value")
         if (value == null)
             return null
         return Gson().fromJson(value, type)

@@ -66,7 +66,6 @@ class MeasuresRepository @Inject constructor(
             DebugLog.d(TAG) { "got average daily from DB 2 size ${avDaily?.size}" }
             if (avDaily?.isNotEmpty() == true) {
                 DebugLog.d(TAG) { "got average daily from DB not empty" }
-                DebugLog.d(TAG) { "got average daily from DB 4 score last: ${avDaily[0].hydration}" }
             }
             else {
                 DebugLog.w(TAG) { "got average daily from DB EMPTY" }
@@ -83,7 +82,6 @@ class MeasuresRepository @Inject constructor(
             DebugLog.d(TAG) { "got average monthly from DB 2 size ${avMonthly?.size}" }
             if (avMonthly?.isNotEmpty() == true) {
                 DebugLog.d(TAG) { "got average monthly from DB not empty" }
-                DebugLog.d(TAG) { "got average monthly from DB 4 score last: ${avMonthly[0].hydration}" }
             }
             else {
                 DebugLog.w(TAG) { "got average monthly from DB EMPTY" }
