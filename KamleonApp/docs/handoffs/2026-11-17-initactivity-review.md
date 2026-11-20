@@ -242,8 +242,10 @@ Fichero: `app/src/main/java/com/dynatech2012/kamleonuserapp/activities/InitActiv
      «Log Out» en vez de la espera infinita (se eligió `ServerError` y no `RetryableError` para ofrecer
      también salir). La cancelación no se traga. Probado en el Samsung con una excepción forzada
      temporal, ya revertida. **La lista de casos del arranque está cerrada.**
-8. **Transiciones.** El fundido a Main usa `ActivityOptions.makeCustomAnimation` (`fade_in`,
-   `fade_hold`). Verificar que Main no parpadea en blanco con la barra de estado transparente.
+8. **Transiciones (verificado 2026-11-20).** El fundido a Main usa `ActivityOptions.makeCustomAnimation`
+   (`fade_in`, `fade_hold`). Comprobado en el Samsung con las animaciones a x10 y capturas seguidas
+   (apertura de Main forzada con una mutación temporal, revertida): el paso de Login a Main es un
+   fundido continuo, sin salto a blanco ni a negro y con la barra de estado fija. No requiere cambios.
 
 ## Prueba en el dispositivo
 
