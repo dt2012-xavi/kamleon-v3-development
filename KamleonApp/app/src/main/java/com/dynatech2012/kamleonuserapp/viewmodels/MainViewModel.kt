@@ -85,8 +85,9 @@ class MainViewModel @Inject constructor(
     private val _userImagePrevUri = MutableLiveData<Uri?>()
     val userImagePrevUri: LiveData<Uri?> = _userImagePrevUri
 
-    private val _userImageUri = MutableLiveData<Event<Uri?>>()
-    val userImageUri: LiveData<Event<Uri?>> = _userImageUri
+    /** The photo sheet is done (saved, removed or failed). Not a Uri: an event with null content is never delivered. */
+    private val _userImageUri = MutableLiveData<Event<Unit>>()
+    val userImageUri: LiveData<Event<Unit>> = _userImageUri
 
     /** The avatar address, or null when the account has no photo. The screens load it themselves. */
     val userImageUrl: LiveData<String?> = _userData.map { profileImageUrlOf(it.imageUrl) }
@@ -251,7 +252,7 @@ class MainViewModel @Inject constructor(
     fun setImageUri(uri: Uri?) {
         _userImagePrevUri.postValue(uri)
         if (uri == null) {
-            _userImageUri.postValue(Event(null))
+            _userImageUri.postValue(Event(Unit))
         } else {
             viewModelScope.launch(Dispatchers.IO) {
                 val response = firestoreRepo.updateUserImage(uri)
@@ -264,7 +265,7 @@ class MainViewModel @Inject constructor(
                     _userImagePrevUri.postValue(null)
                     _userImageFailed.postValue(Event(actionResultOf(response)))
                 }
-                _userImageUri.postValue(Event(uri))
+                _userImageUri.postValue(Event(Unit))
             }
         }
     }
