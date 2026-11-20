@@ -2,7 +2,8 @@
 
 Para un agente con contexto nuevo. Rama `codex/gradle-modernization`, worktree
 `/Users/xavi/.codex/worktrees/ea6d/android-java-kotlin-kamleon-userapp-development/KamleonApp`,
-172 commits por delante de `main`, **nada subido** (sin push ni PR). Último commit de este trabajo:
+172 commits por delante de `main`. La rama ya existe en `gitlab/codex/gradle-modernization`, cuyo último
+commit es `5c339b8`: **94 commits de este trabajo (todo lo posterior) no están subidos**. No hay PR. Último commit de este trabajo:
 `e9153f3`. El árbol solo tiene cambios ajenos sin commitear en `.idea/*`: no los incluyas.
 
 Lee antes `AGENTS.md`. Este documento **resume y cierra** el trabajo de
@@ -143,6 +144,6 @@ Corte de red: `adb shell svc wifi/data disable|enable`. Instrucciones de enlaces
 - No tocar `google-services.json`, `local.properties`, `.idea/`, certificados ni artefactos generados.
 - Commits pequeños, uno por cambio coherente, verificación completa antes de cada uno. Los commits de este
   trabajo terminan con la línea `Co-Authored-By` indicada por la sesión.
-- Sin push ni PR sin que Xavi lo pida. Informa con honestidad de lo que no pudiste probar.
+- Sin push ni PR sin que Xavi lo pida (el remoto `gitlab` tiene la rama atrasada 94 commits). Informa con honestidad de lo que no pudiste probar.
 - Pantallas existentes en XML + ViewBinding siguen así salvo petición de migrar; Compose solo donde ya
   existe.

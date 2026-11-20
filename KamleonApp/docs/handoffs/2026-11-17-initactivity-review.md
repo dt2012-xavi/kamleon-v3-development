@@ -1,5 +1,8 @@
 # Handoff: revisar `InitActivity` y el arranque hasta la home
 
+> **Continuado y cerrado en `2026-11-20-startup-network-session-handoff.md`: léelo primero.** Este
+> documento queda como registro caso por caso.
+
 Fecha: 2026-11-17. Rama: `codex/gradle-modernization` (worktree
 `/Users/xavi/.codex/worktrees/ea6d/android-java-kotlin-kamleon-userapp-development/KamleonApp`),
 unos 46 commits por delante de `development`, **nada subido**. Último commit: `5db2a4a`.
