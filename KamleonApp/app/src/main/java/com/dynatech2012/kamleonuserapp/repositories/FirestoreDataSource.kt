@@ -147,14 +147,9 @@ class FirestoreDataSource @Inject constructor(
         }
     }
 
-    suspend fun getUserLastMeasure(userId: String?): Response<ArrayList<MeasureData>> {
-        return getUserMeasuresNoPag(userId, null, 1)
-    }
-
     suspend fun getUserMeasuresNoPag(
         userId: String?,
-        lastDate: Long?,
-        limit: Long?
+        lastDate: Long?
     ): Response<ArrayList<MeasureData>> {
         val query: Query = db.collection(FirebaseConstants.MEASURES_COLLECTION)
         val date = Date(lastDate?.plus(1) ?: 0)
@@ -168,8 +163,6 @@ class FirestoreDataSource @Inject constructor(
                 timestamp
             )
             .orderBy(FirebaseConstants.kANALYSIS_DATE, Query.Direction.DESCENDING)
-        if (limit != null)
-            task.limit(limit)
         return gate.safeCall(CallKind.Read) {
             val snapshot = task.get().await()
             DebugLog.d(TAG) { "got measures from FS size: ${snapshot.documents.size}" }
@@ -178,56 +171,6 @@ class FirestoreDataSource @Inject constructor(
             val measures: ArrayList<MeasureData> = ArrayList(measuresRaw.map { MeasureData(it) })
             DebugLog.d(TAG) { "got measures from FS 23 converted to MeasureData size: ${measures.size}" }
             measures
-        }
-    }
-
-    fun getUserMeasures(
-        userId: String?,
-        lastDate: Long?,
-        limit: Int
-    ): Flow<Response<ArrayList<MeasureData>>> = flow {
-        var lastPageSize = limit
-        var countDebug = 0
-        val query: Query = db.collection(FirebaseConstants.MEASURES_COLLECTION)
-        DebugLog.d(TAG) { "Fetching paged measurements" }
-        val date = lastDate ?: 0
-        val measures = arrayListOf<MeasureData>()
-        while (lastPageSize == limit) {
-            val task = query.whereEqualTo(FirebaseConstants.kUSERID_FIELD, userId)
-            if (lastDate != null) {
-                task.whereGreaterThan(
-                    FirebaseConstants.kANALYSIS_DATE,
-                    date
-                )
-            }
-            task.orderBy(
-                FirebaseConstants.kANALYSIS_DATE,
-                Query.Direction.DESCENDING
-            )
-            /*
-            if (lastVisible != null)
-                task.startAfter(lastVisible)
-            */
-            task.limit(limit.toLong())
-
-            val page = gate.safeCall(CallKind.Read) {
-                val documentSnapshot = task.get().await()
-                DebugLog.d(TAG) { "got measures 66 size: ${documentSnapshot.documents.size}" }
-                val measuresRawPage: List<RawMeasureData> =
-                    documentSnapshot.toObjects(RawMeasureData::class.java)
-                ArrayList(measuresRawPage.map { MeasureData(it) })
-            }
-            if (page is Response.Failure) {
-                emit(page)
-                break
-            }
-            measures.addAll(page.dataValue ?: arrayListOf())
-            lastPageSize = 0//measuresRawPage.size ///0
-            countDebug++
-            if (lastPageSize < limit) {
-                emit(Response.Success(measures))
-                break
-            }
         }
     }
 
