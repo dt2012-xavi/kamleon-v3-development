@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +22,7 @@ import com.dynatech2012.kamleonuserapp.models.observeEvent
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.showActionFailedSheet
 import com.dynatech2012.kamleonuserapp.views.showProfileImage
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 class ImagePickFragment : BottomSheetDialogFragment() {
 
@@ -34,7 +34,7 @@ class ImagePickFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "image pick dialog oncreate view 1")
+        DebugLog.d(TAG) { "image pick dialog oncreate view 1" }
         val v = inflater.inflate(R.layout.fragment_image_pick, container, false)
         binding = FragmentImagePickBinding.bind(v)
         v.findViewById<LinearLayout>(R.id.layoutLibrary).setOnClickListener {
@@ -66,7 +66,7 @@ class ImagePickFragment : BottomSheetDialogFragment() {
             showActionFailedSheet(it.failure)
         }
         viewModel.userImageUri.observeEvent(viewLifecycleOwner) {
-            Log.d(TAG, "image pick fragment got event")
+            DebugLog.d(TAG) { "image pick fragment got event" }
             dismissListener?.onDismissFragment()
             dismiss()
         }
@@ -84,11 +84,11 @@ class ImagePickFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        Log.d(TAG, "image pick dialog oncreate dialog 1")
+        DebugLog.d(TAG) { "image pick dialog oncreate dialog 1" }
         val dialog = super.onCreateDialog(savedInstanceState)
         //dialog.setOnShowListener { setupBottomSheet(it) }
         //dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        Log.d(TAG, "image pick dialog oncreate dialog 2")
+        DebugLog.d(TAG) { "image pick dialog oncreate dialog 2" }
         //isCancelable = true
         return dialog
     }
@@ -102,18 +102,18 @@ class ImagePickFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        Log.e("BottomSheet", "image pick dialog onCancel")
+        DebugLog.e("BottomSheet") { "image pick dialog onCancel" }
         super.onCancel(dialog)
         //dismissListener?.onDismissFragment()
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        Log.d(TAG, "image pick dialog onDismiss")
+        DebugLog.d(TAG) { "image pick dialog onDismiss" }
     }
 
     private fun onProfileImagePrevUriChanged(uri: Uri?) {
-        Log.d(TAG, "Got image profile changed")
+        DebugLog.d(TAG) { "Got image profile changed" }
         if (uri == null)
             // No picked photo (none yet, removed, or the upload failed): show the saved avatar, if any.
             binding.ivSettingsPickProfileImage.showProfileImage(viewModel.userImageUrl.value, viewModel.imageLoader)

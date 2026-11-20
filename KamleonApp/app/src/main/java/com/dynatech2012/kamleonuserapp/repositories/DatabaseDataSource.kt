@@ -1,6 +1,5 @@
 package com.dynatech2012.kamleonuserapp.repositories
 
-import android.util.Log
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureDataDao
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
@@ -8,6 +7,7 @@ import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureDataDao
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.database.MeasureDataDao
 import javax.inject.Inject
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 /**
  *
@@ -45,7 +45,7 @@ class DatabaseDataSource @Inject constructor(
     {
         // get measures from database
         val data = measureDataDao.getAllMeasures()
-        Log.d(TAG, "measures data size: " + data?.size)
+        DebugLog.d(TAG) { "measures data size: " + data?.size }
         return if (data != null)
             Response.Success(ArrayList(data))
         else

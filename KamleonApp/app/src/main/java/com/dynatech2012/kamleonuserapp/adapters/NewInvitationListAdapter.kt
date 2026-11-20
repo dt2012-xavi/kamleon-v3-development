@@ -1,6 +1,5 @@
 package com.dynatech2012.kamleonuserapp.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import com.dynatech2012.kamleonuserapp.constants.UrlConstants
 import com.dynatech2012.kamleonuserapp.databinding.LayoutInvitationPendingListItemBinding
 import com.dynatech2012.kamleonuserapp.extensions.formatTime
 import com.dynatech2012.kamleonuserapp.models.Invitation
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 class NewInvitationListAdapter(
     //private var dataList: ArrayList<Invitation>
@@ -84,7 +84,7 @@ class NewInvitationListAdapter(
         fun bind(data: Invitation){
             tvSubtitle.text = data.invitationText
             tvDate.text = data.dateSent.formatTime
-            Log.d("InvitationListAdapter", "bind role: ${data.role}")
+            DebugLog.d("InvitationListAdapter") { "bind role: ${data.role}" }
             if (!data.isAdmin) {
                 tvPolicy.setOnClickListener {
                     notiItemListener?.onLinkClick(UrlConstants.URL_POLICY)

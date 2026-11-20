@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -26,6 +25,7 @@ import com.ozcanalasalvar.datepicker.view.datepicker.DatePicker
 import com.ozcanalasalvar.datepicker.view.datepicker.OnDatePickerTouchListener
 import java.util.Date
 import java.util.GregorianCalendar
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 class DatePickerFragment : BottomSheetDialogFragment() {
     private lateinit var behavior: BottomSheetBehavior<View>
@@ -105,30 +105,30 @@ class DatePickerFragment : BottomSheetDialogFragment() {
         pickerV.setDate(initialDate)
         pickerV.setMaxxDate(fourTeenYearsAgo)
         pickerV.setDateChangeListener(dateChangeListener)
-        Log.d(TAG, "Date picker initialized")
+        DebugLog.d(TAG) { "Date picker initialized" }
         pickerV.setDatePickerTouchListener(object : OnDatePickerTouchListener {
             override fun onDatePickerTouchDown() {
                 behavior.isDraggable = false
-                Log.d(TAG, "ACTIONN_DOWN draggable to false")
+                DebugLog.d(TAG) { "ACTIONN_DOWN draggable to false" }
             }
 
             override fun onDatePickerTouchUp() {
                 behavior.isDraggable = true
-                Log.d(TAG, "ACTIONN_UP draggable to true")
+                DebugLog.d(TAG) { "ACTIONN_UP draggable to true" }
             }
 
         })
     }
     override fun onCancel(dialog: DialogInterface) {
-        Log.e(TAG, "onCancel")
+        DebugLog.e(TAG) { "onCancel" }
         super.onCancel(dialog)
         dismissListener?.onDismissFragment()
     }
 
     private fun onSave() {
-        Log.d(TAG, "onSave")
+        DebugLog.d(TAG) { "onSave" }
         pickerV.getDateSelected().let { dateSelected ->
-            Log.d(TAG, "Date picker selection saved")
+            DebugLog.d(TAG) { "Date picker selection saved" }
             val date = GregorianCalendar(dateSelected.year, dateSelected.month, dateSelected.day).time
 
             viewModel.changeBirth(date)
@@ -156,7 +156,7 @@ class DatePickerFragment : BottomSheetDialogFragment() {
         @JvmStatic
         fun newInstance(dismissListener: BottomFragmentDismissListener, dateChangeListener: DateChangeListener, value: Date) =
             DatePickerFragment().apply {
-                Log.d(TAG, "Date picker selection changed")
+                DebugLog.d(TAG) { "Date picker selection changed" }
                 this.dismissListener = dismissListener
                 this.dateChangeListener = dateChangeListener
                 dateValue = value

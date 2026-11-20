@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -59,18 +58,18 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         onKamleonSheetResult("scanned") { onScannedAcknowledged() }
         // The analyzer stops after reading a code; resume it so the user can scan again.
         onKamleonSheetResult("scan_failed") { qrViewModel.startAnalyzing() }
-        Log.d(TAG, "initView")
+        DebugLog.d(TAG) { "initView" }
         getFirstLogin()
         bindViews()
         //val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_host_fragment_tab) as NavHostFragment
         val navHostFragment = binding.navHostFragmentTab.getFragment<NavHostFragment>()
         when (navHostFragment.childFragmentManager.fragments[0]) {
             is HomeFragment -> {
-                Log.d(TAG, "initView is home")
+                DebugLog.d(TAG) { "initView is home" }
                 selectTab(0)
             }
             is AnalyticFragment -> {
-                Log.d(TAG, "initView is analytic")
+                DebugLog.d(TAG) { "initView is analytic" }
                 selectTab(1)
             }
         }
@@ -113,7 +112,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
 
         initObservers()
         viewModel.getUserData()
-        Log.d(TAG, "got measures -2 oncreateView")
+        DebugLog.d(TAG) { "got measures -2 oncreateView" }
         viewModel.getUserMeasures()
 
     }
@@ -214,13 +213,13 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
     ) { result: Boolean ->
         if (result) {
             // Permission is granted
-            Log.d(TAG, "qrScanner, permission granted")
+            DebugLog.d(TAG) { "qrScanner, permission granted" }
             appendDebugText("QR debug -- camera permission granted")
             startCamera()
         } else {
             // Permission is denied
             // Should go back to home fragment
-            Log.e(TAG, "qrScanner, permission denied")
+            DebugLog.e(TAG) { "qrScanner, permission denied" }
             appendDebugText("QR debug -- camera permission denied")
             selectTab(0)
         }
@@ -232,7 +231,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
                 Manifest.permission.CAMERA
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            Log.d(TAG, "qrScanner, permission granted")
+            DebugLog.d(TAG) { "qrScanner, permission granted" }
             appendDebugText("QR debug -- camera permission granted")
             startCamera()
         } else {
@@ -249,13 +248,13 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
                 bindCameraPreview(cameraProvider)
             } catch (e: ExecutionException) {
                 appendDebugText("QR debug -- starting camera execution exception: $e")
-                Log.e(TAG, "startCamera: ${e.message}", e)
+                DebugLog.e(TAG, e) { "startCamera: ${e.message}" }
             } catch (e: InterruptedException) {
                 appendDebugText("QR debug -- starting camera interrupted exception: $e")
-                Log.e(TAG, "startCamera: ${e.message}", e)
+                DebugLog.e(TAG, e) { "startCamera: ${e.message}" }
             } catch (e: Exception) {
                 appendDebugText("QR debug -- starting camera other exception: $e")
-                Log.e(TAG, "startCamera: ${e.message}", e)
+                DebugLog.e(TAG, e) { "startCamera: ${e.message}" }
             }
         }, ContextCompat.getMainExecutor(requireContext()))
     }
@@ -269,7 +268,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
     }
 
     private fun bindCameraPreview(cameraProvider: ProcessCameraProvider) {
-        Log.d(TAG, "qrScanner, bindCameraPreview 1")
+        DebugLog.d(TAG) { "qrScanner, bindCameraPreview 1" }
         previewView.implementationMode = PreviewView.ImplementationMode.COMPATIBLE
 
         val cameraSelector = CameraSelector.Builder()
@@ -277,7 +276,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
             .build()
 
         preview.setSurfaceProvider(previewView.surfaceProvider)
-        Log.d(TAG, "qrScanner, bindCameraPreview 2")
+        DebugLog.d(TAG) { "qrScanner, bindCameraPreview 2" }
         appendDebugText("QR debug -- starting surface provider set")
         qrViewModel.startScanner()
         appendDebugText("QR debug -- scan qr started")

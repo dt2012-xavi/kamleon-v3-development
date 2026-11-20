@@ -127,9 +127,12 @@ Corte de red: `adb shell svc wifi/data disable|enable`. Instrucciones de enlaces
 3. **`MainViewModel.logout()`** registra `observeForever` en cada cierre de sesión y «quita» el observador
    con una lambda nueva (`removeObserver { ... }`), que no elimina nada: se acumulan observadores. Quedó
    sin tocar; conviene guardar la referencia y quitarla.
-4. **Logs fuera de `DebugLog`:** quedan ~140 llamadas `Log.d/w/i` directas (`MainViewModel` 36,
-   `KamleonGraphView` 13, `TabFragment` 12, …). `AGENTS.md` pide no loguear datos médicos ni
-   credenciales y no replicar los logs verbosos: revisar cuáles escriben valores y pasarlos a `DebugLog`.
+4. ~~**Logs fuera de `DebugLog`**~~ **Hecho (2026-11-20):** las 125 llamadas `Log.*` de `:app` pasan
+   por `DebugLog` (solo debug) y lint activa `LogNotTimber`, así que un `Log.*` nuevo rompe
+   `lintDevelopmentDebug`. Se quitaron además valores sensibles: vectores crudos de medida en
+   `IntVectorTypeConverter`, puntuación de hidratación en `MeasuresRepository` y fecha de nacimiento en
+   `SettingFragment`. Queda fuera: el módulo `datepicker` conserva ~13 `Log.d/i` de eventos táctiles y
+   límites de fecha (sin datos de usuario; no depende de Timber, lint no los marca).
 5. **`MainActivity` / pantallas pendientes de la ronda anterior:** `HomeFragment` y `HomeItemFragment`
    (estados vacío/carga/error), `TabFragment` (332 líneas, XML; necesita plan propio).
 6. **Tutorial desfasado** (capturas raster antiguas) y **columnas ORG./CENTER/TEAM que se pisan** en

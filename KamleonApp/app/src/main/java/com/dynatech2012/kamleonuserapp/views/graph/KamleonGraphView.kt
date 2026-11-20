@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.PointF
 import android.graphics.RectF
 import android.util.AttributeSet
-import android.util.Log
 import android.util.SizeF
 import android.view.DragEvent
 import android.view.LayoutInflater
@@ -41,6 +40,7 @@ import com.dynatech2012.kamleonuserapp.views.graph.views.KmlnGraphView
 import com.dynatech2012.kamleonuserapp.views.graph.views.KmlnHeaderView
 import com.dynatech2012.kamleonuserapp.views.graph.views.KmlnLabelView
 import java.util.Date
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs),
     KmlnHeaderView.KmlnHeaderViewListener, KmlnFooterView.KmlnFooterViewListener, OnDragListener, OnLongClickListener {
@@ -71,7 +71,7 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
                 val xPos = (event?.x ?: 0) as Float
                 val yPos = (event?.y ?: 0) as Float
                 PointF(xPos, yPos)
-                Log.d(TAG, "Event:($xPos:$yPos)" + event?.action)
+                DebugLog.d(TAG) { "Event:($xPos:$yPos)" + event?.action }
                 handleTouchPos(PointF(xPos, yPos))
                 return true
             }
@@ -94,7 +94,7 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
 
 
     fun setMeasuresDataSource(data: ArrayList<MeasureData>) {
-        Log.d(TAG, "setMeasuresDataSource: ${data.size}")
+        DebugLog.d(TAG) { "setMeasuresDataSource: ${data.size}" }
         measuresDataSource = data
 
         /*
@@ -207,7 +207,7 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
         val cgPos = PointF(touchPos.x, touchPos.y)
 //        val cgPos = PointF(touchPos.x, height - touchPos.y)
         val graphBarIndex = contentView.graphBarRectIndex(cgPos)
-        Log.d(TAG, "TOUCH POS: $graphBarIndex")
+        DebugLog.d(TAG) { "TOUCH POS: $graphBarIndex" }
         if (graphBarIndex == null) {
             labelView.visibility = INVISIBLE
         } else {
@@ -217,7 +217,7 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
     }
 
     private fun showLabelView(graphBarIndex: Int, barRect: RectF, pos: PointF) {
-        Log.d(TAG, "showLabelView")
+        DebugLog.d(TAG) { "showLabelView" }
         if (labelView.visibility == INVISIBLE) {
             labelView.visibility = VISIBLE
         }
@@ -263,11 +263,11 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
             KamleonGraphViewMode.Yearly -> monthlyDataSource as ArrayList<AveragesData>
         }
 
-        Log.d(TAG, "Start:" + startDate.formatDate() + " -> End:" + endDate.formatDate())
-        Log.d("Graph", "dataSource2 size: ${dataSourceNew.size}")
+        DebugLog.d(TAG) { "Start:" + startDate.formatDate() + " -> End:" + endDate.formatDate() }
+        DebugLog.d("Graph") { "dataSource2 size: ${dataSourceNew.size}" }
         //val filteredDataSource = dataSource.filter { it.timestamp >= startDate.time && it.timestamp <= endDate.time}
         val filteredDataSource2 = dataSourceNew.filter { it.timestamp >= startDate.time && it.timestamp <= endDate.time }
-        Log.d("Graph", "filteredDataSource2 size: ${filteredDataSource2.size}")
+        DebugLog.d("Graph") { "filteredDataSource2 size: ${filteredDataSource2.size}" }
         val xStepCount = graphViewXSteps
 
         val xyValues = ArrayList<KamleonGraphDataXY>()
@@ -284,7 +284,7 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
             }
             // When there is NO precise data, use the average of the non-precise data
             else if (givenBarItemDataPrecise.isEmpty()) {
-                Log.d(TAG, "No precise data: ${Date(graphBarItemTimeRange[0]).formatTime}")
+                DebugLog.d(TAG) { "No precise data: ${Date(graphBarItemTimeRange[0]).formatTime}" }
                 val itemYValueNotPrecise = givenBarItemData2.sumOf { it.scoreValue(dataType) } / givenBarItemData2.size
                 if (maxYVal < itemYValueNotPrecise) { maxYVal = itemYValueNotPrecise }
                 val kamleonGraphDataXY = KamleonGraphDataXY(i.toDouble(), itemYValueNotPrecise)
@@ -293,8 +293,8 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
                 precisionValues.add(false)
             // When there is precise data
             } else {
-                Log.d(TAG, "No precise data: ${Date(graphBarItemTimeRange[0]).formatTime} _ ${givenBarItemData2.size}")
-                Log.d(TAG, "No precise data: ${Date(graphBarItemTimeRange[0]).formatTime} _ ${givenBarItemDataPrecise.size}")
+                DebugLog.d(TAG) { "No precise data: ${Date(graphBarItemTimeRange[0]).formatTime} _ ${givenBarItemData2.size}" }
+                DebugLog.d(TAG) { "No precise data: ${Date(graphBarItemTimeRange[0]).formatTime} _ ${givenBarItemDataPrecise.size}" }
                 //val itemYValue = givenBarItemData.sumOf { it.dataVal } / givenBarItemData.size
                 val itemYValue2Precise = givenBarItemDataPrecise.sumOf { it.scoreValue(dataType) } / givenBarItemDataPrecise.size
                 if (maxYVal < itemYValue2Precise) { maxYVal = itemYValue2Precise }
@@ -404,12 +404,12 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
     }
 
     override fun onDrag(v: View?, event: DragEvent?): Boolean {
-        Log.d(TAG, "onDrag")
+        DebugLog.d(TAG) { "onDrag" }
         return false
     }
 
     override fun onLongClick(v: View?): Boolean {
-        Log.d(TAG, "onLongClick")
+        DebugLog.d(TAG) { "onLongClick" }
         return false
     }
 

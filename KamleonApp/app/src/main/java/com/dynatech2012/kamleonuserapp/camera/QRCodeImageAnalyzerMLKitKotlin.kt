@@ -2,7 +2,6 @@ package com.dynatech2012.kamleonuserapp.camera
 
 import android.graphics.ImageFormat
 import android.media.Image
-import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy

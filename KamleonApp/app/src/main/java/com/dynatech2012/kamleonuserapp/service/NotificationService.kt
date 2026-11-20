@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -105,7 +104,7 @@ class NotificationService : FirebaseMessagingService() {
         val pushNotification = Intent(PUSH_NOTIFICATION)
 
         // Send data to the app if it is in foreground
-        Log.d(TAG, "onGetNotification from Notification Service")
+        DebugLog.d(TAG) { "onGetNotification from Notification Service" }
         LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification)
         //Notification.instance?.addOrderBoolean(true)
     }

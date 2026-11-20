@@ -1,7 +1,6 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import android.graphics.Color
-import android.util.Log
 import android.view.View
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
@@ -21,6 +20,7 @@ import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
 import com.dynatech2012.kamleonuserapp.views.showProfileImage
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 
 @AndroidEntryPoint
@@ -34,20 +34,20 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         //selectTab(0)
         initObservers()
         viewModel.getUserData()
-        Log.d(TAG, "got measures -2")
+        DebugLog.d(TAG) { "got measures -2" }
         //viewModel.getUserMeasures()
         viewModel.getInvitations()
     }
 
     override fun initEvent() {
-        Log.d(TAG, "settings clicked 0")
+        DebugLog.d(TAG) { "settings clicked 0" }
         binding.cvHomeProfile.isClickable = true
         binding.cvHomeProfile.setOnClickListener {
-            Log.d(TAG, "settings clicked 1")
+            DebugLog.d(TAG) { "settings clicked 1" }
             val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
             val navController = navHostFragment.navController
             //Log.d(TAG, "frgmts ${navHostFragment.childFragmentManager.fragments[0]}")
-            Log.d(TAG, "settings clicked 2")
+            DebugLog.d(TAG) { "settings clicked 2" }
             navController.navigate(R.id.action_tabFragment_to_settingFragment)
             //navController.popBackStack(R.id.tabFragment, true)
         }
@@ -60,7 +60,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
     }
 
     private fun onUserDataChanged(userData: CustomUser) {
-        Log.d(TAG, "on user data changed")
+        DebugLog.d(TAG) { "on user data changed" }
         val initials = getString(R.string.user_name_initials, userData.name.substring(0, 1).uppercase(), userData.lastName.substring(0, 1).uppercase())
         binding.tvHomeProfileName.text = initials
     }
@@ -70,7 +70,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
     }
 
     private fun onLastMeasureChanged(measure: MeasureData) {
-        Log.d(TAG, "got measures 6 changed")
+        DebugLog.d(TAG) { "got measures 6 changed" }
         val date = Date(measure.analysisDate)
         //val format = SimpleDateFormat("d MMMM yyy", Locale.US)
         //val dateString = format.format(date)

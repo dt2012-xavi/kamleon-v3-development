@@ -1,6 +1,5 @@
 package com.dynatech2012.kamleonuserapp.views.cards
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -50,6 +49,7 @@ import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.models.Recommendation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,7 +62,7 @@ fun RecommendationDetailView(modifier: Modifier, recommendation: Recommendation,
     var key1 by remember { mutableStateOf(true) }
     var key2 by remember { mutableStateOf(false) }
     LaunchedEffect(key1 = key1) {
-        Log.d("CardDetailView", "showModal: ${recommendation.showModal}")
+        DebugLog.d("CardDetailView") { "showModal: ${recommendation.showModal}" }
         if (key1 && recommendation.showModal) {
             delay(5000)
             showBottomSheet = true

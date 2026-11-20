@@ -1,13 +1,13 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.fragment.app.Fragment
 import com.dynatech2012.kamleonuserapp.databinding.LayoutHomeListItemBinding
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 class HomeItemFragment : Fragment() {
     lateinit var binding: LayoutHomeListItemBinding
@@ -20,7 +20,7 @@ class HomeItemFragment : Fragment() {
     ): View {
         arguments?. let {
             type = it.getInt(ARG_TYPE)
-            Log.d(TAG, "get args: page: $type")
+            DebugLog.d(TAG) { "get args: page: $type" }
         }
         binding = LayoutHomeListItemBinding.inflate(layoutInflater, container, false)
         binding.composeView.apply {
@@ -99,7 +99,7 @@ class HomeItemFragment : Fragment() {
         fun newInstance(type: Int): HomeItemFragment {
             val args = Bundle()
             args.putInt(ARG_TYPE, type)
-            Log.d(TAG, "put args: type: $type")
+            DebugLog.d(TAG) { "put args: type: $type" }
             val fragment = HomeItemFragment()
             fragment.arguments = args
             return fragment

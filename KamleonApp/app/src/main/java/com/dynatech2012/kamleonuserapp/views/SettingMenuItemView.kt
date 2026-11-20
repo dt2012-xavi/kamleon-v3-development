@@ -2,7 +2,6 @@ package com.dynatech2012.kamleonuserapp.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -10,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 class SettingMenuItemView : LinearLayout {
 
@@ -28,7 +28,7 @@ class SettingMenuItemView : LinearLayout {
     private var menuItemListener: SettingMenuItemViewListener? = null
     fun setSettingMenuItemListener(listener: SettingMenuItemViewListener?) {
         menuItemListener = listener
-        Log.d("SettingMenuItemView", "onMenuItemClicked")
+        DebugLog.d("SettingMenuItemView") { "onMenuItemClicked" }
         if (switch?.visibility == VISIBLE) {
             switch?.isClickable = true
             switch?.setOnClickListener {

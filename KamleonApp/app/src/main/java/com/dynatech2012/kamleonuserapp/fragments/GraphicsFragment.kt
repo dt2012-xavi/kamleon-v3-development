@@ -1,6 +1,5 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.util.Log
 import android.view.View
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.activityViewModels
@@ -19,6 +18,7 @@ import com.dynatech2012.kamleonuserapp.views.cards.ViewPager
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import dagger.hilt.android.AndroidEntryPoint
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 @AndroidEntryPoint
 class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
     private val viewModel: MainViewModel by activityViewModels()
@@ -73,24 +73,24 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
     }
 
     private fun onUserDataChanged(userData: CustomUser) {
-        Log.d(SettingFragment.TAG, "on user data changed")
+        DebugLog.d(SettingFragment.TAG) { "on user data changed" }
         val initials = getString(R.string.user_name_initials, userData.name.substring(0, 1).uppercase(), userData.lastName.substring(0, 1).uppercase())
         binding.tvGraphicProfileName.text = initials
     }
 
     private fun onGetMeasures(measures: ArrayList<MeasureData>) {
-        Log.d(TAG, "got measures count: ${measures.size}")
+        DebugLog.d(TAG) { "got measures count: ${measures.size}" }
         // Update the graph
         binding.graphViewNew.setMeasuresDataSource(measures)
     }
 
     private fun onGetAverageMonthlyMeasures(averageMonthlyMeasureData: ArrayList<AverageMonthlyMeasureData>) {
-        Log.d(TAG, "got average monthly measures count: ${averageMonthlyMeasureData.size}")
+        DebugLog.d(TAG) { "got average monthly measures count: ${averageMonthlyMeasureData.size}" }
         binding.graphViewNew.setMonthlyDataSource(averageMonthlyMeasureData)
     }
 
     private fun onGetAverageDailyMeasures(averageDailyMeasureData: ArrayList<AverageDailyMeasureData>) {
-        Log.d(TAG, "got average daily measures count: ${averageDailyMeasureData.size}")
+        DebugLog.d(TAG) { "got average daily measures count: ${averageDailyMeasureData.size}" }
         // Update the graph
         binding.graphViewNew.setDailyDataSource(averageDailyMeasureData)
     }

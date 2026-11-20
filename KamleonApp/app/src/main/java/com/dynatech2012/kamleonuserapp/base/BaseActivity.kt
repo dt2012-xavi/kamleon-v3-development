@@ -7,7 +7,6 @@ import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.SystemBarStyle
@@ -17,6 +16,7 @@ import androidx.core.view.doOnLayout
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
 import com.dynatech2012.kamleonuserapp.activities.MainActivity
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
     protected lateinit var binding: VB
@@ -59,7 +59,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         try {
             keyboard.hideSoftInputFromWindow(binding.root.windowToken, 0)
         } catch (e: Exception) {
-            Log.e("BaseActivity","Ignore exception")
+            DebugLog.e("BaseActivity") { "Ignore exception" }
         }
     }
     fun hideKeyboardDismissFocus() {

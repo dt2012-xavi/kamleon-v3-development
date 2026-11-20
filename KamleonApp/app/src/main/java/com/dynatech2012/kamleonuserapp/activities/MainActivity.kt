@@ -14,7 +14,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -88,7 +87,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         }
         supportFragmentManager
             .setFragmentResultListener(Constants.PICK_IMAGE, this) { _, bundle ->
-                Log.d(TAG, "result from activity pick")
+                DebugLog.d(TAG) { "result from activity pick" }
                 val result = bundle.getBoolean(Constants.PICK_IMAGE_BUNDLE)
                 if (result) {
                     galleryLauncher.launch("image/*")
@@ -96,7 +95,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             }
         supportFragmentManager
             .setFragmentResultListener(Constants.TAKE_IMAGE, this) { _, bundle ->
-                Log.d(TAG, "result from activity take")
+                DebugLog.d(TAG) { "result from activity take" }
                 val result = bundle.getBoolean(Constants.TAKE_IMAGE_BUNDLE)
                 if (result) {
                     takePicture()
@@ -223,7 +222,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         firebaseMessagingReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == PUSH_NOTIFICATION) {
-                    Log.d(TAG, "onGetNotification from Main Activity")
+                    DebugLog.d(TAG) { "onGetNotification from Main Activity" }
                     // what happens when a notification is received while the user is in this activity
                     viewModel.onGetNotification()
                 }
@@ -259,7 +258,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         //val root = File(filesDir/*cacheDir*/, "my_images")
         // Create request to write to media storage
         if (!root.mkdirs()) {
-            Log.e(TAG, "Directory not created")
+            DebugLog.e(TAG) { "Directory not created" }
         }
         val fname = "img_${System.currentTimeMillis()}.jpg"
         val sdImageMainDirectory = File(root, fname)
@@ -288,10 +287,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                Log.i("Permission: ", "Granted")
+                DebugLog.i("Permission: ") { "Granted" }
                 takePicture.launch(currentImageUri)
             } else {
-                Log.i("Permission: ", "Denied")
+                DebugLog.i("Permission: ") { "Denied" }
             }
         }
 

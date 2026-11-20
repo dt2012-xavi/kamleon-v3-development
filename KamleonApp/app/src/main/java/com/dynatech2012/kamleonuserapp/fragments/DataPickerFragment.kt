@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +18,7 @@ import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.ozcanalasalvar.datepicker.view.datapicker.DataPicker
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 class DataPickerFragment : BottomSheetDialogFragment() {
     private val viewModel: MainViewModel by activityViewModels()
@@ -69,7 +69,7 @@ class DataPickerFragment : BottomSheetDialogFragment() {
     }
 
     private fun setupDataPicker(v: View) {
-        Log.d("DataPickerFragment", "helooo pre set up data picker")
+        DebugLog.d("DataPickerFragment") { "helooo pre set up data picker" }
         val pickerView = v.findViewById<DataPicker>(R.id.dataPicker)
         pickerV = pickerView
         val  aryRet = ArrayList<String>()
@@ -79,7 +79,7 @@ class DataPickerFragment : BottomSheetDialogFragment() {
             }
             pickerView.setValueUnit("cm")
             pickerView.setValueWidth(70)
-            Log.d("DataPickerFragment", "Height picker initialized")
+            DebugLog.d("DataPickerFragment") { "Height picker initialized" }
             pickerView.setShowDecimal(true)
             dataValue?.let { pickerView.setValue(it) }
         } else if (dataType == "weight") {
@@ -110,13 +110,13 @@ class DataPickerFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        Log.e("BottomSheet", "onCancel")
+        DebugLog.e("BottomSheet") { "onCancel" }
         super.onCancel(dialog)
         dismissListener?.onDismissFragment()
     }
 
     private fun onSave() {
-        Log.d("BottomSheet", "onSave")
+        DebugLog.d("BottomSheet") { "onSave" }
         when (dataType) {
             "height" -> {
                 pickerV.getSelectedValue()?.let { newHeight ->

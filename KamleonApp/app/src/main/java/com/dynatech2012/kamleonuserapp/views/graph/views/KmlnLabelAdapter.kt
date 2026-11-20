@@ -1,6 +1,5 @@
 package com.dynatech2012.kamleonuserapp.views.graph.views
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import com.dynatech2012.kamleonuserapp.extensions.formatTimeForPopup
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import java.time.Instant
 import java.util.Date
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 
 class KmlnLabelAdapter : ListAdapter<AveragesData, KmlnLabelAdapter.ViewHolder>(KmlnLabelDiffCallback()) {
@@ -37,7 +37,7 @@ class KmlnLabelAdapter : ListAdapter<AveragesData, KmlnLabelAdapter.ViewHolder>(
             val date = Date(item.timestamp)
             tvTimestamp.text = date.formatTimeForPopup
             val isPrecise = item.isPrecise
-            Log.d("KmlnLabelAdapter", "bar isPrecise: $isPrecise _ ${date.formatTime}")
+            DebugLog.d("KmlnLabelAdapter") { "bar isPrecise: $isPrecise _ ${date.formatTime}" }
             // TODO: delete "adapterPosition == 0 &&" -> DONE
             val value = if (/*adapterPosition == 0 && */isPrecise) item.scoreValue(type).toInt() else "Low Volume"
             val un = if (/*adapterPosition == 0 && */isPrecise) itemView.context.getString(type.getUnit()) else ""

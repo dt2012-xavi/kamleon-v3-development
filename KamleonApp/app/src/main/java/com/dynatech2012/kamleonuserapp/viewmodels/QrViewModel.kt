@@ -2,7 +2,6 @@ package com.dynatech2012.kamleonuserapp.viewmodels
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.util.Size
 import androidx.camera.core.ImageAnalysis
 import androidx.core.content.ContextCompat

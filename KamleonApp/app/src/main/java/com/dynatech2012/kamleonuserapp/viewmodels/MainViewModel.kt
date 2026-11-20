@@ -2,7 +2,6 @@ package com.dynatech2012.kamleonuserapp.viewmodels
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -127,7 +126,7 @@ class MainViewModel @Inject constructor(
                 getUserData()
             }
             _userUpdated.postValue(response)
-            Log.d(TAG, "user data changed")
+            DebugLog.d(TAG) { "user data changed" }
         }
     }
 
@@ -171,13 +170,13 @@ class MainViewModel @Inject constructor(
             //measuresRepository.closeChannels()
             withContext(Dispatchers.Main) {
                 userRepository.logoutStatus.observeForever() {
-                    Log.i("", "logout status: $it")
+                    DebugLog.i("") { "logout status: $it" }
                     if (it) {
                         watcher.reset()
                         logoutStatus.postValue(true)
                         userRepository.removeAuthListener()
                         userRepository.logoutStatus.removeObserver {
-                            Log.d("", "logoutStatus removed")
+                            DebugLog.d("") { "logoutStatus removed" }
                         }
                     }
                 }
@@ -293,75 +292,72 @@ class MainViewModel @Inject constructor(
 
     fun getUserMeasures() {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d(TAG, "will try to get measures from DB and from FS")
+            DebugLog.d(TAG) { "will try to get measures from DB and from FS" }
             val measuresLoaded = ArrayList<MeasureData>()
             val dailyLoaded = ArrayList<AverageDailyMeasureData>()
             val monthlyLoaded = ArrayList<AverageMonthlyMeasureData>()
             val responseMeasuresDB =
                 measuresRepository.getUserLastMeasureFromDB()//.collect { lastM ->
             if (responseMeasuresDB.isSuccess && responseMeasuresDB.dataValue != null) {
-                Log.d(TAG, "got measures from DB size: ${responseMeasuresDB.dataValue?.size}")
+                DebugLog.d(TAG) { "got measures from DB size: ${responseMeasuresDB.dataValue?.size}" }
                 responseMeasuresDB.dataValue?.let { measuresDB ->
                     measuresLoaded.clear() // not necessary
                     measuresLoaded.addAll(measuresDB)
                     _measures.postValue(measuresDB)
                     if (measuresDB.size > 0) {
-                        Log.d(TAG, "got measures from DB not empty")
+                        DebugLog.d(TAG) { "got measures from DB not empty" }
                         _lastMeasure.postValue(measuresDB[0])
                     } else {
-                        Log.d(TAG, "got measures from DB EMPTY")
+                        DebugLog.d(TAG) { "got measures from DB EMPTY" }
                     }
                 }
             }
             val responseMeasuresFS =
                 measuresRepository.getUserMeasuresFromFS(userRepository.uuid)//.collect { meas ->
             if (responseMeasuresFS.isSuccess && responseMeasuresFS.dataValue != null) {
-                Log.d(
-                    TAG,
-                    "got measures from FS success size: ${responseMeasuresFS.dataValue?.size}"
-                )
+                DebugLog.d(TAG) { "got measures from FS success size: ${responseMeasuresFS.dataValue?.size}" }
                 responseMeasuresFS.dataValue?.let { measuresFB ->
                     measuresLoaded.addAll(measuresFB)
                     //_measures.postValue(measuresFB)
                     _measures.postValue(measuresLoaded)
                     if (measuresFB.size > 0) {
-                        Log.d(TAG, "got measures from FS not empty")
+                        DebugLog.d(TAG) { "got measures from FS not empty" }
                         _lastMeasure.postValue(measuresFB[0])
                     } else {
-                        Log.d(TAG, "got measures from FS EMPTY")
+                        DebugLog.d(TAG) { "got measures from FS EMPTY" }
                     }
                 }
             }
             val responseDailyDB = measuresRepository.getDailyAveragesFromDB()
             if (responseDailyDB.isSuccess && responseDailyDB.dataValue != null) {
-                Log.d(TAG, "got daily from DB size: ${responseDailyDB.dataValue?.size}")
+                DebugLog.d(TAG) { "got daily from DB size: ${responseDailyDB.dataValue?.size}" }
                 responseDailyDB.dataValue?.let { dailyDB ->
                     dailyLoaded.clear() // not necessary
                     dailyLoaded.addAll(dailyDB)
                     _averageDailyMeasures.postValue(dailyDB)
                     if (dailyDB.size == 0) {
-                        Log.d(TAG, "got daily from DB EMPTY")
+                        DebugLog.d(TAG) { "got daily from DB EMPTY" }
                     }
                 }
             }
             val responseMonthlyDB = measuresRepository.getMonthlyAveragesFromDB()
             if (responseMonthlyDB.isSuccess && responseMonthlyDB.dataValue != null) {
-                Log.d(TAG, "got monthly from DB size: ${responseMonthlyDB.dataValue?.size}")
+                DebugLog.d(TAG) { "got monthly from DB size: ${responseMonthlyDB.dataValue?.size}" }
                 responseMonthlyDB.dataValue?.let { monthlyDB ->
                     monthlyLoaded.clear() // not necessary
                     monthlyLoaded.addAll(monthlyDB)
                     _averageMonthlyMeasures.postValue(monthlyDB)
                     if (monthlyDB.size == 0) {
-                        Log.d(TAG, "got monthly from DB EMPTY")
+                        DebugLog.d(TAG) { "got monthly from DB EMPTY" }
                     }
                 }
             }
             val avDay =
                 measuresRepository.getUserDailyAverages(userRepository.uuid)//.collect { avDay ->
             if (avDay.isSuccess && avDay.dataValue != null) {
-                Log.d(TAG, "got measures daily finally 2")
+                DebugLog.d(TAG) { "got measures daily finally 2" }
                 avDay.dataValue?.let { dailyMeasures ->
-                    Log.d(TAG, "got measures daily finally 2 size ${dailyMeasures.size}")
+                    DebugLog.d(TAG) { "got measures daily finally 2 size ${dailyMeasures.size}" }
                     dailyLoaded.addAll(dailyMeasures)
                     _averageDailyMeasures.postValue(dailyLoaded)
                 }
@@ -369,9 +365,9 @@ class MainViewModel @Inject constructor(
             val avMon =
                 measuresRepository.getUserMonthlyAverages(userRepository.uuid)//.collect { avMon ->
             if (avMon.isSuccess && avMon.dataValue != null) {
-                Log.d(TAG, "got measures monthly finally 2")
+                DebugLog.d(TAG) { "got measures monthly finally 2" }
                 avMon.dataValue?.let { monthlyMeasures ->
-                    Log.d(TAG, "got measures monthly finally 2 size ${monthlyMeasures.size}")
+                    DebugLog.d(TAG) { "got measures monthly finally 2 size ${monthlyMeasures.size}" }
                     monthlyLoaded.addAll(monthlyMeasures)
                     _averageMonthlyMeasures.postValue(monthlyLoaded)
                 }
@@ -444,7 +440,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun onGetNotification() {
-        Log.d(TAG, "onGetNotification from viewModel")
+        DebugLog.d(TAG) { "onGetNotification from viewModel" }
         getUserMeasures()
         //_newNotificationMeasure.postValue(true)
     }
@@ -479,7 +475,7 @@ class MainViewModel @Inject constructor(
     fun getInvitations() {
         viewModelScope.launch(Dispatchers.IO) {
             val response = cloudFunctions.getInvitations()
-            Log.d(TAG, "HHH getInvitations: ${response.dataValue?.size}")
+            DebugLog.d(TAG) { "HHH getInvitations: ${response.dataValue?.size}" }
             val invitations = response.dataValue ?: ArrayList()
             val pendingInvitations =
                 invitations.filter { it.status == InvitationStatus.SENT } as ArrayList<Invitation>
@@ -489,7 +485,7 @@ class MainViewModel @Inject constructor(
                 _recentInvitationModified.postValue(true)
             }
             // 30 days ago
-            Log.d(TAG, "HHH getInvitations pending: ${pendingInvitations.size}")
+            DebugLog.d(TAG) { "HHH getInvitations pending: ${pendingInvitations.size}" }
             val thirtyDaysAgo = Date().addDays(-30)
             _recentInvitations.postValue(invitations.filter { it.status != InvitationStatus.SENT && it.dateSent >= thirtyDaysAgo } as ArrayList<Invitation>?)
             val oldInvitations =
@@ -509,7 +505,7 @@ class MainViewModel @Inject constructor(
             DebugLog.d(TAG) { "Accepting invitation" }
             val response = cloudFunctions.acceptInvitation(invitationId, opt)
             if (response.isSuccess) {
-                Log.d(TAG, "HHH acceptInvitation: success")
+                DebugLog.d(TAG) { "HHH acceptInvitation: success" }
                 if (isAdmin)
                     firestoreRepo.updateLegal(true, false, false)
                 else
@@ -517,7 +513,7 @@ class MainViewModel @Inject constructor(
                 gettingInvitationsAfterModifyingOne = true
                 getInvitations()
             } else {
-                Log.d(TAG, "HHH acceptInvitation: failure")
+                DebugLog.d(TAG) { "HHH acceptInvitation: failure" }
             }
         }
     }
@@ -527,10 +523,10 @@ class MainViewModel @Inject constructor(
             val response = cloudFunctions.rejectInvitation(invitationId)
             if (response.isSuccess) {
                 gettingInvitationsAfterModifyingOne = true
-                Log.d(TAG, "HHH rejectInvitation: success")
+                DebugLog.d(TAG) { "HHH rejectInvitation: success" }
                 getInvitations()
             } else {
-                Log.d(TAG, "HHH rejectInvitation: failure")
+                DebugLog.d(TAG) { "HHH rejectInvitation: failure" }
             }
         }
     }
@@ -708,7 +704,7 @@ class MainViewModel @Inject constructor(
     private val _trialSent = MutableLiveData<Boolean>()
     val trialSent: LiveData<Boolean> = _trialSent
     fun sendTrialEmail() {
-        Log.d(TAG, "sendTrialEmail")
+        DebugLog.d(TAG) { "sendTrialEmail" }
         val email = userRepository.email
         if (email == null) {
             _trialSent.postValue(false)

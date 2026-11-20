@@ -2,7 +2,6 @@ package com.dynatech2012.kamleonuserapp.views.graph.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -13,6 +12,7 @@ import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphViewMode
 import com.dynatech2012.kamleonuserapp.extensions.formatDate
 import kotlinx.coroutines.DEBUG_PROPERTY_NAME
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 class KmlnHeaderView(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
 
@@ -92,7 +92,7 @@ class KmlnHeaderView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
     }
 
     fun setData(data: KamleonGraphBarDrawData) {
-        Log.d("KmlnHeaderView", "setData size: ${data.values.size}")
+        DebugLog.d("KmlnHeaderView") { "setData size: ${data.values.size}" }
         if (data.values.isEmpty()) {
             return
         }
@@ -101,7 +101,7 @@ class KmlnHeaderView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
         val avgValue = nonZeroVals.sumOf { it.y } / nonZeroVals.size
         val strAvgUnit = context.getString(data.type.getUnit())
         if (nonZeroVals.isEmpty()) {
-            Log.d("KmlnHeaderView", "setData: nonZeroVals.isEmpty()")
+            DebugLog.d("KmlnHeaderView") { "setData: nonZeroVals.isEmpty()" }
             val strDateRange = when(data.mode) {
                 KamleonGraphViewMode.Daily -> data.date.formatDate("dd MMM, yyyy")
                 KamleonGraphViewMode.Weekly -> data.startDate().formatDate("dd MMM, yyyy") + " - " + data.endDate().formatDate("dd MMM, yyyy")

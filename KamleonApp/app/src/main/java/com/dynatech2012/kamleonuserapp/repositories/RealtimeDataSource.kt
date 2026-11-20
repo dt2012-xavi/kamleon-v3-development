@@ -1,6 +1,5 @@
 package com.dynatech2012.kamleonuserapp.repositories
 
-import android.util.Log
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.REALTIME_COLLECTION_AVERAGES
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.REALTIME_FOLDER_DAILY
@@ -19,6 +18,7 @@ import kotlinx.coroutines.tasks.await
 import java.text.DecimalFormat
 import java.time.LocalDate
 import javax.inject.Inject
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 /**
  *
@@ -72,7 +72,7 @@ class RealtimeDataSource @Inject constructor(
      * ------- DAILY AVERAGE MEASURES -------
     </font> */
     suspend fun getDaysAverages(userId: String?, dayArray: List<LocalDate>): Response<ArrayList<AverageDailyMeasureData>> {
-        Log.d(TAG, "getDaysAverage")
+        DebugLog.d(TAG) { "getDaysAverage" }
         if (userId == null) return Response.Failure(Exception())
         val ref = averagesRef.child(userId).child(REALTIME_FOLDER_DAILY)
         val numberFormat = DecimalFormat("00")
@@ -104,7 +104,7 @@ class RealtimeDataSource @Inject constructor(
     </font> */
 
     suspend fun getMonthsAverages(userId: String?, monthArray: List<LocalDate>): Response<ArrayList<AverageMonthlyMeasureData>> {
-        Log.d(TAG, "getMonthAverage")
+        DebugLog.d(TAG) { "getMonthAverage" }
         if (userId == null) return Response.Failure(Exception())
         val ref = averagesRef.child(userId).child(REALTIME_FOLDER_MONTHLY)
         val numberFormat = DecimalFormat("00")

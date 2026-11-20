@@ -1,6 +1,5 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.util.Log
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -9,6 +8,7 @@ import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.FragmentTutorialBinding
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 
 @AndroidEntryPoint
@@ -42,7 +42,7 @@ class TutorialFragment : BaseFragment<FragmentTutorialBinding>() {
         binding.btnTutorialSkip.setOnClickListener {
             val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
             val navController = navHostFragment.navController
-            Log.d(TAG, "tutorial finished")
+            DebugLog.d(TAG) { "tutorial finished" }
             if (viewModel.tutorialComingFromHome)
                 navController.navigate(R.id.action_tutorialFragment_to_tabFragment)
             else
@@ -56,7 +56,7 @@ class TutorialFragment : BaseFragment<FragmentTutorialBinding>() {
                 // back to home
                 val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
                 val navController = navHostFragment.navController
-                Log.d(TAG, "tutorial finished")
+                DebugLog.d(TAG) { "tutorial finished" }
                 if (viewModel.tutorialComingFromHome)
                     navController.navigate(R.id.action_tutorialFragment_to_tabFragment)
                 else

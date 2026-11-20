@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import android.graphics.Color
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
@@ -43,6 +42,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.GregorianCalendar
 import com.dynatech2012.kamleonuserapp.views.showProfileImage
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 @AndroidEntryPoint
 class SettingFragment : BaseFragment<ActivitySettingBinding>(),
@@ -97,7 +97,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     }
 
     override fun initView() {
-        Log.d(TAG, "init view")
+        DebugLog.d(TAG) { "init view" }
         updateOptionViewUI()
 
         binding.etAccName.imeOptions = EditorInfo.IME_ACTION_DONE
@@ -164,7 +164,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             val pickFragment = ImagePickFragment.newInstance(onDismissPickImage)
             //ft.add(pickFragment, "ImagePick").commit()
             pickFragment.show(childFragmentManager, "ImagePick")
-            Log.d(TAG, "image pick dialog after show")
+            DebugLog.d(TAG) { "image pick dialog after show" }
         }
 
         binding.btnSettingNoti.setOnClickListener {
@@ -358,7 +358,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     }
 
     private fun onUserDataChanged(userData: CustomUser) {
-        Log.d(TAG, "on user data changed")
+        DebugLog.d(TAG) { "on user data changed" }
         val initials = getString(
             R.string.user_name_initials,
             userData.name.substring(0, 1).uppercase(),
@@ -481,7 +481,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     }
 
     private fun onUserProfilesChanged(organizations: ArrayList<Organization>) {
-        Log.d(TAG, "User profiles changed: count=${organizations.size}")
+        DebugLog.d(TAG) { "User profiles changed: count=${organizations.size}" }
         if (organizations.isEmpty()) {
             binding.llSettingAccountInfoSingle.visibility = View.GONE
             binding.llSettingAccountInfoMultiple.visibility = View.GONE
@@ -534,14 +534,11 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     override fun onDateChanged(date: Long, day: Int, month: Int, year: Int) {
         val dateSelected = GregorianCalendar(year, month, day).time
         val fourteenYAgo = Date().addYears(-14)
-        Log.d(DatePickerFragment.TAG, "Birth date selection changed")
+        DebugLog.d(DatePickerFragment.TAG) { "Birth date selection changed" }
         val isDateAllowed = dateSelected <= fourteenYAgo
         dateFragment?.enableSaveButton(isDateAllowed)
         if (!isDateAllowed) {
-            Log.d(
-                DatePickerFragment.TAG,
-                "ggg onDateChanged too young: $dateSelected, $fourteenYAgo"
-            )
+            DebugLog.d(DatePickerFragment.TAG) { "Birth date rejected: user must be at least 14" }
             showDateNotAllowedDialog()
         }
     }

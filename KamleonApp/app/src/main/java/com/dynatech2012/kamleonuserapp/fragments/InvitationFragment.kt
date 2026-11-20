@@ -8,7 +8,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +26,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 
 @AndroidEntryPoint
@@ -80,7 +80,7 @@ class InvitationFragment : BottomSheetDialogFragment() {
     private fun onGetPendingInvitations(it: List<Invitation>) {
         val adapter = binding.rvNewInvitationList.adapter as NewInvitationListAdapter
         //adapter.setDataSource(it as ArrayList<Invitation>)
-        Log.d(TAG, "HHH on get invitations pending: ${it.size}")
+        DebugLog.d(TAG) { "HHH on get invitations pending: ${it.size}" }
         adapter.submitList(it.toList())
         if (it.isNotEmpty())
             binding.vDivider.visibility = View.VISIBLE
@@ -103,7 +103,7 @@ class InvitationFragment : BottomSheetDialogFragment() {
         adapterNewInvitations.setNotificationListItemViewListener(object :
             NewInvitationListAdapter.NotificationListItemViewListener {
             override fun onClick(invitation: Invitation, accepted: Boolean, optional: Boolean) {
-                Log.d(TAG, "onClick")
+                DebugLog.d(TAG) { "onClick" }
                 if (accepted)
                     viewModel.acceptInvitation(invitation, optional)
                 else
@@ -148,7 +148,7 @@ class InvitationFragment : BottomSheetDialogFragment() {
         */
 
 
-        Log.d(TAG, "setupBottomSheet")
+        DebugLog.d(TAG) { "setupBottomSheet" }
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
         bottomSheetBehavior.peekHeight = 360.px
 
@@ -166,7 +166,7 @@ class InvitationFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        Log.d(TAG, "onCancel")
+        DebugLog.d(TAG) { "onCancel" }
         super.onCancel(dialog)
         dismissListener?.onDismissFragment()
     }

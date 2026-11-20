@@ -1,6 +1,5 @@
 package com.dynatech2012.kamleonuserapp.views.cards
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +36,7 @@ import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.models.Recommendation
 import com.dynatech2012.kamleonuserapp.models.RecommendationType
 import kotlinx.coroutines.launch
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -107,7 +107,7 @@ fun CardViewHomeItemHome(recommType: RecommendationType, measure: MeasureData?, 
     val recommendation = recommendations[page]
     recommendation.blocked = page == recommendations.count() - 1
     if (recommType == RecommendationType.HOME && page == 0 && measure != null) {
-        Log.d("CardViewHomeItemHome", "first recommendation: isPrecise: ${measure.isPrecise}")
+        DebugLog.d("CardViewHomeItemHome") { "first recommendation: isPrecise: ${measure.isPrecise}" }
         recommendation.titleShort = recommendation.getHydrationTitle(measure)
         recommendation.text = recommendation.getHydrationSubtitle(measure)
     }

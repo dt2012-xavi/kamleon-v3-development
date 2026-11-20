@@ -4,11 +4,11 @@ import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
-import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 /*
 class CirclePagerIndicatorDecoration : RecyclerView.ItemDecoration() {
@@ -234,7 +234,7 @@ class CirclePagerIndicatorDecoration : RecyclerView.ItemDecoration() {
             val partialLength = mIndicatorItemLength * calcRatio + mIndicatorItemPadding * calcRatio
 
             c.drawCircle(highlightStart + partialLength, indicatorPosY, mIndicatorItemLength / 2f, mPaint)
-            Log.e("DrawHighlight", "progress: $progress, highlightPosition: $highlightPosition")
+            DebugLog.e("DrawHighlight") { "progress: $progress, highlightPosition: $highlightPosition" }
         }
     }
 

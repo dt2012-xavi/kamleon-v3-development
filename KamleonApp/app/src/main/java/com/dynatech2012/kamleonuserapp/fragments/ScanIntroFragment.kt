@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 class ScanIntroFragment : BottomSheetDialogFragment() {
 
@@ -81,7 +81,7 @@ class ScanIntroFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        Log.e("BottomSheet", "onCancel")
+        DebugLog.e("BottomSheet") { "onCancel" }
         super.onCancel(dialog)
         dismissListener?.onDismissFragment()
     }

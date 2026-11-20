@@ -8,7 +8,6 @@ import android.graphics.PointF
 import android.graphics.RectF
 import android.graphics.Typeface
 import android.util.AttributeSet
-import android.util.Log
 import android.util.SizeF
 import android.view.View
 import com.dynatech2012.kamleonuserapp.R
@@ -22,6 +21,7 @@ import com.dynatech2012.kamleonuserapp.extensions.formatDate
 import com.dynatech2012.kamleonuserapp.extensions.px
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataXY
 import kotlin.math.min
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context, attributeSet) {
     private val xAxisLinePaint = Paint().apply {
@@ -124,7 +124,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
     fun graphBarRectIndex(touchPos: PointF): Int? {
         for (vIndex in dataSource.values.indices) {
             val barItemRect = calcBarRect(SizeF(this.width.toFloat(), this.height.toFloat()), vIndex)
-            Log.d("LLL", "barRect($vIndex) = $barItemRect")
+            DebugLog.d("LLL") { "barRect($vIndex) = $barItemRect" }
             if (barItemRect.contains(touchPos.x, touchPos.y)) {
                 return vIndex
             }
@@ -196,7 +196,7 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
             }
             KamleonGraphViewMode.Weekly -> {
                 val dayNames = arrayOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-                Log.d("LLL", "dayNames: ${dayNames.size}")
+                DebugLog.d("LLL") { "dayNames: ${dayNames.size}" }
                 return dayNames[startDate.addDays(index).day]
             }
             KamleonGraphViewMode.Yearly -> {

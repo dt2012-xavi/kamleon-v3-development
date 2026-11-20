@@ -1,6 +1,5 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
@@ -15,6 +14,7 @@ import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
 import com.dynatech2012.kamleonuserapp.views.showProfileImage
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 @AndroidEntryPoint
 class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
@@ -66,7 +66,7 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
     }
 
     private fun onUserDataChanged(userData: CustomUser) {
-        Log.d(TAG, "on user data changed")
+        DebugLog.d(TAG) { "on user data changed" }
         val initials = getString(R.string.user_name_initials, userData.name.substring(0, 1).uppercase(), userData.lastName.substring(0, 1).uppercase())
         binding.tvAnalyticProfileName.text = initials
     }
@@ -76,7 +76,7 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
     }
 
     private fun onLastMeasureChanged(measureData: MeasureData?) {
-        Log.d(TAG, "Latest measure changed")
+        DebugLog.d(TAG) { "Latest measure changed" }
         val cvHy = binding.cvAnalyticHydration
         val score = if (measureData?.isPrecise == false) null else measureData?.score
         cvHy.value = score

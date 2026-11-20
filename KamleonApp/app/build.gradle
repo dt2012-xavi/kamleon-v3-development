@@ -62,8 +62,6 @@ android {
         warningsAsErrors = true
         checkDependencies = true
         checkTestSources = true
-        // Legacy Log calls are migrated incrementally; keep all other Timber checks active.
-        disable "LogNotTimber"
         // "A newer version is available" depends on the date, not on the code: with
         // warningsAsErrors it breaks builds on its own. Review versions on purpose instead.
         disable "AndroidGradlePluginVersion", "GradleDependency", "NewerVersionAvailable"

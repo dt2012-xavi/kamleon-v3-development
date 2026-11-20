@@ -1,6 +1,5 @@
 package com.dynatech2012.kamleonuserapp.views.progress
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -23,6 +22,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 @Composable
 fun AnimatedCircularProgressIndicator(
@@ -153,7 +153,7 @@ private fun DrawScope.drawBallProgressIndicator(
     val diameterOffset = stroke.width / 2
     val arcDimen = size.width - 2 * diameterOffset
     // ranges not included
-    Log.d("PB", "Progress Bar color sweep: $sweep _ lerp: ${sweep / 360f}")
+    DebugLog.d("PB") { "Progress Bar color sweep: $sweep _ lerp: ${sweep / 360f}" }
     val finalColor = when (val percentage = (sweep) / 360f)
     {
         //in 0.0f..0.2f -> lerp(colorList[0], colorList[1], percentage)
@@ -161,25 +161,25 @@ private fun DrawScope.drawBallProgressIndicator(
         in 0f..0.25f ->  {
             val lerp = interpolate(0.0f, 0.25f, percentage)
             val fc = lerp(colorList[0], colorList[1], lerp)
-            Log.d("PB","Progress Bar color 0,0 a 0,25 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
+            DebugLog.d("PB") { "Progress Bar color 0,0 a 0,25 _ sweep: $sweep _ lerp: $lerp _ color: $fc" }
             fc
         }
         in 0.25f..0.5f -> {
             val lerp = interpolate(0.25f, 0.5f, percentage)
             val fc = lerp(colorList[1], colorList[2], lerp)
-            Log.d("PB","Progress Bar color 0,25 a 0,5 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
+            DebugLog.d("PB") { "Progress Bar color 0,25 a 0,5 _ sweep: $sweep _ lerp: $lerp _ color: $fc" }
             fc
         }
         in 0.5f..0.75f -> {
             val lerp = interpolate(0.5f, 0.75f, percentage)
             val fc = lerp(colorList[2], colorList[3], lerp)
-            Log.d("PB", "Progress Bar color 0,5 a 0,75 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
+            DebugLog.d("PB") { "Progress Bar color 0,5 a 0,75 _ sweep: $sweep _ lerp: $lerp _ color: $fc" }
             fc
         }
         in 0.75f..1f -> {
             val lerp = interpolate(0.75f, 1f, percentage)
             val fc = lerp(colorList[3], colorList[4], lerp)
-            Log.d("PB", "Progress Bar color 0,75 a 1 _ sweep: $sweep _ lerp: $lerp _ color: $fc")
+            DebugLog.d("PB") { "Progress Bar color 0,75 a 1 _ sweep: $sweep _ lerp: $lerp _ color: $fc" }
             fc
         }
         else -> colorList[4]

@@ -1,10 +1,10 @@
 package com.dynatech2012.kamleonuserapp.views.graph.data
 
-import android.util.Log
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.extensions.addDays
 import com.dynatech2012.kamleonuserapp.extensions.addMonths
 import java.util.Date
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 enum class KamleonGraphViewMode(val identifier: String) {
     Daily("daily"),
@@ -27,7 +27,7 @@ enum class KamleonGraphViewMode(val identifier: String) {
             for (step in 0 until (steps - 1) step 2 ) {
                 val labelItem = KamleonGraphAxisLabelItem((step/* - 1*/).toDouble(), step.toString())
                 aryRet.add(labelItem)
-                Log.d("LLLL", "label item: ${labelItem.toString()}")
+                DebugLog.d("LLLL") { "label item: ${labelItem.toString()}" }
             }
         } else if (this == Monthly) {
             // it begins with 1 so that it starts with the second one, the last is not printed
@@ -35,7 +35,7 @@ enum class KamleonGraphViewMode(val identifier: String) {
                 aryRet.add(KamleonGraphAxisLabelItem(step.toDouble(), (startDate.addDays(step).date).toString()))
             }
         } else if (this == Weekly) {
-            Log.d("LLL", "Weekly..")
+            DebugLog.d("LLL") { "Weekly.." }
             val dayNames = arrayOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
             for (step in dayNames.indices) {
                 aryRet.add(KamleonGraphAxisLabelItem(step.toDouble(), dayNames[startDate.addDays(step).day]))
