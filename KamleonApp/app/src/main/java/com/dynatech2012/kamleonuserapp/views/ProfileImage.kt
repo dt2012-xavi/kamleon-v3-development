@@ -5,6 +5,9 @@ import android.widget.ImageView
 import coil.ImageLoader
 import coil.dispose
 import coil.load
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
+
+private const val TAG = "ProfileImage"
 
 /** The photo to show for an account, or null when only the initials should be on screen. */
 internal fun profileImageUrlOf(imageUrl: String?): String? = imageUrl?.trim()?.takeIf { it.isNotEmpty() }
@@ -23,7 +26,15 @@ internal fun ImageView.showProfileImage(url: String?, loader: ImageLoader) {
         return
     }
     load(url, loader) {
-        listener(onSuccess = { _, _ -> visibility = View.VISIBLE })
+        listener(
+            onStart = { DebugLog.d(TAG) { "Profile image load started" } },
+            onCancel = { DebugLog.d(TAG) { "Profile image load cancelled" } },
+            onSuccess = { _, _ ->
+                DebugLog.d(TAG) { "Profile image loaded" }
+                visibility = View.VISIBLE
+            },
+            onError = { _, result -> DebugLog.d(TAG) { "Profile image not loaded: ${result.throwable.javaClass.simpleName}" } }
+        )
     }
 }
 

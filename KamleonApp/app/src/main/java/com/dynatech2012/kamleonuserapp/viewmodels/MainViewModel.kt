@@ -107,6 +107,7 @@ class MainViewModel @Inject constructor(
             if (userResult.isSuccess && userResult.dataValue != null) {
                 val user = userResult.dataValue!!
                 _userData.postValue(user)
+                DebugLog.d(TAG) { "User profile has photo: ${profileImageUrlOf(user.imageUrl) != null}" }
             }
             val userProfilesResult = cloudFunctions.getUserProfiles()
             if (userProfilesResult.isSuccess && userProfilesResult.dataValue != null) {

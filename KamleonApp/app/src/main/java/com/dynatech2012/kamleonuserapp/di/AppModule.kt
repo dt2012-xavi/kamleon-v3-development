@@ -38,13 +38,15 @@ object AppModule {
     @Singleton
     fun networkMonitorProvider(@ApplicationContext appContext: Context): NetworkMonitor = AndroidNetworkMonitor(appContext)
 
-    /** One image loader for the whole app, so the avatar shares its caches across screens and refreshes. */
+    /**
+     * One image loader for the whole app, so the avatar shares its caches across screens and refreshes.
+     * No crossfade: the avatar views are CircleImageView, which copies the drawable once into its own
+     * bitmap, and a fading drawable is still empty at that moment, so the photo would never show.
+     */
     @Provides
     @Singleton
     fun imageLoaderProvider(@ApplicationContext appContext: Context): ImageLoader =
-        ImageLoader.Builder(appContext)
-            .crossfade(true)
-            .build()
+        ImageLoader.Builder(appContext).build()
 
     @Provides
     @Singleton
