@@ -1,7 +1,6 @@
 package com.dynatech2012.kamleonuserapp.repositories
 
 import android.net.Uri
-import android.util.Log
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_COLLECTION
@@ -173,11 +172,11 @@ class FirestoreDataSource @Inject constructor(
             task.limit(limit)
         return gate.safeCall(CallKind.Read) {
             val snapshot = task.get().await()
-            Log.d(TAG, "got measures from FS size: ${snapshot.documents.size}")
+            DebugLog.d(TAG) { "got measures from FS size: ${snapshot.documents.size}" }
             val measuresRaw: List<RawMeasureData> = snapshot.toObjects(RawMeasureData::class.java)
-            Log.d(TAG, "got measures from FS parsed size: ${measuresRaw.size}")
+            DebugLog.d(TAG) { "got measures from FS parsed size: ${measuresRaw.size}" }
             val measures: ArrayList<MeasureData> = ArrayList(measuresRaw.map { MeasureData(it) })
-            Log.d(TAG, "got measures from FS 23 converted to MeasureData size: ${measures.size}")
+            DebugLog.d(TAG) { "got measures from FS 23 converted to MeasureData size: ${measures.size}" }
             measures
         }
     }
@@ -213,7 +212,7 @@ class FirestoreDataSource @Inject constructor(
 
             val page = gate.safeCall(CallKind.Read) {
                 val documentSnapshot = task.get().await()
-                Log.d(TAG, "got measures 66 size: ${documentSnapshot.documents.size}")
+                DebugLog.d(TAG) { "got measures 66 size: ${documentSnapshot.documents.size}" }
                 val measuresRawPage: List<RawMeasureData> =
                     documentSnapshot.toObjects(RawMeasureData::class.java)
                 ArrayList(measuresRawPage.map { MeasureData(it) })
@@ -279,7 +278,7 @@ class FirestoreDataSource @Inject constructor(
             val map = mutableMap.toMap()
             db.collection(USERS_COLLECTION).document(userId)
                 .update(map).await()
-            Log.d(TAG, "update legal success")
+            DebugLog.d(TAG) { "update legal success" }
             true
         }
     }
@@ -299,7 +298,7 @@ class FirestoreDataSource @Inject constructor(
                     "userId" to userId
                 )
             ).await()
-            Log.d(TAG, "qr upload success")
+            DebugLog.d(TAG) { "qr upload success" }
             true
         }
     }
