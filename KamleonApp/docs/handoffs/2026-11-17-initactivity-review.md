@@ -225,8 +225,19 @@ Fichero: `app/src/main/java/com/dynatech2012/kamleonuserapp/activities/InitActiv
      correos de restablecimiento, selectores y Ajustes). Descubierto: sin red Firestore falla en menos de 1 s
      (la «espera de 10 s» no se reproduce); las medias devolvían éxito vacío aunque fallaran todas las
      lecturas; el logout sin red lanzaba una excepción. Sin ver en el móvil por falta de sesión: QR sin red,
-     analítica sin red, hojas nuevas y logout sin red. **Sigue pendiente:** caso 11 y tratar la sesión
-     rechazada en `MainActivity`.
+     analítica sin red, hojas nuevas y logout sin red. **Sigue pendiente:** tratar la sesión rechazada en
+     `MainActivity`.
+   - **Foto de perfil y fotos (2026-11-20).** `ImageLoader` único (Hilt), `MainViewModel.userImageUrl` en
+     vez de un `Drawable`, `ImageView.showProfileImage`, cachés vaciadas tras subir/quitar, hoja de fallo
+     en subida y borrado, borrar una foto que ya no está en Storage ya no falla, el evento de cerrar la
+     hoja ya no lleva `null` (nunca se entregaba), `StorageException` clasificada. **Sin crossfade** en el
+     cargador: `CircleImageView` copia el drawable una vez y el de fundido aún está vacío. Probado en el
+     Samsung: subir, cambiar, quitar, subir sin red y avatar sin red.
+   - **Caso 11 (2026-11-20).** Una excepción inesperada en `checkLogin()` dejaba el splash para siempre.
+     `guardedStartup` (probado en JVM) la convierte en `ServerError` con el código `KL-AND-110`: «Retry» y
+     «Log Out» en vez de la espera infinita (se eligió `ServerError` y no `RetryableError` para ofrecer
+     también salir). La cancelación no se traga. Probado en el Samsung con una excepción forzada
+     temporal, ya revertida. **La lista de casos del arranque está cerrada.**
 8. **Transiciones.** El fundido a Main usa `ActivityOptions.makeCustomAnimation` (`fade_in`,
    `fade_hold`). Verificar que Main no parpadea en blanco con la barra de estado transparente.
 

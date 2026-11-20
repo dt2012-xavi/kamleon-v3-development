@@ -91,3 +91,18 @@ internal suspend fun verifiedAfterReload(
     cachedVerified: Boolean,
     reload: suspend () -> Boolean?
 ): Boolean = cachedVerified || (reload() ?: false)
+
+
+/**
+ * Runs the startup check and turns an unexpected exception into a failure the caller can show. Without it
+ * an exception in the coroutine would leave the screen on the splash for ever. Cancellation is not a
+ * failure: it means a newer check took over, so it propagates.
+ */
+internal suspend fun <T> guardedStartup(block: suspend () -> T): Result<T> =
+    try {
+        Result.success(block())
+    } catch (e: kotlinx.coroutines.CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        Result.failure(e)
+    }

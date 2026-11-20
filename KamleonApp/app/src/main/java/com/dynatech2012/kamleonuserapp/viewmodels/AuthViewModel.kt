@@ -58,7 +58,7 @@ class AuthViewModel @Inject constructor(
     internal var loginErrorCode: ErrorCode? = null
         private set
 
-    private fun report(code: ErrorCode, e: Exception) {
+    private fun report(code: ErrorCode, e: Throwable) {
         // Only the code and the kind of failure: no account data.
         Timber.w("Error %s (%s)", code.label, e.javaClass.simpleName)
         FirebaseCrashlytics.getInstance().setCustomKey("error_code", code.label)
@@ -408,52 +408,67 @@ class AuthViewModel @Inject constructor(
         val request = ++startupCheck
         _startupState.value = StartupState.Checking
         viewModelScope.launch(Dispatchers.IO) {
-            val authenticated = authRepo.checkLogged
-            val profile = if (authenticated) {
-                firestoreRepo.getUserData(Source.SERVER, trustMonitor)
-            } else {
-                null
-            }
-            // The email is verified outside the app: ask the server instead of trusting the cached user.
-            val verified = if (authenticated && profile is Response.Success) {
-                verifiedAfterReload(authRepo.isEmailVerified) { authRepo.reloadEmailVerified() }
-            } else {
-                authRepo.isEmailVerified
-            }
-            val state = startupStateFor(authenticated, verified, profile)
-            if (request == startupCheck) {
-                val flags = registrationFlagsAfterCheck(
-                    authenticated, state, RegistrationFlags(recoveringProfile, profileCreated)
-                )
-                recoveringProfile = flags.recoveringProfile
-                profileCreated = flags.profileCreated
-                Timber.d("Startup authentication state: %s", state)
-                if ((state == StartupState.SessionRejected || state == StartupState.ServerError) &&
-                    profile is Response.Failure
-                ) {
-                    errorCodeOf(profile.exception).also { code ->
-                        startupErrorCode = code
-                        report(code, profile.exception)
+            guardedStartup { runStartupCheck(request, trustMonitor) }.onFailure { e ->
+                // Something nobody planned for: offer Retry and Log out instead of an endless splash.
+                if (request == startupCheck) {
+                    startupErrorCode = ErrorCode.ServerError.also { report(it, e) }
+                    continueOffline = false
+                    if (emailRecheck) {
+                        emailRecheck = false
+                        _uiState.postValue(0)
                     }
+                    _startupState.postValue(StartupState.ServerError)
                 }
-                // The server could not be asked: see whether the phone has a complete account to open with.
-                continueOffline = if (state == StartupState.RetryableError && authenticated) {
-                    canContinueOffline(
-                        state,
-                        // Reading the cache needs no network: the monitor must not block it.
-                        firestoreRepo.getUserData(Source.CACHE, trustMonitor = false),
-                        authRepo.isEmailVerified
-                    )
-                } else {
-                    false
-                }
-                // Before the state, so a screen that reacts to it (the policy sheet) is not overwritten.
-                if (emailRecheck) {
-                    emailRecheck = false
-                    _uiState.postValue(0)
-                }
-                _startupState.postValue(state)
             }
+        }
+    }
+
+    private suspend fun runStartupCheck(request: Int, trustMonitor: Boolean) {
+        val authenticated = authRepo.checkLogged
+        val profile = if (authenticated) {
+            firestoreRepo.getUserData(Source.SERVER, trustMonitor)
+        } else {
+            null
+        }
+        // The email is verified outside the app: ask the server instead of trusting the cached user.
+        val verified = if (authenticated && profile is Response.Success) {
+            verifiedAfterReload(authRepo.isEmailVerified) { authRepo.reloadEmailVerified() }
+        } else {
+            authRepo.isEmailVerified
+        }
+        val state = startupStateFor(authenticated, verified, profile)
+        if (request == startupCheck) {
+            val flags = registrationFlagsAfterCheck(
+                authenticated, state, RegistrationFlags(recoveringProfile, profileCreated)
+            )
+            recoveringProfile = flags.recoveringProfile
+            profileCreated = flags.profileCreated
+            Timber.d("Startup authentication state: %s", state)
+            if ((state == StartupState.SessionRejected || state == StartupState.ServerError) &&
+                profile is Response.Failure
+            ) {
+                errorCodeOf(profile.exception).also { code ->
+                    startupErrorCode = code
+                    report(code, profile.exception)
+                }
+            }
+            // The server could not be asked: see whether the phone has a complete account to open with.
+            continueOffline = if (state == StartupState.RetryableError && authenticated) {
+                canContinueOffline(
+                    state,
+                    // Reading the cache needs no network: the monitor must not block it.
+                    firestoreRepo.getUserData(Source.CACHE, trustMonitor = false),
+                    authRepo.isEmailVerified
+                )
+            } else {
+                false
+            }
+            // Before the state, so a screen that reacts to it (the policy sheet) is not overwritten.
+            if (emailRecheck) {
+                emailRecheck = false
+                _uiState.postValue(0)
+            }
+            _startupState.postValue(state)
         }
     }
 
