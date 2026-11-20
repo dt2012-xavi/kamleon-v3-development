@@ -1,9 +1,9 @@
 package com.dynatech2012.kamleonuserapp.repositories
 
-import android.util.Log
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
 import com.dynatech2012.kamleonuserapp.database.MeasureData
+import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import java.time.ZoneId
 import java.util.Date
 import javax.inject.Inject
@@ -18,19 +18,19 @@ class MeasuresRepository @Inject constructor(
     private var lastDateLong = 0L       // last date in DB
     private var newMeasuresFS = ArrayList<MeasureData>()
     suspend fun getUserLastMeasureFromDB(): Response<ArrayList<MeasureData>> {
-        Log.d(TAG, "will try to get measures from DB 1")
+        DebugLog.d(TAG) { "will try to get measures from DB 1" }
         val response = database.getAllMeasures()
         if (response.isSuccess) {
             val measures = response.dataValue
-            Log.d(TAG, "got measures from DB 2 size ${measures?.size}")
+            DebugLog.d(TAG) { "got measures from DB 2 size ${measures?.size}" }
             if (measures?.isNotEmpty() == true) {
-                Log.d(TAG, "got measures from DB not empty")
+                DebugLog.d(TAG) { "got measures from DB not empty" }
                 lastDateLong = measures[0].analysisDate
-                Log.d(TAG, "Latest local measure found")
+                DebugLog.d(TAG) { "Latest local measure found" }
 
             }
             else {
-                Log.w(TAG, "got measures from DB EMPTY")
+                DebugLog.w(TAG) { "got measures from DB EMPTY" }
                 lastDateLong = 0L
             }
         }
@@ -38,55 +38,55 @@ class MeasuresRepository @Inject constructor(
     }
 
     suspend fun getUserMeasuresFromFS(userId: String?): Response<ArrayList<MeasureData>> {
-        Log.d(TAG, "will try to get measures from FS 1")
-        val response = firestore.getUserMeasuresNoPag(userId, lastDateLong, null)
+        DebugLog.d(TAG) { "will try to get measures from FS 1" }
+        val response = firestore.getUserMeasuresNoPag(userId, lastDateLong)
         if (response.isSuccess) {
             val measures = response.dataValue
-            Log.d(TAG, "got measures from FS 2 size ${measures?.size}")
+            DebugLog.d(TAG) { "got measures from FS 2 size ${measures?.size}" }
 
             if (measures?.isNotEmpty() == true) {
-                Log.d(TAG, "got measures from FS not empty")
+                DebugLog.d(TAG) { "got measures from FS not empty" }
                 database.saveMeasures(measures)
                 lastDateLong = measures[0].analysisDate
                 newMeasuresFS = measures
-                Log.d(TAG, "Latest remote measure found")
+                DebugLog.d(TAG) { "Latest remote measure found" }
             }
             else {
-                Log.w(TAG, "got measures from FS EMPTY")
+                DebugLog.w(TAG) { "got measures from FS EMPTY" }
             }
         }
         return response
     }
 
     suspend fun getDailyAveragesFromDB(): Response<ArrayList<AverageDailyMeasureData>> {
-        Log.d(TAG, "will try to get average daily from DB 1")
+        DebugLog.d(TAG) { "will try to get average daily from DB 1" }
         val response = database.getAllAverageDailyMeasures()
         if (response.isSuccess) {
             val avDaily = response.dataValue
-            Log.d(TAG, "got average daily from DB 2 size ${avDaily?.size}")
+            DebugLog.d(TAG) { "got average daily from DB 2 size ${avDaily?.size}" }
             if (avDaily?.isNotEmpty() == true) {
-                Log.d(TAG, "got average daily from DB not empty")
-                Log.d(TAG, "got average daily from DB 4 score last: ${avDaily[0].hydration}")
+                DebugLog.d(TAG) { "got average daily from DB not empty" }
+                DebugLog.d(TAG) { "got average daily from DB 4 score last: ${avDaily[0].hydration}" }
             }
             else {
-                Log.w(TAG, "got average daily from DB EMPTY")
+                DebugLog.w(TAG) { "got average daily from DB EMPTY" }
             }
         }
         return response
     }
 
     suspend fun getMonthlyAveragesFromDB(): Response<ArrayList<AverageMonthlyMeasureData>> {
-        Log.d(TAG, "will try to get average monthly from DB 1")
+        DebugLog.d(TAG) { "will try to get average monthly from DB 1" }
         val response = database.getAllAverageMonthlyMeasures()
         if (response.isSuccess) {
             val avMonthly = response.dataValue
-            Log.d(TAG, "got average monthly from DB 2 size ${avMonthly?.size}")
+            DebugLog.d(TAG) { "got average monthly from DB 2 size ${avMonthly?.size}" }
             if (avMonthly?.isNotEmpty() == true) {
-                Log.d(TAG, "got average monthly from DB not empty")
-                Log.d(TAG, "got average monthly from DB 4 score last: ${avMonthly[0].hydration}")
+                DebugLog.d(TAG) { "got average monthly from DB not empty" }
+                DebugLog.d(TAG) { "got average monthly from DB 4 score last: ${avMonthly[0].hydration}" }
             }
             else {
-                Log.w(TAG, "got average monthly from DB EMPTY")
+                DebugLog.w(TAG) { "got average monthly from DB EMPTY" }
             }
         }
         return response
@@ -100,7 +100,7 @@ class MeasuresRepository @Inject constructor(
         if (response.isSuccess) {
             val measures = response.dataValue
             if (measures?.isNotEmpty() == true) {
-                Log.d(TAG, "got measures from FS not empty")
+                DebugLog.d(TAG) { "got measures from FS not empty" }
                 saveNewAverageDailyMeasuresToDB(measures)
                 /*
                 val saveJob = coroutineScope { async {
@@ -126,7 +126,7 @@ class MeasuresRepository @Inject constructor(
         if (response.isSuccess) {
             val measures = response.dataValue
             if (measures?.isNotEmpty() == true) {
-                Log.d(TAG, "got measures from FS not empty")
+                DebugLog.d(TAG) { "got measures from FS not empty" }
                 saveNewAverageMonthlyMeasuresToDB(measures)
                 /*
                 val saveJob = coroutineScope { async {
