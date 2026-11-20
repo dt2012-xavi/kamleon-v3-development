@@ -262,7 +262,7 @@ con fallo rápido y reintento al volver la red, y todas las llamadas de los repo
   la encole y la aplique al volver la red es justo lo deseado.
 - `HibpPasswordBreachChecker`: HTTP a un servicio externo, falla en abierto por diseño y su límite se hace
   desconectando la conexión (el IO bloqueante no se cancela con un tiempo máximo de corrutinas).
-- Carga de la imagen de perfil (Coil): gestionada por la librería, con su caché; si falla, no hay imagen.
+- Carga de la imagen de perfil (Coil): se queda fuera de `safeCall` a propósito, porque Coil ya observa la red y sirve de su caché sin conexión, y un timeout propio lo empeoraría. Se gestiona con un `ImageLoader` único (Hilt), `MainViewModel.userImageUrl` (solo la URL) y `ImageView.showProfileImage`; un fallo de carga conserva lo que ya había en pantalla. Tras subir o borrar la foto se vacían las cachés (la ruta de Storage es siempre la misma). La subida/borrado sí pasan por `safeCall` y avisan con `showActionFailedSheet`.
 - `EmailFragment` y `DeleteFragment` no se usan en ninguna navegación (sus `changeEmail`/`deleteUser` no
   tienen pantalla); no se tocaron.
 

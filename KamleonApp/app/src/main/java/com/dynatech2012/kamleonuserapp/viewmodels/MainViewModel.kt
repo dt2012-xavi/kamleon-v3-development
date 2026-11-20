@@ -1,7 +1,6 @@
 package com.dynatech2012.kamleonuserapp.viewmodels
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -9,7 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.ImageLoader
-import coil.request.ImageRequest
+import androidx.lifecycle.map
+import com.dynatech2012.kamleonuserapp.views.forgetCachedImages
+import com.dynatech2012.kamleonuserapp.views.profileImageUrlOf
 import com.dynatech2012.kamleonuserapp.network.ActionResult
 import com.dynatech2012.kamleonuserapp.network.actionResultOf
 import com.dynatech2012.kamleonuserapp.constants.Constants
@@ -58,7 +59,9 @@ class MainViewModel @Inject constructor(
     private val realtime: RealtimeDataSource,
     private val cloudFunctions: CloudFunctions,
     private val passwordPolicy: PasswordPolicy,
-    private val sessionCleaner: SessionCleaner
+    private val sessionCleaner: SessionCleaner,
+    /** The app-wide image loader; the screens that show the avatar load it with this one. */
+    val imageLoader: ImageLoader
 ) : ViewModel() {
 
     var graphicType: Int = -1
@@ -85,8 +88,11 @@ class MainViewModel @Inject constructor(
     private val _userImageUri = MutableLiveData<Event<Uri?>>()
     val userImageUri: LiveData<Event<Uri?>> = _userImageUri
 
-    private val _userImageDrawable = MutableLiveData<Drawable?>()
-    val userImageDrawable: LiveData<Drawable?> = _userImageDrawable
+    /** The avatar address, or null when the account has no photo. The screens load it themselves. */
+    val userImageUrl: LiveData<String?> = _userData.map { profileImageUrlOf(it.imageUrl) }
+
+    private val _userImageFailed = MutableLiveData<Event<ActionResult>>()
+    val userImageFailed: LiveData<Event<ActionResult>> = _userImageFailed
 
     private val _measures = MutableLiveData<ArrayList<MeasureData>>()
     val measures: LiveData<ArrayList<MeasureData>> = _measures
@@ -100,21 +106,6 @@ class MainViewModel @Inject constructor(
             if (userResult.isSuccess && userResult.dataValue != null) {
                 val user = userResult.dataValue!!
                 _userData.postValue(user)
-                val imageLoader = ImageLoader(appContext)
-                if (user.imageUrl.isNotBlank()) {
-                    val request = ImageRequest.Builder(appContext)
-                        .data(user.imageUrl)
-                        .allowHardware(false)
-                        .size(100, 100)
-                        .target { drawable ->
-                            // Handle the result.
-                            _userImageDrawable.postValue(drawable)
-                        }
-                        .build()
-                    val disposable = imageLoader.enqueue(request)
-                } else {
-                    _userImageDrawable.postValue(null)
-                }
             }
             val userProfilesResult = cloudFunctions.getUserProfiles()
             if (userProfilesResult.isSuccess && userProfilesResult.dataValue != null) {
@@ -265,7 +256,11 @@ class MainViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 val response = firestoreRepo.updateUserImage(uri)
                 if (response.isSuccess && response.dataValue != null) {
+                    // Same storage path every time: forget the cached copy so the new photo is fetched.
+                    imageLoader.forgetCachedImages(_userData.value?.imageUrl)
                     getUserData()
+                } else {
+                    _userImageFailed.postValue(Event(actionResultOf(response)))
                 }
                 _userImageUri.postValue(Event(uri))
             }
@@ -275,8 +270,12 @@ class MainViewModel @Inject constructor(
     fun removeUserImage() {
         setImageUri(null)
         viewModelScope.launch(Dispatchers.IO) {
-            firestoreRepo.removeUserImage()
-            //_userUpdated.postValue(true)
+            val response = firestoreRepo.removeUserImage()
+            if (response.isSuccess) {
+                imageLoader.forgetCachedImages(_userData.value?.imageUrl)
+            } else {
+                _userImageFailed.postValue(Event(actionResultOf(response)))
+            }
             getUserData()
         }
     }

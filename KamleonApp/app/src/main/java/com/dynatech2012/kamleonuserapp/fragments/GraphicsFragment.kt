@@ -1,13 +1,12 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import coil.load
+import com.dynatech2012.kamleonuserapp.views.showProfileImage
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
@@ -70,7 +69,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         viewModel.measures.observe(this, this::onGetMeasures)
         viewModel.averageMonthlyMeasures.observe(this, this::onGetAverageMonthlyMeasures)
         viewModel.averageDailyMeasures.observe(this, this::onGetAverageDailyMeasures)
-        viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
+        viewModel.userImageUrl.observe(this, this::onUserImageChanged)
     }
 
     private fun onUserDataChanged(userData: CustomUser) {
@@ -96,15 +95,8 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         binding.graphViewNew.setDailyDataSource(averageDailyMeasureData)
     }
 
-    private fun onUserImageChanged(drawable: Drawable?) {
-        Log.d(HomeFragment.TAG, "image changed")
-        if (drawable == null) {
-            binding.ivGraphProfile.setImageDrawable(null)
-            binding.ivGraphProfile.visibility = View.INVISIBLE
-            return
-        }
-        binding.ivGraphProfile.load(drawable)
-        binding.ivGraphProfile.visibility = android.view.View.VISIBLE
+    private fun onUserImageChanged(url: String?) {
+        binding.ivGraphProfile.showProfileImage(url, viewModel.imageLoader)
     }
     /*
     private fun dailyDataSourceOf(date: Date) : ArrayList<KamleonGraphBarItemData> {

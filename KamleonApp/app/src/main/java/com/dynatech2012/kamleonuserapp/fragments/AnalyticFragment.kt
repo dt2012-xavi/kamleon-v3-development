@@ -1,11 +1,9 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
-import coil.load
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.database.MeasureData
@@ -16,6 +14,7 @@ import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
+import com.dynatech2012.kamleonuserapp.views.showProfileImage
 
 @AndroidEntryPoint
 class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
@@ -62,7 +61,7 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
     private fun initObservers() {
         onLastMeasureChanged(viewModel.lastMeasure.value)
         viewModel.userData.observe(this, this::onUserDataChanged)
-        viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
+        viewModel.userImageUrl.observe(this, this::onUserImageChanged)
         viewModel.lastMeasure.observe(this, this::onLastMeasureChanged)
     }
 
@@ -72,18 +71,8 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
         binding.tvAnalyticProfileName.text = initials
     }
 
-    private fun onUserImageChanged(drawable: Drawable?) {
-        Log.d(HomeFragment.TAG, "image changed")
-        if (drawable == null) {
-            binding.ivAnalyticProfile.setImageDrawable(null)
-            binding.ivAnalyticProfile.visibility = View.INVISIBLE
-            return
-        }
-        drawable?.let {
-            binding.ivAnalyticProfile.load(drawable)
-            binding.ivAnalyticProfile.visibility = View.VISIBLE
-            return
-        }
+    private fun onUserImageChanged(url: String?) {
+        binding.ivAnalyticProfile.showProfileImage(url, viewModel.imageLoader)
     }
 
     private fun onLastMeasureChanged(measureData: MeasureData?) {

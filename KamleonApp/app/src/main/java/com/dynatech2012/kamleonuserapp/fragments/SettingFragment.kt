@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -16,7 +15,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import coil.load
 import com.dynatech2012.kamleonuserapp.views.showActionFailedSheet
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.InitActivity
@@ -44,6 +42,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.GregorianCalendar
+import com.dynatech2012.kamleonuserapp.views.showProfileImage
 
 @AndroidEntryPoint
 class SettingFragment : BaseFragment<ActivitySettingBinding>(),
@@ -348,7 +347,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         viewModel.userData.observe(this, this::onUserDataChanged)
         viewModel.userProfiles.observe(this, this::onUserProfilesChanged)
         viewModel.userUpdated.observe(this, this::onUserDataUpdated)
-        viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
+        viewModel.userImageUrl.observe(this, this::onUserImageChanged)
         viewModel.pendingInvitations.observe(this, this::onGetPendingInvitations)
     }
 
@@ -508,15 +507,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         viewModel.resetUserUpdated()
     }
 
-    private fun onUserImageChanged(drawable: Drawable?) {
-        Log.d(HomeFragment.TAG, "image changed")
-        if (drawable == null) {
-            binding.ivSettProfile.setImageDrawable(null)
-            binding.ivSettProfile.visibility = View.INVISIBLE
-            return
-        }
-        binding.ivSettProfile.load(drawable)
-        binding.ivSettProfile.visibility = View.VISIBLE
+    private fun onUserImageChanged(url: String?) {
+        binding.ivSettProfile.showProfileImage(url, viewModel.imageLoader)
     }
 
     private fun updateUserData() {

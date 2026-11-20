@@ -1,14 +1,12 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
-import coil.load
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.database.MeasureData
@@ -22,6 +20,7 @@ import com.dynatech2012.kamleonuserapp.views.cards.ViewPager
 import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
+import com.dynatech2012.kamleonuserapp.views.showProfileImage
 
 
 @AndroidEntryPoint
@@ -55,7 +54,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
     }
     private fun initObservers() {
         viewModel.userData.observe(this, this::onUserDataChanged)
-        viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
+        viewModel.userImageUrl.observe(this, this::onUserImageChanged)
         viewModel.lastMeasure.observe(this, this::onLastMeasureChanged)
         viewModel.pendingInvitations.observe(this, this::onGetPendingInvitations)
     }
@@ -66,15 +65,8 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         binding.tvHomeProfileName.text = initials
     }
 
-    private fun onUserImageChanged(drawable: Drawable?) {
-        Log.d(TAG, "image changed")
-        if (drawable == null) {
-            binding.ivHomeProfile.setImageDrawable(null)
-            binding.ivHomeProfile.visibility = View.INVISIBLE
-            return
-        }
-        binding.ivHomeProfile.load(drawable)
-        binding.ivHomeProfile.visibility = View.VISIBLE
+    private fun onUserImageChanged(url: String?) {
+        binding.ivHomeProfile.showProfileImage(url, viewModel.imageLoader)
     }
 
     private fun onLastMeasureChanged(measure: MeasureData) {

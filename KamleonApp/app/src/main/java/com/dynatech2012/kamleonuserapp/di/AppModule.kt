@@ -2,6 +2,7 @@ package com.dynatech2012.kamleonuserapp.di
 
 import android.content.Context
 import androidx.room.Room
+import coil.ImageLoader
 import com.dynatech2012.kamleonuserapp.camera.QRCodeImageAnalyzerMLKitKotlin
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureDataDao
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureDatabase
@@ -36,6 +37,14 @@ object AppModule {
     @Provides
     @Singleton
     fun networkMonitorProvider(@ApplicationContext appContext: Context): NetworkMonitor = AndroidNetworkMonitor(appContext)
+
+    /** One image loader for the whole app, so the avatar shares its caches across screens and refreshes. */
+    @Provides
+    @Singleton
+    fun imageLoaderProvider(@ApplicationContext appContext: Context): ImageLoader =
+        ImageLoader.Builder(appContext)
+            .crossfade(true)
+            .build()
 
     @Provides
     @Singleton

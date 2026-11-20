@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -13,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
-import coil.load
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.dynatech2012.kamleonuserapp.R
@@ -23,6 +21,8 @@ import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Event
 import com.dynatech2012.kamleonuserapp.models.observeEvent
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
+import com.dynatech2012.kamleonuserapp.views.showActionFailedSheet
+import com.dynatech2012.kamleonuserapp.views.showProfileImage
 
 class ImagePickFragment : BottomSheetDialogFragment() {
 
@@ -60,8 +60,11 @@ class ImagePickFragment : BottomSheetDialogFragment() {
         }
         */
 
-        viewModel.userImageDrawable.observe(this, this::onUserImageChanged)
+        viewModel.userImageUrl.observe(this, this::onUserImageChanged)
         viewModel.userImagePrevUri.observe(viewLifecycleOwner, this::onProfileImagePrevUriChanged)
+        viewModel.userImageFailed.observeEvent(viewLifecycleOwner) {
+            showActionFailedSheet(it.failure)
+        }
         viewModel.userImageUri.observeEvent(viewLifecycleOwner) {
             Log.d(TAG, "image pick fragment got event")
             dismissListener?.onDismissFragment()
@@ -76,15 +79,8 @@ class ImagePickFragment : BottomSheetDialogFragment() {
         binding.tvSettingsPickProfileName.text = initials
     }
 
-    private fun onUserImageChanged(drawable: Drawable?) {
-        Log.d(HomeFragment.TAG, "image changed")
-        if (drawable == null) {
-            binding.ivSettingsPickProfileImage.setImageDrawable(null)
-            binding.ivSettingsPickProfileImage.visibility = View.INVISIBLE
-            return
-        }
-        binding.ivSettingsPickProfileImage.load(drawable)
-        binding.ivSettingsPickProfileImage.visibility = View.VISIBLE
+    private fun onUserImageChanged(url: String?) {
+        binding.ivSettingsPickProfileImage.showProfileImage(url, viewModel.imageLoader)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
