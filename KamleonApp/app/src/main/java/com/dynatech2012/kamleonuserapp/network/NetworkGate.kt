@@ -25,7 +25,12 @@ enum class CallKind(val defaultTimeoutMs: Long) {
  * monitor is checked first and there is a time limit; a write that times out may still be applied
  * later, which is why the writes behind [CallKind.Action] must be idempotent.
  */
-class NetworkGate(val monitor: NetworkMonitor) {
+class NetworkGate(
+    val monitor: NetworkMonitor,
+    /** Told when a call fails because the server ended the session (see [endsSession]). */
+    private val onSessionEnded: (Exception) -> Unit = {},
+    private val endsSession: (Exception) -> Boolean = ::endsSession
+) {
 
     /**
      * Runs [block] as a [kind] call. With [trustMonitor] and the monitor offline it fails at once without
@@ -70,6 +75,7 @@ class NetworkGate(val monitor: NetworkMonitor) {
         } catch (e: Exception) {
             // Only the kind of call and the class of the failure: its message may carry user data.
             Timber.w("%s call failed: %s", kind, e.javaClass.simpleName)
+            if (endsSession(e)) onSessionEnded(e)
             Result.failure(e)
         }
     }

@@ -32,6 +32,7 @@ import com.dynatech2012.kamleonuserapp.repositories.DatabaseDataSource
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.MeasuresRepository
 import com.dynatech2012.kamleonuserapp.repositories.RealtimeDataSource
+import com.dynatech2012.kamleonuserapp.network.SessionWatcher
 import com.dynatech2012.kamleonuserapp.repositories.SessionCleaner
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
@@ -60,6 +61,7 @@ class MainViewModel @Inject constructor(
     private val cloudFunctions: CloudFunctions,
     private val passwordPolicy: PasswordPolicy,
     private val sessionCleaner: SessionCleaner,
+    sessionWatcher: SessionWatcher,
     /** The app-wide image loader; the screens that show the avatar load it with this one. */
     val imageLoader: ImageLoader
 ) : ViewModel() {
@@ -157,6 +159,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /** The code to tell the user when the server ended their session; null while it is fine. */
+    internal val sessionEnded: LiveData<ErrorCode?> = sessionWatcher.ended
+    private val watcher = sessionWatcher
+
     val logoutStatus = MutableLiveData<Boolean>()
 
     fun logout() {
@@ -167,6 +173,7 @@ class MainViewModel @Inject constructor(
                 userRepository.logoutStatus.observeForever() {
                     Log.i("", "logout status: $it")
                     if (it) {
+                        watcher.reset()
                         logoutStatus.postValue(true)
                         userRepository.removeAuthListener()
                         userRepository.logoutStatus.removeObserver {

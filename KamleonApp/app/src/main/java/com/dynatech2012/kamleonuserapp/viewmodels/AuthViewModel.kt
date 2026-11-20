@@ -14,6 +14,7 @@ import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.repositories.Response
+import com.dynatech2012.kamleonuserapp.network.SessionWatcher
 import com.dynatech2012.kamleonuserapp.repositories.SessionCleaner
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import com.dynatech2012.kamleonuserapp.security.PasswordLength
@@ -37,6 +38,7 @@ class AuthViewModel @Inject constructor(
     private val cloudFuctions: CloudFunctions,
     private val passwordPolicy: PasswordPolicy,
     private val sessionCleaner: SessionCleaner,
+    private val sessionWatcher: SessionWatcher,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -388,6 +390,7 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             sessionCleaner.clearLocalData()
             authRepo.signOutSuspend()
+            sessionWatcher.reset()
             fName = ""
             lName = ""
             _uiState.postValue(0)
@@ -437,6 +440,8 @@ class AuthViewModel @Inject constructor(
             authRepo.isEmailVerified
         }
         val state = startupStateFor(authenticated, verified, profile)
+        // The check is the authority on the session at launch: what a call reported before it is stale.
+        sessionWatcher.reset()
         if (request == startupCheck) {
             val flags = registrationFlagsAfterCheck(
                 authenticated, state, RegistrationFlags(recoveringProfile, profileCreated)

@@ -50,8 +50,8 @@ internal fun startupStateFor(
  * be reached. Only for a network failure ([StartupState.RetryableError]) and a complete cached account
  * (verified, policy accepted): any state where the server did answer must not skip its check.
  *
- * NOTE: nothing checks the account again when the connection returns. MainActivity has no handling for
- * a refused session (see StartupState.SessionRejected); add it when MainActivity is next touched.
+ * NOTE: nothing checks the account again when the connection returns; the first call the server
+ * refuses with a session error reaches MainActivity through SessionWatcher.
  */
 internal fun canContinueOffline(
     state: AuthViewModel.StartupState,

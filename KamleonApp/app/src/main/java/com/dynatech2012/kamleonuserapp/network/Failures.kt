@@ -56,6 +56,16 @@ internal fun Exception.isConnectionProblem(): Boolean =
     failureKindOf(this).let { it == FailureKind.Network || it == FailureKind.Busy }
 
 /**
+ * The server says THIS session is over, wherever the call was made: the account was disabled or deleted,
+ * or the sign-in was revoked or expired. A refused single operation (Firestore PERMISSION_DENIED) is
+ * deliberately not here: it can be a rule about that one document and must not sign the user out.
+ */
+internal fun endsSession(e: Exception): Boolean =
+    e is FirebaseAuthInvalidUserException ||
+        (e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.UNAUTHENTICATED) ||
+        (e is StorageException && e.errorCode == StorageException.ERROR_NOT_AUTHENTICATED)
+
+/**
  * The kind of a Firebase exception, or null when it is not one. Firestore's codes are matched inside
  * the function, not in a constant, because its enum does not load on the JVM.
  */

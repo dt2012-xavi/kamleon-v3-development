@@ -4,7 +4,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel.StartupState
 import com.dynatech2012.kamleonuserapp.network.FailureKind
+import com.dynatech2012.kamleonuserapp.network.endsSession
 import com.dynatech2012.kamleonuserapp.network.failureKindOf
+import com.google.firebase.storage.StorageException
 import com.dynatech2012.kamleonuserapp.viewmodels.ErrorCode
 import com.dynatech2012.kamleonuserapp.viewmodels.errorCodeOf
 import com.dynatech2012.kamleonuserapp.viewmodels.startupStateFor
@@ -83,5 +85,21 @@ class SessionRejectedTest {
         assertEquals(FailureKind.SessionRejected, kind(FirebaseAuthInvalidUserException("ERROR_USER_DISABLED", "t")))
         assertEquals(FailureKind.Server, kind(FirebaseFirestoreException("t", Code.INTERNAL)))
         assertEquals(FailureKind.Unknown, kind(IllegalStateException("unparseable profile")))
+    }
+
+    @Test fun onlyTheSessionItselfEndsItWhileTheAppIsInUse() {
+        // Revoked or expired sign-in, disabled or deleted account: the session is over.
+        assertEquals(true, endsSession(FirebaseFirestoreException("test", Code.UNAUTHENTICATED)))
+        assertEquals(true, endsSession(FirebaseAuthInvalidUserException("ERROR_USER_DISABLED", "test")))
+        // One refused operation can be a rule about that document: it must not sign the user out.
+        assertEquals(false, endsSession(FirebaseFirestoreException("test", Code.PERMISSION_DENIED)))
+        assertEquals(false, endsSession(FirebaseFirestoreException("test", Code.UNAVAILABLE)))
+        assertEquals(false, endsSession(FirebaseNetworkException("test")))
+    }
+
+    @Test fun aRevokedStorageSessionHasACodeToo() {
+        val failure = StorageException.fromExceptionAndHttpCode(RuntimeException("test"), 401)!!
+        assertEquals(true, endsSession(failure))
+        assertEquals(ErrorCode.SessionUnauthenticated, errorCodeOf(failure))
     }
 }

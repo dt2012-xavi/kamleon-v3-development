@@ -113,4 +113,32 @@ class NetworkGateTest {
         val failed = gate.safeCallNullable(CallKind.Action) { throw IOException("x") }
         assertTrue(failed is ResponseNullable.Failure && failed.exception is IOException)
     }
+
+    private class Ended : Exception("ended")
+
+    @Test fun aFailureThatEndsTheSessionIsReportedOnce() = runTest {
+        val reported = mutableListOf<Exception>()
+        val watching = NetworkGate(monitor, onSessionEnded = { reported += it }, endsSession = { it is Ended })
+        val failure = Ended()
+        val response = watching.safeCall(CallKind.Read) { throw failure }
+        assertEquals(listOf<Exception>(failure), reported)
+        assertTrue(response is Response.Failure)
+    }
+
+    @Test fun otherFailuresAndNoNetworkAreNotASessionEnd() = runTest {
+        val reported = mutableListOf<Exception>()
+        val watching = NetworkGate(monitor, onSessionEnded = { reported += it }, endsSession = { it is Ended })
+        watching.safeCall(CallKind.Action) { throw IOException("offline") }
+        watching.safeCall(CallKind.Action) { throw IllegalStateException("x") }
+        monitor.set(NetworkStatus.Offline)
+        watching.safeCall(CallKind.Read) { "never" }
+        assertTrue(reported.isEmpty())
+    }
+
+    @Test fun theSessionEndAlsoComesFromCallsThatReturnNothing() = runTest {
+        val reported = mutableListOf<Exception>()
+        val watching = NetworkGate(monitor, onSessionEnded = { reported += it }, endsSession = { it is Ended })
+        watching.safeCallNullable(CallKind.Action) { throw Ended() }
+        assertEquals(1, reported.size)
+    }
 }

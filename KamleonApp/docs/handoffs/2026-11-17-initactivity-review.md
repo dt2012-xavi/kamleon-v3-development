@@ -210,13 +210,18 @@ Fichero: `app/src/main/java/com/dynatech2012/kamleonuserapp/activities/InitActiv
      real, así que la caché se forzó): hoja con «Retry» y «Continue offline», «Retry» vuelve a
      comprobar y «Continue offline» abre `MainActivity`. **No visto:** una caída de red real con sesión
      y caché reales, ni Main funcionando sin conexión (deducido del código).
-   - **A TENER EN CUENTA CUANDO SE TOQUE `MainActivity`:** nada vuelve a comprobar la cuenta al
-     recuperar la red tras «Continue offline». Main no trata una sesión rechazada (el equivalente al
-     caso 6): si el servidor la rechaza entonces (PERMISSION_DENIED / UNAUTHENTICATED /
-     `FirebaseAuthInvalidUserException` en cualquier llamada), el usuario no recibe explicación, ni
-     limpieza, ni vuelta a Login. Hay que añadirlo: hoja «Your session has ended» con su código
-     (`ErrorCode`) y `SessionCleaner` + cierre de sesión. La misma nota está en el KDoc de
-     `canContinueOffline`.
+   - **Sesión rechazada en `MainActivity` (2026-11-20): hecho.** `NetworkGate` avisa a `SessionWatcher`
+     (singleton) cuando una llamada falla con `endsSession`: `FirebaseAuthInvalidUserException`,
+     Firestore `UNAUTHENTICATED`, Storage `NOT_AUTHENTICATED`. **Decisión:** `PERMISSION_DENIED` de una
+     sola operación NO cierra la sesión (puede ser una regla de ese documento); en el arranque sí cuenta,
+     porque ahí es la lectura del perfil. Main observa `MainViewModel.sessionEnded` y muestra la hoja
+     «Your session has ended» con su código (101/103/104); OK limpia datos, cierra sesión y vuelve a
+     `InitActivity` con la pila vaciada. Solo se guarda el primer aviso (muchas llamadas fallan a la vez);
+     `reset()` en el cierre de sesión y al terminar la comprobación del arranque. Tests: 3 en
+     `NetworkGateTest` y 2 instrumentados en `SessionRejectedTest` (excepciones reales de Firebase).
+     **No visto en el móvil:** el Samsung estaba sin sesión; falta ver la hoja en Main con una cuenta
+     real (con una mutación temporal que fuerce el aviso). Sigue sin comprobarse la cuenta al recuperar la
+     red tras «Continue offline»: la primera llamada que el servidor rechace lo dispara.
    - **Caso 10 y capa de red (2026-11-19).** Diseño en `docs/superpowers/specs/2026-11-19-network-layer-design.md`,
      plan en `docs/superpowers/plans/2026-11-19-network-layer.md`. Hecho: `NetworkMonitor` (sin exigir
      `VALIDATED`), `FailureKind`, `NetworkGate.safeCall`, arranque sin red inmediato, «Retry» que llama de
@@ -225,8 +230,7 @@ Fichero: `app/src/main/java/com/dynatech2012/kamleonuserapp/activities/InitActiv
      correos de restablecimiento, selectores y Ajustes). Descubierto: sin red Firestore falla en menos de 1 s
      (la «espera de 10 s» no se reproduce); las medias devolvían éxito vacío aunque fallaran todas las
      lecturas; el logout sin red lanzaba una excepción. Sin ver en el móvil por falta de sesión: QR sin red,
-     analítica sin red, hojas nuevas y logout sin red. **Sigue pendiente:** tratar la sesión rechazada en
-     `MainActivity`.
+     analítica sin red, hojas nuevas y logout sin red.
    - **Foto de perfil y fotos (2026-11-20).** `ImageLoader` único (Hilt), `MainViewModel.userImageUrl` en
      vez de un `Drawable`, `ImageView.showProfileImage`, cachés vaciadas tras subir/quitar, hoja de fallo
      en subida y borrado, borrar una foto que ya no está en Storage ya no falla, el evento de cerrar la

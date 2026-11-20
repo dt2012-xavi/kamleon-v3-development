@@ -25,6 +25,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import com.dynatech2012.kamleonuserapp.network.AndroidNetworkMonitor
 import com.dynatech2012.kamleonuserapp.network.NetworkGate
+import com.dynatech2012.kamleonuserapp.network.SessionWatcher
 import com.dynatech2012.kamleonuserapp.network.NetworkMonitor
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
@@ -50,7 +51,12 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun networkGateProvider(monitor: NetworkMonitor): NetworkGate = NetworkGate(monitor)
+    fun networkGateProvider(monitor: NetworkMonitor, watcher: SessionWatcher): NetworkGate =
+        NetworkGate(monitor, onSessionEnded = watcher::report)
+
+    @Provides
+    @Singleton
+    fun sessionWatcherProvider(): SessionWatcher = SessionWatcher()
 
     @Provides
     @Singleton

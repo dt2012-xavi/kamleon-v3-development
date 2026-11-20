@@ -42,6 +42,7 @@ import com.dynatech2012.kamleonuserapp.views.SheetSpec
 import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
 import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
+import com.dynatech2012.kamleonuserapp.viewmodels.ErrorCode
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.viewmodels.QrViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -134,6 +135,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
+        onKamleonSheetResult(SESSION_ENDED_SHEET) { endSession() }
         askNotificationPermission()
     }
 
@@ -150,10 +152,45 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         setupFirebaseMessagingReceiver()
         viewModel.updateUserToken()
 
+        // The server ended the session (account disabled or deleted, sign-in revoked): say so, then sign out.
+        viewModel.sessionEnded.observe(this) { code -> if (code != null) showSessionEndedSheet(code) }
+
         qrViewModel.qrUploaded.observeEvent(this) { result ->
             DebugLog.d(TAG) { "QR Upload finished; success: ${result.success}" }
             if (result.success) showScannedDialog() else showScanFailedDialog(result.failure)
         }
+    }
+
+    /** Only way on is OK: it wipes this phone's data and signs out, as the same sheet does at startup. */
+    private fun showSessionEndedSheet(code: ErrorCode) {
+        supportFragmentManager.showKamleonSheet(
+            SESSION_ENDED_SHEET,
+            SheetSpec(
+                title = getString(com.dynatech2012.kamleonuserapp.R.string.session_ended_title),
+                message = getString(com.dynatech2012.kamleonuserapp.R.string.session_ended_message) + "\n\n" +
+                    getString(com.dynatech2012.kamleonuserapp.R.string.error_code_line, code.label),
+                primary = getString(com.dynatech2012.kamleonuserapp.R.string.dialog_ok),
+                dismissible = false
+            )
+        )
+    }
+
+    private var endingSession = false
+
+    private fun endSession() {
+        if (endingSession) return
+        endingSession = true
+        viewModel.logoutStatus.observe(this) {
+            if (it) {
+                // Clear the whole task: no screen of the ended session may stay underneath.
+                startActivity(
+                    Intent(this, InitActivity::class.java)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                )
+                finish()
+            }
+        }
+        viewModel.logout()
     }
 
     private fun showScannedDialog() {
@@ -349,6 +386,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     companion object {
         val TAG: String = MainActivity::class.java.simpleName
         private const val NOTIFICATIONS_INTRO_SHEET = "notifications_intro"
+        private const val SESSION_ENDED_SHEET = "main_session_ended"
     }
 
     private var exclusionRects: MutableList<Rect> = ArrayList()
