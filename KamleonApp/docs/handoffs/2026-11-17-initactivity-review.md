@@ -219,8 +219,8 @@ Fichero: `app/src/main/java/com/dynatech2012/kamleonuserapp/activities/InitActiv
      `InitActivity` con la pila vaciada. Solo se guarda el primer aviso (muchas llamadas fallan a la vez);
      `reset()` en el cierre de sesión y al terminar la comprobación del arranque. Tests: 3 en
      `NetworkGateTest` y 2 instrumentados en `SessionRejectedTest` (excepciones reales de Firebase).
-     **No visto en el móvil:** el Samsung estaba sin sesión; falta ver la hoja en Main con una cuenta
-     real (con una mutación temporal que fuerce el aviso). Sigue sin comprobarse la cuenta al recuperar la
+     Probado en el Samsung con sesión real y un aviso forzado temporal (revertido): la hoja sale sobre
+     Home con `KL-AND-103`, y OK deja la app en Login sin sesión. Sigue sin comprobarse la cuenta al recuperar la
      red tras «Continue offline»: la primera llamada que el servidor rechace lo dispara.
    - **Caso 10 y capa de red (2026-11-19).** Diseño en `docs/superpowers/specs/2026-11-19-network-layer-design.md`,
      plan en `docs/superpowers/plans/2026-11-19-network-layer.md`. Hecho: `NetworkMonitor` (sin exigir
