@@ -4,6 +4,7 @@ import com.dynatech2012.kamleonuserapp.repositories.UserProfileMissingException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.functions.FirebaseFunctionsException
 import com.google.firebase.storage.StorageException
 import java.io.IOException
 import java.util.concurrent.TimeoutException
@@ -63,6 +64,7 @@ internal fun Exception.isConnectionProblem(): Boolean =
 internal fun endsSession(e: Exception): Boolean =
     e is FirebaseAuthInvalidUserException ||
         (e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.UNAUTHENTICATED) ||
+        (e is FirebaseFunctionsException && e.code == FirebaseFunctionsException.Code.UNAUTHENTICATED) ||
         (e is StorageException && e.errorCode == StorageException.ERROR_NOT_AUTHENTICATED)
 
 /**
@@ -80,6 +82,15 @@ internal fun firebaseFailureKind(e: Exception): FailureKind? = when (e) {
         FirebaseFirestoreException.Code.CANCELLED -> FailureKind.Busy
         FirebaseFirestoreException.Code.PERMISSION_DENIED,
         FirebaseFirestoreException.Code.UNAUTHENTICATED -> FailureKind.SessionRejected
+        else -> FailureKind.Server
+    }
+    is FirebaseFunctionsException -> when (e.code) {
+        FirebaseFunctionsException.Code.UNAVAILABLE,
+        FirebaseFunctionsException.Code.DEADLINE_EXCEEDED -> FailureKind.Network
+        FirebaseFunctionsException.Code.ABORTED,
+        FirebaseFunctionsException.Code.RESOURCE_EXHAUSTED,
+        FirebaseFunctionsException.Code.CANCELLED -> FailureKind.Busy
+        FirebaseFunctionsException.Code.UNAUTHENTICATED -> FailureKind.SessionRejected
         else -> FailureKind.Server
     }
     is StorageException -> when (e.errorCode) {

@@ -2,6 +2,7 @@ package com.dynatech2012.kamleonuserapp.viewmodels
 
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.functions.FirebaseFunctionsException
 import com.google.firebase.storage.StorageException
 
 /**
@@ -46,6 +47,9 @@ internal fun errorCodeOf(e: Exception): ErrorCode = when (e) {
         FirebaseFirestoreException.Code.PERMISSION_DENIED -> ErrorCode.SessionPermissionDenied
         else -> ErrorCode.ServerError
     }
+    is FirebaseFunctionsException ->
+        if (e.code == FirebaseFunctionsException.Code.UNAUTHENTICATED) ErrorCode.SessionUnauthenticated
+        else ErrorCode.ServerError
     is StorageException ->
         if (e.errorCode == StorageException.ERROR_NOT_AUTHENTICATED) ErrorCode.SessionUnauthenticated
         else ErrorCode.ServerError

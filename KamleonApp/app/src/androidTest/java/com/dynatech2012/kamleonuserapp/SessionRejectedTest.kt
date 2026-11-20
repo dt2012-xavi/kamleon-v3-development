@@ -6,6 +6,7 @@ import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel.StartupState
 import com.dynatech2012.kamleonuserapp.network.FailureKind
 import com.dynatech2012.kamleonuserapp.network.endsSession
 import com.dynatech2012.kamleonuserapp.network.failureKindOf
+import com.google.firebase.functions.FirebaseFunctionsException
 import com.google.firebase.storage.StorageException
 import com.dynatech2012.kamleonuserapp.viewmodels.ErrorCode
 import com.dynatech2012.kamleonuserapp.viewmodels.errorCodeOf
@@ -101,5 +102,26 @@ class SessionRejectedTest {
         val failure = StorageException.fromExceptionAndHttpCode(RuntimeException("test"), 401)!!
         assertEquals(true, endsSession(failure))
         assertEquals(ErrorCode.SessionUnauthenticated, errorCodeOf(failure))
+    }
+
+    // The SDK does not expose a public constructor for its exception.
+    private fun functionsFailure(code: FirebaseFunctionsException.Code): FirebaseFunctionsException =
+        FirebaseFunctionsException::class.java
+            .getDeclaredConstructor(String::class.java, FirebaseFunctionsException.Code::class.java, Any::class.java)
+            .newInstance("test", code, null)
+
+    @Test fun cloudFunctionFailuresAreClassifiedLikeFirestoreOnes() {
+        fun kind(code: FirebaseFunctionsException.Code) =
+            failureKindOf(functionsFailure(code))
+        assertEquals(FailureKind.Network, kind(FirebaseFunctionsException.Code.UNAVAILABLE))
+        assertEquals(FailureKind.Network, kind(FirebaseFunctionsException.Code.DEADLINE_EXCEEDED))
+        assertEquals(FailureKind.Busy, kind(FirebaseFunctionsException.Code.RESOURCE_EXHAUSTED))
+        assertEquals(FailureKind.SessionRejected, kind(FirebaseFunctionsException.Code.UNAUTHENTICATED))
+        assertEquals(FailureKind.Server, kind(FirebaseFunctionsException.Code.INTERNAL))
+        // PERMISSION_DENIED of one function is not the session ending.
+        val denied = functionsFailure(FirebaseFunctionsException.Code.PERMISSION_DENIED)
+        assertEquals(false, endsSession(denied))
+        assertEquals(true, endsSession(functionsFailure(FirebaseFunctionsException.Code.UNAUTHENTICATED)))
+        assertEquals(ErrorCode.SessionUnauthenticated, errorCodeOf(functionsFailure(FirebaseFunctionsException.Code.UNAUTHENTICATED)))
     }
 }
