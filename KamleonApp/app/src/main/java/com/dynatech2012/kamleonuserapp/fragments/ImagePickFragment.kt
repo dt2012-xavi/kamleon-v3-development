@@ -115,7 +115,8 @@ class ImagePickFragment : BottomSheetDialogFragment() {
     private fun onProfileImagePrevUriChanged(uri: Uri?) {
         Log.d(TAG, "Got image profile changed")
         if (uri == null)
-            binding.ivSettingsPickProfileImage.visibility = View.INVISIBLE
+            // No picked photo (none yet, removed, or the upload failed): show the saved avatar, if any.
+            binding.ivSettingsPickProfileImage.showProfileImage(viewModel.userImageUrl.value, viewModel.imageLoader)
         else {
             binding.ivSettingsPickProfileImage.visibility = View.VISIBLE
             binding.ivSettingsPickProfileImage.setImageURI(uri)

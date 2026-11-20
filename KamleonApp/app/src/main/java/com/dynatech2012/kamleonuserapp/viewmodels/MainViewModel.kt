@@ -260,6 +260,8 @@ class MainViewModel @Inject constructor(
                     imageLoader.forgetCachedImages(_userData.value?.imageUrl)
                     getUserData()
                 } else {
+                    // Nothing was saved: stop showing the photo that was picked as if it were the avatar.
+                    _userImagePrevUri.postValue(null)
                     _userImageFailed.postValue(Event(actionResultOf(response)))
                 }
                 _userImageUri.postValue(Event(uri))

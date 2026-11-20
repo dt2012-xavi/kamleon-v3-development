@@ -27,6 +27,7 @@ import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.storage.StorageException
 import com.google.firebase.storage.storage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -136,7 +137,12 @@ class FirestoreDataSource @Inject constructor(
         val doc = db.collection(USERS_COLLECTION).document(userId)
         val ref = storage.reference.child("users/$userId/profile.jpeg")
         return gate.safeCall(CallKind.Action) {
-            ref.delete().await()
+            // A photo already missing from storage is what was asked for; the address must still be cleared.
+            try {
+                ref.delete().await()
+            } catch (e: StorageException) {
+                if (e.errorCode != StorageException.ERROR_OBJECT_NOT_FOUND) throw e
+            }
             doc.update(hashMapOf("imageUrl" to "") as Map<String, Any>).await()
             true
         }

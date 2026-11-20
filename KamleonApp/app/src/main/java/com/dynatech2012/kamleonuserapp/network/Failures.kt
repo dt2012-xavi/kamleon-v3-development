@@ -4,6 +4,7 @@ import com.dynatech2012.kamleonuserapp.repositories.UserProfileMissingException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.storage.StorageException
 import java.io.IOException
 import java.util.concurrent.TimeoutException
 
@@ -69,6 +70,12 @@ internal fun firebaseFailureKind(e: Exception): FailureKind? = when (e) {
         FirebaseFirestoreException.Code.CANCELLED -> FailureKind.Busy
         FirebaseFirestoreException.Code.PERMISSION_DENIED,
         FirebaseFirestoreException.Code.UNAUTHENTICATED -> FailureKind.SessionRejected
+        else -> FailureKind.Server
+    }
+    is StorageException -> when (e.errorCode) {
+        StorageException.ERROR_RETRY_LIMIT_EXCEEDED -> FailureKind.Network
+        StorageException.ERROR_NOT_AUTHENTICATED -> FailureKind.SessionRejected
+        StorageException.ERROR_OBJECT_NOT_FOUND -> FailureKind.NotFound
         else -> FailureKind.Server
     }
     else -> null
