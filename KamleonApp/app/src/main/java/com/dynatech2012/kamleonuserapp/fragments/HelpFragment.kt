@@ -18,10 +18,7 @@ class HelpFragment : BaseFragment<ActivityHelpBinding>() {
 
     override fun initView() {
         binding.btnNavClose.setOnClickListener { findNavController().popBackStack() }
-        binding.menuAppGuide.setOnClickListener {
-            viewModel.tutorialComingFromHome = false
-            findNavController().navigate(R.id.action_helpFragment_to_onBoardingFragment)
-        }
+        // The app guide entry is hidden in activity_help.xml until the tutorial is rebuilt.
 
         binding.menuContact.setOnClickListener {
             sendEmail()

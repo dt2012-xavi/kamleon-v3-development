@@ -70,7 +70,8 @@
                 android:background="@drawable/bg_setting_list_shadow"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingHorizontal="16dp">
+                android:paddingHorizontal="16dp"
+                android:visibility="gone">
 
                 <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                     android:id="@+id/menuAppGuide"
@@ -90,6 +91,7 @@
                 android:layout_marginTop="12dp"
                 android:paddingHorizontal="8dp"
                 android:text="@string/help_appguide_subtitle"
+                android:visibility="gone"
                 android:textColor="@color/kamleon_secondary_grey_50"
                 android:textSize="@dimen/ts_12" />
 

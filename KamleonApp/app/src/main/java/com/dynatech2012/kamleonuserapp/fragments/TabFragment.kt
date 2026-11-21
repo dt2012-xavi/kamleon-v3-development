@@ -59,7 +59,6 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         // The analyzer stops after reading a code; resume it so the user can scan again.
         onKamleonSheetResult("scan_failed") { qrViewModel.startAnalyzing() }
         DebugLog.d(TAG) { "initView" }
-        getFirstLogin()
         bindViews()
         //val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_host_fragment_tab) as NavHostFragment
         val navHostFragment = binding.navHostFragmentTab.getFragment<NavHostFragment>()
@@ -121,18 +120,6 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         super.onResume()
         viewModel.checkNewMeasures()
     }
-
-    private fun getFirstLogin() {
-        val isFirstLogin = viewModel.getFirstLogin()
-        if (isFirstLogin) {
-            //val navHostFragment = binding.navHostFragmentTab.getFragment<NavHostFragment>()
-            val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
-            val navController = navHostFragment.navController
-            navController.navigate(R.id.action_tabFragment_to_tutorialFragment)
-            viewModel.tutorialComingFromHome = true
-        }
-    }
-
 
     private fun bindViews()
     {

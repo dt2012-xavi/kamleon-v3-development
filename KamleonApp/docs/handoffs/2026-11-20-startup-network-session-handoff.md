@@ -146,7 +146,12 @@ Corte de red: `adb shell svc wifi/data disable|enable`. Instrucciones de enlaces
    límites de fecha (sin datos de usuario; no depende de Timber, lint no los marca).
 5. **`MainActivity` / pantallas pendientes de la ronda anterior:** `HomeFragment` y `HomeItemFragment`
    (estados vacío/carga/error), `TabFragment` (332 líneas, XML; necesita plan propio).
-6. **Tutorial desfasado** (capturas raster antiguas) y **columnas ORG./CENTER/TEAM que se pisan** en
+6. **Tutorial desactivado (2026-11-21), pendiente de rehacer.** Ya no se abre en el primer login
+   (`TabFragment`) y la entrada «App guide» de Ayuda está oculta (`activity_help.xml`, `visibility="gone"`).
+   `TutorialFragment`, sus capturas y el destino de navegación siguen en el código sin usar; `getFirstLogin()`
+   (`MainViewModel`) marca el tutorial como visto nada más leerlo, no al terminarlo. Al rehacerlo: quitar el
+   `gone`, volver a llamar a `getFirstLogin()` y decidir coach marks o capturas nuevas. Antes de esto
+   estaba así: **Tutorial desfasado** (capturas raster antiguas) y **columnas ORG./CENTER/TEAM que se pisan** en
    Ajustes → Account: detalle en el handoff anterior. El tutorial es decisión de Xavi: no empezarlo sin
    preguntar.
 7. **`endsSession` es una lista cerrada** (ver 1.3). Si el backend devolviera otro código para una sesión
