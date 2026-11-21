@@ -1,7 +1,6 @@
 package com.dynatech2012.kamleonuserapp.repositories
 
 import timber.log.Timber
-import androidx.lifecycle.MutableLiveData
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.network.CallKind
 import com.dynatech2012.kamleonuserapp.network.NetworkGate
@@ -63,31 +62,19 @@ class UserRepository(private val gate: NetworkGate) {
         continuation.resume(Unit)
     }
 
-    val logoutStatus = MutableLiveData<Boolean>()
-
-    val authStateListener = FirebaseAuth.AuthStateListener {
-        if (it.currentUser == null) {
-            Timber.d("Firebase user signed out")
-            // The user is out: the screen must not wait for anything else. The installation token
-            // refresh is best effort, its result is not used, and with no network it fails (reading
-            // task.result of a failed task throws, which crashed the logout without a connection).
-            logoutStatus.postValue(true)
-            FirebaseInstallations.getInstance().getToken(true)
-                .addOnCompleteListener { task: Task<InstallationTokenResult> ->
-                    Timber.d("Installation token refresh after sign-out: success=%s", task.isSuccessful)
-                }
-        }
-    }
-
-    fun removeAuthListener(){
-        auth.removeAuthStateListener(authStateListener)
-    }
-
+    /**
+     * Signs the user out. [FirebaseAuth.signOut] is synchronous: when this returns there is no
+     * current user, so callers can move on without waiting for an auth state callback.
+     */
     fun logout() {
-        // Resets Instance ID and revokes all tokens.
-        auth.addAuthStateListener(authStateListener)
         auth.signOut()
-        //auth.removeAuthStateListener(authStateListener)
+        Timber.d("Firebase user signed out")
+        // Best effort: the result is not used, and with no network it fails (reading task.result of a
+        // failed task throws, which crashed the logout without a connection).
+        FirebaseInstallations.getInstance().getToken(true)
+            .addOnCompleteListener { task: Task<InstallationTokenResult> ->
+                Timber.d("Installation token refresh after sign-out: success=%s", task.isSuccessful)
+            }
     }
 
     suspend fun changeEmail(currentPwd: String, newEmail: String): Response<Unit> {

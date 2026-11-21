@@ -45,7 +45,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Date
 import javax.inject.Inject
 
@@ -167,21 +166,11 @@ class MainViewModel @Inject constructor(
     fun logout() {
         viewModelScope.launch(Dispatchers.IO) {
             sessionCleaner.clearLocalData()
-            //measuresRepository.closeChannels()
-            withContext(Dispatchers.Main) {
-                userRepository.logoutStatus.observeForever() {
-                    DebugLog.i("") { "logout status: $it" }
-                    if (it) {
-                        watcher.reset()
-                        logoutStatus.postValue(true)
-                        userRepository.removeAuthListener()
-                        userRepository.logoutStatus.removeObserver {
-                            DebugLog.d("") { "logoutStatus removed" }
-                        }
-                    }
-                }
-            }
+            // Synchronous: there is no session left once it returns, so the screen is told only
+            // after the sign-out and can never open the startup check while still signed in.
             userRepository.logout()
+            watcher.reset()
+            logoutStatus.postValue(true)
         }
     }
 

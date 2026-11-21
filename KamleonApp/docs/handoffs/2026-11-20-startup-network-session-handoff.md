@@ -124,9 +124,12 @@ Corte de red: `adb shell svc wifi/data disable|enable`. Instrucciones de enlaces
 2. **Nada vuelve a comprobar la cuenta al recuperar la red tras «Continue offline».** Hoy la primera
    llamada que el servidor rechace con error de sesión dispara el aviso; una comprobación explícita al
    volver la red sería más limpia.
-3. **`MainViewModel.logout()`** registra `observeForever` en cada cierre de sesión y «quita» el observador
-   con una lambda nueva (`removeObserver { ... }`), que no elimina nada: se acumulan observadores. Quedó
-   sin tocar; conviene guardar la referencia y quitarla.
+3. ~~**`MainViewModel.logout()`**~~ **Hecho (2026-11-21):** ya no usa `observeForever` ni el
+   `AuthStateListener` (que nunca se quitaban y dejaban vivo cada `MainViewModel` cerrado). Como
+   `FirebaseAuth.signOut()` es síncrono, `logout()` es una secuencia: borrar datos, `signOut`,
+   `watcher.reset()` y aviso a la pantalla. El aviso ya no puede llegar antes del `signOut` en un segundo
+   logout del mismo proceso (el `true` del singleton quedaba guardado). Sin test JVM: `UserRepository` usa
+   `Firebase.auth` directamente y no hay librería de mocks.
 4. ~~**Logs fuera de `DebugLog`**~~ **Hecho (2026-11-20):** las 125 llamadas `Log.*` de `:app` pasan
    por `DebugLog` (solo debug) y lint activa `LogNotTimber`, así que un `Log.*` nuevo rompe
    `lintDevelopmentDebug`. Se quitaron además valores sensibles: vectores crudos de medida en
