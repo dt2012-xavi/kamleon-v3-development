@@ -95,7 +95,13 @@ Continue offline, subir/cambiar/quitar foto, fallo sin red, hoja de sesión term
 y vuelta a Login), fundido Login→Main (continuo, sin parpadeo; no requiere cambios).
 
 **NO verificado en dispositivo** (falta de sesión, red real o ganas de romper cuentas):
-- Subida de QR por enlace `/scan` con la red cortada; medidas y analítica sin conexión; logout sin red.
+- ~~Subida de QR por enlace `/scan` con la red cortada; analítica sin conexión~~ **Visto (2026-11-21, Samsung,
+  cuenta de prueba de desarrollo):** con la red cortada Analytics sigue mostrando los datos en caché; el enlace
+  `/scan` pasa por el arranque («Continue offline») y la subida del QR muestra la hoja «No connection» sin
+  fallos; al volver la red la app sigue usable. También visto ese día: la subida real del QR con red
+  («QR scanned correctly») y el logout sin red (el refresco del token de instalación falla y no rompe nada,
+  llega a Login). Sin ver: medidas nuevas llegando offline (solo se pueden generar con el urinario; se
+  comprobó la lectura offline de las ya guardadas).
 - Hojas de fallo en selectores de datos/fecha y Ajustes.
 - `reload()` real de verificación de correo.
 - Arranque en frío sin red con foto de perfil (cubierto indirectamente por el flujo offline).
@@ -130,6 +136,8 @@ Corte de red: `adb shell svc wifi/data disable|enable`. Instrucciones de enlaces
    `watcher.reset()` y aviso a la pantalla. El aviso ya no puede llegar antes del `signOut` en un segundo
    logout del mismo proceso (el `true` del singleton quedaba guardado). Sin test JVM: `UserRepository` usa
    `Firebase.auth` directamente y no hay librería de mocks.
+   **Verificado en el Samsung (2026-11-21):** login → logout → login → logout sin matar la app (mismo
+   proceso): cada logout llega a Login, sin fallos y con la sesión cerrada. El dispositivo queda sin sesión.
 4. ~~**Logs fuera de `DebugLog`**~~ **Hecho (2026-11-20):** las 125 llamadas `Log.*` de `:app` pasan
    por `DebugLog` (solo debug) y lint activa `LogNotTimber`, así que un `Log.*` nuevo rompe
    `lintDevelopmentDebug`. Se quitaron además valores sensibles: vectores crudos de medida en
