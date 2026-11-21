@@ -1,0 +1,85 @@
+package com.dynatech2012.kamleonuserapp.views.cards
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.database.MeasureData
+import com.dynatech2012.kamleonuserapp.models.ElectrolyteLevel
+import com.dynatech2012.kamleonuserapp.models.VolumeLevel
+
+/** The two other readings of the sample Home is showing: electrolytes and volume. */
+@Composable
+fun HomeMetricsCard(measure: MeasureData, modifier: Modifier = Modifier) {
+    val precise = measure.isPrecise
+    val electrolytes = if (precise) measure.msCond.toInt() else null
+    val volume = measure.vol.toInt()
+    val volumeLevel = VolumeLevel.of(if (precise) volume else null)
+    val noValue = stringResource(R.string.default_value)
+
+    // The card applies its modifier twice (shadow and body), so the margin goes on a wrapper.
+    Box(modifier = modifier.fillMaxWidth().padding(horizontal = 36.dp, vertical = 8.dp)) {
+    ClippedShadowCard(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        containerColor = colorResource(id = R.color.color_fa_40),
+        elevation = 10.dp,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Metric(
+                title = stringResource(R.string.home_metric_electrolytes),
+                value = electrolytes?.toString() ?: noValue,
+                unit = stringResource(R.string.unit_electrolites),
+                label = when (ElectrolyteLevel.of(electrolytes)) {
+                    ElectrolyteLevel.Low -> stringResource(R.string.analytic_elec_hypo)
+                    ElectrolyteLevel.Balanced -> stringResource(R.string.analytic_elec_normal)
+                    ElectrolyteLevel.High -> stringResource(R.string.analytic_elec_hyper)
+                    null -> stringResource(R.string.analytic_no_data)
+                },
+            )
+            Metric(
+                title = stringResource(R.string.home_metric_volume),
+                value = if (precise) volume.toString() else noValue,
+                unit = stringResource(R.string.unit_volume),
+                label = when (volumeLevel) {
+                    VolumeLevel.NoData -> stringResource(R.string.analytic_volume_insuff_title)
+                    VolumeLevel.Insufficient -> stringResource(R.string.analytic_volume_low)
+                    VolumeLevel.Average -> stringResource(R.string.analytic_volume_medium)
+                    VolumeLevel.High -> stringResource(R.string.analytic_volume_high)
+                },
+            )
+        }
+    }
+    }
+}
+
+@Composable
+private fun RowScope.Metric(title: String, value: String, unit: String, label: String) {
+    val dark = colorResource(id = R.color.kamleon_dark_grey)
+    Column(modifier = Modifier.weight(1f)) {
+        Text(title, fontSize = 13.sp, fontWeight = FontWeight.Medium, color = colorResource(id = R.color.kamleon_secondary_grey_70))
+        Row {
+            Text(value, fontSize = 34.sp, fontWeight = FontWeight.Bold, color = dark)
+            Text(unit, fontSize = 14.sp, color = dark, modifier = Modifier.padding(start = 4.dp, top = 18.dp))
+        }
+        Text(label, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = dark)
+    }
+}

@@ -21,6 +21,8 @@ import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.extensions.addDays
 import com.dynatech2012.kamleonuserapp.extensions.sha256
 import com.dynatech2012.kamleonuserapp.models.CustomUser
+import com.dynatech2012.kamleonuserapp.models.HomeStatus
+import com.dynatech2012.kamleonuserapp.models.homeStatusAfterLoad
 import com.dynatech2012.kamleonuserapp.models.Event
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.models.Invitation
@@ -100,6 +102,10 @@ class MainViewModel @Inject constructor(
 
     private val _lastMeasure = MutableLiveData<MeasureData>()
     val lastMeasure: LiveData<MeasureData> = _lastMeasure
+
+    private val _homeStatus = MutableLiveData(HomeStatus.Loading)
+    /** What Home shows while it has no sample; once a sample arrives [lastMeasure] takes over. */
+    val homeStatus: LiveData<HomeStatus> = _homeStatus
 
     fun getUserData() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -317,6 +323,8 @@ class MainViewModel @Inject constructor(
                     }
                 }
             }
+            // Only matters while nothing is shown: Home ignores it once it has a sample on screen.
+            homeStatusAfterLoad(measuresLoaded.size, responseMeasuresFS.isSuccess)?.let { _homeStatus.postValue(it) }
             val responseDailyDB = measuresRepository.getDailyAveragesFromDB()
             if (responseDailyDB.isSuccess && responseDailyDB.dataValue != null) {
                 DebugLog.d(TAG) { "got daily from DB size: ${responseDailyDB.dataValue?.size}" }

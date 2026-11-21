@@ -285,6 +285,11 @@
 
 
     <!--HomeScreen-->
+    <string name="home_metric_electrolytes">Electrolytes</string>
+    <string name="home_metric_volume">Volume</string>
+    <string name="home_status_loading">Loading your data…</string>
+    <string name="home_status_empty">No samples yet</string>
+    <string name="home_status_unavailable">Data unavailable</string>
     <string name="home_last_sample_message_default">"last sample"</string>
     <string name="home_last_sample_message">"last sample %1$s"</string>
 

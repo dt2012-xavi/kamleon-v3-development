@@ -3,6 +3,8 @@ package com.dynatech2012.kamleonuserapp.fragments
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
+import com.dynatech2012.kamleonuserapp.models.ElectrolyteLevel
+import com.dynatech2012.kamleonuserapp.models.VolumeLevel
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.database.MeasureData
@@ -96,17 +98,18 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
         val el = if (measureData?.isPrecise == false) null else measureData?.msCond?.toInt()// ?: 0
         val cvEl = binding.cvAnalyticElectrol
         cvEl.value = el
-        cvEl.subtitle = when (el) {
+        val elLevel = ElectrolyteLevel.of(el)
+        cvEl.subtitle = when (elLevel) {
             null -> getString(R.string.analytic_no_data)
-            in 0..4 -> getString(R.string.analytic_elec_hypo)
-            in 5..25 -> getString(R.string.analytic_elec_normal)
-            else -> getString(R.string.analytic_elec_hyper)
+            ElectrolyteLevel.Low -> getString(R.string.analytic_elec_hypo)
+            ElectrolyteLevel.Balanced -> getString(R.string.analytic_elec_normal)
+            ElectrolyteLevel.High -> getString(R.string.analytic_elec_hyper)
         }
-        cvEl.description = when (el) {
+        cvEl.description = when (elLevel) {
             null -> ""
-            in 0..4 -> getString(R.string.analytic_elec_under)
-            in 5..25 -> getString(R.string.analytic_elec_optimal)
-            else -> getString(R.string.analytic_elec_above)
+            ElectrolyteLevel.Low -> getString(R.string.analytic_elec_under)
+            ElectrolyteLevel.Balanced -> getString(R.string.analytic_elec_optimal)
+            ElectrolyteLevel.High -> getString(R.string.analytic_elec_above)
         }
         cvEl.onClick = { openGraphView(1) }
 
@@ -115,15 +118,15 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
         val volOnlyIfPrecise = if (measureData?.isPrecise == false) null else vol
         cvVol.isPrecise = measureData?.isPrecise ?: true
         cvVol.value = vol
-        cvVol.subtitle = when (volOnlyIfPrecise) {
-            null -> getString(R.string.analytic_volume_insuff_title)
-            in 0..149 -> getString(R.string.analytic_volume_low)
-            in 150..250 -> getString(R.string.analytic_volume_medium)
-            else -> getString(R.string.analytic_volume_high)
+        val volLevel = VolumeLevel.of(volOnlyIfPrecise)
+        cvVol.subtitle = when (volLevel) {
+            VolumeLevel.NoData -> getString(R.string.analytic_volume_insuff_title)
+            VolumeLevel.Insufficient -> getString(R.string.analytic_volume_low)
+            VolumeLevel.Average -> getString(R.string.analytic_volume_medium)
+            VolumeLevel.High -> getString(R.string.analytic_volume_high)
         }
-        cvVol.description = when (volOnlyIfPrecise) {
-            null -> getString(R.string.analytic_volume_insuff_desc)
-            in 0..149 -> getString(R.string.analytic_volume_insuff_desc)
+        cvVol.description = when (volLevel) {
+            VolumeLevel.NoData, VolumeLevel.Insufficient -> getString(R.string.analytic_volume_insuff_desc)
             else -> getString(R.string.analytic_volume_good)
         }
         cvVol.onClick = { openGraphView(2) }

@@ -2,7 +2,6 @@ package com.dynatech2012.kamleonuserapp.fragments
 
 import android.graphics.Color
 import android.view.View
-import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
@@ -13,9 +12,9 @@ import com.dynatech2012.kamleonuserapp.databinding.ActivityHomeBinding
 import com.dynatech2012.kamleonuserapp.extensions.formatTime
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Invitation
-import com.dynatech2012.kamleonuserapp.models.RecommendationType
+import com.dynatech2012.kamleonuserapp.models.HomeStatus
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
-import com.dynatech2012.kamleonuserapp.views.cards.ViewPager
+import com.dynatech2012.kamleonuserapp.views.cards.HomeMetricsCard
 import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
@@ -29,7 +28,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
     override fun setBinding(): ActivityHomeBinding = ActivityHomeBinding.inflate(layoutInflater)
 
     override fun initView() {
-        setupTips(null)
+        showStatus(HomeStatus.Loading)
 
         //selectTab(0)
         initObservers()
@@ -56,6 +55,10 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         viewModel.userData.observe(this, this::onUserDataChanged)
         viewModel.userImageUrl.observe(this, this::onUserImageChanged)
         viewModel.lastMeasure.observe(this, this::onLastMeasureChanged)
+        viewModel.homeStatus.observe(this) { status ->
+            // A failed refresh must not replace a sample that is already on screen.
+            if (viewModel.lastMeasure.value == null) showStatus(status)
+        }
         viewModel.pendingInvitations.observe(this, this::onGetPendingInvitations)
     }
 
@@ -76,7 +79,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         //val dateString = format.format(date)
         val dateString = date.formatTime.uppercase()
         binding.tvHomeLastSample.text = getString(R.string.home_last_sample_message, dateString)
-        setupTips(measure)
+        binding.cvHome.setContent { HomeMetricsCard(measure) }
         if (!measure.isPrecise) {
             binding.lastMeasure.text = getString(R.string.default_value)
             binding.tvHomeUnit.visibility = View.GONE
@@ -119,11 +122,22 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         else binding.ivHomeNotiBadge.visibility = View.GONE
     }
 
-    private fun setupTips(measure: MeasureData?) {
-        val recommendationType = RecommendationType.HOME
-        binding.cvHome.setContent {
-            ViewPager(recommendationType = recommendationType, measure = measure, modifier = Modifier)
-        }
+    /** No sample to show: a neutral grey screen that says why. */
+    private fun showStatus(status: HomeStatus) {
+        binding.homeBg.setImageResource(R.drawable.bg_no_measure)
+        binding.tvHomeLastSample.text = getString(R.string.home_last_sample_message_default)
+        binding.tvHomeMessage.text = getString(
+            when (status) {
+                HomeStatus.Loading -> R.string.home_status_loading
+                HomeStatus.Empty -> R.string.home_status_empty
+                HomeStatus.Unavailable -> R.string.home_status_unavailable
+            }
+        )
+        binding.tvHomeMessage.setTextColor(MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
+        binding.lastMeasure.text = getString(R.string.default_value)
+        binding.tvHomeUnit.visibility = View.GONE
+        binding.homeProgressBar.progress = 0
+        binding.cvHome.setContent { }
     }
 
     companion object {

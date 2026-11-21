@@ -144,8 +144,14 @@ Corte de red: `adb shell svc wifi/data disable|enable`. Instrucciones de enlaces
    `IntVectorTypeConverter`, puntuación de hidratación en `MeasuresRepository` y fecha de nacimiento en
    `SettingFragment`. Queda fuera: el módulo `datepicker` conserva ~13 `Log.d/i` de eventos táctiles y
    límites de fecha (sin datos de usuario; no depende de Timber, lint no los marca).
-5. **`MainActivity` / pantallas pendientes de la ronda anterior:** `HomeFragment` y `HomeItemFragment`
-   (estados vacío/carga/error), `TabFragment` (332 líneas, XML; necesita plan propio).
+5. **Home (2026-11-21): hecho.** Las tarjetas de recomendaciones salen de Home y en su lugar hay una tarjeta con
+   electrolitos y volumen de la muestra mostrada (`HomeMetricsCard`). Sin muestra, Home se ve en un gradiente
+   gris con tres estados (`HomeStatus`: cargando, sin muestras, datos no disponibles); un fallo posterior
+   nunca pisa una muestra ya en pantalla. Las franjas de electrolitos/volumen están en `models/HomeMetrics.kt`
+   y las usa también Analytics. Visto en el Samsung con datos; los tres estados grises se vieron con una
+   mutación temporal ya revertida, no con una cuenta sin muestras. `ViewPager`/`Recommendation` siguen
+   existiendo porque Analytics/Gráficas los usan. `HomeItemFragment` es código muerto (todo comentado),
+   sin tocar. Pendiente de este punto: `TabFragment` (332 líneas, XML; necesita plan propio).
 6. **Tutorial desactivado (2026-11-21), pendiente de rehacer.** Ya no se abre en el primer login
    (`TabFragment`) y la entrada «App guide» de Ayuda está oculta (`activity_help.xml`, `visibility="gone"`).
    `TutorialFragment`, sus capturas y el destino de navegación siguen en el código sin usar; `getFirstLogin()`
