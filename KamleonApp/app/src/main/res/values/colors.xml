@@ -111,4 +111,14 @@
     <color name="debug_green">#4CAF50</color>
     <color name="debug_yellow">#FFC107</color>
 
+    <!-- Home background gradients, from the top-left to the bottom-right corner -->
+    <color name="home_bg_very_hydrated_start">#46D5C8</color>
+    <color name="home_bg_very_hydrated_end">#7BC364</color>
+    <color name="home_bg_hydrated_start">#55D2A0</color>
+    <color name="home_bg_hydrated_end">#FAB928</color>
+    <color name="home_bg_dehydrated_start">#EBCD2D</color>
+    <color name="home_bg_dehydrated_end">#FA6923</color>
+    <color name="home_bg_severely_dehydrated_start">#F58723</color>
+    <color name="home_bg_severely_dehydrated_end">#F03C23</color>
+    <color name="home_bg_no_measure_end">#B8B8B8</color>
 </resources>
