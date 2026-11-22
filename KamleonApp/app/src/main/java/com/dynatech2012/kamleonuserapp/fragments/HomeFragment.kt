@@ -19,6 +19,7 @@ import com.dynatech2012.kamleonuserapp.views.cards.HomeMetricsCard
 import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
+import com.dynatech2012.kamleonuserapp.views.padForSystemBars
 import com.dynatech2012.kamleonuserapp.views.showProfileImage
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
@@ -29,6 +30,8 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
     override fun setBinding(): ActivityHomeBinding = ActivityHomeBinding.inflate(layoutInflater)
 
     override fun initView() {
+        // The gradient fills the screen behind the bars; the content stays clear of them.
+        binding.layoutContentHome.padForSystemBars()
         // The ring shrinks to fit between the message and the card; the drawn circle and the score follow its size.
         val ring = binding.homeProgressBar
         val scoreSize = binding.lastMeasure.textSize

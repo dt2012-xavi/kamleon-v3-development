@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import com.dynatech2012.kamleonuserapp.views.padForSystemBars
 import android.view.View
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.activityViewModels
@@ -28,6 +29,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
     private val graphTypes = arrayOf(KamleonGraphDataType.hydration, KamleonGraphDataType.electrolytes, KamleonGraphDataType.volume)
 
     override fun initView() {
+        binding.root.padForSystemBars()
         /*
         val yearData = yearDataSourceOf(Date())
         binding.graphViewNew.setData(yearData)

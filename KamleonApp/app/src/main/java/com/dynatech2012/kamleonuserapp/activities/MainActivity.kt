@@ -22,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.NavHostFragment
 import com.dynatech2012.kamleonuserapp.network.scanFailureText
@@ -81,6 +83,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun setBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
 
     override fun initView() {
+        setupSystemBarInsets()
         val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
             val galleryUri = it
             viewModel.setImageUri(galleryUri)
@@ -386,6 +389,31 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         val TAG: String = MainActivity::class.java.simpleName
         private const val NOTIFICATIONS_INTRO_SHEET = "notifications_intro"
         private const val SESSION_ENDED_SHEET = "main_session_ended"
+    }
+
+    /**
+     * The tab screen (Home, Analytics, Scan) draws under the status and navigation bars, and its
+     * screens keep their own content clear of them. Every other screen keeps the old behaviour:
+     * the whole screen is padded inside the bars (and above the keyboard).
+     */
+    private fun setupSystemBarInsets() {
+        val root = binding.root
+        val navHost = supportFragmentManager.findFragmentById(com.dynatech2012.kamleonuserapp.R.id.nav_host_fragment_main) as NavHostFragment
+        ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
+            if (navHost.navController.currentDestination?.id == com.dynatech2012.kamleonuserapp.R.id.tabFragment) {
+                v.setPadding(0, 0, 0, 0)
+                insets
+            } else {
+                val bars = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout() or WindowInsetsCompat.Type.ime()
+                )
+                v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
+                WindowInsetsCompat.CONSUMED
+            }
+        }
+        root.post {
+            navHost.navController.addOnDestinationChangedListener { _, _, _ -> ViewCompat.requestApplyInsets(root) }
+        }
     }
 
     private var exclusionRects: MutableList<Rect> = ArrayList()

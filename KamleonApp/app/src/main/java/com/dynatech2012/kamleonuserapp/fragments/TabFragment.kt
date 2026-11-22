@@ -1,5 +1,7 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import com.dynatech2012.kamleonuserapp.views.marginForNavigationBar
+import androidx.core.view.WindowCompat
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -59,6 +61,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         // The analyzer stops after reading a code; resume it so the user can scan again.
         onKamleonSheetResult("scan_failed") { qrViewModel.startAnalyzing() }
         DebugLog.d(TAG) { "initView" }
+        binding.tabContainer.marginForNavigationBar()
         bindViews()
         //val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_host_fragment_tab) as NavHostFragment
         val navHostFragment = binding.navHostFragmentTab.getFragment<NavHostFragment>()
@@ -186,6 +189,22 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
                 binding.layoutContentQR.visibility = View.VISIBLE
             }
         }
+        // The camera preview is dark and fills the screen under the bars: use light bar icons there.
+        setDarkSystemBarIcons(tabIndex != 2)
+    }
+
+    private fun setDarkSystemBarIcons(dark: Boolean) {
+        val window = activity?.window ?: return
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightStatusBars = dark
+            isAppearanceLightNavigationBars = dark
+        }
+    }
+
+    override fun onDestroyView() {
+        // Other screens expect the default dark icons.
+        setDarkSystemBarIcons(true)
+        super.onDestroyView()
     }
 
 

@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import com.dynatech2012.kamleonuserapp.views.padForSystemBars
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
@@ -24,6 +25,7 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
     override fun setBinding(): ActivityAnalyticBinding = ActivityAnalyticBinding.inflate(layoutInflater)
 
     override fun initView() {
+        binding.layoutContentAnalytics.padForSystemBars()
         initObservers()
         viewModel.getUserData()
         //viewModel.getUserMeasures()
