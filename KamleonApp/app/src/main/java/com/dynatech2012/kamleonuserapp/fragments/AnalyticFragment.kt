@@ -1,149 +1,62 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import com.dynatech2012.kamleonuserapp.views.padForSystemBars
-import android.view.View
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
-import com.dynatech2012.kamleonuserapp.models.ElectrolyteLevel
-import com.dynatech2012.kamleonuserapp.models.VolumeLevel
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
-import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.databinding.ActivityAnalyticBinding
-import com.dynatech2012.kamleonuserapp.extensions.formatTime
-import com.dynatech2012.kamleonuserapp.models.CustomUser
-import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
+import com.dynatech2012.kamleonuserapp.views.analytics.AnalyticsScreen
+import com.dynatech2012.kamleonuserapp.views.cards.AnalyticType
+import com.dynatech2012.kamleonuserapp.views.home.HomeProfile
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Date
-import com.dynatech2012.kamleonuserapp.views.showProfileImage
-import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
+/** Hosts [AnalyticsScreen] and connects it to [MainViewModel]. */
 @AndroidEntryPoint
 class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
     private val viewModel: MainViewModel by activityViewModels()
     override fun setBinding(): ActivityAnalyticBinding = ActivityAnalyticBinding.inflate(layoutInflater)
 
     override fun initView() {
-        binding.layoutContentAnalytics.padForSystemBars()
-        initObservers()
+        binding.cvAnalyticScreen.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        binding.cvAnalyticScreen.setContent { AnalyticsRoute() }
         viewModel.getUserData()
-        //viewModel.getUserMeasures()
     }
 
-    override fun initEvent() {
-        /*
-        binding.listItemHydration.isClickable = true
-        binding.listItemHydration.setOnClickListener {
-            openGraphView(0)
-        }
-        binding.listItemElectrolyte.isClickable = true
-        binding.listItemElectrolyte.setOnClickListener {
-            openGraphView(1)
-        }
-        binding.listItemVolume.isClickable = true
-        binding.listItemVolume.setOnClickListener {
-            openGraphView(2)
-        }
-        */
-        binding.cvAnalyticProfile.isClickable = true
-        binding.cvAnalyticProfile.setOnClickListener {
-            val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
-            val navController = navHostFragment.navController
-            navController.navigate(R.id.action_tabFragment_to_settingFragment)
-        }
+    override fun initEvent() = Unit
+
+    @Composable
+    private fun AnalyticsRoute() {
+        val user by viewModel.userData.observeAsState()
+        val imageUrl by viewModel.userImageUrl.observeAsState()
+        val lastMeasure by viewModel.lastMeasure.observeAsState()
+        AnalyticsScreen(
+            measure = lastMeasure,
+            profile = HomeProfile(
+                initials = user?.let { getString(R.string.user_name_initials, it.name.take(1).uppercase(), it.lastName.take(1).uppercase()) },
+                imageUrl = imageUrl,
+                imageLoader = viewModel.imageLoader,
+            ),
+            onProfileClick = { navigate(R.id.action_tabFragment_to_settingFragment) },
+            onOpenGraph = ::openGraph,
+        )
     }
 
-    private fun openGraphView(type: Int) {
-        viewModel.graphicType = type
+    private fun openGraph(type: AnalyticType) {
+        viewModel.graphicType = when (type) {
+            AnalyticType.HYDRATION -> 0
+            AnalyticType.ELECTROLYTE -> 1
+            AnalyticType.VOLUME -> 2
+        }
+        navigate(R.id.action_tabFragment_to_graphicsFragment)
+    }
+
+    private fun navigate(action: Int) {
         val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
-        val navController = navHostFragment.navController
-        navController.navigate(R.id.action_tabFragment_to_graphicsFragment)
-        //findNavController().navigate(R.id.action_analyticFragment_to_graphicsFragment)
-    }
-
-    private fun initObservers() {
-        onLastMeasureChanged(viewModel.lastMeasure.value)
-        viewModel.userData.observe(this, this::onUserDataChanged)
-        viewModel.userImageUrl.observe(this, this::onUserImageChanged)
-        viewModel.lastMeasure.observe(this, this::onLastMeasureChanged)
-    }
-
-    private fun onUserDataChanged(userData: CustomUser) {
-        DebugLog.d(TAG) { "on user data changed" }
-        val initials = getString(R.string.user_name_initials, userData.name.substring(0, 1).uppercase(), userData.lastName.substring(0, 1).uppercase())
-        binding.tvAnalyticProfileName.text = initials
-    }
-
-    private fun onUserImageChanged(url: String?) {
-        binding.ivAnalyticProfile.showProfileImage(url, viewModel.imageLoader)
-    }
-
-    private fun onLastMeasureChanged(measureData: MeasureData?) {
-        DebugLog.d(TAG) { "Latest measure changed" }
-        val cvHy = binding.cvAnalyticHydration
-        val score = if (measureData?.isPrecise == false) null else measureData?.score
-        cvHy.value = score
-        cvHy.subtitle = when (score) {
-            null -> getString(R.string.analytic_no_data)
-            in 0..33 -> getString(R.string.analytic_severely_dehydrated)
-            in 34..66 -> getString(R.string.analytic_dehydrated)
-            in 67..90 -> getString(R.string.analytic_hydrated)
-            else -> getString(R.string.analytic_very_hydrated)
-        }
-        cvHy.description = when (score) {
-            null -> ""
-            in 0..66 -> getString(R.string.analytic_hydratation_under)
-            else -> getString(R.string.analytic_hydratation_above)
-        }
-        cvHy.onClick = { openGraphView(0) }
-        val el = if (measureData?.isPrecise == false) null else measureData?.msCond?.toInt()// ?: 0
-        val cvEl = binding.cvAnalyticElectrol
-        cvEl.value = el
-        val elLevel = ElectrolyteLevel.of(el)
-        cvEl.subtitle = when (elLevel) {
-            null -> getString(R.string.analytic_no_data)
-            ElectrolyteLevel.Low -> getString(R.string.analytic_elec_hypo)
-            ElectrolyteLevel.Balanced -> getString(R.string.analytic_elec_normal)
-            ElectrolyteLevel.High -> getString(R.string.analytic_elec_hyper)
-        }
-        cvEl.description = when (elLevel) {
-            null -> ""
-            ElectrolyteLevel.Low -> getString(R.string.analytic_elec_under)
-            ElectrolyteLevel.Balanced -> getString(R.string.analytic_elec_optimal)
-            ElectrolyteLevel.High -> getString(R.string.analytic_elec_above)
-        }
-        cvEl.onClick = { openGraphView(1) }
-
-        val cvVol = binding.cvAnalyticVolume
-        val vol = measureData?.vol?.toInt()
-        val volOnlyIfPrecise = if (measureData?.isPrecise == false) null else vol
-        cvVol.isPrecise = measureData?.isPrecise ?: true
-        cvVol.value = vol
-        val volLevel = VolumeLevel.of(volOnlyIfPrecise)
-        cvVol.subtitle = when (volLevel) {
-            VolumeLevel.NoData -> getString(R.string.analytic_volume_insuff_title)
-            VolumeLevel.Insufficient -> getString(R.string.analytic_volume_low)
-            VolumeLevel.Average -> getString(R.string.analytic_volume_medium)
-            VolumeLevel.High -> getString(R.string.analytic_volume_high)
-        }
-        cvVol.description = when (volLevel) {
-            VolumeLevel.NoData, VolumeLevel.Insufficient -> getString(R.string.analytic_volume_insuff_desc)
-            else -> getString(R.string.analytic_volume_good)
-        }
-        cvVol.onClick = { openGraphView(2) }
-
-        val cvNew = binding.cvAnalyticEmpty
-        cvNew.onClick = { }
-
-        measureData?.analysisDate?.let {
-            val date = Date(it)
-            val dateString = date.formatTime.uppercase()
-            binding.tvAnalyticLastSample.text = getString(R.string.home_last_sample_message, dateString)
-        }
-    }
-
-    companion object {
-        val TAG: String = AnalyticFragment::class.java.simpleName
+        navHostFragment.navController.navigate(action)
     }
 }

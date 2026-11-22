@@ -26,15 +26,6 @@
         <attr name="notiAction" format="string" />
     </declare-styleable>
 
-    <declare-styleable name="AnalyticsComposeItemViewStyle">
-        <attr name="analyticsType" format="enum" >
-            <enum name="hydration" value="0"/>
-            <enum name="electrolytes" value="1"/>
-            <enum name="volume" value="2"/>
-            <enum name="empty" value="3"/>
-        </attr>
-    </declare-styleable>
-
 <!--    Custom attributes-->
     <attr name="colorOnSurfaceSecondary" format="color" />
     <attr name="colorOnSurfaceTertiary" format="color" />

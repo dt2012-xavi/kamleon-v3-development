@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,29 +14,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter.Companion.tint
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -45,45 +30,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.fragment.app.activityViewModels
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.MatTheme
-import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.progress.AnimatedCircularProgressIndicator
 import com.dynatech2012.kamleonuserapp.views.progress.VolumeProgressIndicator
-import dagger.hilt.android.scopes.ViewModelScoped
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+/** One metric of the last sample on Analytics: title, verdict and explanation, with its gauge on the right. */
 @Composable
 fun CardViewAnalyticsItem(
     analyticType: AnalyticType,
-    subtitleStart: MutableState<String>,
-    descriptionStart: MutableState<String>,
-    startValue: MutableState<Int?>,
-    isPreciseStart: MutableState<Boolean>,
+    subtitle: String,
+    description: String,
+    value: Int?,
+    isPrecise: Boolean,
     onClick: () -> Unit
 ) {
-    val shape = RoundedCornerShape(12.dp)
-    //val elevation = 10.dp
-    val elevation = 0.dp
-    val value by rememberSaveable { startValue }
-    val isPrecise by rememberSaveable { isPreciseStart }
-    val subtitle by rememberSaveable { subtitleStart }
-    val description by rememberSaveable { descriptionStart }
-
-    val scope = rememberCoroutineScope()
-    var showBottomSheet by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState(true)
-
-
     Card(
         colors = CardDefaults.cardColors(
             containerColor = colorResource(id = R.color.color_fa),
         ),
         modifier = Modifier
             .padding(8.dp)
-            .fillMaxWidth(if (analyticType == AnalyticType.EMPTY) 0.5f else 1f)
+            .fillMaxWidth()
             .clickable { onClick() }
             .coloredShadow(
                 color = colorResource(id = R.color.kamleon_dark_grey),
@@ -91,137 +59,57 @@ fun CardViewAnalyticsItem(
                 offsetX = 2.dp,
                 offsetY = 2.dp,
                 shadowRadius = 6.dp,
-                //blurRadius = 1.dp,
-                //spread = 0.dp,
                 borderRadius = 12.dp,
             ),
-    shape = shape,
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = elevation
-        ),
-    )
-
-    {
-        if (analyticType == AnalyticType.EMPTY) {
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(130.dp)
+                .padding(start = 12.dp, end = 8.dp)
+        ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .height(130.dp)
-                    .padding(horizontal = 20.dp)
-                    .padding(vertical = 20.dp)
-                    .clickable {
-                        showBottomSheet = true
-                    },
-                horizontalAlignment = Alignment.Start,
+                    .fillMaxHeight()
+                    .padding(end = 10.dp)
+                    .weight(1f),
+                verticalArrangement = Arrangement.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.plus),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(36.dp)
-                        //.clip(CircleShape)
-                        .coloredShadow(
-                            color = colorResource(id = R.color.kamleon_dark_grey),
-                            alpha = 0.1f,
-                            offsetX = 2.dp,
-                            offsetY = 2.dp,
-                            borderRadius = 18.dp,
-                            shadowRadius = 2.dp,
-                        )
-                        .background(colorResource(id = R.color.color_fa), CircleShape)
-                        .padding(8.dp),
-                    colorFilter = tint(colorResource(id = R.color.kamleon_dark_grey))
-                )
-                Spacer(modifier = Modifier
-                    .weight(1f))
                 Text(
                     fontFamily = MatTheme.fontFamily,
-                    text = stringResource(id = R.string.analytic_add_new),
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                    text = analyticType.title,
                     fontSize = dimensionResource(R.dimen.ts_14).value.sp,
-                    color = colorResource(id = R.color.kamleon_dark_grey))
+                    color = colorResource(id = R.color.kamleon_secondary_grey_60),
+                )
+                Text(
+                    fontFamily = MatTheme.fontFamily,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 2.dp),
+                    text = subtitle,
+                    fontSize = dimensionResource(R.dimen.ts_20).value.sp,
+                    color = colorResource(id = R.color.kamleon_dark_grey),
+                )
+                Text(
+                    fontFamily = MatTheme.fontFamily,
+                    fontWeight = FontWeight.Medium,
+                    text = description,
+                    fontSize = dimensionResource(R.dimen.ts_13).value.sp,
+                    color = colorResource(id = R.color.kamleon_secondary_grey_50),
+                )
             }
-            if (showBottomSheet) {
-                ModalBottomSheet(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    onDismissRequest = {
-                        showBottomSheet = false
-                    },
-                    sheetState = sheetState,
-                    shape = BottomSheetDefaults.ExpandedShape,
-                    dragHandle = {},
-                ) {
-                    // Sheet content
-                    PremiumView(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        onClick = {
-                            scope.launch {
-                                sheetState.hide()
-                            }
-                                .invokeOnCompletion {
-                                    if (!sheetState.isVisible) {
-                                        showBottomSheet = false
-                                    }
-                                }
-                        }
-                    )
-                }
-            }
-        } else {
-
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(130.dp)
-                    .padding(start = 12.dp, end = 8.dp)
+                    .fillMaxHeight()
+                    .width(100.dp),
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(end = 10.dp)
-                        .weight(1f),
-
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        fontFamily = MatTheme.fontFamily,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.padding(bottom = 8.dp),
-                        text = analyticType.title,
-                        fontSize = dimensionResource(R.dimen.ts_14).value.sp,
-                        color = colorResource(id = R.color.kamleon_secondary_grey_60),
-                    )
-                    Text(
-                        fontFamily = MatTheme.fontFamily,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 2.dp),
-                        text = subtitle,
-                        fontSize = dimensionResource(R.dimen.ts_20).value.sp,
-                        color = colorResource(id = R.color.kamleon_dark_grey),
-                    )
-                    Text(
-                        fontFamily = MatTheme.fontFamily,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier,
-                        text = description,
-                        fontSize = dimensionResource(R.dimen.ts_13).value.sp,
-                        color = colorResource(id = R.color.kamleon_secondary_grey_50),
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(100.dp),
-                    //verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    when (analyticType) {
-                        AnalyticType.HYDRATION -> HydrationView(value)
-                        AnalyticType.ELECTROLYTE -> ElecView(value)
-                        AnalyticType.VOLUME -> VolumeView(value, isPrecise)
-                        //AnalyticType.EMPTY -> AnalyticsEmptyView()
-                        else -> {}
-                    }
+                when (analyticType) {
+                    AnalyticType.HYDRATION -> HydrationView(value)
+                    AnalyticType.ELECTROLYTE -> ElecView(value)
+                    AnalyticType.VOLUME -> VolumeView(value, isPrecise)
                 }
             }
         }
@@ -232,18 +120,6 @@ enum class AnalyticType(val title: String) {
     HYDRATION("Hydration"),
     ELECTROLYTE("Electrolytes"),
     VOLUME("Volume"),
-    EMPTY("Empty");
-    companion object {
-        fun from(id: Int): AnalyticType {
-            return when (id) {
-                0 -> HYDRATION
-                1 -> ELECTROLYTE
-                2 -> VOLUME
-                3 -> EMPTY
-                else -> HYDRATION
-            }
-        }
-    }
 }
 
 @Composable
@@ -424,35 +300,6 @@ fun VolumeView(volume: Int?, isPrecise: Boolean) {
                     color = colorResource(id = R.color.kamleon_secondary_grey_60),
                 )
             }
-        }
-    }
-}
-
-
-@Composable
-fun AnalyticsEmptyView() {
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(0.5f),
-    ) {
-
-        Row(
-            modifier = Modifier
-                .fillMaxHeight()
-                .aspectRatio(1f),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                    text = "+",
-                    fontSize = dimensionResource(R.dimen.ts_36).value.sp,
-                    color = colorResource(id = R.color.kamleon_dark_grey)
-                )
-            Text(
-                    text = stringResource(id = R.string.unit_percentage),
-                    fontSize = dimensionResource(R.dimen.ts_20).value.sp,
-                    color = colorResource(id = R.color.kamleon_dark_grey)
-                )
         }
     }
 }

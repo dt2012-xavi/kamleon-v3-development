@@ -2,7 +2,6 @@ package com.dynatech2012.kamleonuserapp.fragments
 
 import com.dynatech2012.kamleonuserapp.views.padForSystemBars
 import android.view.View
-import androidx.compose.ui.Modifier
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -13,9 +12,7 @@ import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.databinding.ActivityGraphicsBinding
-import com.dynatech2012.kamleonuserapp.models.RecommendationType
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
-import com.dynatech2012.kamleonuserapp.views.cards.ViewPager
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,20 +37,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
 
         binding.tvNavTitle.text = graphTypes[typeFromIntent].identifier
 
-        setupTips()
         initObservers()
-    }
-
-    private fun setupTips() {
-        val tipType = when (viewModel.graphicType) {
-            0 -> RecommendationType.HYDRATION
-            1 -> RecommendationType.ELECTROLYTE
-            2 -> RecommendationType.VOLUME
-            else -> RecommendationType.HOME
-        }
-        binding.cvGraphTips.setContent {
-            ViewPager(recommendationType = tipType, null, modifier = Modifier)
-        }
     }
 
     override fun initEvent() {

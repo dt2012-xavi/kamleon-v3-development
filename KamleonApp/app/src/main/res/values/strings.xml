@@ -323,7 +323,6 @@
     <string name="analytic_volume_insuff_desc">Your sample has insufficient volume to be analyzed. The analysis might be invalid.</string>
     <string name="analytic_volume_good">Your sample has good volume to be analyzed.</string>
 
-    <string name="analytic_add_new">Add metric</string>
     <string name="analytic_no_data">No data</string>
 
 

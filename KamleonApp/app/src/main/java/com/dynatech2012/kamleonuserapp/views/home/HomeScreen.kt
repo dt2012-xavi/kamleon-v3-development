@@ -1,11 +1,9 @@
 package com.dynatech2012.kamleonuserapp.views.home
 
-import android.widget.ImageView
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -37,8 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.StrokeCap
@@ -46,18 +42,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
-import coil.ImageLoader
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.MatTheme
 import com.dynatech2012.kamleonuserapp.database.MeasureData
@@ -65,16 +57,7 @@ import com.dynatech2012.kamleonuserapp.extensions.formatTime
 import com.dynatech2012.kamleonuserapp.models.HomeContent
 import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
 import com.dynatech2012.kamleonuserapp.views.cards.HomeMetricsCard
-import com.dynatech2012.kamleonuserapp.views.showProfileImage
 import java.util.Date
-
-/** Who is signed in, as the profile button needs it. */
-data class HomeProfile(
-    val initials: String? = null,
-    val imageUrl: String? = null,
-    val imageLoader: ImageLoader? = null,
-    val hasNotifications: Boolean = false,
-)
 
 /** How far the content stays above the bottom edge, so it clears the tab bar (and the navigation bar). */
 private val TabBarClearance = 128.dp
@@ -136,7 +119,6 @@ fun HomeScreen(
 
 @Composable
 private fun HomeHeader(profile: HomeProfile, onProfileClick: () -> Unit) {
-    val profileLabel = stringResource(R.string.home_profile_button)
     Box(modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 8.dp)) {
         Image(
             painter = painterResource(R.drawable.kamleon),
@@ -145,53 +127,11 @@ private fun HomeHeader(profile: HomeProfile, onProfileClick: () -> Unit) {
             alignment = Alignment.CenterStart,
             modifier = Modifier.padding(start = 18.dp).height(36.dp).align(Alignment.CenterStart),
         )
-        Box(modifier = Modifier.padding(end = 20.dp).size(36.dp).align(Alignment.CenterEnd)) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(36.dp)
-                    .shadow(8.dp, CircleShape)
-                    .clip(CircleShape)
-                    .background(colorResource(R.color.white))
-                    .clickable(
-                        role = Role.Button,
-                        onClick = onProfileClick,
-                    )
-                    .semantics { contentDescription = profileLabel },
-            ) {
-                Text(
-                    text = profile.initials ?: stringResource(R.string.default_value),
-                    modifier = Modifier.clearAndSetSemantics { },
-                    fontSize = 16.sp,
-                    fontFamily = MatTheme.fontFamily,
-                    color = colorResource(R.color.kamleon_secondary_grey_60),
-                )
-                // The initials stay behind the photo until it has loaded.
-                val loader = profile.imageLoader
-                if (loader != null) {
-                    AndroidView(
-                        factory = { context -> ImageView(context).apply { scaleType = ImageView.ScaleType.CENTER_CROP } },
-                        // Only reload when the address changes, not on every recomposition of Home.
-                        update = { view ->
-                            if (view.tag != profile.imageUrl) {
-                                view.tag = profile.imageUrl
-                                view.showProfileImage(profile.imageUrl, loader)
-                            }
-                        },
-                        modifier = Modifier.size(36.dp),
-                    )
-                }
-            }
-            if (profile.hasNotifications) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(top = 2.dp, end = 2.dp)
-                        .size(8.dp)
-                        .background(colorResource(R.color.kamleon_blue), CircleShape),
-                )
-            }
-        }
+        ProfileButton(
+            profile = profile,
+            onClick = onProfileClick,
+            modifier = Modifier.padding(end = 20.dp).align(Alignment.CenterEnd),
+        )
     }
 }
 
