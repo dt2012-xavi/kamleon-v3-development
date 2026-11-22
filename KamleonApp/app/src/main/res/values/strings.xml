@@ -290,6 +290,8 @@
     <string name="home_status_loading">Loading your data…</string>
     <string name="home_status_empty">No samples yet</string>
     <string name="home_status_unavailable">Data unavailable</string>
+    <string name="home_profile_button">Profile and settings</string>
+    <string name="home_score_description">Hydration score %1$d%%</string>
     <string name="home_empty_body">Scan a Kamleon QR code after your next sample to see your hydration here.</string>
     <string name="home_empty_scan">Scan QR</string>
     <string name="home_unavailable_body">We couldn’t load your samples. Check your connection and try again.</string>

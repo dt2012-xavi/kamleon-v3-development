@@ -47,6 +47,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -76,8 +79,12 @@ data class HomeProfile(
 /** How far the content stays above the bottom edge, so it clears the tab bar (and the navigation bar). */
 private val TabBarClearance = 128.dp
 
-/** The ring at its designed size; smaller screens scale it, and the score inside it, down. */
-private val RingSize = 240.dp
+/**
+ * The ring at its designed size (as the old XML drew it); smaller screens scale it, and the score inside
+ * it, down. Its figures use Circular Regular: the XML screens look Regular too, because the theme's
+ * AppCompat fontFamily wins over the "Book" styles.
+ */
+private val RingSize = 232.dp
 
 /**
  * The Home screen: a hydration gradient behind a header, then either the last sample (score ring and
@@ -129,6 +136,7 @@ fun HomeScreen(
 
 @Composable
 private fun HomeHeader(profile: HomeProfile, onProfileClick: () -> Unit) {
+    val profileLabel = stringResource(R.string.home_profile_button)
     Box(modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 8.dp)) {
         Image(
             painter = painterResource(R.drawable.kamleon),
@@ -145,10 +153,15 @@ private fun HomeHeader(profile: HomeProfile, onProfileClick: () -> Unit) {
                     .shadow(8.dp, CircleShape)
                     .clip(CircleShape)
                     .background(colorResource(R.color.white))
-                    .clickable(role = Role.Button, onClick = onProfileClick),
+                    .clickable(
+                        role = Role.Button,
+                        onClick = onProfileClick,
+                    )
+                    .semantics { contentDescription = profileLabel },
             ) {
                 Text(
                     text = profile.initials ?: stringResource(R.string.default_value),
+                    modifier = Modifier.clearAndSetSemantics { },
                     fontSize = 16.sp,
                     fontFamily = MatTheme.fontFamily,
                     color = colorResource(R.color.kamleon_secondary_grey_60),
@@ -158,7 +171,13 @@ private fun HomeHeader(profile: HomeProfile, onProfileClick: () -> Unit) {
                 if (loader != null) {
                     AndroidView(
                         factory = { context -> ImageView(context).apply { scaleType = ImageView.ScaleType.CENTER_CROP } },
-                        update = { it.showProfileImage(profile.imageUrl, loader) },
+                        // Only reload when the address changes, not on every recomposition of Home.
+                        update = { view ->
+                            if (view.tag != profile.imageUrl) {
+                                view.tag = profile.imageUrl
+                                view.showProfileImage(profile.imageUrl, loader)
+                            }
+                        },
                         modifier = Modifier.size(36.dp),
                     )
                 }
@@ -199,7 +218,7 @@ private fun HomeSample(content: HomeContent, look: HomeLook, modifier: Modifier 
         Text(
             text = stringResource(look.message),
             fontSize = 32.sp,
-            fontFamily = MatTheme.fontFamilyBook,
+            fontFamily = MatTheme.fontFamily,
             color = textColor,
             modifier = Modifier.padding(horizontal = 26.dp).padding(top = 2.dp),
         )
@@ -222,7 +241,12 @@ private fun HomeSample(content: HomeContent, look: HomeLook, modifier: Modifier 
 private fun ScoreRing(score: Int?, size: Dp) {
     val scale = size / RingSize
     val dark = colorResource(R.color.kamleon_dark_grey)
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.size(size)) {
+    val description = score?.let { stringResource(R.string.home_score_description, it) }
+        ?: stringResource(R.string.analytic_no_data)
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.size(size).clearAndSetSemantics { contentDescription = description },
+    ) {
         CircularProgressIndicator(
             progress = { (score ?: 0) / 100f },
             modifier = Modifier.fillMaxSize(),
@@ -236,7 +260,7 @@ private fun ScoreRing(score: Int?, size: Dp) {
             Text(
                 text = score?.toString() ?: stringResource(R.string.default_value),
                 fontSize = (82 * scale).sp,
-                fontFamily = MatTheme.fontFamilyBook,
+                fontFamily = MatTheme.fontFamily,
                 color = dark,
                 modifier = Modifier.alignByBaseline(),
             )
@@ -244,7 +268,7 @@ private fun ScoreRing(score: Int?, size: Dp) {
                 Text(
                     text = stringResource(R.string.unit_percentage),
                     fontSize = (30 * scale).sp,
-                    fontFamily = MatTheme.fontFamilyBook,
+                    fontFamily = MatTheme.fontFamily,
                     color = dark,
                     modifier = Modifier.alignByBaseline(),
                 )
@@ -271,7 +295,7 @@ private fun HomeEmptyState(
         Text(
             text = stringResource(if (unavailable) R.string.home_status_unavailable else R.string.home_status_empty),
             fontSize = 32.sp,
-            fontFamily = MatTheme.fontFamilyBook,
+            fontFamily = MatTheme.fontFamily,
             color = colorResource(R.color.kamleon_dark_grey),
             textAlign = TextAlign.Center,
         )

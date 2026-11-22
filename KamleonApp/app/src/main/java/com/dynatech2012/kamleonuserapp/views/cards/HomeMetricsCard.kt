@@ -75,8 +75,7 @@ fun HomeMetricsCard(measure: MeasureData?, modifier: Modifier = Modifier) {
     }
 }
 
-// Same faces as the rest of Home: Book for figures (like the score in the ring), Medium for titles, Regular for text.
-private val CircularBook = FontFamily(Font(R.font.circular_pro_book))
+// Same faces as the rest of Home: Regular for figures and text (like the score in the ring), Medium for titles.
 private val CircularMedium = FontFamily(Font(R.font.circular_pro_medium))
 private val CircularRegular = FontFamily(Font(R.font.circular_pro_regular))
 
@@ -86,8 +85,8 @@ private fun RowScope.Metric(title: String, value: String, unit: String, label: S
     Column(modifier = Modifier.weight(1f)) {
         Text(title, fontSize = 14.sp, fontFamily = CircularMedium, color = colorResource(id = R.color.kamleon_secondary_grey_70))
         Row(modifier = Modifier.padding(vertical = 2.dp)) {
-            Text(value, fontSize = 36.sp, fontFamily = CircularBook, color = dark, modifier = Modifier.alignByBaseline())
-            Text(unit, fontSize = 14.sp, fontFamily = CircularBook, color = dark, modifier = Modifier.padding(start = 4.dp).alignByBaseline())
+            Text(value, fontSize = 36.sp, fontFamily = CircularRegular, color = dark, modifier = Modifier.alignByBaseline())
+            Text(unit, fontSize = 14.sp, fontFamily = CircularRegular, color = dark, modifier = Modifier.padding(start = 4.dp).alignByBaseline())
         }
         Text(label, fontSize = 14.sp, fontFamily = CircularRegular, color = dark)
     }
