@@ -1,6 +1,7 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
@@ -28,6 +29,19 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
     override fun setBinding(): ActivityHomeBinding = ActivityHomeBinding.inflate(layoutInflater)
 
     override fun initView() {
+        // The ring shrinks to fit between the message and the card; the drawn circle and the score follow its size.
+        val ring = binding.homeProgressBar
+        val scoreSize = binding.lastMeasure.textSize
+        val unitSize = binding.tvHomeUnit.textSize
+        ring.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            val size = minOf(ring.width, ring.height)
+            if (size > 0 && ring.indicatorSize != size) ring.post {
+                ring.indicatorSize = size
+                val scale = minOf(1f, size / fullRingPx)
+                binding.lastMeasure.setTextSize(TypedValue.COMPLEX_UNIT_PX, scoreSize * scale)
+                binding.tvHomeUnit.setTextSize(TypedValue.COMPLEX_UNIT_PX, unitSize * scale)
+            }
+        }
         showStatus(HomeStatus.Loading)
 
         //selectTab(0)
@@ -137,8 +151,11 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         binding.lastMeasure.text = getString(R.string.default_value)
         binding.tvHomeUnit.visibility = View.GONE
         binding.homeProgressBar.progress = 0
-        binding.cvHome.setContent { }
+        binding.cvHome.setContent { HomeMetricsCard(null) }
     }
+
+    /** The ring's designed size (240dp), at which the score keeps its full text size. */
+    private val fullRingPx get() = 240 * resources.displayMetrics.density
 
     companion object {
         val TAG: String = HomeFragment::class.java.simpleName

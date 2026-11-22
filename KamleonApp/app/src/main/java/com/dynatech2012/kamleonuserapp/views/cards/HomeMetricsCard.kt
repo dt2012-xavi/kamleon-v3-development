@@ -21,13 +21,16 @@ import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.models.ElectrolyteLevel
 import com.dynatech2012.kamleonuserapp.models.VolumeLevel
 
-/** The two other readings of the sample Home is showing: electrolytes and volume. */
+/**
+ * The two other readings of the sample Home is showing: electrolytes and volume.
+ * With no [measure] it shows "--" placeholders, so the layout keeps its shape while there is no data.
+ */
 @Composable
-fun HomeMetricsCard(measure: MeasureData, modifier: Modifier = Modifier) {
-    val precise = measure.isPrecise
-    val electrolytes = if (precise) measure.msCond.toInt() else null
-    val volume = measure.vol.toInt()
-    val volumeLevel = VolumeLevel.of(if (precise) volume else null)
+fun HomeMetricsCard(measure: MeasureData?, modifier: Modifier = Modifier) {
+    val precise = measure?.isPrecise == true
+    val electrolytes = if (precise) measure?.msCond?.toInt() else null
+    val volume = if (precise) measure?.vol?.toInt() else null
+    val volumeLevel = VolumeLevel.of(volume)
     val noValue = stringResource(R.string.default_value)
 
     // The card applies its modifier twice (shadow and body), so the margin goes on a wrapper.
@@ -57,10 +60,10 @@ fun HomeMetricsCard(measure: MeasureData, modifier: Modifier = Modifier) {
             )
             Metric(
                 title = stringResource(R.string.home_metric_volume),
-                value = if (precise) volume.toString() else noValue,
+                value = volume?.toString() ?: noValue,
                 unit = stringResource(R.string.unit_volume),
                 label = when (volumeLevel) {
-                    VolumeLevel.NoData -> stringResource(R.string.analytic_volume_insuff_title)
+                    VolumeLevel.NoData -> stringResource(R.string.analytic_no_data)
                     VolumeLevel.Insufficient -> stringResource(R.string.analytic_volume_low)
                     VolumeLevel.Average -> stringResource(R.string.analytic_volume_medium)
                     VolumeLevel.High -> stringResource(R.string.analytic_volume_high)
