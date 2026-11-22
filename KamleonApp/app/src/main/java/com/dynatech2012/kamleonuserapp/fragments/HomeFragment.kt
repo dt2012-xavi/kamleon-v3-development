@@ -88,6 +88,8 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
 
     private fun onLastMeasureChanged(measure: MeasureData) {
         DebugLog.d(TAG) { "got measures 6 changed" }
+        binding.layoutHomeEmpty.visibility = View.GONE
+        setSampleViewsVisible(true)
         val date = Date(measure.analysisDate)
         //val format = SimpleDateFormat("d MMMM yyy", Locale.US)
         //val dateString = format.format(date)
@@ -136,22 +138,50 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         else binding.ivHomeNotiBadge.visibility = View.GONE
     }
 
-    /** No sample to show: a neutral grey screen that says why. */
+    /**
+     * No sample to show, on a neutral grey screen. While loading, the ring and the card stay as "--" placeholders
+     * so nothing jumps when the sample arrives; when there is nothing to load, an illustration says why.
+     */
     private fun showStatus(status: HomeStatus) {
         binding.homeBg.setImageResource(R.drawable.bg_no_measure)
         binding.tvHomeLastSample.text = getString(R.string.home_last_sample_message_default)
-        binding.tvHomeMessage.text = getString(
-            when (status) {
-                HomeStatus.Loading -> R.string.home_status_loading
-                HomeStatus.Empty -> R.string.home_status_empty
-                HomeStatus.Unavailable -> R.string.home_status_unavailable
-            }
-        )
+        binding.tvHomeMessage.text = getString(R.string.home_status_loading)
         binding.tvHomeMessage.setTextColor(MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
         binding.lastMeasure.text = getString(R.string.default_value)
         binding.tvHomeUnit.visibility = View.GONE
         binding.homeProgressBar.progress = 0
         binding.cvHome.setContent { HomeMetricsCard(null) }
+
+        val empty = status != HomeStatus.Loading
+        setSampleViewsVisible(!empty)
+        binding.layoutHomeEmpty.visibility = if (empty) View.VISIBLE else View.GONE
+        when (status) {
+            HomeStatus.Loading -> Unit
+            HomeStatus.Empty -> {
+                binding.tvHomeEmptyTitle.setText(R.string.home_status_empty)
+                binding.tvHomeEmptyBody.setText(R.string.home_empty_body)
+                binding.btnHomeEmpty.setText(R.string.home_empty_scan)
+                binding.btnHomeEmpty.setOnClickListener {
+                    (parentFragment?.parentFragment as? TabFragment)?.openScanner()
+                }
+            }
+            HomeStatus.Unavailable -> {
+                binding.tvHomeEmptyTitle.setText(R.string.home_status_unavailable)
+                binding.tvHomeEmptyBody.setText(R.string.home_unavailable_body)
+                binding.btnHomeEmpty.setText(R.string.retry)
+                binding.btnHomeEmpty.setOnClickListener { viewModel.retryUserMeasures() }
+            }
+        }
+    }
+
+    /** The sample's own views: the texts under the header, the ring with the score, and the metrics card. */
+    private fun setSampleViewsVisible(visible: Boolean) {
+        val visibility = if (visible) View.VISIBLE else View.GONE
+        binding.tvHomeLastSample.visibility = visibility
+        binding.tvHomeMessage.visibility = visibility
+        binding.homeProgressBar.visibility = visibility
+        binding.layoutHomeScore.visibility = visibility
+        binding.cvHome.visibility = visibility
     }
 
     /** The ring's designed size (240dp), at which the score keeps its full text size. */

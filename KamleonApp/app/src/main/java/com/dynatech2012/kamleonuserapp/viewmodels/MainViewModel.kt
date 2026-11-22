@@ -285,6 +285,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /** Home's "Retry": show the loading state again and reload the samples. Call from the main thread. */
+    fun retryUserMeasures() {
+        _homeStatus.value = HomeStatus.Loading
+        getUserMeasures()
+    }
+
     fun getUserMeasures() {
         viewModelScope.launch(Dispatchers.IO) {
             DebugLog.d(TAG) { "will try to get measures from DB and from FS" }

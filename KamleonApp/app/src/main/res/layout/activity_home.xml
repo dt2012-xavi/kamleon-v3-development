@@ -116,6 +116,7 @@
             android:textColor="?attr/colorOnSurfaceInverse"
             android:textSize="@dimen/ts_32" />
         <LinearLayout
+            android:id="@+id/layoutHomeScore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -202,6 +203,62 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+        <!-- Shown instead of the ring and the metrics when there is no sample to show (no samples yet, or loading failed). -->
+        <LinearLayout
+            android:id="@+id/layoutHomeEmpty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingHorizontal="36dp"
+            android:layout_marginBottom="128dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutHeader"
+            app:layout_constraintBottom_toBottomOf="parent">
+            <ImageView
+                android:id="@+id/iv_home_empty"
+                android:layout_width="172dp"
+                android:layout_height="144dp"
+                android:src="@drawable/img_no_data"
+                app:tint="@color/white"
+                android:importantForAccessibility="no" />
+            <TextView
+                android:id="@+id/tv_home_empty_title"
+                style="@style/TextAppearance.Kamleon.Book"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:gravity="center"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="@dimen/ts_32"
+                tools:text="@string/home_status_empty" />
+            <TextView
+                android:id="@+id/tv_home_empty_body"
+                style="@style/TextAppearance.Kamleon.Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:textColor="@color/kamleon_secondary_grey_70"
+                android:textSize="@dimen/ts_16"
+                tools:text="@string/home_empty_body" />
+            <Button
+                android:id="@+id/btn_home_empty"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/round_blue_button_height"
+                android:minWidth="160dp"
+                android:layout_marginTop="24dp"
+                android:paddingVertical="0dp"
+                android:paddingHorizontal="24dp"
+                android:background="@drawable/bg_btn_round_blue"
+                android:textAllCaps="false"
+                android:textAppearance="@style/RoundBlueButtonTextStyle"
+                android:textColor="@drawable/color_text_button_blue_round"
+                tools:text="@string/home_empty_scan" />
+        </LinearLayout>
         <!--<androidx.recyclerview.widget.RecyclerView
             android:layout_width="0dp"
             android:layout_height="0dp"

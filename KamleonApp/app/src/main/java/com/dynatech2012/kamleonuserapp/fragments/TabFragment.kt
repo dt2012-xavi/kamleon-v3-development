@@ -156,6 +156,11 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         }
     }
 
+    /** Opens the scanner tab, as if the user tapped it (used by Home's empty state). */
+    fun openScanner() {
+        binding.layoutTabQr.performClick()
+    }
+
     private fun selectTab(tabIndex: Int) {
         when (tabIndex) {
             0 -> {
