@@ -4,6 +4,7 @@ import com.dynatech2012.kamleonuserapp.extensions.addDays
 import com.dynatech2012.kamleonuserapp.extensions.addMonths
 import com.dynatech2012.kamleonuserapp.extensions.addYears
 import com.dynatech2012.kamleonuserapp.extensions.beginningOfDay
+import com.dynatech2012.kamleonuserapp.extensions.beginningOfMonth
 import com.dynatech2012.kamleonuserapp.extensions.endOfDay
 import java.util.Date
 
@@ -77,7 +78,7 @@ class KamleonGraphBarDrawData(
             KamleonGraphViewMode.Daily -> date.beginningOfDay
             KamleonGraphViewMode.Weekly -> date.addDays(-6).beginningOfDay
             KamleonGraphViewMode.Monthly -> date.addDays(-29).beginningOfDay
-            KamleonGraphViewMode.Yearly -> date.addMonths(-11).beginningOfDay
+            KamleonGraphViewMode.Yearly -> date.beginningOfMonth.addMonths(-11)
             }
         }
 

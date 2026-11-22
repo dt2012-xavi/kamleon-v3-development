@@ -20,6 +20,7 @@ import com.dynatech2012.kamleonuserapp.database.AveragesData
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphAxisLabelItem
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphBarDrawData
+import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataBuilder
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataXY
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphViewMode
@@ -78,7 +79,6 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
         })
     }
 
-    private var dataSourceNew = ArrayList<AveragesData>()
     private var measuresDataSource = ArrayList<MeasureData>()
     private var dailyDataSource = ArrayList<AverageDailyMeasureData>()
     private var monthlyDataSource = ArrayList<AverageMonthlyMeasureData>()
@@ -246,151 +246,14 @@ class KamleonGraphView(context: Context, attrs: AttributeSet) : ConstraintLayout
 
     private fun refreshGraphView() {
         val dateToDraw = Date()//.addDays(-1) for setting yesterday as current date
-        val graphDrawData = generateGraphDrawDatasource(dateToDraw)
+        val source = KamleonGraphDataBuilder.sourceFor(viewMode, measuresDataSource, dailyDataSource, monthlyDataSource)
+        val graphDrawData = KamleonGraphDataBuilder.build(
+            dateToDraw, viewMode, dataType, source, context.getString(R.string.unit_percentage)
+        )
 
         headerView.setData(graphDrawData)
         footerView.setData(graphDrawData, dataType)
         contentView.setData(graphDrawData)
-    }
-
-    private fun generateGraphDrawDatasource(date: Date) : KamleonGraphBarDrawData {
-        val startDate = KamleonGraphBarDrawData.calcStartDateFrom(viewMode, date)
-        val endDate = KamleonGraphBarDrawData.calcEndDateFrom(viewMode, date)
-        dataSourceNew = when (viewMode) {
-            KamleonGraphViewMode.Daily -> measuresDataSource as ArrayList<AveragesData>
-            KamleonGraphViewMode.Weekly -> dailyDataSource as ArrayList<AveragesData>
-            KamleonGraphViewMode.Monthly -> dailyDataSource as ArrayList<AveragesData>
-            KamleonGraphViewMode.Yearly -> monthlyDataSource as ArrayList<AveragesData>
-        }
-
-        DebugLog.d(TAG) { "Start:" + startDate.formatDate() + " -> End:" + endDate.formatDate() }
-        DebugLog.d("Graph") { "dataSource2 size: ${dataSourceNew.size}" }
-        //val filteredDataSource = dataSource.filter { it.timestamp >= startDate.time && it.timestamp <= endDate.time}
-        val filteredDataSource2 = dataSourceNew.filter { it.timestamp >= startDate.time && it.timestamp <= endDate.time }
-        DebugLog.d("Graph") { "filteredDataSource2 size: ${filteredDataSource2.size}" }
-        val xStepCount = graphViewXSteps
-
-        val xyValues = ArrayList<KamleonGraphDataXY>()
-        val precisionValues = ArrayList<Boolean>()
-        var maxYVal = 0.0
-        for (i in 0 until xStepCount) {
-            val graphBarItemTimeRange = graphViewXRange(startDate, endDate, i)
-            //val givenBarItemData = filteredDataSource.filter { it.timestamp >= graphBarItemTimeRange[0] && it.timestamp <= graphBarItemTimeRange[1]}
-            val givenBarItemData2 = filteredDataSource2.filter { it.timestamp >= graphBarItemTimeRange[0] && it.timestamp <= graphBarItemTimeRange[1]}
-            val givenBarItemDataPrecise = givenBarItemData2.filter { it.isPrecise }
-            if (givenBarItemData2.isEmpty()) {
-                xyValues.add(KamleonGraphDataXY(i.toDouble(), 0.0))
-                precisionValues.add(false)
-            }
-            // When there is NO precise data, use the average of the non-precise data
-            else if (givenBarItemDataPrecise.isEmpty()) {
-                DebugLog.d(TAG) { "No precise data: ${Date(graphBarItemTimeRange[0]).formatTime}" }
-                val itemYValueNotPrecise = givenBarItemData2.sumOf { it.scoreValue(dataType) } / givenBarItemData2.size
-                if (maxYVal < itemYValueNotPrecise) { maxYVal = itemYValueNotPrecise }
-                val kamleonGraphDataXY = KamleonGraphDataXY(i.toDouble(), itemYValueNotPrecise)
-                kamleonGraphDataXY.data = givenBarItemData2.map { it }.toCollection(ArrayList())
-                xyValues.add(kamleonGraphDataXY)
-                precisionValues.add(false)
-            // When there is precise data
-            } else {
-                DebugLog.d(TAG) { "No precise data: ${Date(graphBarItemTimeRange[0]).formatTime} _ ${givenBarItemData2.size}" }
-                DebugLog.d(TAG) { "No precise data: ${Date(graphBarItemTimeRange[0]).formatTime} _ ${givenBarItemDataPrecise.size}" }
-                //val itemYValue = givenBarItemData.sumOf { it.dataVal } / givenBarItemData.size
-                val itemYValue2Precise = givenBarItemDataPrecise.sumOf { it.scoreValue(dataType) } / givenBarItemDataPrecise.size
-                if (maxYVal < itemYValue2Precise) { maxYVal = itemYValue2Precise }
-                val kamleonGraphDataXY = KamleonGraphDataXY(i.toDouble(), itemYValue2Precise)
-                kamleonGraphDataXY.data = givenBarItemData2.map { it }.toCollection(ArrayList())
-                xyValues.add(kamleonGraphDataXY)
-                precisionValues.add(true)
-            }
-        }
-
-        var xyRange = KamleonGraphDataXY(0.0, 0.0)
-        if (dataType == KamleonGraphDataType.hydration) {
-            xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 100.0)
-        } else if (dataType == KamleonGraphDataType.electrolytes) {
-            if (maxYVal <= 50.0) {
-                xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 50.0)
-            } else if (maxYVal <= 100.0) {
-                xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 100.0)
-            } else if (maxYVal <= 200.0) {
-                xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 200.0)
-            } else {
-                xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 500.0)
-            }
-        } else if (dataType == KamleonGraphDataType.volume) {
-            /*
-            if (maxYVal <= 50.0) {
-                xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 50.0)
-            } else if (maxYVal <= 100.0) {
-                xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 100.0)
-            } else if (maxYVal <= 200.0) {
-                xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 200.0)
-            } else if (maxYVal <= 500.0) {
-                xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 500.0)
-            } else if (maxYVal <= 1000.0) {
-                xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 1000.0)
-            } else {
-                xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 5000.0)
-            }
-            */
-            xyRange = KamleonGraphDataXY(xStepCount.toDouble(), 500.0)
-        }
-
-        val maxY = xyRange.y.toInt()
-        val yLabelStep = maxY / 5
-        val yLabelAry = ArrayList<KamleonGraphAxisLabelItem>()
-        for (tempY in 0..maxY step yLabelStep) {
-            if (dataType == KamleonGraphDataType.hydration) {
-                yLabelAry.add(KamleonGraphAxisLabelItem(tempY.toDouble(), tempY.toString() + context.getString(R.string.unit_percentage)))
-            } else {
-                yLabelAry.add(KamleonGraphAxisLabelItem(tempY.toDouble(), tempY.toString()))
-            }
-        }
-
-        return KamleonGraphBarDrawData(
-                                        date,
-                                        xyValues,
-                                        xyRange,
-                                        viewMode.xLabelStrings(startDate, xStepCount),
-                                        yLabelAry,
-                                        dataType,
-                                        viewMode,
-                                        precisionValues
-        )
-    }
-
-    private val graphViewXSteps: Int
-        get() = when (viewMode) {
-            KamleonGraphViewMode.Daily -> 24
-            KamleonGraphViewMode.Weekly -> 7
-            KamleonGraphViewMode.Monthly -> 30
-            KamleonGraphViewMode.Yearly -> 12
-        }
-
-    private fun graphViewXRange(startDate: Date, endDate: Date, xStep: Int) : LongArray {
-        var rangeLower: Long = startDate.time
-        var rangeUpper: Long = startDate.time
-        when (viewMode) {
-            KamleonGraphViewMode.Daily -> {
-                rangeLower = startDate.beginningOfDay.addHours(xStep).time
-                rangeUpper = startDate.beginningOfDay.addHours(xStep + 1).time - 1L
-            }
-            KamleonGraphViewMode.Weekly -> {
-                rangeLower = startDate.beginningOfDay.addDays(xStep).time
-                rangeUpper = startDate.beginningOfDay.addDays(xStep).endOfDay.time
-            }
-            KamleonGraphViewMode.Monthly -> {
-                rangeLower = startDate.beginningOfDay.addDays(xStep).time
-                rangeUpper = startDate.beginningOfDay.addDays(xStep).endOfDay.time
-            }
-            KamleonGraphViewMode.Yearly -> {
-                rangeLower = startDate.beginningOfDay.addMonths(xStep).beginningOfMonth.time
-                rangeUpper = startDate.beginningOfDay.addMonths(xStep).endOfMonth().time
-            }
-        }
-
-        return longArrayOf(rangeLower, rangeUpper)
     }
 
     /// KmlnHeaderViewListener
