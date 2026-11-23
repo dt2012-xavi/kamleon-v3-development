@@ -22,6 +22,7 @@ class HomeScreenTest {
     private var profileClicks = 0
     private var scans = 0
     private var retries = 0
+    private var notificationClicks = 0
 
     private fun sample(score: Int, precise: Boolean = true) = MeasureData().apply {
         this.score = score
@@ -30,11 +31,13 @@ class HomeScreenTest {
         precision = if (precise) MeasurePrecision.Good else MeasurePrecision.Bad
     }
 
-    private fun setScreen(content: HomeContent) = composeRule.setContent {
+    private fun setScreen(content: HomeContent, hasNotifications: Boolean = false) = composeRule.setContent {
         HomeScreen(
             content = content,
             profile = HomeProfile(initials = "AB"),
+            hasNotifications = hasNotifications,
             onProfileClick = { profileClicks++ },
+            onNotificationsClick = { notificationClicks++ },
             onScan = { scans++ },
             onRetry = { retries++ },
         )
@@ -90,5 +93,21 @@ class HomeScreenTest {
         setScreen(HomeContent.Loading)
         composeRule.onNodeWithContentDescription(context.getString(R.string.home_profile_button)).performClick()
         composeRule.runOnIdle { assertEquals(1, profileClicks) }
+    }
+
+    @Test
+    fun theBellSaysWhenThereAreInvitationsAndOpensThem() {
+        setScreen(HomeContent.Loading, hasNotifications = true)
+        composeRule.onNodeWithContentDescription(context.getString(R.string.home_notifications_button_new)).performClick()
+        composeRule.runOnIdle {
+            assertEquals(1, notificationClicks)
+            assertEquals(0, profileClicks)
+        }
+    }
+
+    @Test
+    fun theBellHasNoBadgeWithoutInvitations() {
+        setScreen(HomeContent.Loading)
+        composeRule.onNodeWithContentDescription(context.getString(R.string.home_notifications_button)).assertIsDisplayed()
     }
 }

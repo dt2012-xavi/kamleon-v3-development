@@ -4,7 +4,6 @@ import android.widget.ImageView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
@@ -32,12 +31,11 @@ data class HomeProfile(
     val initials: String? = null,
     val imageUrl: String? = null,
     val imageLoader: ImageLoader? = null,
-    val hasNotifications: Boolean = false,
 )
 
 /**
  * The round profile button at the top right of the tab screens: the user's photo, or their initials
- * until it loads, with a dot when there are pending invitations. Opens the settings.
+ * until it loads. Opens the settings.
  */
 @Composable
 fun ProfileButton(profile: HomeProfile, onClick: () -> Unit, modifier: Modifier = Modifier) {
@@ -75,15 +73,6 @@ fun ProfileButton(profile: HomeProfile, onClick: () -> Unit, modifier: Modifier 
                     modifier = Modifier.size(36.dp),
                 )
             }
-        }
-        if (profile.hasNotifications) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 2.dp, end = 2.dp)
-                    .size(8.dp)
-                    .background(colorResource(R.color.kamleon_blue), CircleShape),
-            )
         }
     }
 }

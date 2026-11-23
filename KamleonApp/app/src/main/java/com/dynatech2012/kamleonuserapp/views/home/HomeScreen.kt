@@ -79,7 +79,9 @@ private val RingSize = 232.dp
 fun HomeScreen(
     content: HomeContent,
     profile: HomeProfile,
+    hasNotifications: Boolean,
     onProfileClick: () -> Unit,
+    onNotificationsClick: () -> Unit,
     onScan: () -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
@@ -100,7 +102,12 @@ fun HomeScreen(
                         .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
                 )
         ) {
-            HomeHeader(profile = profile, onProfileClick = onProfileClick)
+            HomeHeader(
+                profile = profile,
+                hasNotifications = hasNotifications,
+                onProfileClick = onProfileClick,
+                onNotificationsClick = onNotificationsClick,
+            )
             when (content) {
                 HomeContent.Empty, HomeContent.Unavailable -> HomeEmptyState(
                     unavailable = content == HomeContent.Unavailable,
@@ -119,7 +126,12 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeHeader(profile: HomeProfile, onProfileClick: () -> Unit) {
+private fun HomeHeader(
+    profile: HomeProfile,
+    hasNotifications: Boolean,
+    onProfileClick: () -> Unit,
+    onNotificationsClick: () -> Unit,
+) {
     Box(modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 8.dp)) {
         Image(
             painter = painterResource(R.drawable.kamleon),
@@ -128,11 +140,13 @@ private fun HomeHeader(profile: HomeProfile, onProfileClick: () -> Unit) {
             alignment = Alignment.CenterStart,
             modifier = Modifier.padding(start = 18.dp).height(36.dp).align(Alignment.CenterStart),
         )
-        ProfileButton(
-            profile = profile,
-            onClick = onProfileClick,
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.padding(end = 20.dp).align(Alignment.CenterEnd),
-        )
+        ) {
+            NotificationsButton(hasNotifications = hasNotifications, onClick = onNotificationsClick)
+            ProfileButton(profile = profile, onClick = onProfileClick)
+        }
     }
 }
 
@@ -294,7 +308,7 @@ private fun homeLookOf(content: HomeContent): HomeLook {
 
 // Previews: one per state, so a layout change can be checked without a device.
 
-private val previewProfile = HomeProfile(initials = "5U", hasNotifications = true)
+private val previewProfile = HomeProfile(initials = "5U")
 
 private fun previewSample(score: Int, precise: Boolean = true) = MeasureData().apply {
     analysisDate = 1738281600000L
@@ -306,7 +320,10 @@ private fun previewSample(score: Int, precise: Boolean = true) = MeasureData().a
 
 @Composable
 private fun PreviewHome(content: HomeContent) =
-    HomeScreen(content, previewProfile, onProfileClick = {}, onScan = {}, onRetry = {})
+    HomeScreen(
+        content, previewProfile, hasNotifications = true,
+        onProfileClick = {}, onNotificationsClick = {}, onScan = {}, onRetry = {},
+    )
 
 @Preview(name = "Very hydrated", showBackground = true, widthDp = 393, heightDp = 852)
 @Composable

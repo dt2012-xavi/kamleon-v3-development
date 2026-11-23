@@ -44,15 +44,24 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
             initials = user?.let { getString(R.string.user_name_initials, it.name.take(1).uppercase(), it.lastName.take(1).uppercase()) },
             imageUrl = imageUrl,
             imageLoader = viewModel.imageLoader,
-            hasNotifications = invitations?.isNotEmpty() == true,
         )
         HomeScreen(
             content = homeContentOf(lastMeasure, status),
             profile = profile,
+            hasNotifications = invitations?.isNotEmpty() == true,
             onProfileClick = ::openSettings,
+            onNotificationsClick = ::openInvitations,
             onScan = { (parentFragment?.parentFragment as? TabFragment)?.openScanner() },
             onRetry = viewModel::retryUserMeasures,
         )
+    }
+
+    /** The same invitations sheet the settings open. */
+    private fun openInvitations() {
+        if (childFragmentManager.findFragmentByTag(INVITATIONS_TAG) != null) return
+        InvitationFragment.newInstance(object : BottomFragmentDismissListener {
+            override fun onDismissFragment() = Unit
+        }).show(childFragmentManager, INVITATIONS_TAG)
     }
 
     private fun openSettings() {
@@ -63,5 +72,6 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
 
     companion object {
         val TAG: String = HomeFragment::class.java.simpleName
+        private const val INVITATIONS_TAG = "home_invitations"
     }
 }
