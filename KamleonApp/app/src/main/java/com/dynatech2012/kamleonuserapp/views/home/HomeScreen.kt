@@ -55,6 +55,7 @@ import com.dynatech2012.kamleonuserapp.application.MatTheme
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.extensions.formatTime
 import com.dynatech2012.kamleonuserapp.models.HomeContent
+import com.dynatech2012.kamleonuserapp.models.HydrationLevel
 import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
 import com.dynatech2012.kamleonuserapp.views.cards.HomeMetricsCard
 import java.util.Date
@@ -284,10 +285,10 @@ private fun homeLookOf(content: HomeContent): HomeLook {
         return HomeLook(R.color.color_fa, R.color.bg_analytics_gradient_2, R.string.analytic_volume_low, lightText = false)
     }
     return when (measure.hydrationLevel) {
-        MeasureData.HydrationLevel.VERYHYDRATED -> HomeLook(R.color.home_bg_very_hydrated_start, R.color.home_bg_very_hydrated_end, R.string.analytic_very_hydrated, lightText = true)
-        MeasureData.HydrationLevel.HYDRATED -> HomeLook(R.color.home_bg_hydrated_start, R.color.home_bg_hydrated_end, R.string.analytic_hydrated, lightText = true)
-        MeasureData.HydrationLevel.DEHYDRATED -> HomeLook(R.color.home_bg_dehydrated_start, R.color.home_bg_dehydrated_end, R.string.analytic_dehydrated, lightText = true)
-        MeasureData.HydrationLevel.VERYDEHYDRATED -> HomeLook(R.color.home_bg_severely_dehydrated_start, R.color.home_bg_severely_dehydrated_end, R.string.analytic_severely_dehydrated, lightText = true)
+        HydrationLevel.Overhydrated -> HomeLook(R.color.home_bg_overhydrated_start, R.color.home_bg_overhydrated_end, R.string.analytic_overhydrated, lightText = true)
+        HydrationLevel.Hydrated -> HomeLook(R.color.home_bg_hydrated_start, R.color.home_bg_hydrated_end, R.string.analytic_hydrated, lightText = true)
+        HydrationLevel.Dehydrated -> HomeLook(R.color.home_bg_dehydrated_start, R.color.home_bg_dehydrated_end, R.string.analytic_dehydrated, lightText = true)
+        HydrationLevel.SeverelyDehydrated -> HomeLook(R.color.home_bg_severely_dehydrated_start, R.color.home_bg_severely_dehydrated_end, R.string.analytic_severely_dehydrated, lightText = true)
     }
 }
 

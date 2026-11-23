@@ -9,6 +9,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.models.ElectrolyteLevel
+import com.dynatech2012.kamleonuserapp.models.HydrationLevel
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphBarDrawData
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataXY
@@ -55,19 +57,11 @@ class KmlnFooterView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
                 preciseData.add(data.values[i])
             }
         }
-        val range: IntRange = when (type) {
-            KamleonGraphDataType.hydration -> {
-                KamleonGraphDataType.HydrationStreakValue.toInt()..Int.MAX_VALUE
-            }
-            KamleonGraphDataType.electrolytes -> {
-                KamleonGraphDataType.ElectrolyteStreakValueLower.toInt()..KamleonGraphDataType.ElectrolyteStreakValueUpper.toInt()
-            }
-            KamleonGraphDataType.volume -> {
-                0..0
-            }
+        val streakData = when (type) {
+            KamleonGraphDataType.hydration -> preciseData.filter { HydrationLevel.isOptimum(it.y) }
+            KamleonGraphDataType.electrolytes -> preciseData.filter { ElectrolyteLevel.isOptimum(it.y) }
+            KamleonGraphDataType.volume -> emptyList()
         }
-        //val streakData = preciseData.filter { it.y >= range.first && it.y <= range.last }
-        val streakData = preciseData.filter { it.y.toInt() in range }
         val active = streakData.size
         val total = preciseData.size
         updateViews(false, active, total, type)

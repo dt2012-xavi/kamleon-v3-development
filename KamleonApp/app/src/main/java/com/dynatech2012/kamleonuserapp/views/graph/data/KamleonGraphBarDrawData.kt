@@ -41,6 +41,9 @@ class KamleonGraphBarDrawData(
         return preciseData
     }
 
+    /** Whether any bar has precise data: the header and the footer only use those bars. */
+    fun hasPreciseData(): Boolean = filterNonZeroValuesAndNonLowVolumeValues().isNotEmpty()
+
     fun averageForStreak(): Double {
         val nonZeroValues = filterNonZeroValuesAndNonLowVolumeValues()
         if (nonZeroValues.isEmpty()) { return 0.0 }

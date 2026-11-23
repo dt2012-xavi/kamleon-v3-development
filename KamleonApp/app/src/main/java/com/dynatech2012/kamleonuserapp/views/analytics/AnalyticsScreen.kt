@@ -110,6 +110,7 @@ fun AnalyticsScreen(
                         description = card.description?.let { stringResource(it) } ?: "",
                         value = card.value,
                         isPrecise = card.isPrecise,
+                        electrolyteLevel = card.electrolyteLevel,
                         onClick = { onOpenGraph(card.type) },
                     )
                 }

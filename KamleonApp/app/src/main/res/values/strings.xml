@@ -259,6 +259,7 @@
     <string name="graph_footer_number_all">/%1$s</string>-->
 
     <string name="graph_label_optimum">Optimum</string>
+    <string name="graph_no_samples">No valid samples in this period</string>
     <string name="graph_label_minimum">Minimum</string>
     <string name="graph_label_maximum">Maximum</string>
 
@@ -302,9 +303,10 @@
     <string name="analytic_severely_dehydrated">Severely Dehydrated</string>
     <string name="analytic_dehydrated">Dehydrated</string>
     <string name="analytic_hydrated">Hydrated</string>
-    <string name="analytic_very_hydrated">Very Well Hydrated</string>
+    <string name="analytic_overhydrated">Overhydrated</string>
 
-    <string name="analytic_hydratation_above">Your last urine hydration is on the recommended level.</string>
+    <string name="analytic_hydratation_optimal">Your last urine hydration is on the recommended level.</string>
+    <string name="analytic_hydratation_over">Your last urine hydration is above the recommended level.</string>
     <string name="analytic_hydratation_under">Your last urine hydration is under the recommended level.</string>
 
     <string name="analytic_elec_hypo">Hypotonic</string>

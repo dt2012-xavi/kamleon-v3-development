@@ -2,6 +2,7 @@ package com.kamleonapp
 
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.database.MeasureData
+import com.dynatech2012.kamleonuserapp.models.ElectrolyteLevel
 import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
 import com.dynatech2012.kamleonuserapp.models.analyticsCardsOf
 import com.dynatech2012.kamleonuserapp.views.cards.AnalyticType
@@ -39,8 +40,8 @@ class AnalyticsCardsTest {
     fun aPreciseSampleIsJudgedOnEachMetric() {
         val (hydration, electrolytes, volume) = analyticsCardsOf(sample(score = 95, cond = 12f, vol = 300f))
         assertEquals(95, hydration.value)
-        assertEquals(R.string.analytic_very_hydrated, hydration.subtitle)
-        assertEquals(R.string.analytic_hydratation_above, hydration.description)
+        assertEquals(R.string.analytic_overhydrated, hydration.subtitle)
+        assertEquals(R.string.analytic_hydratation_over, hydration.description)
         assertEquals(12, electrolytes.value)
         assertEquals(R.string.analytic_elec_normal, electrolytes.subtitle)
         assertEquals(300, volume.value)
@@ -49,14 +50,42 @@ class AnalyticsCardsTest {
     }
 
     @Test
-    fun hydrationBandsKeepTheirLimits() {
-        fun subtitleAt(score: Int) = analyticsCardsOf(sample(score, 10f, 200f))[0].subtitle
-        assertEquals(R.string.analytic_severely_dehydrated, subtitleAt(33))
-        assertEquals(R.string.analytic_dehydrated, subtitleAt(34))
-        assertEquals(R.string.analytic_dehydrated, subtitleAt(66))
-        assertEquals(R.string.analytic_hydrated, subtitleAt(67))
-        assertEquals(R.string.analytic_hydrated, subtitleAt(90))
-        assertEquals(R.string.analytic_very_hydrated, subtitleAt(91))
+    fun hydrationBandsMatchThePublishedRanges() {
+        fun card(score: Int) = analyticsCardsOf(sample(score, 10f, 200f))[0]
+        // 1-43 severely dehydrated, 44-64 dehydrated, 65-93 hydrated, 94-99 overhydrated.
+        listOf(
+            1 to R.string.analytic_severely_dehydrated, 43 to R.string.analytic_severely_dehydrated,
+            44 to R.string.analytic_dehydrated, 64 to R.string.analytic_dehydrated,
+            65 to R.string.analytic_hydrated, 93 to R.string.analytic_hydrated,
+            94 to R.string.analytic_overhydrated, 99 to R.string.analytic_overhydrated,
+        ).forEach { (score, subtitle) -> assertEquals("score $score", subtitle, card(score).subtitle) }
+        assertEquals(R.string.analytic_hydratation_under, card(64).description)
+        assertEquals(R.string.analytic_hydratation_optimal, card(65).description)
+        assertEquals(R.string.analytic_hydratation_optimal, card(93).description)
+        assertEquals(R.string.analytic_hydratation_over, card(94).description)
+    }
+
+    @Test
+    fun electrolytesAreJudgedOnTheExactReadingNotTheWholeNumberShown() {
+        fun card(cond: Float) = analyticsCardsOf(sample(80, cond, 200f))[1]
+        assertEquals(25, card(25.4f).value)
+        assertEquals(R.string.analytic_elec_hyper, card(25.4f).subtitle)
+        assertEquals(ElectrolyteLevel.High, card(25.4f).electrolyteLevel)
+        assertEquals(4, card(4.9f).value)
+        assertEquals(R.string.analytic_elec_hypo, card(4.9f).subtitle)
+        assertEquals(R.string.analytic_elec_normal, card(5f).subtitle)
+        assertEquals(R.string.analytic_elec_normal, card(25f).subtitle)
+    }
+
+    @Test
+    fun volumeBandsHaveTheirOptimumBetween150And250() {
+        fun card(vol: Float) = analyticsCardsOf(sample(80, 10f, vol))[2]
+        assertEquals(R.string.analytic_volume_low, card(149f).subtitle)
+        assertEquals(R.string.analytic_volume_insuff_desc, card(149f).description)
+        assertEquals(R.string.analytic_volume_medium, card(150f).subtitle)
+        assertEquals(R.string.analytic_volume_medium, card(250f).subtitle)
+        assertEquals(R.string.analytic_volume_good, card(250f).description)
+        assertEquals(R.string.analytic_volume_high, card(251f).subtitle)
     }
 
     @Test

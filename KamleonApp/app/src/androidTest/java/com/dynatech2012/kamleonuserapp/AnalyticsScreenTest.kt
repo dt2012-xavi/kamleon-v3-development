@@ -38,7 +38,7 @@ class AnalyticsScreenTest {
     @Test
     fun aSampleShowsAVerdictPerMetric() {
         setScreen(sample)
-        composeRule.onNodeWithText(context.getString(R.string.analytic_very_hydrated)).assertIsDisplayed()
+        composeRule.onNodeWithText(context.getString(R.string.analytic_overhydrated)).assertIsDisplayed()
         composeRule.onNodeWithText(context.getString(R.string.analytic_elec_normal)).assertIsDisplayed()
         composeRule.onNodeWithText(context.getString(R.string.analytic_volume_high)).assertIsDisplayed()
     }
@@ -46,7 +46,7 @@ class AnalyticsScreenTest {
     @Test
     fun eachCardOpensItsGraph() {
         setScreen(sample)
-        composeRule.onNodeWithText(context.getString(R.string.analytic_very_hydrated)).performClick()
+        composeRule.onNodeWithText(context.getString(R.string.analytic_overhydrated)).performClick()
         composeRule.onNodeWithText(context.getString(R.string.analytic_elec_normal)).performClick()
         composeRule.onNodeWithText(context.getString(R.string.analytic_volume_high)).performClick()
         composeRule.runOnIdle {

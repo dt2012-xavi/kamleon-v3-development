@@ -13,6 +13,8 @@ data class AnalyticsCard(
     @StringRes val subtitle: Int,
     /** Null when there is nothing to explain (no reading). */
     @StringRes val description: Int?,
+    /** The electrolyte band, which picks the gauge colour; null on the other cards. */
+    val electrolyteLevel: ElectrolyteLevel? = null,
 )
 
 /**
@@ -24,29 +26,32 @@ fun analyticsCardsOf(measure: MeasureData?): List<AnalyticsCard> {
     val score = measure?.score?.takeIf { precise }
     val electrolytes = measure?.msCond?.toInt()?.takeIf { precise }
     val volume = measure?.vol?.toInt()
+    val electrolyteLevel = ElectrolyteLevel.of(measure?.msCond?.takeIf { precise })
     val volumeLevel = VolumeLevel.of(volume?.takeIf { precise })
-    val electrolyteLevel = ElectrolyteLevel.of(electrolytes)
+    val hydrationLevel = score?.let { HydrationLevel.of(it) }
     return listOf(
         AnalyticsCard(
             type = AnalyticType.HYDRATION,
             value = score,
             isPrecise = precise,
-            subtitle = when (score) {
+            subtitle = when (hydrationLevel) {
                 null -> R.string.analytic_no_data
-                in 0..33 -> R.string.analytic_severely_dehydrated
-                in 34..66 -> R.string.analytic_dehydrated
-                in 67..90 -> R.string.analytic_hydrated
-                else -> R.string.analytic_very_hydrated
+                HydrationLevel.SeverelyDehydrated -> R.string.analytic_severely_dehydrated
+                HydrationLevel.Dehydrated -> R.string.analytic_dehydrated
+                HydrationLevel.Hydrated -> R.string.analytic_hydrated
+                HydrationLevel.Overhydrated -> R.string.analytic_overhydrated
             },
-            description = when (score) {
+            description = when (hydrationLevel) {
                 null -> null
-                in 0..66 -> R.string.analytic_hydratation_under
-                else -> R.string.analytic_hydratation_above
+                HydrationLevel.SeverelyDehydrated, HydrationLevel.Dehydrated -> R.string.analytic_hydratation_under
+                HydrationLevel.Hydrated -> R.string.analytic_hydratation_optimal
+                HydrationLevel.Overhydrated -> R.string.analytic_hydratation_over
             },
         ),
         AnalyticsCard(
             type = AnalyticType.ELECTROLYTE,
             value = electrolytes,
+            electrolyteLevel = electrolyteLevel,
             isPrecise = precise,
             subtitle = when (electrolyteLevel) {
                 null -> R.string.analytic_no_data

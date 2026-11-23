@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.dynatech2012.kamleonuserapp.models.IntVectorTypeConverter
+import com.dynatech2012.kamleonuserapp.models.HydrationLevel
 import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
 import com.dynatech2012.kamleonuserapp.models.MeasureType
 import com.dynatech2012.kamleonuserapp.models.RawMeasureData
@@ -521,19 +522,5 @@ data class MeasureData (
     }
 
     val hydrationLevel: HydrationLevel
-        get() {
-            return when (score) {
-                in 0..30 -> HydrationLevel.VERYDEHYDRATED
-                in 31..64 -> HydrationLevel.DEHYDRATED
-                in 65..90 -> HydrationLevel.HYDRATED
-                else -> HydrationLevel.VERYHYDRATED
-            }
-        }
-
-    enum class HydrationLevel {
-        VERYHYDRATED,
-        HYDRATED,
-        DEHYDRATED,
-        VERYDEHYDRATED
-    }
+        get() = HydrationLevel.of(score)
 }

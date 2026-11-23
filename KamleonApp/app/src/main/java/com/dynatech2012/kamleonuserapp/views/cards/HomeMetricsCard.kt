@@ -52,7 +52,7 @@ fun HomeMetricsCard(measure: MeasureData?, modifier: Modifier = Modifier) {
                 title = stringResource(R.string.home_metric_electrolytes),
                 value = electrolytes?.toString() ?: noValue,
                 unit = stringResource(R.string.unit_electrolites),
-                label = when (ElectrolyteLevel.of(electrolytes)) {
+                label = when (ElectrolyteLevel.of(if (precise) measure?.msCond else null)) {
                     ElectrolyteLevel.Low -> stringResource(R.string.analytic_elec_hypo)
                     ElectrolyteLevel.Balanced -> stringResource(R.string.analytic_elec_normal)
                     ElectrolyteLevel.High -> stringResource(R.string.analytic_elec_hyper)

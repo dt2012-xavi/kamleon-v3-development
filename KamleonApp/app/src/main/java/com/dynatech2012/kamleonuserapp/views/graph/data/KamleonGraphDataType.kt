@@ -1,6 +1,8 @@
 package com.dynatech2012.kamleonuserapp.views.graph.data
 
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.models.ElectrolyteLevel
+import com.dynatech2012.kamleonuserapp.models.HydrationLevel
 
 enum class KamleonGraphDataType(val identifier: String) {
     hydration("HYDRATION"),
@@ -16,10 +18,11 @@ enum class KamleonGraphDataType(val identifier: String) {
     }
 
     companion object {
-        @JvmStatic
-        var HydrationStreakValue = 66.0
+        /** Optimum hydration band, drawn as the graph's streak lines. */
+        const val HydrationStreakValueLower = HydrationLevel.HYDRATED_MIN.toDouble()
+        const val HydrationStreakValueUpper = HydrationLevel.HYDRATED_MAX.toDouble()
 
-        var ElectrolyteStreakValueLower = 5.0
-        var ElectrolyteStreakValueUpper = 25.0
+        const val ElectrolyteStreakValueLower = ElectrolyteLevel.BALANCED_MIN
+        const val ElectrolyteStreakValueUpper = ElectrolyteLevel.BALANCED_MAX
     }
 }

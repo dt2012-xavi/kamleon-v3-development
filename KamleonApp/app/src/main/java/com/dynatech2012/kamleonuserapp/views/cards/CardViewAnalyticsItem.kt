@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.MatTheme
+import com.dynatech2012.kamleonuserapp.models.ElectrolyteLevel
 import com.dynatech2012.kamleonuserapp.views.progress.AnimatedCircularProgressIndicator
 import com.dynatech2012.kamleonuserapp.views.progress.VolumeProgressIndicator
 
@@ -43,6 +44,7 @@ fun CardViewAnalyticsItem(
     description: String,
     value: Int?,
     isPrecise: Boolean,
+    electrolyteLevel: ElectrolyteLevel? = null,
     onClick: () -> Unit
 ) {
     Card(
@@ -108,7 +110,7 @@ fun CardViewAnalyticsItem(
             ) {
                 when (analyticType) {
                     AnalyticType.HYDRATION -> HydrationView(value)
-                    AnalyticType.ELECTROLYTE -> ElecView(value)
+                    AnalyticType.ELECTROLYTE -> ElecView(value, electrolyteLevel)
                     AnalyticType.VOLUME -> VolumeView(value, isPrecise)
                 }
             }
@@ -129,22 +131,6 @@ fun HydrationView(hydration: Int?) {
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        /*
-        Image(
-            painter = painterResource(id =
-            when (hydration) {
-                in 0..30 -> R.drawable.electrolytes_blue
-                in 31..64 -> R.drawable.electrolytes_orange
-                in 64..90 -> R.drawable.electrolytes_orange
-                else -> R.drawable.electrolytes_red
-            }
-            ),
-            modifier = Modifier
-                .fillMaxHeight()
-                .aspectRatio(1f),
-            contentDescription = "",
-        )
-        */
         AnimatedCircularProgressIndicator(
             currentValue = hydration,
             maxValue = 100,
@@ -192,7 +178,7 @@ fun HydrationView(hydration: Int?) {
 }
 
 @Composable
-fun ElecView(electrolytes: Int?) {
+fun ElecView(electrolytes: Int?, level: ElectrolyteLevel?) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -200,11 +186,10 @@ fun ElecView(electrolytes: Int?) {
     ) {
         Image(
             painter = painterResource(id =
-                when (electrolytes) {
+                when (level) {
                     null -> R.drawable.pb_electrolytes_grey
-                    in 0..4 -> R.drawable.pb_electrolytes_red
-                    in 5..25 -> R.drawable.pb_electrolytes_blue
-                    else -> R.drawable.pb_electrolytes_red
+                    ElectrolyteLevel.Balanced -> R.drawable.pb_electrolytes_blue
+                    ElectrolyteLevel.Low, ElectrolyteLevel.High -> R.drawable.pb_electrolytes_red
                 }
             ),
             modifier = Modifier

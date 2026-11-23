@@ -13,6 +13,7 @@ import android.view.View
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.database.AveragesData
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphBarDrawData
+import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataBuilder
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphViewMode
 import com.dynatech2012.kamleonuserapp.extensions.addDays
@@ -20,7 +21,6 @@ import com.dynatech2012.kamleonuserapp.extensions.addMonths
 import com.dynatech2012.kamleonuserapp.extensions.formatDate
 import com.dynatech2012.kamleonuserapp.extensions.px
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataXY
-import kotlin.math.min
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context, attributeSet) {
@@ -75,6 +75,13 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
         strokeWidth = 1f
     }
 
+    private val emptyMessagePaint = Paint().apply {
+        color = context.getColor(R.color.kamleon_secondary_grey_60)
+        textSize = resources.getDimension(R.dimen.kmln_graph_min_max_label_text_size)
+        textAlign = Paint.Align.CENTER
+        isAntiAlias = true
+    }
+
     private val xAxisLines: Int = 4
     private val yAxisLines: Int
         get() = when (dataSource.mode) {
@@ -103,6 +110,21 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
         if (isStreak) {
             renderStreakLines(canvas)
         }
+        if (!dataSource.hasPreciseData()) {
+            renderEmptyMessage(canvas)
+        }
+    }
+
+    /** Centred over the bars when the period has no valid sample, so the empty graph isn't a mystery. */
+    private fun renderEmptyMessage(canvas: Canvas) {
+        val plotWidth = canvas.width - canvas.width / yAxisLabelWidthFraction
+        val plotHeight = canvas.height - xLabelHeight
+        canvas.drawText(
+            context.getString(R.string.graph_no_samples),
+            plotWidth / 2f,
+            plotHeight / 2f - (emptyMessagePaint.ascent() + emptyMessagePaint.descent()) / 2f,
+            emptyMessagePaint
+        )
     }
 
     private fun calcTextWidth(text: String, paint: Paint) : Float {
@@ -218,8 +240,9 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
     private fun renderStreakLines(canvas: Canvas) {
         when (dataSource.type) {
             KamleonGraphDataType.hydration -> {
-                renderStreakLine(canvas, KamleonGraphDataType.HydrationStreakValue)
-                renderStreakLineLabel(context.getString(R.string.graph_label_optimum), canvas, KamleonGraphDataType.HydrationStreakValue, false)
+                renderStreakLine(canvas, KamleonGraphDataType.HydrationStreakValueLower)
+                renderStreakLine(canvas, KamleonGraphDataType.HydrationStreakValueUpper)
+                renderStreakLineLabel(context.getString(R.string.graph_label_optimum), canvas, KamleonGraphDataType.HydrationStreakValueUpper, false)
 
             }
             KamleonGraphDataType.electrolytes -> {
@@ -267,32 +290,14 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
                 if (isStreak) {
                     val yVal = dataSource.values[vIndex].y
 
-                    if (dataSource.type == KamleonGraphDataType.hydration) {
-                        if (dataSource.arePrecise[vIndex]) {
-                            if (yVal > 0 && yVal < KamleonGraphDataType.HydrationStreakValue) {
-                                canvas.drawRect(
-                                    calcBarRect(
-                                        canvasSize,
-                                        vIndex,
-                                        yVal,
-                                        KamleonGraphDataType.HydrationStreakValue
-                                    ), graphBarItemOrangePaint
-                                )
-                            }
-
-                            canvas.drawRect(orgBarRect, graphBarItemGreyPaint)
-                        }
-
-                    } else if (dataSource.type == KamleonGraphDataType.electrolytes) {
+                    if (dataSource.type == KamleonGraphDataType.hydration ||
+                        dataSource.type == KamleonGraphDataType.electrolytes) {
+                        // Grey bar, with what falls short of or goes over the optimum in orange.
                         canvas.drawRect(orgBarRect, graphBarItemGreyPaint)
-                        if (yVal > KamleonGraphDataType.ElectrolyteStreakValueLower) {
+                        KamleonGraphDataBuilder.outOfOptimum(dataSource.type, yVal)?.let { gap ->
                             canvas.drawRect(
-                                calcBarRect(
-                                    canvasSize,
-                                    vIndex,
-                                    KamleonGraphDataType.ElectrolyteStreakValueLower,
-                                    min(yVal, KamleonGraphDataType.ElectrolyteStreakValueUpper)
-                                ), graphBarItemPaint
+                                calcBarRect(canvasSize, vIndex, gap.start, gap.endInclusive),
+                                graphBarItemOrangePaint
                             )
                         }
                     } else if (dataSource.type == KamleonGraphDataType.volume) {

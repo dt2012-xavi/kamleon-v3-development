@@ -21,6 +21,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.models.VolumeLevel
 
 @Composable
 fun VolumeProgressIndicator(
@@ -38,8 +39,8 @@ fun VolumeProgressIndicator(
     val alfa = when {
         !isPrecise -> 1f
         currentValue == null -> 0f
-        currentValue < 150 -> 0.3f
-        currentValue <= 250 -> 0.6f
+        currentValue < VolumeLevel.OPTIMUM_MIN -> 0.3f
+        currentValue <= VolumeLevel.OPTIMUM_MAX -> 0.6f
         else -> 1f
     }
     val finalColor = if (isPrecise) color
@@ -72,13 +73,13 @@ fun VolumeProgressIndicator(
                 drawCircularProgressIndicator(startAngle, sweep, finalColor, stroke)
             }
 
-            if (currentValue >= 150f) {
+            if (currentValue >= VolumeLevel.OPTIMUM_MIN) {
                 val startAngle = 225f + diff/2//200f + diff//230f
                 val sweep: Float = 90f - diff//80f
                 drawCircularProgressIndicator(startAngle, sweep, finalColor, stroke)
             }
 
-            if (currentValue > 250f) {
+            if (currentValue > VolumeLevel.OPTIMUM_MAX) {
                 val startAngle = 315f + diff//325f
                 val sweep: Float = 90f - diff//80f
                 drawCircularProgressIndicator(startAngle, sweep, finalColor, stroke)

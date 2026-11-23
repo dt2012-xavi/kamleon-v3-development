@@ -7,6 +7,7 @@ import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphViewMode
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.Calendar
@@ -198,9 +199,23 @@ class KamleonGraphDataBuilderTest {
 
     @Test
     fun volumeAxisGoesToFiveHundred() {
-        val graph = build(KamleonGraphViewMode.Daily, listOf(item(at(2025, Calendar.JUNE, 18, 9), 900.0)), KamleonGraphDataType.volume)
+        val graph = build(KamleonGraphViewMode.Daily, listOf(item(at(2025, Calendar.JUNE, 18, 9), 320.0)), KamleonGraphDataType.volume)
         assertEquals(500.0, graph.xyRange.y, 0.0)
         assertEquals(listOf("0", "100", "200", "300", "400", "500"), graph.yLabels.map { it.label })
+    }
+
+    @Test
+    fun volumeAxisGrowsInStepsOf250SoNoBarIsCut() {
+        fun axisFor(value: Double) = build(
+            KamleonGraphViewMode.Daily, listOf(item(at(2025, Calendar.JUNE, 18, 9), value)), KamleonGraphDataType.volume
+        ).xyRange.y
+        assertEquals(500.0, axisFor(500.0), 0.0)
+        assertEquals(750.0, axisFor(501.0), 0.0)
+        assertEquals(1000.0, axisFor(900.0), 0.0)
+        val labels = build(
+            KamleonGraphViewMode.Daily, listOf(item(at(2025, Calendar.JUNE, 18, 9), 700.0)), KamleonGraphDataType.volume
+        ).yLabels.map { it.label }
+        assertEquals(listOf("0", "150", "300", "450", "600", "750"), labels)
     }
 
     @Test
@@ -224,6 +239,32 @@ class KamleonGraphDataBuilderTest {
         assertEquals(listOf("Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun"), yearly)
     }
 
+    // What streak mode paints orange
+
+    @Test
+    fun hydrationOutsideTheOptimumIsMarkedOnBothSides() {
+        val h = KamleonGraphDataType.hydration
+        assertEquals(40.0..65.0, KamleonGraphDataBuilder.outOfOptimum(h, 40.0))
+        assertEquals(93.0..97.0, KamleonGraphDataBuilder.outOfOptimum(h, 97.0))
+        assertNull(KamleonGraphDataBuilder.outOfOptimum(h, 65.0))
+        assertNull(KamleonGraphDataBuilder.outOfOptimum(h, 93.0))
+        assertNull(KamleonGraphDataBuilder.outOfOptimum(h, 0.0))
+    }
+
+    @Test
+    fun electrolytesOutsideTheOptimumAreMarkedOnBothSides() {
+        val e = KamleonGraphDataType.electrolytes
+        assertEquals(2.0..5.0, KamleonGraphDataBuilder.outOfOptimum(e, 2.0))
+        assertEquals(25.0..31.5, KamleonGraphDataBuilder.outOfOptimum(e, 31.5))
+        assertNull(KamleonGraphDataBuilder.outOfOptimum(e, 5.0))
+        assertNull(KamleonGraphDataBuilder.outOfOptimum(e, 25.0))
+    }
+
+    @Test
+    fun volumeHasNoOptimumOnTheGraph() {
+        assertNull(KamleonGraphDataBuilder.outOfOptimum(KamleonGraphDataType.volume, 80.0))
+    }
+
     // Streak figures (footer)
 
     @Test
@@ -236,6 +277,24 @@ class KamleonGraphDataBuilderTest {
         assertEquals(75.0, graph.averageForStreak(), 0.0)
         assertEquals(60.0, graph.minForStreak(), 0.0)
         assertEquals(90.0, graph.maxForStreak(), 0.0)
+    }
+
+    @Test
+    fun theDailyAverageLeavesOutALowVolumeSample() {
+        val graph = build(KamleonGraphViewMode.Daily, listOf(
+            item(at(2025, Calendar.JUNE, 18, hour = 8), 80.0),
+            item(at(2025, Calendar.JUNE, 18, hour = 14), 20.0, precise = false),
+        ))
+        assertTrue(graph.hasPreciseData())
+        assertEquals(80.0, graph.averageForStreak(), 0.0)
+    }
+
+    @Test
+    fun onlyLowVolumeSamplesMeanNoPreciseData() {
+        val graph = build(KamleonGraphViewMode.Daily, listOf(
+            item(at(2025, Calendar.JUNE, 18, hour = 14), 20.0, precise = false),
+        ))
+        assertFalse(graph.hasPreciseData())
     }
 
     @Test

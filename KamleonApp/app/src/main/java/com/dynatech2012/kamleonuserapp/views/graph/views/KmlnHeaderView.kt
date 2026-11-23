@@ -97,11 +97,11 @@ class KmlnHeaderView(context: Context, attrs: AttributeSet) : ConstraintLayout(c
             return
         }
 
-        val nonZeroVals = data.values.filter { it.y > 0 }
-        val avgValue = nonZeroVals.sumOf { it.y } / nonZeroVals.size
+        // Low-volume bars are left out, as in the footer and on Home.
+        val avgValue = data.averageForStreak()
         val strAvgUnit = context.getString(data.type.getUnit())
-        if (nonZeroVals.isEmpty()) {
-            DebugLog.d("KmlnHeaderView") { "setData: nonZeroVals.isEmpty()" }
+        if (!data.hasPreciseData()) {
+            DebugLog.d("KmlnHeaderView") { "setData: no precise data" }
             val strDateRange = when(data.mode) {
                 KamleonGraphViewMode.Daily -> data.date.formatDate("dd MMM, yyyy")
                 KamleonGraphViewMode.Weekly -> data.startDate().formatDate("dd MMM, yyyy") + " - " + data.endDate().formatDate("dd MMM, yyyy")
