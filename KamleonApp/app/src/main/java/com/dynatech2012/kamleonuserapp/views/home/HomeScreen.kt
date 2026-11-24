@@ -142,6 +142,7 @@ private fun HomeHeader(
         )
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(end = 20.dp).align(Alignment.CenterEnd),
         ) {
             NotificationsButton(hasNotifications = hasNotifications, onClick = onNotificationsClick)

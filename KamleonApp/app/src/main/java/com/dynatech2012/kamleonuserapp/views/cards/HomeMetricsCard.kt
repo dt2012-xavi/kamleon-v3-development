@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -38,9 +39,10 @@ fun HomeMetricsCard(measure: MeasureData?, modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxWidth().padding(horizontal = 36.dp, vertical = 8.dp)) {
     ClippedShadowCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(dimensionResource(R.dimen.floating_surface_radius)),
         containerColor = colorResource(id = R.color.color_fa_40),
-        elevation = 10.dp,
+        // Same shadow as the tab bar below it (ClippedShadowView).
+        elevation = dimensionResource(R.dimen.floating_surface_elevation),
     ) {
         Row(
             modifier = Modifier

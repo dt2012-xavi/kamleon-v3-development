@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color_activity"
+    android:clipChildren="false"
     tools:context=".fragments.TabFragment">
 
     <androidx.fragment.app.FragmentContainerView
@@ -65,6 +66,17 @@
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- The tab bar's shadow, kept outside it so it does not show through its translucent background. -->
+    <com.dynatech2012.kamleonuserapp.views.cards.ClippedShadowView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:clippedShadowRadius="@dimen/floating_surface_radius"
+        app:clippedShadowElevation="@dimen/floating_surface_elevation"
+        app:layout_constraintStart_toStartOf="@id/tabContainer"
+        app:layout_constraintEnd_toEndOf="@id/tabContainer"
+        app:layout_constraintTop_toTopOf="@id/tabContainer"
+        app:layout_constraintBottom_toBottomOf="@id/tabContainer" />
 
     <LinearLayout
         android:layout_width="0dp"
