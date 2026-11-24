@@ -18,23 +18,15 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_sett_bell"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            style="@style/Widget.Kamleon.HeaderButton"
             android:layout_marginStart="@dimen/margin_horizontal_header"
             android:layout_marginTop="@dimen/margin_top_header"
-            android:layout_marginBottom="@dimen/margin_bottom_header"
-            android:elevation="8dp"
-            app:cardCornerRadius="18dp">
+            android:layout_marginBottom="@dimen/margin_bottom_header">
 
             <ImageView
                 android:id="@+id/btnNavClose"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:importantForAccessibility="no"
-                android:paddingEnd="3dp"
-                android:src="@drawable/ic_arrow_back_ios_new_24"
-                tools:ignore="RtlSymmetry" />
+                style="@style/Widget.Kamleon.HeaderButton.Back"
+                android:contentDescription="@string/nav_back" />
         </androidx.cardview.widget.CardView>
 
     </RelativeLayout>

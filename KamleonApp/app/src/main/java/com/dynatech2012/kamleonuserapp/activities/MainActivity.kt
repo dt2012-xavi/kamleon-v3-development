@@ -17,7 +17,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.DisplayMetrics
 import android.view.View
-import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -170,10 +169,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), ScanLinkSheet.Host {
             }
         })
         */
-        onBackPressedDispatcher.addCallback {
-            //binding.root.findNavController().navigateUp()
-        }
-
         onKamleonSheetResult(NOTIFICATIONS_INTRO_SHEET) {
             // The sheet is only shown from Android 13, where this permission exists.
             if (it == SheetResult.PRIMARY && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

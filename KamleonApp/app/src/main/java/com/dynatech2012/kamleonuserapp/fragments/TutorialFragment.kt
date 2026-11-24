@@ -1,7 +1,7 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
@@ -30,38 +30,41 @@ class TutorialFragment : BaseFragment<FragmentTutorialBinding>() {
     }
 
     override fun initEvent() {
-        binding.btnTutorialBack.setOnClickListener {
-            if (state.step > 0) {
-                state = OnBoardingStep.values()[state.step - 1]
-                updateUI()
-            }
-        }
+        binding.btnTutorialBack.setOnClickListener { goPreviousStep() }
+        // The system Back button goes to the previous step; from the first one it leaves the tutorial.
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, previousStepBack)
         binding.btnTutorialNext.setOnClickListener {
             checkIfGoNextStep()
         }
-        binding.btnTutorialSkip.setOnClickListener {
-            val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
-            val navController = navHostFragment.navController
-            DebugLog.d(TAG) { "tutorial finished" }
-            if (viewModel.tutorialComingFromHome)
-                navController.navigate(R.id.action_tutorialFragment_to_tabFragment)
-            else
-                findNavController().popBackStack()
+        binding.btnTutorialSkip.setOnClickListener { finishTutorial() }
+    }
+
+    private val previousStepBack = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() = goPreviousStep()
+    }
+
+    private fun goPreviousStep() {
+        if (state.step > 0) {
+            state = OnBoardingStep.values()[state.step - 1]
+            updateUI()
         }
+    }
+
+    /**
+     * Back to the tabs, or to where the tutorial was opened from. Pops to the tabs instead of opening
+     * them again, so Back from there does not land on the tutorial (or Settings) a second time.
+     */
+    private fun finishTutorial() {
+        DebugLog.d(TAG) { "tutorial finished" }
+        if (viewModel.tutorialComingFromHome)
+            findNavController().popBackStack(R.id.tabFragment, false)
+        else
+            findNavController().popBackStack()
     }
 
     private fun checkIfGoNextStep() {
         when (state.step) {
-            OnBoardingStep.values().size - 1 -> {
-                // back to home
-                val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
-                val navController = navHostFragment.navController
-                DebugLog.d(TAG) { "tutorial finished" }
-                if (viewModel.tutorialComingFromHome)
-                    navController.navigate(R.id.action_tutorialFragment_to_tabFragment)
-                else
-                    findNavController().popBackStack()
-            }
+            OnBoardingStep.values().size - 1 -> finishTutorial()
             else -> {
                 goNextStep()
                 updateUI()
@@ -75,6 +78,7 @@ class TutorialFragment : BaseFragment<FragmentTutorialBinding>() {
     private fun updateUI() {
         binding.pbTutorial.progress = state.step + 1
         binding.tvTutorialStep.text = getString(R.string.onboard_button_step, state.step + 1)
+        previousStepBack.isEnabled = state.step > 0
         when (state.step) {
             OnBoardingStep.Hydration.step -> {
                 binding.homeBg.setImageResource(R.drawable.bg_tutorial_1)

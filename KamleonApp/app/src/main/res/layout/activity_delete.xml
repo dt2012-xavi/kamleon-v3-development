@@ -16,24 +16,16 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:id="@+id/cv_sett_bell"
+            style="@style/Widget.Kamleon.HeaderButton"
             android:layout_marginTop="@dimen/margin_top_header"
             android:layout_marginBottom="@dimen/margin_bottom_header"
-            android:layout_marginStart="@dimen/margin_horizontal_header"
-            app:cardCornerRadius="18dp"
-            android:id="@+id/cv_sett_bell"
-            android:elevation="8dp">
+            android:layout_marginStart="@dimen/margin_horizontal_header">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:paddingEnd="3dp"
-                android:src="@drawable/ic_arrow_back_ios_new_24"
                 android:id="@+id/btnNavClose"
-                android:layout_gravity="center"
-                android:importantForAccessibility="no"
-                tools:ignore="RtlSymmetry" />
+                style="@style/Widget.Kamleon.HeaderButton.Back"
+                android:contentDescription="@string/nav_back" />
         </androidx.cardview.widget.CardView>
 
     </RelativeLayout>

@@ -7,6 +7,7 @@ import android.net.Uri
 import android.provider.Settings
 import android.view.HapticFeedbackConstants
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.IdRes
 import androidx.camera.core.Camera
@@ -59,6 +60,16 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
 
     private val preview by lazy { Preview.Builder().build() }
 
+    /**
+     * The system Back button on the tabs: it closes the scanner, then goes from Analytics to Home. On
+     * Home it is off, so Back leaves the app as usual. [selectTab] keeps it in step with the tab.
+     */
+    private val tabBack = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            if (scannerShown) closeScanner() else goHome()
+        }
+    }
+
     /** Puts the scanner's hint back after a "not a Kamleon code" notice. */
     private val restoreHint = Runnable { binding.tvScanHint.setText(R.string.scan_hint) }
 
@@ -71,6 +82,8 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
             is HomeFragment -> selectTab(0)
             is AnalyticFragment -> selectTab(1)
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, tabBack)
 
         binding.layoutTabHome.setOnClickListener { goHome() }
         binding.layoutTabAnalytic.setOnClickListener {
@@ -146,6 +159,13 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         binding.navHostFragmentTab.visibility = View.VISIBLE
     }
 
+    /** Leaves the scanner for the tab that was underneath it. */
+    private fun closeScanner() {
+        val host = binding.navHostFragmentTab.getFragment<NavHostFragment>()
+        selectTab(if (host.navController.currentDestination?.id == R.id.analyticFragment) 1 else 0)
+        binding.navHostFragmentTab.visibility = View.VISIBLE
+    }
+
     /**
      * Puts [destination] in the tab content, building it right away: callers hide the scanner (or show
      * the content) just after, and the screen that was underneath must not show for a moment while
@@ -170,6 +190,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
             2 -> binding.layoutTabQr.background = getDrawable(requireContext(), R.drawable.bg_tab_shape)
         }
         val scanning = tabIndex == 2
+        tabBack.isEnabled = tabIndex != 0
         binding.layoutContentQR.visibility = if (scanning) View.VISIBLE else View.GONE
         binding.layoutScanControls.visibility = View.GONE
         if (!scanning) {
