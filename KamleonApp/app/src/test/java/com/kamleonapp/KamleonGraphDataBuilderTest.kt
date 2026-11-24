@@ -32,7 +32,7 @@ class KamleonGraphDataBuilderTest {
         items: List<AveragesData>,
         type: KamleonGraphDataType = KamleonGraphDataType.hydration,
         on: Date = today,
-    ): KamleonGraphBarDrawData = KamleonGraphDataBuilder.build(on, mode, type, items, "%")
+    ): KamleonGraphBarDrawData = KamleonGraphDataBuilder.build(on, mode, type, items, "%", TestGraphNames)
 
     private fun KamleonGraphBarDrawData.bar(index: Int) = values[index].y
 

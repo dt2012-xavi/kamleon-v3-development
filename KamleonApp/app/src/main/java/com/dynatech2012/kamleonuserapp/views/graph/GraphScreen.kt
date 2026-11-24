@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.selected
@@ -51,6 +52,7 @@ import com.dynatech2012.kamleonuserapp.database.AveragesData
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
 import com.dynatech2012.kamleonuserapp.views.HeaderBackButton
+import com.dynatech2012.kamleonuserapp.views.graph.data.GraphNames
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphBarDrawData
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataBuilder
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
@@ -84,9 +86,10 @@ fun GraphScreen(
     var mode by rememberSaveable { mutableStateOf(KamleonGraphViewMode.Daily) }
     var streak by rememberSaveable { mutableStateOf(false) }
     val percentUnit = stringResource(R.string.unit_percentage)
-    val data = remember(mode, type, measures, daily, monthly) {
+    val names = graphNames()
+    val data = remember(mode, type, measures, daily, monthly, names) {
         val source = KamleonGraphDataBuilder.sourceFor(mode, measures, daily, monthly)
-        KamleonGraphDataBuilder.build(today(), mode, type, source, percentUnit)
+        KamleonGraphDataBuilder.build(today(), mode, type, source, percentUnit, names)
     }
     val fa = colorResource(R.color.color_fa)
     val gradient = Brush.linearGradient(
@@ -101,7 +104,7 @@ fun GraphScreen(
             .background(gradient)
             .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout))
     ) {
-        GraphHeader(title = type.identifier, profile = profile, onBack = onBack, onProfileClick = onProfileClick)
+        GraphHeader(title = stringResource(type.title()).uppercase(), profile = profile, onBack = onBack, onProfileClick = onProfileClick)
         PeriodSelector(mode = mode, onSelect = { mode = it }, modifier = Modifier.padding(top = 8.dp))
         AverageSummary(data = data, modifier = Modifier.padding(start = ScreenMargin, top = 12.dp, bottom = 10.dp))
         GraphChart(
@@ -119,6 +122,15 @@ fun GraphScreen(
             modifier = Modifier.padding(horizontal = ScreenMargin, vertical = 12.dp).padding(bottom = 8.dp),
         )
     }
+}
+
+/** The day and month names and the hour format from the app's strings. */
+@Composable
+private fun graphNames(): GraphNames {
+    val days = stringArrayResource(R.array.graph_day_names)
+    val months = stringArrayResource(R.array.graph_month_names)
+    val hour = stringResource(R.string.graph_bar_hour)
+    return remember(days, months, hour) { GraphNames(days.toList(), months.toList(), hour) }
 }
 
 /** Back on the left, the metric in the middle, the profile on the right. */

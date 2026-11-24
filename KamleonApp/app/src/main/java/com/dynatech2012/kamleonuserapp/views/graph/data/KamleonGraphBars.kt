@@ -10,17 +10,14 @@ import java.util.Locale
 
 /** What the graph screen shows about its bars: the tapped bar's label and the streak count. */
 
-private val DayNames = arrayOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-private val MonthNames = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
-
 /** The span of bar [index]: its hour, day or month. */
 fun KamleonGraphBarDrawData.barLabel(index: Int): String {
     val startDate = startDate()
     return when (mode) {
-        KamleonGraphViewMode.Daily -> "$index:00 h"
-        KamleonGraphViewMode.Weekly -> DayNames[startDate.addDays(index).day]
+        KamleonGraphViewMode.Daily -> names.hour(index)
+        KamleonGraphViewMode.Weekly -> names.days[startDate.addDays(index).day]
         KamleonGraphViewMode.Monthly -> startDate.addDays(index).formatDate("dd MMM, yyyy")
-        KamleonGraphViewMode.Yearly -> MonthNames[startDate.addMonths(index).month]
+        KamleonGraphViewMode.Yearly -> names.months[startDate.addMonths(index).month]
     }
 }
 

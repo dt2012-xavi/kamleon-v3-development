@@ -35,6 +35,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
@@ -52,14 +54,13 @@ import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphViewMode
 import com.dynatech2012.kamleonuserapp.views.graph.data.barLabel
 import com.dynatech2012.kamleonuserapp.views.graph.data.barSamples
+import com.dynatech2012.kamleonuserapp.views.graph.data.averageText
 import com.dynatech2012.kamleonuserapp.views.graph.data.barValue
+import com.dynatech2012.kamleonuserapp.views.graph.data.periodText
 import com.dynatech2012.kamleonuserapp.views.graph.data.countsForStreak
 import com.dynatech2012.kamleonuserapp.views.graph.data.isTappable
 import java.util.Date
 import kotlin.math.roundToInt
-
-/** Horizontal grid lines over the bars, top and bottom included. */
-private const val GridRows = 4
 
 /** Height of the strip under the bars that holds the x axis labels. */
 private val XLabelStrip = 20.dp
@@ -126,6 +127,14 @@ fun GraphChart(data: KamleonGraphBarDrawData, streak: Boolean, modifier: Modifie
     val emptyStyle = TextStyle(color = emptyColor, fontSize = 10.sp)
     val emptyMessage = stringResource(R.string.graph_no_samples)
     val limitLabels = streakLimitLabels(data)
+    // TalkBack reads the metric, the period and its average; tapping a bar shows its own value as text.
+    val description = stringResource(
+        R.string.graph_chart_description,
+        stringResource(data.type.title()),
+        data.periodText(),
+        data.averageText(),
+        if (data.hasPreciseData()) stringResource(data.type.getUnit()) else "",
+    ).let { if (data.hasPreciseData()) it else "$it $emptyMessage" }
 
     val yLabels = remember(data) { data.yLabels.map { it.dataVal to measurer.measure(it.label, yLabelStyle) } }
     val xLabels = remember(data) { data.xLabels.map { it.dataVal to measurer.measure(it.label, xLabelStyle) } }
@@ -143,6 +152,7 @@ fun GraphChart(data: KamleonGraphBarDrawData, streak: Boolean, modifier: Modifie
                 .fillMaxSize()
                 .onSizeChanged { size = Size(it.width.toFloat(), it.height.toFloat()) }
                 .testTag("graph_chart")
+                .semantics { contentDescription = description }
                 .pointerInput(data, yLabelColumn) {
                     // Every touch position picks the bar under it, so dragging moves along the bars.
                     awaitEachGesture {
@@ -179,8 +189,9 @@ fun GraphChart(data: KamleonGraphBarDrawData, streak: Boolean, modifier: Modifie
 }
 
 private fun DrawScope.drawGrid(chart: ChartGeometry, color: Color) {
-    for (row in 0 until GridRows) {
-        val y = chart.plotHeight / (GridRows - 1) * row
+    // One line per y axis label, so each label sits on its line.
+    for (label in chart.data.yLabels) {
+        val y = chart.yOf(label.dataVal)
         drawLine(color, Offset(0f, y), Offset(size.width, y), strokeWidth = 1f)
     }
     val columns = gridColumns(chart.data.mode)
@@ -316,14 +327,14 @@ private fun BarLabel(data: KamleonGraphBarDrawData, index: Int, geometry: ChartG
     }
 }
 
-/** The daily bar's samples, newest first: time and value, or "Low Volume" for an imprecise one. */
+/** The daily bar's samples, newest first: time and value, or low volume for an imprecise one. */
 @Composable
 private fun SampleRows(data: KamleonGraphBarDrawData, index: Int, unit: String) {
     val grey = colorResource(R.color.kmln_graph_color_grey)
     val black = colorResource(R.color.kmln_graph_color_black)
     Column(Modifier.fillMaxWidth()) {
         for (sample in data.barSamples(index)) {
-            val value = if (sample.isPrecise) sample.scoreValue(data.type).toInt().toString() else "Low Volume"
+            val value = if (sample.isPrecise) sample.scoreValue(data.type).toInt().toString() else stringResource(R.string.graph_label_low_volume)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(Date(sample.timestamp).formatTimeForPopup, color = grey, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = MatTheme.fontFamily)
                 Text(

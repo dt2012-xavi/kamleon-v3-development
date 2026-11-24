@@ -12,7 +12,7 @@ import java.util.Date
 
 /**
  * Turns samples (or their daily/monthly averages) into the bars, axis range and labels the graph draws.
- * Pure: no Android view, so it can be unit tested. KamleonGraphView feeds it and draws the result.
+ * Pure: no Android view, so it can be unit tested. GraphScreen feeds it and GraphChart draws the result.
  */
 object KamleonGraphDataBuilder {
 
@@ -58,7 +58,7 @@ object KamleonGraphDataBuilder {
     /**
      * The graph ending on [date]. Each bar is the average of the precise items in its span; when a span
      * only has imprecise items, their average is drawn but the bar is marked as not precise. Empty spans
-     * are 0. [percentUnit] is appended to the hydration axis labels.
+     * are 0. [percentUnit] is appended to the hydration axis labels; [names] label the bars.
      */
     fun build(
         date: Date,
@@ -66,6 +66,7 @@ object KamleonGraphDataBuilder {
         type: KamleonGraphDataType,
         source: List<AveragesData>,
         percentUnit: String,
+        names: GraphNames,
     ): KamleonGraphBarDrawData {
         val startDate = KamleonGraphBarDrawData.calcStartDateFrom(mode, date)
         val endDate = KamleonGraphBarDrawData.calcEndDateFrom(mode, date)
@@ -105,11 +106,12 @@ object KamleonGraphDataBuilder {
             date,
             xyValues,
             xyRange,
-            mode.xLabelStrings(startDate, xStepCount),
+            mode.xLabelStrings(startDate, xStepCount, names),
             yLabels,
             type,
             mode,
             precisionValues,
+            names,
         )
     }
 

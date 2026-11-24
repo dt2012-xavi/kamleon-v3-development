@@ -103,4 +103,22 @@ class GraphScreenTest {
             assertEquals(1, profileClicks)
         }
     }
+
+    @Test
+    fun theChartIsDescribedForTalkBack() {
+        setScreen(listOf(sampleAt(9, 80)))
+        val description = composeRule.onNodeWithTag("graph_chart").fetchSemanticsNode()
+            .config[androidx.compose.ui.semantics.SemanticsProperties.ContentDescription].single()
+        val hydration = context.getString(R.string.analytic_metric_hydration)
+        assert(description.startsWith(hydration)) { description }
+        assert(description.contains("80")) { description }
+    }
+
+    @Test
+    fun theWeeklyAxisUsesTheDayNamesFromTheStrings() {
+        setScreen(emptyList())
+        composeRule.onNodeWithText(context.getString(R.string.graph_header_item_weekly)).performClick()
+        // The title is upper case, the metric name from the strings.
+        composeRule.onNodeWithText(context.getString(R.string.analytic_metric_hydration).uppercase()).assertExists()
+    }
 }

@@ -21,7 +21,7 @@ enum class KamleonGraphViewMode(val identifier: String) {
         }
     }
 
-    fun xLabelStrings(startDate: Date, steps: Int) : ArrayList<KamleonGraphAxisLabelItem> {
+    fun xLabelStrings(startDate: Date, steps: Int, names: GraphNames) : ArrayList<KamleonGraphAxisLabelItem> {
         val aryRet = ArrayList<KamleonGraphAxisLabelItem>()
         if (this == Daily) {
             for (step in 0 until (steps - 1) step 2 ) {
@@ -36,14 +36,12 @@ enum class KamleonGraphViewMode(val identifier: String) {
             }
         } else if (this == Weekly) {
             DebugLog.d("LLL") { "Weekly.." }
-            val dayNames = arrayOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-            for (step in dayNames.indices) {
-                aryRet.add(KamleonGraphAxisLabelItem(step.toDouble(), dayNames[startDate.addDays(step).day]))
+            for (step in names.days.indices) {
+                aryRet.add(KamleonGraphAxisLabelItem(step.toDouble(), names.days[startDate.addDays(step).day]))
             }
         } else if (this == Yearly) {
-            val monthNames = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
-            for (step in monthNames.indices) {
-                aryRet.add(KamleonGraphAxisLabelItem(step.toDouble(), monthNames[startDate.addMonths(step).month]))
+            for (step in names.months.indices) {
+                aryRet.add(KamleonGraphAxisLabelItem(step.toDouble(), names.months[startDate.addMonths(step).month]))
             }
         }
 

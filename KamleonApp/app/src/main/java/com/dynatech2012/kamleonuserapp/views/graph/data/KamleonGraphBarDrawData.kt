@@ -16,7 +16,8 @@ class KamleonGraphBarDrawData(
     val yLabels : ArrayList<KamleonGraphAxisLabelItem>,
     val type : KamleonGraphDataType,
     val mode : KamleonGraphViewMode,
-    val arePrecise : ArrayList<Boolean>
+    val arePrecise : ArrayList<Boolean>,
+    val names : GraphNames,
 ) {
     fun startDate() : Date {
         return calcStartDateFrom(mode, date)
@@ -63,19 +64,6 @@ class KamleonGraphBarDrawData(
     }
 
     companion object {
-        @JvmStatic
-        fun empty() =
-            KamleonGraphBarDrawData(
-                Date(),
-                ArrayList<KamleonGraphDataXY>(),
-                KamleonGraphDataXY(0.0, 0.0),
-                ArrayList<KamleonGraphAxisLabelItem>(),
-                ArrayList<KamleonGraphAxisLabelItem>(),
-                KamleonGraphDataType.hydration,
-                KamleonGraphViewMode.Daily,
-                ArrayList()
-            )
-
         fun calcStartDateFrom(viewMode: KamleonGraphViewMode, date: Date) : Date {
           return when (viewMode) {
             KamleonGraphViewMode.Daily -> date.beginningOfDay

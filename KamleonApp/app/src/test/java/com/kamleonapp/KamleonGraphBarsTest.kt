@@ -39,7 +39,7 @@ class KamleonGraphBarsTest {
         mode: KamleonGraphViewMode,
         items: List<AveragesData>,
         type: KamleonGraphDataType = KamleonGraphDataType.hydration,
-    ): KamleonGraphBarDrawData = KamleonGraphDataBuilder.build(today, mode, type, items, "%")
+    ): KamleonGraphBarDrawData = KamleonGraphDataBuilder.build(today, mode, type, items, "%", TestGraphNames)
 
     @Test
     fun barsAreLabelledByTheirSpan() {
