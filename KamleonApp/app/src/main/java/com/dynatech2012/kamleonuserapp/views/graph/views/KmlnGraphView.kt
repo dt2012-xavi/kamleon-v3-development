@@ -13,7 +13,8 @@ import android.view.View
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.database.AveragesData
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphBarDrawData
-import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataBuilder
+import com.dynatech2012.kamleonuserapp.models.ElectrolyteLevel
+import com.dynatech2012.kamleonuserapp.models.HydrationLevel
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphViewMode
 import com.dynatech2012.kamleonuserapp.extensions.addDays
@@ -60,10 +61,6 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
 
     private val graphBarItemGreyPaint = Paint().apply {
         color = context.getColor(R.color.kmln_graph_color_disabled)
-        style = Paint.Style.FILL
-    }
-    private val graphBarItemOrangePaint = Paint().apply {
-        color = context.getColor(R.color.kmln_graph_color_orange)
         style = Paint.Style.FILL
     }
 
@@ -240,9 +237,9 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
     private fun renderStreakLines(canvas: Canvas) {
         when (dataSource.type) {
             KamleonGraphDataType.hydration -> {
-                renderStreakLine(canvas, KamleonGraphDataType.HydrationStreakValueLower)
-                renderStreakLine(canvas, KamleonGraphDataType.HydrationStreakValueUpper)
-                renderStreakLineLabel(context.getString(R.string.graph_label_optimum), canvas, KamleonGraphDataType.HydrationStreakValueUpper, false)
+                renderStreakLine(canvas, KamleonGraphDataType.HydrationStreakValue)
+                // Above the line: everything from it up counts for the streak.
+                renderStreakLineLabel(context.getString(R.string.graph_label_optimum), canvas, KamleonGraphDataType.HydrationStreakValue, true)
 
             }
             KamleonGraphDataType.electrolytes -> {
@@ -292,14 +289,12 @@ class KmlnGraphView(context: Context, attributeSet: AttributeSet) : View(context
 
                     if (dataSource.type == KamleonGraphDataType.hydration ||
                         dataSource.type == KamleonGraphDataType.electrolytes) {
-                        // Grey bar, with what falls short of or goes over the optimum in orange.
-                        canvas.drawRect(orgBarRect, graphBarItemGreyPaint)
-                        KamleonGraphDataBuilder.outOfOptimum(dataSource.type, yVal)?.let { gap ->
-                            canvas.drawRect(
-                                calcBarRect(canvasSize, vIndex, gap.start, gap.endInclusive),
-                                graphBarItemOrangePaint
-                            )
+                        // The bars that count for the streak keep their colour; the rest go grey.
+                        val counts = when (dataSource.type) {
+                            KamleonGraphDataType.hydration -> HydrationLevel.isOptimum(yVal)
+                            else -> ElectrolyteLevel.isOptimum(yVal)
                         }
+                        canvas.drawRect(orgBarRect, if (counts) graphBarItemPaint else graphBarItemGreyPaint)
                     } else if (dataSource.type == KamleonGraphDataType.volume) {
                         val minValue = dataSource.minForStreak()
                         val maxValue = dataSource.maxForStreak()

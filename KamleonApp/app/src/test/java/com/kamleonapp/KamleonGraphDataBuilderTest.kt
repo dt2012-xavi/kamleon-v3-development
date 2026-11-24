@@ -7,7 +7,6 @@ import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphViewMode
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.Calendar
@@ -237,32 +236,6 @@ class KamleonGraphDataBuilderTest {
         assertEquals(listOf("Thu", "Fri", "Sat", "Sun", "Mon", "Tue", "Wed"), weekly)
         val yearly = build(KamleonGraphViewMode.Yearly, emptyList()).xLabels.map { it.label }
         assertEquals(listOf("Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun"), yearly)
-    }
-
-    // What streak mode paints orange
-
-    @Test
-    fun hydrationOutsideTheOptimumIsMarkedOnBothSides() {
-        val h = KamleonGraphDataType.hydration
-        assertEquals(40.0..65.0, KamleonGraphDataBuilder.outOfOptimum(h, 40.0))
-        assertEquals(93.0..97.0, KamleonGraphDataBuilder.outOfOptimum(h, 97.0))
-        assertNull(KamleonGraphDataBuilder.outOfOptimum(h, 65.0))
-        assertNull(KamleonGraphDataBuilder.outOfOptimum(h, 93.0))
-        assertNull(KamleonGraphDataBuilder.outOfOptimum(h, 0.0))
-    }
-
-    @Test
-    fun electrolytesOutsideTheOptimumAreMarkedOnBothSides() {
-        val e = KamleonGraphDataType.electrolytes
-        assertEquals(2.0..5.0, KamleonGraphDataBuilder.outOfOptimum(e, 2.0))
-        assertEquals(25.0..31.5, KamleonGraphDataBuilder.outOfOptimum(e, 31.5))
-        assertNull(KamleonGraphDataBuilder.outOfOptimum(e, 5.0))
-        assertNull(KamleonGraphDataBuilder.outOfOptimum(e, 25.0))
-    }
-
-    @Test
-    fun volumeHasNoOptimumOnTheGraph() {
-        assertNull(KamleonGraphDataBuilder.outOfOptimum(KamleonGraphDataType.volume, 80.0))
     }
 
     // Streak figures (footer)

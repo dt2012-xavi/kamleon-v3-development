@@ -15,37 +15,40 @@ import org.junit.Test
 class HomeMetricsTest {
     @Test fun electrolytesWithoutAValueHaveNoLevel() = assertNull(ElectrolyteLevel.of(null as Float?))
 
-    @Test fun electrolyteBandsMatchThePublishedRanges() {
-        // Under 5 mS/cm hypotonic, 5-25 normotonic, over 25 hypertonic.
+    @Test fun electrolyteBandsGoByTheWholeNumber() {
+        // 0-4 mS/cm hypotonic, 5-25 normotonic, 26+ hypertonic, on the truncated reading.
         assertEquals(ElectrolyteLevel.Low, ElectrolyteLevel.of(0f))
         assertEquals(ElectrolyteLevel.Low, ElectrolyteLevel.of(4.99f))
         assertEquals(ElectrolyteLevel.Balanced, ElectrolyteLevel.of(5f))
-        assertEquals(ElectrolyteLevel.Balanced, ElectrolyteLevel.of(25f))
-        assertEquals(ElectrolyteLevel.High, ElectrolyteLevel.of(25.01f))
+        assertEquals(ElectrolyteLevel.Balanced, ElectrolyteLevel.of(25.99f))
+        assertEquals(ElectrolyteLevel.High, ElectrolyteLevel.of(26f))
         assertTrue(ElectrolyteLevel.isOptimum(5.0))
-        assertFalse(ElectrolyteLevel.isOptimum(25.5))
+        assertTrue(ElectrolyteLevel.isOptimum(25.5))
+        assertFalse(ElectrolyteLevel.isOptimum(4.9))
+        assertFalse(ElectrolyteLevel.isOptimum(26.0))
     }
 
-    @Test fun hydrationBandsMatchThePublishedRanges() {
-        assertEquals(HydrationLevel.SeverelyDehydrated, HydrationLevel.of(0))
-        assertEquals(HydrationLevel.SeverelyDehydrated, HydrationLevel.of(43))
-        assertEquals(HydrationLevel.Dehydrated, HydrationLevel.of(44))
-        assertEquals(HydrationLevel.Dehydrated, HydrationLevel.of(64))
-        assertEquals(HydrationLevel.Hydrated, HydrationLevel.of(65))
-        assertEquals(HydrationLevel.Hydrated, HydrationLevel.of(93))
-        assertEquals(HydrationLevel.Overhydrated, HydrationLevel.of(94))
+    @Test fun hydrationBands() {
+        // 1-32 severely dehydrated, 33-66 dehydrated, 67-90 hydrated, 91+ overhydrated.
+        assertEquals(HydrationLevel.SeverelyDehydrated, HydrationLevel.of(1))
+        assertEquals(HydrationLevel.SeverelyDehydrated, HydrationLevel.of(32))
+        assertEquals(HydrationLevel.Dehydrated, HydrationLevel.of(33))
+        assertEquals(HydrationLevel.Dehydrated, HydrationLevel.of(66))
+        assertEquals(HydrationLevel.Hydrated, HydrationLevel.of(67))
+        assertEquals(HydrationLevel.Hydrated, HydrationLevel.of(90))
+        assertEquals(HydrationLevel.Overhydrated, HydrationLevel.of(91))
         assertEquals(HydrationLevel.Overhydrated, HydrationLevel.of(100))
     }
 
-    @Test fun theOptimumHydrationForTheGraphsIsTheHydratedBand() {
-        assertFalse(HydrationLevel.isOptimum(64.9))
-        assertTrue(HydrationLevel.isOptimum(65.0))
-        assertTrue(HydrationLevel.isOptimum(93.0))
-        assertFalse(HydrationLevel.isOptimum(93.5))
+    @Test fun theHydrationStreakCountsFrom67WithNoUpperLimit() {
+        assertFalse(HydrationLevel.isOptimum(66.9))
+        assertTrue(HydrationLevel.isOptimum(67.0))
+        assertTrue(HydrationLevel.isOptimum(90.5))
+        assertTrue(HydrationLevel.isOptimum(100.0))
     }
 
     @Test fun homeAndAnalyticsReadTheSameHydrationLevel() {
-        val measure = MeasureData().apply { score = 65 }
+        val measure = MeasureData().apply { score = 67 }
         assertEquals(HydrationLevel.Hydrated, measure.hydrationLevel)
     }
 

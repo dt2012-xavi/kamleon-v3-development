@@ -50,27 +50,28 @@ class AnalyticsCardsTest {
     }
 
     @Test
-    fun hydrationBandsMatchThePublishedRanges() {
+    fun hydrationBands() {
         fun card(score: Int) = analyticsCardsOf(sample(score, 10f, 200f))[0]
-        // 1-43 severely dehydrated, 44-64 dehydrated, 65-93 hydrated, 94-99 overhydrated.
+        // 1-32 severely dehydrated, 33-66 dehydrated, 67-90 hydrated, 91+ overhydrated.
         listOf(
-            1 to R.string.analytic_severely_dehydrated, 43 to R.string.analytic_severely_dehydrated,
-            44 to R.string.analytic_dehydrated, 64 to R.string.analytic_dehydrated,
-            65 to R.string.analytic_hydrated, 93 to R.string.analytic_hydrated,
-            94 to R.string.analytic_overhydrated, 99 to R.string.analytic_overhydrated,
+            1 to R.string.analytic_severely_dehydrated, 32 to R.string.analytic_severely_dehydrated,
+            33 to R.string.analytic_dehydrated, 66 to R.string.analytic_dehydrated,
+            67 to R.string.analytic_hydrated, 90 to R.string.analytic_hydrated,
+            91 to R.string.analytic_overhydrated, 99 to R.string.analytic_overhydrated,
         ).forEach { (score, subtitle) -> assertEquals("score $score", subtitle, card(score).subtitle) }
-        assertEquals(R.string.analytic_hydratation_under, card(64).description)
-        assertEquals(R.string.analytic_hydratation_optimal, card(65).description)
-        assertEquals(R.string.analytic_hydratation_optimal, card(93).description)
-        assertEquals(R.string.analytic_hydratation_over, card(94).description)
+        assertEquals(R.string.analytic_hydratation_under, card(66).description)
+        assertEquals(R.string.analytic_hydratation_optimal, card(67).description)
+        assertEquals(R.string.analytic_hydratation_optimal, card(90).description)
+        assertEquals(R.string.analytic_hydratation_over, card(91).description)
     }
 
     @Test
-    fun electrolytesAreJudgedOnTheExactReadingNotTheWholeNumberShown() {
+    fun electrolytesAreJudgedOnTheWholeNumberShown() {
         fun card(cond: Float) = analyticsCardsOf(sample(80, cond, 200f))[1]
-        assertEquals(25, card(25.4f).value)
-        assertEquals(R.string.analytic_elec_hyper, card(25.4f).subtitle)
-        assertEquals(ElectrolyteLevel.High, card(25.4f).electrolyteLevel)
+        assertEquals(25, card(25.7f).value)
+        assertEquals(R.string.analytic_elec_normal, card(25.7f).subtitle)
+        assertEquals(ElectrolyteLevel.Balanced, card(25.7f).electrolyteLevel)
+        assertEquals(R.string.analytic_elec_hyper, card(26f).subtitle)
         assertEquals(4, card(4.9f).value)
         assertEquals(R.string.analytic_elec_hypo, card(4.9f).subtitle)
         assertEquals(R.string.analytic_elec_normal, card(5f).subtitle)

@@ -18,9 +18,8 @@ enum class KamleonGraphDataType(val identifier: String) {
     }
 
     companion object {
-        /** Optimum hydration band, drawn as the graph's streak lines. */
-        const val HydrationStreakValueLower = HydrationLevel.HYDRATED_MIN.toDouble()
-        const val HydrationStreakValueUpper = HydrationLevel.HYDRATED_MAX.toDouble()
+        /** Lowest hydration that counts for the streak, drawn as the graph's streak line; it has no upper limit. */
+        const val HydrationStreakValue = HydrationLevel.HYDRATED_MIN.toDouble()
 
         const val ElectrolyteStreakValueLower = ElectrolyteLevel.BALANCED_MIN
         const val ElectrolyteStreakValueUpper = ElectrolyteLevel.BALANCED_MAX

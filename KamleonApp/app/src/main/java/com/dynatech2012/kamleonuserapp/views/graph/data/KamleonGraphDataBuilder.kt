@@ -114,27 +114,6 @@ object KamleonGraphDataBuilder {
     }
 
     /**
-     * The part of a bar outside the optimum, which streak mode paints orange: from the bar up to the
-     * lower limit when it falls short, or from the upper limit up to the bar when it goes over.
-     * Null for a bar inside the optimum, an empty bar, or volume, which has no optimum on the graph.
-     */
-    fun outOfOptimum(type: KamleonGraphDataType, y: Double): ClosedFloatingPointRange<Double>? {
-        val (lower, upper) = when (type) {
-            KamleonGraphDataType.hydration ->
-                KamleonGraphDataType.HydrationStreakValueLower to KamleonGraphDataType.HydrationStreakValueUpper
-            KamleonGraphDataType.electrolytes ->
-                KamleonGraphDataType.ElectrolyteStreakValueLower to KamleonGraphDataType.ElectrolyteStreakValueUpper
-            KamleonGraphDataType.volume -> return null
-        }
-        return when {
-            y <= 0.0 -> null
-            y < lower -> y..lower
-            y > upper -> upper..y
-            else -> null
-        }
-    }
-
-    /**
      * Top of the y axis: 100% for hydration; 500 ml for volume, or the next 250 ml above the highest bar
      * so no bar is cut; and a step that fits the electrolytes.
      */

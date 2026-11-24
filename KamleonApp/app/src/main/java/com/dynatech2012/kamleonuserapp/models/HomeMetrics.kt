@@ -1,17 +1,16 @@
 package com.dynatech2012.kamleonuserapp.models
 
 /**
- * Hydration band of a sample, from its score. The bands are Kamleon's published ones (the web's
- * "How the result works"): 1-43 severely dehydrated, 44-64 dehydrated, 65-93 hydrated, 94-99 overhydrated.
- * Hydrated is the optimum the graphs' streak counts.
+ * Hydration band of a sample, from its score: 1-32 severely dehydrated, 33-66 dehydrated, 67-90 hydrated,
+ * 91+ overhydrated. The graphs' streak counts any score from 67 up, overhydrated included.
  */
 enum class HydrationLevel {
     SeverelyDehydrated, Dehydrated, Hydrated, Overhydrated;
 
     companion object {
-        const val DEHYDRATED_MIN = 44
-        const val HYDRATED_MIN = 65
-        const val HYDRATED_MAX = 93
+        const val DEHYDRATED_MIN = 33
+        const val HYDRATED_MIN = 67
+        const val HYDRATED_MAX = 90
 
         fun of(score: Int): HydrationLevel = when {
             score < DEHYDRATED_MIN -> SeverelyDehydrated
@@ -20,14 +19,14 @@ enum class HydrationLevel {
             else -> Overhydrated
         }
 
-        /** Whether a (possibly averaged) score is in the optimum band. */
-        fun isOptimum(score: Double): Boolean = score >= HYDRATED_MIN && score <= HYDRATED_MAX
+        /** Whether a (possibly averaged) score counts for the streak: hydrated or above, with no upper limit. */
+        fun isOptimum(score: Double): Boolean = score >= HYDRATED_MIN
     }
 }
 
 /**
- * Electrolyte band of a sample, from its conductivity in mS/cm: under 5 hypotonic, 5-25 normotonic,
- * over 25 hypertonic. Judged on the exact reading, not the whole number shown, so 25.4 is already high.
+ * Electrolyte band of a sample, from its conductivity in mS/cm: 0-4 hypotonic, 5-25 normotonic,
+ * 26+ hypertonic. Judged on the whole number shown (truncated), so 25.7 is still normotonic.
  */
 enum class ElectrolyteLevel {
     Low, Balanced, High;
@@ -39,9 +38,13 @@ enum class ElectrolyteLevel {
         /** Null when there is no reliable value. */
         fun of(conductivity: Double?): ElectrolyteLevel? = when {
             conductivity == null -> null
-            conductivity < BALANCED_MIN -> Low
-            conductivity <= BALANCED_MAX -> Balanced
-            else -> High
+            else -> conductivity.toInt().let { whole ->
+                when {
+                    whole < BALANCED_MIN -> Low
+                    whole <= BALANCED_MAX -> Balanced
+                    else -> High
+                }
+            }
         }
 
         fun of(conductivity: Float?): ElectrolyteLevel? = of(conductivity?.toDouble())
