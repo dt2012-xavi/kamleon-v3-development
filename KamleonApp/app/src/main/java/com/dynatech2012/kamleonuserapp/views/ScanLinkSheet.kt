@@ -42,16 +42,17 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * One sheet for a scan that arrived through an app link (the phone's own camera read the QR): it says
- * the scan is being linked, then, in place, how it went, or that the link can't be used with a way to
- * scan again. It follows the activity's [QrViewModel]; the host opens the scanner on [onScanAgain].
+ * One sheet for a scan being linked, read by the in-app scanner or by the phone's own camera (an app
+ * link): it says the scan is being linked, then, in place, how it went, or that the link can't be used
+ * with a way to scan again. It follows the activity's [QrViewModel] and tells its [Host] how it closed.
  */
 @AndroidEntryPoint
 class ScanLinkSheet : BottomSheetDialogFragment() {
 
     /** Implemented by the activity that shows the sheet. */
     fun interface Host {
-        fun onScanAgain()
+        /** The sheet closed on [state]; [result] is the button, or DISMISSED. */
+        fun onScanLinkClosed(state: ScanLinkState, result: SheetResult)
     }
 
     private val qrViewModel: QrViewModel by activityViewModels()
@@ -84,13 +85,15 @@ class ScanLinkSheet : BottomSheetDialogFragment() {
 
     override fun onCancel(dialog: android.content.DialogInterface) {
         super.onCancel(dialog)
+        val state = qrViewModel.linkState.value
         qrViewModel.clearLinkState()
+        if (state != null) (activity as? Host)?.onScanLinkClosed(state, SheetResult.DISMISSED)
     }
 
     private fun onAction(state: ScanLinkState, result: SheetResult) {
         qrViewModel.clearLinkState()
         dismissAllowingStateLoss()
-        if (state == ScanLinkState.Invalid && result == SheetResult.PRIMARY) (activity as? Host)?.onScanAgain()
+        (activity as? Host)?.onScanLinkClosed(state, result)
     }
 
     companion object {
@@ -105,7 +108,7 @@ class ScanLinkSheet : BottomSheetDialogFragment() {
 }
 
 @Composable
-private fun ScanLinkContent(state: ScanLinkState, onAction: (ScanLinkState, SheetResult) -> Unit) {
+internal fun ScanLinkContent(state: ScanLinkState, onAction: (ScanLinkState, SheetResult) -> Unit) {
     when (state) {
         ScanLinkState.Linking -> LinkingContent()
         ScanLinkState.Linked -> KamleonSheetContent(

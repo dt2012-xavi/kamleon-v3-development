@@ -1,10 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Camera (24x24, 2dp round stroke). Tinted where used. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="65.87dp"
-    android:height="63.82dp"
-    android:viewportWidth="65.87"
-    android:viewportHeight="63.82">
-  <path
-      android:pathData="m46.99,11.97c7.31,0.39 13.12,6.44 13.12,13.84v19.36c0,7.66 -6.21,13.86 -13.86,13.86h-26.61c-7.66,0 -13.86,-6.21 -13.86,-13.86v-19.36c0,-7.41 5.81,-13.46 13.12,-13.84m14.05,11.86c-6.44,0 -11.66,5.22 -11.66,11.66s5.22,11.66 11.66,11.66 11.66,-5.22 11.66,-11.66 -5.22,-11.66 -11.66,-11.66ZM53.21,22.79c0,-1.94 -1.58,-3.52 -3.52,-3.52 -1.94,0 -3.52,1.58 -3.52,3.52 0,1.94 1.58,3.52 3.52,3.52s3.52,-1.58 3.52,-3.52ZM47,11.97c-1.95,0 -3.53,-1.58 -3.53,-3.53v-0.15c0,-1.94 -1.58,-3.52 -3.52,-3.52h-14c-1.94,0 -3.52,1.58 -3.52,3.52v0.16c0,1.95 -1.58,3.53 -3.53,3.53"
-      android:strokeWidth="0"
-      android:fillColor="#231f20"/>
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M14.5,4h-5L7,7H4a2,2 0,0 0,-2 2v9a2,2 0,0 0,2 2h16a2,2 0,0 0,2 -2V9a2,2 0,0 0,-2 -2h-3l-2.5,-3zM15,13a3,3 0,1 1,-6 0a3,3 0,1 1,6 0z"
+        android:strokeWidth="2"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
 </vector>

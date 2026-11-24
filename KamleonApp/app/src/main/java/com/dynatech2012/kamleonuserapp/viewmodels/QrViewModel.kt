@@ -13,7 +13,6 @@ import com.dynatech2012.kamleonuserapp.BuildConfig
 import com.dynatech2012.kamleonuserapp.camera.QrCodeAnalyzer
 import com.dynatech2012.kamleonuserapp.models.Event
 import com.dynatech2012.kamleonuserapp.models.QRResponse
-import com.dynatech2012.kamleonuserapp.network.ActionResult
 import com.dynatech2012.kamleonuserapp.network.actionResultOf
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
@@ -24,22 +23,19 @@ import java.util.concurrent.Executors
 import javax.inject.Inject
 
 /**
- * Links a scan to the user: from the in-app scanner ([imageAnalysis]) or from a /scan app link
- * ([uploadQRtoFirestore]). The scanner reads codes only while [startAnalyzing] is on and stops by
- * itself once it finds a Kamleon scan link, until the screen resumes it.
+ * Links a scan to the user, from the in-app scanner ([imageAnalysis]) or from a /scan app link
+ * ([linkFromAppLink]); both report through [linkState], which [com.dynatech2012.kamleonuserapp.views.ScanLinkSheet]
+ * shows. The scanner reads codes only while [startAnalyzing] is on and stops by itself once it finds a
+ * Kamleon scan link, until the screen resumes it. Shared by the activity and its screens.
  */
 @HiltViewModel
 class QrViewModel @Inject constructor(
     private val firestoreDataSource: FirestoreDataSource
 ) : ViewModel() {
 
-    private val _qrUploaded = MutableLiveData<Event<ActionResult>>()
-    /** One event per upload: whether Firestore saved the scan and, if not, why. */
-    val qrUploaded: LiveData<Event<ActionResult>> = _qrUploaded
-
-    private val _uploading = MutableLiveData(false)
-    /** True while a scan read by the scanner is being linked. */
-    val uploading: LiveData<Boolean> = _uploading
+    private val _scanRead = MutableLiveData<Event<Unit>>()
+    /** The scanner read a Kamleon scan link and started linking it. */
+    val scanRead: LiveData<Event<Unit>> = _scanRead
 
     private val _foreignCode = MutableLiveData<Event<Unit>>()
     /** The scanner read a code that is not a Kamleon scan link; it keeps scanning. */
@@ -72,7 +68,7 @@ class QrViewModel @Inject constructor(
     }
 
     fun startAnalyzing() {
-        gate.open = _uploading.value != true
+        gate.open = _linkState.value != ScanLinkState.Linking
     }
 
     fun stopAnalyzing() {
@@ -85,18 +81,20 @@ class QrViewModel @Inject constructor(
             ScanGate.Decision.Foreign -> _foreignCode.value = Event(Unit)
             is ScanGate.Decision.Link -> {
                 DebugLog.d(TAG) { "Kamleon scan link read; linking it" }
-                _uploading.value = true
-                upload(decision.scan)
+                _scanRead.value = Event(Unit)
+                link(decision.scan)
             }
         }
     }
 
     private val _linkState = MutableLiveData<ScanLinkState?>()
-    /** Where the scan from an app link stands, for [com.dynatech2012.kamleonuserapp.views.ScanLinkSheet]. */
+    /** Where the scan being linked stands, for [com.dynatech2012.kamleonuserapp.views.ScanLinkSheet]. */
     val linkState: LiveData<ScanLinkState?> = _linkState
 
     /** Links a scan that arrived through an app link (the phone's own camera read the QR). */
-    fun linkFromAppLink(scan: QRResponse) {
+    fun linkFromAppLink(scan: QRResponse) = link(scan)
+
+    private fun link(scan: QRResponse) {
         if (_linkState.value == ScanLinkState.Linking) return
         _linkState.value = ScanLinkState.Linking
         viewModelScope.launch {
@@ -110,18 +108,11 @@ class QrViewModel @Inject constructor(
         _linkState.value = ScanLinkState.Invalid
     }
 
-    /** The user has seen how the app link went. */
+    /** The user has seen how the scan went. */
     fun clearLinkState() {
         if (_linkState.value != ScanLinkState.Linking) _linkState.value = null
     }
 
-    private fun upload(scan: QRResponse) {
-        viewModelScope.launch {
-            val result = firestoreDataSource.uploadQrId(scan)
-            _uploading.value = false
-            _qrUploaded.value = Event(actionResultOf(result))
-        }
-    }
 
     override fun onCleared() {
         if (analyzer != null) imageAnalysis.clearAnalyzer()

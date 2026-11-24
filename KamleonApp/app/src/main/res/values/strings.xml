@@ -354,6 +354,9 @@
     <string name="scan_intro_message">Hold your phone up to the QR code on the S-Urinal screen and keep the code inside the frame.</string>
     <string name="scan_camera_denied_title">Camera access needed</string>
     <string name="scan_camera_denied_message">Kamleon uses the camera only to scan the QR code on the S-Urinal.</string>
+    <string name="scan_allow_camera">Allow camera</string>
+    <string name="scan_no_camera_title">No camera available</string>
+    <string name="scan_no_camera_message">Scanning needs a camera, and this phone doesn’t have one the app can use.</string>
     <string name="scan_camera_blocked_message">Kamleon uses the camera only to scan the QR code on the S-Urinal. Allow it in the app settings to scan.</string>
     <string name="dialog_scan_scanned">QR scanned correctly</string>
     <string name="dialog_scan_scanned_message">You’re linked to this S-Urinal. Your results will appear in the app once the analysis is done.</string>

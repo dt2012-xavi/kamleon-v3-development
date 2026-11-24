@@ -76,18 +76,6 @@
             android:importantForAccessibility="no"
             />
 
-        <ProgressBar
-            android:id="@+id/pbScanUploading"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:indeterminateTint="@color/white"
-            android:contentDescription="@string/scan_linking"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@id/ivScanFrame"
-            app:layout_constraintEnd_toEndOf="@id/ivScanFrame"
-            app:layout_constraintTop_toTopOf="@id/ivScanFrame"
-            app:layout_constraintBottom_toBottomOf="@id/ivScanFrame" />
-
         <TextView
             android:id="@+id/tvScanHint"
             android:layout_width="wrap_content"
@@ -106,6 +94,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivScanFrame" />
+
+        <!-- Instead of the camera when the scanner can't use it: why, and how to allow it. -->
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/cvCameraAccess"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -20,4 +20,6 @@ object PreferenceConstants {
     const val PREF_NEW_MEASURE = "newMeasure"
     /** Whether the scanner's how-to sheet has been shown once; after that it opens from its button. */
     const val PREF_SCAN_INTRO_SEEN = "scanIntroSeen"
+    /** Whether the app already asked for the camera, to tell a refusal for good from a first time. */
+    const val PREF_CAMERA_ASKED = "cameraPermissionAsked"
 }

@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.activities
 
+import com.dynatech2012.kamleonuserapp.viewmodels.ScanLinkState
 import com.dynatech2012.kamleonuserapp.fragments.TabFragment
 import android.Manifest
 import android.R
@@ -94,8 +95,23 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), ScanLinkSheet.Host {
         super.onDestroy()
     }
 
+    override fun onScanLinkClosed(state: ScanLinkState, result: SheetResult) {
+        if (state == ScanLinkState.Invalid) {
+            if (result == SheetResult.PRIMARY) openScanner()
+            return
+        }
+        tabFragment()?.onScanLinkClosed(state)
+    }
+
+    private fun tabFragment(): TabFragment? {
+        val navHost = supportFragmentManager.findFragmentById(
+            com.dynatech2012.kamleonuserapp.R.id.nav_host_fragment_main
+        ) as NavHostFragment
+        return navHost.childFragmentManager.primaryNavigationFragment as? TabFragment
+    }
+
     /** From the sheet of a scan link that can't be used: open the in-app scanner. */
-    override fun onScanAgain() {
+    private fun openScanner() {
         val navHost = supportFragmentManager.findFragmentById(
             com.dynatech2012.kamleonuserapp.R.id.nav_host_fragment_main
         ) as NavHostFragment
