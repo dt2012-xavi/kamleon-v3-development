@@ -326,6 +326,23 @@
     <string name="analytic_volume_good">Your sample has good volume to be analyzed.</string>
 
     <string name="analytic_no_data">No data</string>
+    <string name="analytic_metric_hydration">Hydration</string>
+    <string name="analytic_metric_electrolytes">Electrolytes</string>
+    <string name="analytic_metric_volume">Volume</string>
+    <plurals name="analytic_value_hydration">
+        <item quantity="one">%1$d percent</item>
+        <item quantity="other">%1$d percent</item>
+    </plurals>
+    <plurals name="analytic_value_electrolytes">
+        <item quantity="one">%1$d millisiemens per centimetre</item>
+        <item quantity="other">%1$d millisiemens per centimetre</item>
+    </plurals>
+    <plurals name="analytic_value_volume">
+        <item quantity="one">%1$d millilitre</item>
+        <item quantity="other">%1$d millilitres</item>
+    </plurals>
+    <string name="analytic_note_no_sample">Scan the S-Urinal QR after your next sample to see your metrics here.</string>
+    <string name="analytic_note_imprecise">This sample didn\'t have enough volume to measure hydration and electrolytes accurately, so only its volume is shown.</string>
 
 
     <!-- Dialog -->

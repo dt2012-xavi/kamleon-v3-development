@@ -1,8 +1,9 @@
 package com.dynatech2012.kamleonuserapp.views.cards
 
+import androidx.annotation.PluralsRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +27,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,14 +51,15 @@ fun CardViewAnalyticsItem(
     electrolyteLevel: ElectrolyteLevel? = null,
     onClick: () -> Unit
 ) {
+    // The card takes the click itself, so the press effect is clipped to its rounded corners.
     Card(
+        onClick = onClick,
         colors = CardDefaults.cardColors(
             containerColor = colorResource(id = R.color.color_fa),
         ),
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
-            .clickable { onClick() }
             .coloredShadow(
                 color = colorResource(id = R.color.kamleon_dark_grey),
                 alpha = 0.5f,
@@ -83,7 +88,7 @@ fun CardViewAnalyticsItem(
                     fontFamily = MatTheme.fontFamily,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(bottom = 8.dp),
-                    text = analyticType.title,
+                    text = stringResource(analyticType.title),
                     fontSize = dimensionResource(R.dimen.ts_14).value.sp,
                     color = colorResource(id = R.color.kamleon_secondary_grey_60),
                 )
@@ -103,10 +108,13 @@ fun CardViewAnalyticsItem(
                     color = colorResource(id = R.color.kamleon_secondary_grey_50),
                 )
             }
+            // TalkBack reads the figure as words ("71 percent") instead of the gauge's separate pieces.
+            val valueDescription = value?.let { pluralStringResource(analyticType.valueDescription, it, it) }
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .width(100.dp),
+                    .width(100.dp)
+                    .clearAndSetSemantics { valueDescription?.let { contentDescription = it } },
             ) {
                 when (analyticType) {
                     AnalyticType.HYDRATION -> HydrationView(value)
@@ -118,10 +126,10 @@ fun CardViewAnalyticsItem(
     }
 }
 
-enum class AnalyticType(val title: String) {
-    HYDRATION("Hydration"),
-    ELECTROLYTE("Electrolytes"),
-    VOLUME("Volume"),
+enum class AnalyticType(@StringRes val title: Int, @PluralsRes val valueDescription: Int) {
+    HYDRATION(R.string.analytic_metric_hydration, R.plurals.analytic_value_hydration),
+    ELECTROLYTE(R.string.analytic_metric_electrolytes, R.plurals.analytic_value_electrolytes),
+    VOLUME(R.string.analytic_metric_volume, R.plurals.analytic_value_volume),
 }
 
 @Composable

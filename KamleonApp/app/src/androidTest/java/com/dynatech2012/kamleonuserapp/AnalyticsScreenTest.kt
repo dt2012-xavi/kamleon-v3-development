@@ -1,8 +1,10 @@
 package com.dynatech2012.kamleonuserapp
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.platform.app.InstrumentationRegistry
@@ -59,5 +61,33 @@ class AnalyticsScreenTest {
         setScreen(null)
         composeRule.onNodeWithContentDescription(context.getString(R.string.home_profile_button)).performClick()
         composeRule.runOnIdle { assertEquals(1, profileClicks) }
+    }
+
+    @Test
+    fun noSampleShowsTheScanNote() {
+        setScreen(null)
+        composeRule.onNodeWithTag("analytics_note")
+            .assertTextEquals(context.getString(R.string.analytic_note_no_sample))
+    }
+
+    @Test
+    fun anImpreciseSampleExplainsWhy() {
+        setScreen(MeasureData().apply { score = 80; msCond = 12f; vol = 40f; precision = MeasurePrecision.Bad })
+        composeRule.onNodeWithTag("analytics_note")
+            .assertTextEquals(context.getString(R.string.analytic_note_imprecise))
+    }
+
+    @Test
+    fun aPreciseSampleHasNoNote() {
+        setScreen(sample)
+        composeRule.onNodeWithTag("analytics_note").assertDoesNotExist()
+    }
+
+    @Test
+    fun theFiguresAreReadAsWords() {
+        setScreen(sample)
+        composeRule.onNodeWithContentDescription(context.resources.getQuantityString(R.plurals.analytic_value_hydration, 95, 95), useUnmergedTree = true).assertExists()
+        composeRule.onNodeWithContentDescription(context.resources.getQuantityString(R.plurals.analytic_value_electrolytes, 12, 12), useUnmergedTree = true).assertExists()
+        composeRule.onNodeWithContentDescription(context.resources.getQuantityString(R.plurals.analytic_value_volume, 300, 300), useUnmergedTree = true).assertExists()
     }
 }

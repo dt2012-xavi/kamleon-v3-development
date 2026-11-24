@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +36,7 @@ import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.extensions.formatTime
 import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
 import com.dynatech2012.kamleonuserapp.models.analyticsCardsOf
+import com.dynatech2012.kamleonuserapp.models.analyticsNoteOf
 import com.dynatech2012.kamleonuserapp.views.cards.AnalyticType
 import com.dynatech2012.kamleonuserapp.views.cards.CardViewAnalyticsItem
 import com.dynatech2012.kamleonuserapp.views.home.HomeProfile
@@ -63,6 +65,7 @@ fun AnalyticsScreen(
         end = Offset.Infinite,
     )
     val cards = remember(measure) { analyticsCardsOf(measure) }
+    val note = analyticsNoteOf(measure)
     val lastSample = measure?.let { sample ->
         val date = remember(sample.analysisDate) { Date(sample.analysisDate).formatTime }
         stringResource(R.string.home_last_sample_message, date)
@@ -115,6 +118,17 @@ fun AnalyticsScreen(
                         isPrecise = card.isPrecise,
                         electrolyteLevel = card.electrolyteLevel,
                         onClick = { onOpenGraph(card.type) },
+                    )
+                }
+                // Below the cards, so the cards keep their place whatever the sample.
+                if (note != null) {
+                    Text(
+                        text = stringResource(note),
+                        fontSize = 13.sp,
+                        fontFamily = MatTheme.fontFamily,
+                        fontWeight = FontWeight.Medium,
+                        color = colorResource(R.color.kamleon_secondary_grey_50),
+                        modifier = Modifier.padding(horizontal = 20.dp).padding(top = 12.dp).testTag("analytics_note"),
                     )
                 }
             }

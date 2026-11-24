@@ -83,3 +83,14 @@ fun analyticsCardsOf(measure: MeasureData?): List<AnalyticsCard> {
         ),
     )
 }
+
+/**
+ * The note under the cards: what to do when there is no sample yet, or why an imprecise sample shows
+ * only its volume. Null when the cards say it all.
+ */
+@StringRes
+fun analyticsNoteOf(measure: MeasureData?): Int? = when {
+    measure == null -> R.string.analytic_note_no_sample
+    !measure.isPrecise -> R.string.analytic_note_imprecise
+    else -> null
+}

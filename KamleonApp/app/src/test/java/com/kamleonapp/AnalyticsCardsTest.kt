@@ -5,6 +5,7 @@ import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.models.ElectrolyteLevel
 import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
 import com.dynatech2012.kamleonuserapp.models.analyticsCardsOf
+import com.dynatech2012.kamleonuserapp.models.analyticsNoteOf
 import com.dynatech2012.kamleonuserapp.views.cards.AnalyticType
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -98,5 +99,20 @@ class AnalyticsCardsTest {
         assertEquals(false, volume.isPrecise)
         assertEquals(R.string.analytic_volume_insuff_title, volume.subtitle)
         assertEquals(R.string.analytic_volume_insuff_desc, volume.description)
+    }
+
+    @Test
+    fun noSampleAsksForAScan() {
+        assertEquals(R.string.analytic_note_no_sample, analyticsNoteOf(null))
+    }
+
+    @Test
+    fun anImpreciseSampleExplainsTheMissingMetrics() {
+        assertEquals(R.string.analytic_note_imprecise, analyticsNoteOf(sample(80, 12f, 40f, precise = false)))
+    }
+
+    @Test
+    fun aPreciseSampleHasNoNote() {
+        assertNull(analyticsNoteOf(sample(80, 12f, 200f)))
     }
 }
