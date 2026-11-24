@@ -91,12 +91,22 @@ class AuthViewModel @Inject constructor(
 
     fun consumePendingScan(): Pair<String, String>? {
         val scan = currentPendingScan()
+        // A scan that was saved but is no longer deliverable expired while the user logged in.
+        if (scan == null && savedStateHandle.contains("scanSavedAt")) savedStateHandle["scanInvalid"] = true
         savedStateHandle.remove<String>("scanUnitId")
         savedStateHandle.remove<String>("scanSessionId")
         savedStateHandle.remove<Long>("scanSavedAt")
         if (scan == null) Timber.d("No pending scan to deliver, or it expired")
         return scan
     }
+
+    /** A scan link arrived that cannot be used: Main says so once it opens. */
+    fun invalidScanLink() {
+        savedStateHandle["scanInvalid"] = true
+    }
+
+    /** Whether Main has to say that a scan link could not be used; asking clears it. */
+    fun consumeInvalidScan(): Boolean = savedStateHandle.remove<Boolean>("scanInvalid") == true
 
     @Volatile
     private var startupCheck = 0

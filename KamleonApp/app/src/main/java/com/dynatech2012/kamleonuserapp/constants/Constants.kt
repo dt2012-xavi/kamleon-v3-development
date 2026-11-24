@@ -28,4 +28,6 @@ object Constants {
     const val SCAN_ACTION = "scan"
     const val SCAN_UNIT_ID = "unitId"
     const val SCAN_SESSION_ID = "sessionId"
+    /** MainActivity extra: a scan link arrived but cannot be used (incomplete, or it waited too long). */
+    const val SCAN_INVALID = "scanInvalid"
 }

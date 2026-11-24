@@ -345,6 +345,9 @@
     <string name="scan_hint">Scan the QR code shown on the S-Urinal</string>
     <string name="scan_not_kamleon">This QR code isn’t from Kamleon</string>
     <string name="scan_linking">Linking your scan</string>
+    <string name="scan_invalid_title">This QR code can’t be used</string>
+    <string name="scan_invalid_message">The link is incomplete or has expired. Scan the QR code on the S-Urinal again.</string>
+    <string name="scan_again">Scan again</string>
     <string name="scan_torch_on">Turn on the flashlight</string>
     <string name="scan_torch_off">Turn off the flashlight</string>
     <string name="scan_help">How to scan</string>

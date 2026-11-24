@@ -54,6 +54,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             navController.currentDestination?.id != R.id.splashFragment
         // On a restore the scan is already in the saved state with its original time; reading the
         // launch intent again would restart the clock and keep an old scan alive.
+        if (savedInstanceState == null && forwardScanLinkToRunningMain(intent)) return
         if (savedInstanceState == null) handleIntent(intent)
         viewModel.splashDurationCompleted.observe(this) { completed ->
             if (completed == true) route(viewModel.startupState.value)
@@ -70,21 +71,57 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
+        if (forwardScanLinkToRunningMain(intent)) return
         handleIntent(intent)
         if (viewModel.splashDurationCompleted.value == true) viewModel.checkLogin()
     }
 
     private fun handleIntent(intent: Intent) {
-        val data = intent.data ?: return
-        if (data.path?.trimEnd('/') != "/${Constants.SCAN_ACTION}") return
-        // The same check as the in-app scanner, so both accept exactly the same links.
-        val scan = scanLinkFrom(data.toString(), BuildConfig.APP_LINK_HOST)
-        if (scan != null) {
+        val scan = scanLinkIn(intent) ?: return
+        if (scan is ScanLinkIntent.Valid) {
             viewModel.pendingScan(scan.unitId, scan.sessionId)
             Timber.d("Scan link accepted for later delivery")
         } else {
+            viewModel.invalidScanLink()
             Timber.w("Scan link missing required parameters")
         }
+    }
+
+    private sealed interface ScanLinkIntent {
+        data class Valid(val unitId: String, val sessionId: String) : ScanLinkIntent
+        data object Invalid : ScanLinkIntent
+    }
+
+    /** The /scan link this intent carries, valid or not; null when it carries none. */
+    private fun scanLinkIn(intent: Intent): ScanLinkIntent? {
+        val data = intent.data ?: return null
+        if (data.path?.trimEnd('/') != "/${Constants.SCAN_ACTION}") return null
+        // The same check as the in-app scanner, so both accept exactly the same links.
+        val scan = scanLinkFrom(data.toString(), BuildConfig.APP_LINK_HOST)
+            ?: return ScanLinkIntent.Invalid
+        return ScanLinkIntent.Valid(scan.unitId, scan.sessionId)
+    }
+
+    /**
+     * A scan link while the main screen is already open (so the user is signed in): hand it straight
+     * to it, without the splash and the startup checks. Returns whether it did.
+     */
+    private fun forwardScanLinkToRunningMain(intent: Intent): Boolean {
+        if (!MainActivity.isRunning) return false
+        val scan = scanLinkIn(intent) ?: return false
+        val mainIntent = Intent(this, MainActivity::class.java)
+            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            .setAction(Constants.SCAN_ACTION)
+        when (scan) {
+            is ScanLinkIntent.Valid -> mainIntent
+                .putExtra(Constants.SCAN_UNIT_ID, scan.unitId)
+                .putExtra(Constants.SCAN_SESSION_ID, scan.sessionId)
+            ScanLinkIntent.Invalid -> mainIntent.putExtra(Constants.SCAN_INVALID, true)
+        }
+        Timber.d("Scan link forwarded to the open main screen")
+        startActivity(mainIntent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
+        finish()
+        return true
     }
 
     private fun route(state: AuthViewModel.StartupState?) {
@@ -250,10 +287,14 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
         // instead of stacking another one for every link.
         val mainIntent = Intent(this, MainActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        viewModel.consumePendingScan()?.let { (unitId, sessionId) ->
+        val pendingScan = viewModel.consumePendingScan()
+        if (pendingScan != null) {
             mainIntent.action = Constants.SCAN_ACTION
-            mainIntent.putExtra(Constants.SCAN_UNIT_ID, unitId)
-            mainIntent.putExtra(Constants.SCAN_SESSION_ID, sessionId)
+            mainIntent.putExtra(Constants.SCAN_UNIT_ID, pendingScan.first)
+            mainIntent.putExtra(Constants.SCAN_SESSION_ID, pendingScan.second)
+        } else if (viewModel.consumeInvalidScan()) {
+            mainIntent.action = Constants.SCAN_ACTION
+            mainIntent.putExtra(Constants.SCAN_INVALID, true)
         }
         // Cross-fade into the main screen instead of the system's default activity transition.
         startActivity(mainIntent, ActivityOptions.makeCustomAnimation(this, R.anim.fade_in, R.anim.fade_hold).toBundle())

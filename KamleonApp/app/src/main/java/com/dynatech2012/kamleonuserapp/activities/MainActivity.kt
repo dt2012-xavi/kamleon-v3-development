@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.activities
 
+import com.dynatech2012.kamleonuserapp.fragments.TabFragment
 import android.Manifest
 import android.R
 import android.content.BroadcastReceiver
@@ -33,14 +34,13 @@ import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityMainBinding
 import com.dynatech2012.kamleonuserapp.extensions.px
 import com.dynatech2012.kamleonuserapp.models.QRResponse
-import com.dynatech2012.kamleonuserapp.models.observeEvent
 import com.dynatech2012.kamleonuserapp.utils.NotificationAsk
 import com.dynatech2012.kamleonuserapp.utils.notificationAskFor
 import com.dynatech2012.kamleonuserapp.utils.notificationPermissionAsked
 import com.dynatech2012.kamleonuserapp.views.SheetResult
 import com.dynatech2012.kamleonuserapp.views.SheetSpec
 import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
-import com.dynatech2012.kamleonuserapp.views.showScanResultSheet
+import com.dynatech2012.kamleonuserapp.views.ScanLinkSheet
 import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.viewmodels.ErrorCode
@@ -51,13 +51,14 @@ import java.io.File
 
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity<ActivityMainBinding>() {
+class MainActivity : BaseActivity<ActivityMainBinding>(), ScanLinkSheet.Host {
 
     private val viewModel: MainViewModel by viewModels()
     private val qrViewModel: QrViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        openInstances++
         if (savedInstanceState == null) handleIntent(intent)
         initObservers()
     }
@@ -68,16 +69,42 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         handleIntent(intent)
     }
 
-    /** Uploads the scan that InitActivity passed on from a /scan link, if there is one. */
+    /** Links the scan that InitActivity passed on from a /scan link, or says it can't be used. */
     private fun handleIntent(intent: Intent) {
         val unitId = intent.getStringExtra(Constants.SCAN_UNIT_ID)
         val sessionId = intent.getStringExtra(Constants.SCAN_SESSION_ID)
-        if (unitId.isNullOrEmpty() || sessionId.isNullOrEmpty()) return
-        // Remove the extras so a recreated activity does not upload the same scan again.
+        val invalid = intent.getBooleanExtra(Constants.SCAN_INVALID, false)
+        // Remove the extras so a recreated activity does not handle the same scan again.
         intent.removeExtra(Constants.SCAN_UNIT_ID)
         intent.removeExtra(Constants.SCAN_SESSION_ID)
-        DebugLog.d(TAG) { "Scan link received by main activity" }
-        qrViewModel.uploadQRtoFirestore(QRResponse(unitId = unitId, sessionId = sessionId))
+        intent.removeExtra(Constants.SCAN_INVALID)
+        when {
+            !unitId.isNullOrEmpty() && !sessionId.isNullOrEmpty() -> {
+                DebugLog.d(TAG) { "Scan link received by main activity" }
+                qrViewModel.linkFromAppLink(QRResponse(unitId = unitId, sessionId = sessionId))
+            }
+            invalid -> qrViewModel.appLinkInvalid()
+            else -> return
+        }
+        ScanLinkSheet.show(supportFragmentManager)
+    }
+
+    override fun onDestroy() {
+        openInstances--
+        super.onDestroy()
+    }
+
+    /** From the sheet of a scan link that can't be used: open the in-app scanner. */
+    override fun onScanAgain() {
+        val navHost = supportFragmentManager.findFragmentById(
+            com.dynatech2012.kamleonuserapp.R.id.nav_host_fragment_main
+        ) as NavHostFragment
+        val navController = navHost.navController
+        if (navController.currentDestination?.id != com.dynatech2012.kamleonuserapp.R.id.tabFragment) {
+            navController.popBackStack(com.dynatech2012.kamleonuserapp.R.id.tabFragment, false)
+            navHost.childFragmentManager.executePendingTransactions()
+        }
+        (navHost.childFragmentManager.primaryNavigationFragment as? TabFragment)?.openScanner()
     }
 
     override fun setBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -157,10 +184,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         // The server ended the session (account disabled or deleted, sign-in revoked): say so, then sign out.
         viewModel.sessionEnded.observe(this) { code -> if (code != null) showSessionEndedSheet(code) }
 
-        qrViewModel.qrUploaded.observeEvent(this) { result ->
-            DebugLog.d(TAG) { "QR Upload finished; success: ${result.success}" }
-            supportFragmentManager.showScanResultSheet(this, result)
-        }
     }
 
     /** Only way on is OK: it wipes this phone's data and signs out, as the same sheet does at startup. */
@@ -363,6 +386,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     companion object {
         val TAG: String = MainActivity::class.java.simpleName
+
+        /**
+         * Whether the main screen is open, so the user is signed in: a scan link then goes straight to
+         * it instead of through the splash. Main thread only.
+         */
+        val isRunning: Boolean get() = openInstances > 0
+        private var openInstances = 0
         private const val NOTIFICATIONS_INTRO_SHEET = "notifications_intro"
         private const val SESSION_ENDED_SHEET = "main_session_ended"
     }

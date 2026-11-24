@@ -91,8 +91,29 @@ class QrViewModel @Inject constructor(
         }
     }
 
-    /** Links a scan that arrived through an app link. */
-    fun uploadQRtoFirestore(qrResponse: QRResponse) = upload(qrResponse)
+    private val _linkState = MutableLiveData<ScanLinkState?>()
+    /** Where the scan from an app link stands, for [com.dynatech2012.kamleonuserapp.views.ScanLinkSheet]. */
+    val linkState: LiveData<ScanLinkState?> = _linkState
+
+    /** Links a scan that arrived through an app link (the phone's own camera read the QR). */
+    fun linkFromAppLink(scan: QRResponse) {
+        if (_linkState.value == ScanLinkState.Linking) return
+        _linkState.value = ScanLinkState.Linking
+        viewModelScope.launch {
+            val result = actionResultOf(firestoreDataSource.uploadQrId(scan))
+            _linkState.value = if (result.success) ScanLinkState.Linked else ScanLinkState.Failed(result.failure)
+        }
+    }
+
+    /** An app link arrived that cannot be used: incomplete, or it expired while the user logged in. */
+    fun appLinkInvalid() {
+        _linkState.value = ScanLinkState.Invalid
+    }
+
+    /** The user has seen how the app link went. */
+    fun clearLinkState() {
+        if (_linkState.value != ScanLinkState.Linking) _linkState.value = null
+    }
 
     private fun upload(scan: QRResponse) {
         viewModelScope.launch {
@@ -111,4 +132,13 @@ class QrViewModel @Inject constructor(
     companion object {
         private val TAG = QrViewModel::class.java.simpleName
     }
+}
+
+/** Where a scan that arrived through an app link stands. */
+sealed interface ScanLinkState {
+    data object Linking : ScanLinkState
+    data object Linked : ScanLinkState
+    data class Failed(val failure: Exception?) : ScanLinkState
+    /** The link is incomplete or expired: there is nothing to link. */
+    data object Invalid : ScanLinkState
 }
