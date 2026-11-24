@@ -26,7 +26,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.NavHostFragment
-import com.dynatech2012.kamleonuserapp.network.scanFailureText
 import com.dynatech2012.kamleonuserapp.base.BaseActivity
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.PUSH_NOTIFICATION
@@ -41,6 +40,7 @@ import com.dynatech2012.kamleonuserapp.utils.notificationPermissionAsked
 import com.dynatech2012.kamleonuserapp.views.SheetResult
 import com.dynatech2012.kamleonuserapp.views.SheetSpec
 import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
+import com.dynatech2012.kamleonuserapp.views.showScanResultSheet
 import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.viewmodels.ErrorCode
@@ -159,7 +159,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         qrViewModel.qrUploaded.observeEvent(this) { result ->
             DebugLog.d(TAG) { "QR Upload finished; success: ${result.success}" }
-            if (result.success) showScannedDialog() else showScanFailedDialog(result.failure)
+            supportFragmentManager.showScanResultSheet(this, result)
         }
     }
 
@@ -193,30 +193,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             }
         }
         viewModel.logout()
-    }
-
-    private fun showScannedDialog() {
-        supportFragmentManager.showKamleonSheet(
-            "scanned",
-            SheetSpec(
-                title = getString(com.dynatech2012.kamleonuserapp.R.string.dialog_scan_scanned),
-                message = "",
-                primary = getString(com.dynatech2012.kamleonuserapp.R.string.dialog_ok),
-                dismissible = false
-            )
-        )
-    }
-
-    private fun showScanFailedDialog(failure: Exception?) {
-        val (title, message) = scanFailureText(failure)
-        supportFragmentManager.showKamleonSheet(
-            "scan_failed",
-            SheetSpec(
-                title = getString(title),
-                message = getString(message),
-                primary = getString(com.dynatech2012.kamleonuserapp.R.string.dialog_ok)
-            )
-        )
     }
 
     private var firebaseMessagingReceiver: BroadcastReceiver? = null

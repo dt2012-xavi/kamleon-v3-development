@@ -1,5 +1,7 @@
 package com.dynatech2012.kamleonuserapp.activities
 
+import com.dynatech2012.kamleonuserapp.BuildConfig
+import com.dynatech2012.kamleonuserapp.viewmodels.scanLinkFrom
 import android.Manifest
 import android.app.ActivityOptions
 import android.content.Intent
@@ -73,12 +75,12 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     }
 
     private fun handleIntent(intent: Intent) {
-        val data = intent.data
-        if (data?.path != "/scan") return
-        val unitId = data.getQueryParameter(Constants.SCAN_UNIT_ID)
-        val sessionId = data.getQueryParameter(Constants.SCAN_SESSION_ID)
-        if (!unitId.isNullOrBlank() && !sessionId.isNullOrBlank()) {
-            viewModel.pendingScan(unitId, sessionId)
+        val data = intent.data ?: return
+        if (data.path?.trimEnd('/') != "/${Constants.SCAN_ACTION}") return
+        // The same check as the in-app scanner, so both accept exactly the same links.
+        val scan = scanLinkFrom(data.toString(), BuildConfig.APP_LINK_HOST)
+        if (scan != null) {
+            viewModel.pendingScan(scan.unitId, scan.sessionId)
             Timber.d("Scan link accepted for later delivery")
         } else {
             Timber.w("Scan link missing required parameters")

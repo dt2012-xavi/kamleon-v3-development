@@ -32,12 +32,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Hidden until the camera streams, so the last frame of a previous session never shows. -->
         <androidx.camera.view.PreviewView
             android:id="@+id/cameraPreview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- Covers the preview until the camera streams, so the last frame of a previous session never
+             shows. The preview itself must stay visible: its TextureView only gets a surface when drawn. -->
+        <View
+            android:id="@+id/cameraPreviewCover"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -119,7 +129,6 @@
             android:background="@drawable/bg_scan_button"
             android:src="@drawable/ic_flashlight"
             android:contentDescription="@string/scan_torch_on"
-            android:visibility="invisible"
             app:tint="@color/white" />
 
         <Space

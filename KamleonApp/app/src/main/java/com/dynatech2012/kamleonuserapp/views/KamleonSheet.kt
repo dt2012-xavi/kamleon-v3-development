@@ -2,6 +2,7 @@ package com.dynatech2012.kamleonuserapp.views
 
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spanned
@@ -10,17 +11,21 @@ import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -29,10 +34,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
@@ -50,6 +57,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.AppTheme
+import coil.ImageLoader
+import coil.decode.ImageDecoderDecoder
+import coil.load
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -61,6 +71,7 @@ enum class SheetResult { PRIMARY, SECONDARY, TERTIARY, DISMISSED }
  * Content of a [KamleonSheet]. [message] and [title] keep bold and underline markup. With
  * [destructive] the primary action is red. A sheet that is not [dismissible] can only be left
  * through its buttons. [secondary] and [tertiary] are text links under the primary button. [linkUrl], when set, opens that URL when the message is tapped.
+ * [image], when set, is an illustration (an animated GIF plays) shown above the title on a dark card.
  */
 data class SheetSpec(
     val message: CharSequence,
@@ -70,7 +81,8 @@ data class SheetSpec(
     val tertiary: CharSequence? = null,
     val destructive: Boolean = false,
     val dismissible: Boolean = true,
-    val linkUrl: String? = null
+    val linkUrl: String? = null,
+    @DrawableRes val image: Int? = null
 ) {
     internal fun toBundle(requestKey: String) = Bundle().apply {
         putString(ARG_KEY, requestKey)
@@ -82,6 +94,7 @@ data class SheetSpec(
         putBoolean(ARG_DESTRUCTIVE, destructive)
         putBoolean(ARG_DISMISSIBLE, dismissible)
         putString(ARG_LINK, linkUrl)
+        image?.let { putInt(ARG_IMAGE, it) }
     }
 
     internal companion object {
@@ -94,6 +107,7 @@ data class SheetSpec(
         private const val ARG_DESTRUCTIVE = "sheet_destructive"
         private const val ARG_DISMISSIBLE = "sheet_dismissible"
         private const val ARG_LINK = "sheet_link"
+        private const val ARG_IMAGE = "sheet_image"
 
         fun fromBundle(b: Bundle) = SheetSpec(
             message = b.getCharSequence(ARG_MESSAGE) ?: "",
@@ -103,7 +117,8 @@ data class SheetSpec(
             tertiary = b.getCharSequence(ARG_TERTIARY),
             destructive = b.getBoolean(ARG_DESTRUCTIVE),
             dismissible = b.getBoolean(ARG_DISMISSIBLE, true),
-            linkUrl = b.getString(ARG_LINK)
+            linkUrl = b.getString(ARG_LINK),
+            image = if (b.containsKey(ARG_IMAGE)) b.getInt(ARG_IMAGE) else null
         )
     }
 }
@@ -157,6 +172,10 @@ fun KamleonSheetContent(spec: SheetSpec, onAction: (SheetResult) -> Unit) {
             Spacer(Modifier.height(16.dp))
         } else {
             Spacer(Modifier.height(8.dp))
+        }
+        spec.image?.let { image ->
+            SheetIllustration(image)
+            Spacer(Modifier.height(20.dp))
         }
         spec.title?.let { title ->
             val markup = remember(title) { title.toAnnotatedMarkup() }
@@ -231,6 +250,49 @@ fun KamleonSheetContent(spec: SheetSpec, onAction: (SheetResult) -> Unit) {
         }
     }
 }
+
+/**
+ * A sheet's illustration: the drawable (GIFs animate) filling the width of a dark rounded card,
+ * cropped to its top [ILLUSTRATION_CROP] so tall artwork does not push the buttons down.
+ */
+@Composable
+private fun SheetIllustration(@DrawableRes image: Int) {
+    val context = LocalContext.current
+    val loader = remember(context) {
+        ImageLoader.Builder(context).components { add(ImageDecoderDecoder.Factory()) }.build()
+    }
+    Box(
+        contentAlignment = Alignment.TopCenter,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(colorResource(R.color.kamleon_dark_grey))
+            .padding(top = 12.dp)
+    ) {
+        AndroidView(
+            factory = { ctx ->
+                ImageView(ctx).apply {
+                    importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                    scaleType = ImageView.ScaleType.MATRIX
+                    // Fill the width and keep the top: the drawing starts at the top of the artwork.
+                    addOnLayoutChangeListener { v, _, _, _, _, _, _, _, _ ->
+                        val view = v as ImageView
+                        val width = view.drawable?.intrinsicWidth ?: return@addOnLayoutChangeListener
+                        if (width <= 0) return@addOnLayoutChangeListener
+                        val scale = view.width.toFloat() / width
+                        view.imageMatrix = Matrix().apply { setScale(scale, scale) }
+                    }
+                    load(image, loader) { listener(onSuccess = { _, _ -> requestLayout() }) }
+                }
+            },
+            modifier = Modifier.width(ILLUSTRATION_WIDTH).aspectRatio(ILLUSTRATION_CROP)
+        )
+    }
+}
+
+private val ILLUSTRATION_WIDTH = 190.dp
+/** Width over height of the part of the artwork that is shown (the scanner animation: 370 x 520 px). */
+private const val ILLUSTRATION_CROP = 370f / 520f
 
 /**
  * A modal bottom sheet that replaces the old dialogs. It reports what the user did through the

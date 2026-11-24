@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -92,7 +91,11 @@ fun HomeScreen(
         start = Offset.Zero,
         end = Offset.Infinite,
     )
-    val bottomClearance = TabBarClearance + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    // Applied at layout, not read during composition: a screen's first frame is composed before the
+    // window insets reach it, and a value read then would be 0 and jump a frame later.
+    val bottomClearance = Modifier
+        .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Bottom))
+        .padding(bottom = TabBarClearance)
     Box(modifier = modifier.fillMaxSize().background(gradient)) {
         Column(
             modifier = Modifier
@@ -113,12 +116,12 @@ fun HomeScreen(
                     unavailable = content == HomeContent.Unavailable,
                     onScan = onScan,
                     onRetry = onRetry,
-                    modifier = Modifier.weight(1f).padding(bottom = bottomClearance),
+                    modifier = Modifier.weight(1f).then(bottomClearance),
                 )
                 else -> HomeSample(
                     content = content,
                     look = look,
-                    modifier = Modifier.weight(1f).padding(bottom = bottomClearance),
+                    modifier = Modifier.weight(1f).then(bottomClearance),
                 )
             }
         }

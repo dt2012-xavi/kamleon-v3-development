@@ -46,8 +46,7 @@ class QrViewModel @Inject constructor(
     val foreignCode: LiveData<Event<Unit>> = _foreignCode
 
     // Main thread only: the analyzer reports codes there.
-    private var analyzing = false
-    private var lastForeignNoticeAt = 0L
+    private val gate = ScanGate(BuildConfig.APP_LINK_HOST)
 
     private var analysisExecutor: ExecutorService? = null
     private var analyzer: QrCodeAnalyzer? = null
@@ -73,29 +72,23 @@ class QrViewModel @Inject constructor(
     }
 
     fun startAnalyzing() {
-        analyzing = _uploading.value != true
+        gate.open = _uploading.value != true
     }
 
     fun stopAnalyzing() {
-        analyzing = false
+        gate.open = false
     }
 
     private fun onCodeRead(code: String) {
-        if (!analyzing) return
-        val scan = scanLinkFrom(code, BuildConfig.APP_LINK_HOST)
-        if (scan == null) {
-            // The same code arrives with every frame: say it once every few seconds.
-            val now = SystemClock.elapsedRealtime()
-            if (now - lastForeignNoticeAt >= FOREIGN_NOTICE_INTERVAL_MS) {
-                lastForeignNoticeAt = now
-                _foreignCode.value = Event(Unit)
+        when (val decision = gate.onCode(code, SystemClock.elapsedRealtime())) {
+            ScanGate.Decision.Ignore -> Unit
+            ScanGate.Decision.Foreign -> _foreignCode.value = Event(Unit)
+            is ScanGate.Decision.Link -> {
+                DebugLog.d(TAG) { "Kamleon scan link read; linking it" }
+                _uploading.value = true
+                upload(decision.scan)
             }
-            return
         }
-        DebugLog.d(TAG) { "Kamleon scan link read; linking it" }
-        analyzing = false
-        _uploading.value = true
-        upload(scan)
     }
 
     /** Links a scan that arrived through an app link. */
@@ -117,6 +110,5 @@ class QrViewModel @Inject constructor(
 
     companion object {
         private val TAG = QrViewModel::class.java.simpleName
-        private const val FOREIGN_NOTICE_INTERVAL_MS = 3_000L
     }
 }

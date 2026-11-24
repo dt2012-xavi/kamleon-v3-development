@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -68,7 +67,11 @@ fun AnalyticsScreen(
         val date = remember(sample.analysisDate) { Date(sample.analysisDate).formatTime }
         stringResource(R.string.home_last_sample_message, date)
     } ?: stringResource(R.string.home_last_sample_message_default)
-    val bottomClearance = TabBarClearance + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    // Applied at layout, not read during composition: a screen's first frame is composed before the
+    // window insets reach it, and a value read then would be 0 and jump a frame later.
+    val bottomClearance = Modifier
+        .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Bottom))
+        .padding(bottom = TabBarClearance)
 
     Box(modifier = modifier.fillMaxSize().background(gradient)) {
         Column(
@@ -91,7 +94,7 @@ fun AnalyticsScreen(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(bottom = bottomClearance)
+                    .then(bottomClearance)
                     .verticalScroll(rememberScrollState())
                     .padding(20.dp),
             ) {
