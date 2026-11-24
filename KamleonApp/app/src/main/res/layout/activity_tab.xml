@@ -25,35 +25,36 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/layoutContentQR"
+        android:background="@color/black"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
+        <!-- Hidden until the camera streams, so the last frame of a previous session never shows. -->
         <androidx.camera.view.PreviewView
             android:id="@+id/cameraPreview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="invisible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
-        <TextView
-            android:id="@+id/tv_qr_debugging"
+
+        <!-- Dims the camera around the frame, so the eye goes to it. -->
+        <com.dynatech2012.kamleonuserapp.views.ScanViewfinderOverlay
+            android:id="@+id/scanOverlay"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@color/white30"
-            android:textAlignment="center"
-            android:visibility="gone"
-            android:gravity="top|center_horizontal"
-            android:layout_marginTop="20dp"
-            tools:text="QR debugging" />
+            app:layout_constraintBottom_toBottomOf="parent" />
+
         <ImageView
+            android:id="@+id/ivScanFrame"
             android:layout_width="256dp"
             android:layout_height="256dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +66,76 @@
             android:importantForAccessibility="no"
             />
 
+        <ProgressBar
+            android:id="@+id/pbScanUploading"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:indeterminateTint="@color/white"
+            android:contentDescription="@string/scan_linking"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/ivScanFrame"
+            app:layout_constraintEnd_toEndOf="@id/ivScanFrame"
+            app:layout_constraintTop_toTopOf="@id/ivScanFrame"
+            app:layout_constraintBottom_toBottomOf="@id/ivScanFrame" />
+
+        <TextView
+            android:id="@+id/tvScanHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginHorizontal="32dp"
+            android:background="@drawable/bg_scan_hint"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:gravity="center"
+            android:text="@string/scan_hint"
+            android:textAppearance="@style/TextAppearance.Kamleon"
+            android:textColor="@color/white"
+            android:textSize="@dimen/ts_14"
+            android:accessibilityLiveRegion="polite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivScanFrame" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Scanner buttons, just above the tab bar: flashlight on the left, how to scan on the right. -->
+    <LinearLayout
+        android:id="@+id/layoutScanControls"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tabContainer">
+
+        <ImageButton
+            android:id="@+id/btnScanTorch"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_scan_button"
+            android:src="@drawable/ic_flashlight"
+            android:contentDescription="@string/scan_torch_on"
+            android:visibility="invisible"
+            app:tint="@color/white" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/btnScanHelp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_scan_button"
+            android:src="@drawable/ic_help"
+            android:contentDescription="@string/scan_help"
+            app:tint="@color/white" />
+    </LinearLayout>
 
     <!-- The tab bar's shadow, kept outside it so it does not show through its translucent background. -->
     <com.dynatech2012.kamleonuserapp.views.cards.ClippedShadowView

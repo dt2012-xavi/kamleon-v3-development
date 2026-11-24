@@ -343,6 +343,15 @@
     <string name="dialog_reset_pwd_error_description">User not found</string>
     <string name="dialog_reset_pin_success_description">You\'ve successfully changed your PIN</string>
     <string name="dialog_reset_pin_error_description">There was an error changing your PIN</string>
+    <string name="scan_hint">Scan the QR code shown on the S-Urinal</string>
+    <string name="scan_not_kamleon">This QR code isn’t from Kamleon</string>
+    <string name="scan_linking">Linking your scan</string>
+    <string name="scan_torch_on">Turn on the flashlight</string>
+    <string name="scan_torch_off">Turn off the flashlight</string>
+    <string name="scan_help">How to scan</string>
+    <string name="scan_camera_denied_title">Camera access needed</string>
+    <string name="scan_camera_denied_message">Kamleon uses the camera only to scan the QR code on the S-Urinal.</string>
+    <string name="scan_camera_blocked_message">Kamleon uses the camera only to scan the QR code on the S-Urinal. Allow it in the app settings to scan.</string>
     <string name="dialog_scan_scanned">QR scanned correctly</string>
     <string name="dialog_scan_failed_title">We couldn’t link the QR code</string>
     <string name="dialog_scan_failed_message">Check your connection and scan it again.</string>

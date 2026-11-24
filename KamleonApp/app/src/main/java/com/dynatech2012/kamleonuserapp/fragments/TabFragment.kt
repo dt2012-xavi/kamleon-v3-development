@@ -1,43 +1,41 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import com.dynatech2012.kamleonuserapp.views.marginForNavigationBar
-import androidx.core.view.WindowCompat
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.provider.Settings
+import android.view.HapticFeedbackConstants
 import android.view.View
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
+import androidx.camera.core.TorchState
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.NavHostFragment
-import com.dynatech2012.kamleonuserapp.network.scanFailureText
 import com.dynatech2012.kamleonuserapp.R
-import com.dynatech2012.kamleonuserapp.views.SheetSpec
-import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
-import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
-import com.dynatech2012.kamleonuserapp.constants.UrlConstants
+import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_SCAN_INTRO_SEEN
 import com.dynatech2012.kamleonuserapp.databinding.ActivityTabBinding
-import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.models.observeEvent
-import com.dynatech2012.kamleonuserapp.repositories.Response
+import com.dynatech2012.kamleonuserapp.network.scanFailureText
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
+import com.dynatech2012.kamleonuserapp.utils.SharedPrefUtil
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.viewmodels.QrViewModel
-import com.google.common.util.concurrent.ListenableFuture
+import com.dynatech2012.kamleonuserapp.views.SheetResult
+import com.dynatech2012.kamleonuserapp.views.SheetSpec
+import com.dynatech2012.kamleonuserapp.views.marginForNavigationBar
+import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
+import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.concurrent.ExecutionException
 
 
 @AndroidEntryPoint
@@ -47,8 +45,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
 
     private val qrViewModel: QrViewModel by viewModels()
     private lateinit var previewView: PreviewView
-    private lateinit var cameraProviderFuture: ListenableFuture<ProcessCameraProvider>
-    lateinit var qrDebugging: TextView
+    private var camera: Camera? = null
 
     private val onDismissScanIntro = object : BottomFragmentDismissListener {
         override fun onDismissFragment() {
@@ -56,67 +53,56 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
     }
     private val preview by lazy { Preview.Builder().build() }
 
+    /** Puts the scanner's hint back after a "not a Kamleon code" notice. */
+    private val restoreHint = Runnable { binding.tvScanHint.setText(R.string.scan_hint) }
+
     override fun initView() {
-        onKamleonSheetResult("scanned") { onScannedAcknowledged() }
-        // The analyzer stops after reading a code; resume it so the user can scan again.
-        onKamleonSheetResult("scan_failed") { qrViewModel.startAnalyzing() }
-        DebugLog.d(TAG) { "initView" }
+        onKamleonSheetResult(SCANNED_KEY) { onScannedAcknowledged() }
+        // The scanner stops after reading a code; resume it so the user can scan again.
+        onKamleonSheetResult(SCAN_FAILED_KEY) { qrViewModel.startAnalyzing() }
+        onKamleonSheetResult(CAMERA_DENIED_KEY) { result ->
+            if (result == SheetResult.PRIMARY && cameraBlocked) openAppSettings()
+        }
         binding.tabContainer.marginForNavigationBar()
-        bindViews()
-        //val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_host_fragment_tab) as NavHostFragment
+        previewView = binding.cameraPreview
+        binding.scanOverlay.frame = binding.ivScanFrame
         val navHostFragment = binding.navHostFragmentTab.getFragment<NavHostFragment>()
         when (navHostFragment.childFragmentManager.fragments[0]) {
-            is HomeFragment -> {
-                DebugLog.d(TAG) { "initView is home" }
-                selectTab(0)
-            }
-            is AnalyticFragment -> {
-                DebugLog.d(TAG) { "initView is analytic" }
-                selectTab(1)
-            }
+            is HomeFragment -> selectTab(0)
+            is AnalyticFragment -> selectTab(1)
         }
         val navController = navHostFragment.navController
 
-        binding.layoutTabHome.setOnClickListener {
-            selectTab(0)
-            binding.navHostFragmentTab.visibility = View.VISIBLE
-            navController.popBackStack()
-            navController.navigate(R.id.action_to_homeFragment)
-        }
+        binding.layoutTabHome.setOnClickListener { goHome() }
         binding.layoutTabAnalytic.setOnClickListener {
             selectTab(1)
             binding.navHostFragmentTab.visibility = View.VISIBLE
-            navController.popBackStack()
-            navController.navigate(R.id.action_to_analyticFragment)
+            if (navController.currentDestination?.id != R.id.analyticFragment) {
+                navController.popBackStack()
+                navController.navigate(R.id.action_to_analyticFragment)
+            }
         }
-
-        qrDebugging = binding.tvQrDebugging
-
         binding.layoutTabQr.setOnClickListener {
             selectTab(2)
-            binding.navHostFragmentTab.visibility = View.GONE
+            // Invisible, not gone: the screen underneath keeps its layout and state, so leaving the
+            // scanner shows it as it was instead of laying it out (or recreating it) again.
+            binding.navHostFragmentTab.visibility = View.INVISIBLE
             requestCamera()
-            val thread: Thread = object : Thread() {
-                override fun run() {
-                    try {
-                        sleep(400)
-                    } catch (_: InterruptedException) {
-                    }
-                    activity?.runOnUiThread {
-                        showQRIntroFragment()
-                    }
-                }
-            }
-            thread.start()
         }
-
-        //selectTab(0)
+        binding.btnScanHelp.setOnClickListener { showQRIntroFragment() }
+        binding.btnScanTorch.setOnClickListener { toggleTorch() }
+        // Show the preview only once the camera is really streaming, with a short fade.
+        previewView.previewStreamState.observe(viewLifecycleOwner) { state ->
+            if (state == PreviewView.StreamState.STREAMING && camera != null) {
+                previewView.alpha = 0f
+                previewView.visibility = View.VISIBLE
+                previewView.animate().alpha(1f).setDuration(PREVIEW_FADE_MS).start()
+            }
+        }
 
         initObservers()
         viewModel.getUserData()
-        DebugLog.d(TAG) { "got measures -2 oncreateView" }
         viewModel.getUserMeasures()
-
     }
 
     override fun onResume() {
@@ -124,37 +110,21 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         viewModel.checkNewMeasures()
     }
 
-    private fun bindViews()
-    {
-        previewView = binding.cameraPreview
-        cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+    override fun initEvent() {
     }
 
-    override fun initEvent() {
-        /*
-        binding.ivHomeProfile.isClickable = true
-        binding.ivHomeProfile.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_settingFragment)
-        }
-        */
-    }
     private fun initObservers() {
-        qrViewModel.qrDebug.observe(viewLifecycleOwner) {
-            when (it) {
-                is Response.Success -> {
-                    DebugLog.d(TAG) { "QR analyzer status received" }
-                    appendDebugText("QR analyzer status received")
-                }
-                is Response.Failure -> {
-                    DebugLog.e(TAG) { "QR analyzer failed" }
-                    appendDebugText("QR analyzer failed")
-                }
-                else -> { }
-            }
+        qrViewModel.uploading.observe(viewLifecycleOwner) { uploading ->
+            binding.pbScanUploading.visibility = if (uploading) View.VISIBLE else View.GONE
+            // Tell the user at once that the code was read, before the upload answers.
+            if (uploading) previewView.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
         }
-        qrViewModel.qrResponse.observe(viewLifecycleOwner, this::uploadQr)
+        qrViewModel.foreignCode.observeEvent(viewLifecycleOwner) {
+            binding.tvScanHint.removeCallbacks(restoreHint)
+            binding.tvScanHint.setText(R.string.scan_not_kamleon)
+            binding.tvScanHint.postDelayed(restoreHint, FOREIGN_NOTICE_MS)
+        }
         qrViewModel.qrUploaded.observeEvent(viewLifecycleOwner) { result ->
-            appendDebugText("QR debug -- upload finished, success: ${result.success}")
             if (result.success) showScannedDialog() else showScanFailedDialog(result.failure)
         }
     }
@@ -164,33 +134,34 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         binding.layoutTabQr.performClick()
     }
 
+    private fun goHome() {
+        selectTab(0)
+        binding.navHostFragmentTab.visibility = View.VISIBLE
+        val navController = binding.navHostFragmentTab.getFragment<NavHostFragment>().navController
+        // Already on Home (as when leaving the scanner from it): keep it, don't build it again.
+        if (navController.currentDestination?.id == R.id.homeFragment) return
+        navController.popBackStack()
+        navController.navigate(R.id.action_to_homeFragment)
+    }
+
     private fun selectTab(tabIndex: Int) {
+        binding.layoutTabHome.background = null
+        binding.layoutTabAnalytic.background = null
+        binding.layoutTabQr.background = null
         when (tabIndex) {
-            0 -> {
-                binding.layoutTabHome.background = getDrawable(requireContext(), R.drawable.bg_tab_shape)
-                binding.layoutTabAnalytic.background = null
-                binding.layoutTabQr.background = null
-                binding.layoutContentQR.visibility = View.GONE
-                qrViewModel.stopAnalyzing()
-                stopCamera()
-            }
-            1 -> {
-                binding.layoutTabAnalytic.setBackgroundResource(R.drawable.bg_tab_shape)
-                binding.layoutTabHome.background = null
-                binding.layoutTabQr.background = null
-                binding.layoutContentQR.visibility = View.GONE
-                qrViewModel.stopAnalyzing()
-                stopCamera()
-            }
-            2 -> {
-                binding.layoutTabQr.setBackgroundResource(R.drawable.bg_tab_shape)
-                binding.layoutTabAnalytic.background = null
-                binding.layoutTabHome.background = null
-                binding.layoutContentQR.visibility = View.VISIBLE
-            }
+            0 -> binding.layoutTabHome.background = getDrawable(requireContext(), R.drawable.bg_tab_shape)
+            1 -> binding.layoutTabAnalytic.background = getDrawable(requireContext(), R.drawable.bg_tab_shape)
+            2 -> binding.layoutTabQr.background = getDrawable(requireContext(), R.drawable.bg_tab_shape)
+        }
+        val scanning = tabIndex == 2
+        binding.layoutContentQR.visibility = if (scanning) View.VISIBLE else View.GONE
+        binding.layoutScanControls.visibility = if (scanning) View.VISIBLE else View.GONE
+        if (!scanning) {
+            qrViewModel.stopAnalyzing()
+            stopCamera()
         }
         // The camera preview is dark and fills the screen under the bars: use light bar icons there.
-        setDarkSystemBarIcons(tabIndex != 2)
+        setDarkSystemBarIcons(!scanning)
     }
 
     private fun setDarkSystemBarIcons(dark: Boolean) {
@@ -204,46 +175,56 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
     override fun onDestroyView() {
         // Other screens expect the default dark icons.
         setDarkSystemBarIcons(true)
+        binding.tvScanHint.removeCallbacks(restoreHint)
+        camera = null
         super.onDestroyView()
     }
 
-
     private fun showQRIntroFragment() {
+        if (parentFragmentManager.findFragmentByTag(QR_TAG) != null) return
         ScanIntroFragment.newInstance(onDismissScanIntro).show(parentFragmentManager, QR_TAG)
+    }
+
+    /** The how-to sheet opens by itself only the first time; then it is behind the help button. */
+    private fun showQRIntroTheFirstTime() {
+        val prefs = SharedPrefUtil(requireContext())
+        if (prefs.getBoolean(PREF_SCAN_INTRO_SEEN, false)) return
+        prefs.saveBoolean(PREF_SCAN_INTRO_SEEN, true)
+        showQRIntroFragment()
     }
 
     companion object {
         val TAG: String = TabFragment::class.java.simpleName
         private const val QR_TAG = "QR"
+        private const val SCANNED_KEY = "scanned"
+        private const val SCAN_FAILED_KEY = "scan_failed"
+        private const val CAMERA_DENIED_KEY = "camera_denied"
+        private const val FOREIGN_NOTICE_MS = 2_500L
+        private const val PREVIEW_FADE_MS = 150L
     }
 
 
     // Scan
+    /** Whether Android will no longer ask for the camera, so only the app settings can allow it. */
+    private var cameraBlocked = false
+
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { result: Boolean ->
-        if (result) {
-            // Permission is granted
-            DebugLog.d(TAG) { "qrScanner, permission granted" }
-            appendDebugText("QR debug -- camera permission granted")
+    ) { granted: Boolean ->
+        if (granted) {
             startCamera()
         } else {
-            // Permission is denied
-            // Should go back to home fragment
-            DebugLog.e(TAG) { "qrScanner, permission denied" }
-            appendDebugText("QR debug -- camera permission denied")
-            selectTab(0)
+            DebugLog.d(TAG) { "Camera permission denied" }
+            cameraBlocked = !shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)
+            goHome()
+            showCameraDeniedDialog()
         }
     }
 
     private fun requestCamera() {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) ==
+            PackageManager.PERMISSION_GRANTED
         ) {
-            DebugLog.d(TAG) { "qrScanner, permission granted" }
-            appendDebugText("QR debug -- camera permission granted")
             startCamera()
         } else {
             requestPermissionLauncher.launch(Manifest.permission.CAMERA)
@@ -251,77 +232,57 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
     }
 
     private fun startCamera() {
-        appendDebugText("QR debug -- starting camera")
-        cameraProviderFuture.addListener({
+        val providerFuture = ProcessCameraProvider.getInstance(requireContext())
+        providerFuture.addListener({
+            // The user may have left the scanner, or the screen, while the camera was getting ready.
+            if (view == null || binding.layoutContentQR.visibility != View.VISIBLE) return@addListener
             try {
-                val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-                appendDebugText("QR debug -- starting get camera provider")
-                bindCameraPreview(cameraProvider)
-            } catch (e: ExecutionException) {
-                appendDebugText("QR debug -- starting camera execution exception: $e")
-                DebugLog.e(TAG, e) { "startCamera: ${e.message}" }
-            } catch (e: InterruptedException) {
-                appendDebugText("QR debug -- starting camera interrupted exception: $e")
-                DebugLog.e(TAG, e) { "startCamera: ${e.message}" }
+                bindCameraPreview(providerFuture.get())
+                showQRIntroTheFirstTime()
             } catch (e: Exception) {
-                appendDebugText("QR debug -- starting camera other exception: $e")
                 DebugLog.e(TAG, e) { "startCamera: ${e.message}" }
             }
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
     private fun stopCamera() {
-        if (!qrViewModel.cameraStarted) { return }
-        val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-        cameraProvider.unbindAll()
-        //cameraProvider.unbind(qrViewModel.imageAnalysis, preview)
-        qrViewModel.cameraStarted = false
+        if (camera == null) return
+        ProcessCameraProvider.getInstance(requireContext()).get().unbindAll()
+        camera = null
+        previewView.animate().cancel()
+        previewView.visibility = View.INVISIBLE
+        binding.btnScanTorch.visibility = View.INVISIBLE
     }
 
     private fun bindCameraPreview(cameraProvider: ProcessCameraProvider) {
-        DebugLog.d(TAG) { "qrScanner, bindCameraPreview 1" }
         previewView.implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-
-        val cameraSelector = CameraSelector.Builder()
-            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-            .build()
-
         preview.setSurfaceProvider(previewView.surfaceProvider)
-        DebugLog.d(TAG) { "qrScanner, bindCameraPreview 2" }
-        appendDebugText("QR debug -- starting surface provider set")
-        qrViewModel.startScanner()
-        appendDebugText("QR debug -- scan qr started")
+        cameraProvider.unbindAll()
+        val boundCamera = cameraProvider.bindToLifecycle(
+            viewLifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, qrViewModel.imageAnalysis, preview
+        )
+        camera = boundCamera
         qrViewModel.startAnalyzing()
-        appendDebugText("QR debug -- scan qr started analyzing")
-        cameraProvider
-          .bindToLifecycle(this as LifecycleOwner, cameraSelector, qrViewModel.imageAnalysis, preview)
-        appendDebugText("QR debug -- camera provider bound to lifecycle")
-        qrViewModel.cameraStarted = true
-    }
-
-    private fun uploadQr(qrResponse: Response<QRResponse>) {
-        when (qrResponse) {
-            is Response.Success -> {
-                DebugLog.d(TAG) { "QR parsed; starting upload" }
-                appendDebugText("QR debug -- uploading to realtime")
-                qrViewModel.uploadQRtoFirestore(qrResponse.data)
-                //showScannedDialog()
-            }
-            is Response.Failure -> {
-                DebugLog.e(TAG) { "QR parsing failed" }
-                appendDebugText("QR parsing failed")
-            }
-            else -> { }
+        // Only offer the flashlight when there is one; its icon follows the real torch state.
+        binding.btnScanTorch.visibility =
+            if (boundCamera.cameraInfo.hasFlashUnit()) View.VISIBLE else View.INVISIBLE
+        boundCamera.cameraInfo.torchState.removeObservers(viewLifecycleOwner)
+        boundCamera.cameraInfo.torchState.observe(viewLifecycleOwner) { state ->
+            val on = state == TorchState.ON
+            binding.btnScanTorch.setImageResource(if (on) R.drawable.ic_flashlight_off else R.drawable.ic_flashlight)
+            binding.btnScanTorch.contentDescription =
+                getString(if (on) R.string.scan_torch_off else R.string.scan_torch_on)
         }
     }
 
-    private fun appendDebugText(text: String) {
-        qrDebugging.text = qrDebugging.text.toString() + "\n" + text
+    private fun toggleTorch() {
+        val current = camera ?: return
+        current.cameraControl.enableTorch(current.cameraInfo.torchState.value != TorchState.ON)
     }
 
     private fun showScannedDialog() {
         childFragmentManager.showKamleonSheet(
-            "scanned",
+            SCANNED_KEY,
             SheetSpec(
                 title = getString(R.string.dialog_scan_scanned),
                 message = "",
@@ -334,7 +295,7 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
     private fun showScanFailedDialog(failure: Exception?) {
         val (title, message) = scanFailureText(failure)
         childFragmentManager.showKamleonSheet(
-            "scan_failed",
+            SCAN_FAILED_KEY,
             SheetSpec(
                 title = getString(title),
                 message = getString(message),
@@ -343,14 +304,35 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         )
     }
 
+    private fun showCameraDeniedDialog() {
+        childFragmentManager.showKamleonSheet(
+            CAMERA_DENIED_KEY,
+            if (cameraBlocked) {
+                SheetSpec(
+                    title = getString(R.string.scan_camera_denied_title),
+                    message = getString(R.string.scan_camera_blocked_message),
+                    primary = getString(R.string.setting_noti_open_settings),
+                    secondary = getString(R.string.notifications_intro_later)
+                )
+            } else {
+                SheetSpec(
+                    title = getString(R.string.scan_camera_denied_title),
+                    message = getString(R.string.scan_camera_denied_message),
+                    primary = getString(R.string.dialog_ok)
+                )
+            }
+        )
+    }
+
+    private fun openAppSettings() {
+        startActivity(
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", requireContext().packageName, null))
+        )
+    }
+
     private fun onScannedAcknowledged() {
         // Looked up by tag so it also works after the activity was recreated.
         (parentFragmentManager.findFragmentByTag(QR_TAG) as? ScanIntroFragment)?.dismiss()
-        selectTab(0)
-        binding.navHostFragmentTab.visibility = View.VISIBLE
-        val navHostFragment = binding.navHostFragmentTab.getFragment<NavHostFragment>()
-        val navController = navHostFragment.navController
-        navController.popBackStack()
-        navController.navigate(R.id.action_to_homeFragment)
+        goHome()
     }
 }

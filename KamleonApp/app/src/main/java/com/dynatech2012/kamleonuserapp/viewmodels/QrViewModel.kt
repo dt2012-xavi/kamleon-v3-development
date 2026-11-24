@@ -1,121 +1,122 @@
 package com.dynatech2012.kamleonuserapp.viewmodels
 
-import android.content.Context
-import android.net.Uri
+import android.os.SystemClock
 import android.util.Size
 import androidx.camera.core.ImageAnalysis
-import androidx.core.content.ContextCompat
+import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dynatech2012.kamleonuserapp.camera.QRCodeImageAnalyzerMLKitKotlin
-import com.dynatech2012.kamleonuserapp.constants.Constants
+import com.dynatech2012.kamleonuserapp.BuildConfig
+import com.dynatech2012.kamleonuserapp.camera.QrCodeAnalyzer
 import com.dynatech2012.kamleonuserapp.models.Event
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.network.ActionResult
 import com.dynatech2012.kamleonuserapp.network.actionResultOf
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
-import com.dynatech2012.kamleonuserapp.repositories.RealtimeDataSource
-import com.dynatech2012.kamleonuserapp.repositories.Response
-import com.dynatech2012.kamleonuserapp.repositories.UserRepository
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
-import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import javax.inject.Inject
-import androidx.core.net.toUri
 
+/**
+ * Links a scan to the user: from the in-app scanner ([imageAnalysis]) or from a /scan app link
+ * ([uploadQRtoFirestore]). The scanner reads codes only while [startAnalyzing] is on and stops by
+ * itself once it finds a Kamleon scan link, until the screen resumes it.
+ */
 @HiltViewModel
 class QrViewModel @Inject constructor(
-    @ApplicationContext private val appContext: Context,
-    private val userRepository: UserRepository,
-    private val realtime: RealtimeDataSource,
-    private val analyzer: QRCodeImageAnalyzerMLKitKotlin,
     private val firestoreDataSource: FirestoreDataSource
 ) : ViewModel() {
-    /*fun uploadQRtoRealtime(qrId: String?) {
-        realtime.uploadQrId(qrId)
-    }*/
 
-    private var _qrUploaded: MutableLiveData<Event<ActionResult>> = MutableLiveData()
+    private val _qrUploaded = MutableLiveData<Event<ActionResult>>()
     /** One event per upload: whether Firestore saved the scan and, if not, why. */
     val qrUploaded: LiveData<Event<ActionResult>> = _qrUploaded
 
-    fun uploadQRtoFirestore(qrResponse: QRResponse?) {
-        viewModelScope.launch {
-            val result = firestoreDataSource.uploadQrId(qrResponse)
-            _qrUploaded.postValue(Event(actionResultOf(result)))
-        }
-    }
+    private val _uploading = MutableLiveData(false)
+    /** True while a scan read by the scanner is being linked. */
+    val uploading: LiveData<Boolean> = _uploading
 
-    private var _qrResponse: MutableLiveData<Response<QRResponse>> = MutableLiveData()
-    val qrResponse: LiveData<Response<QRResponse>> = _qrResponse
-    val imageAnalysis = ImageAnalysis.Builder()
-        .setTargetResolution(Size(720, 1280)) //1280, 720
-        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-        .build()
+    private val _foreignCode = MutableLiveData<Event<Unit>>()
+    /** The scanner read a code that is not a Kamleon scan link; it keeps scanning. */
+    val foreignCode: LiveData<Event<Unit>> = _foreignCode
 
-    private var _qrDebug: MutableLiveData<Response<String>> = MutableLiveData()
-    val qrDebug: LiveData<Response<String>> = _qrDebug
+    // Main thread only: the analyzer reports codes there.
+    private var analyzing = false
+    private var lastForeignNoticeAt = 0L
 
-    fun startScanner() {
-        imageAnalysis.setAnalyzer(
-            ContextCompat.getMainExecutor(appContext),
-            analyzer
-        )
-        val ioDispatcher = Dispatchers.IO
-        viewModelScope.launch(ioDispatcher) {
-            analyzer.qrStingFlow.collect { qrString ->
-                DebugLog.d(TAG) { "QR scanner state received" }
-                // qr example
-                // {"unitId": "1000", "sessionId": "1708532818789", "data": {}}
-                if (qrString is Response.Success) {
-                    DebugLog.d(TAG) { "QR scan succeeded; parsing link" }
-                    //val gson = Gson()
-                    //val qrResponse = gson.fromJson(qrString.data, QRResponse::class.java)
-                    val qrResponse = parseQrString(qrString.data)
-                    DebugLog.d(TAG) { "QR link parsed" }
-                    _qrResponse.postValue(Response.Success(qrResponse))
-                }
-            }
-        }
-        viewModelScope.launch(ioDispatcher) {
-            analyzer.qrDebugFlow.collect { qrDebug ->
-                _qrDebug.postValue(qrDebug)
-            }
-        }
-    }
+    private var analysisExecutor: ExecutorService? = null
+    private var analyzer: QrCodeAnalyzer? = null
 
-    fun parseQrString(qrString: String): QRResponse {
-        val uri = qrString.toUri()
-        val unitId = uri.getQueryParameter(Constants.SCAN_UNIT_ID)
-        val sessionId = uri.getQueryParameter(Constants.SCAN_SESSION_ID)
-
-        if (unitId.isNullOrEmpty() || sessionId.isNullOrEmpty()) {
-            throw IllegalArgumentException("unitId or sessionId missing in QR string")
-        }
-
-        return QRResponse(unitId = unitId, sessionId = sessionId)
-    }
-
-    fun stopAnalyzing() {
-        DebugLog.d(TAG) { "QR analysis stopped" }
-        analyzer.stopAnalyzing()
-        //_qrString.value = null
+    /** The camera use case that feeds the scanner; built on first use. */
+    val imageAnalysis: ImageAnalysis by lazy {
+        val executor = Executors.newSingleThreadExecutor().also { analysisExecutor = it }
+        val codeAnalyzer = QrCodeAnalyzer(::onCodeRead).also { analyzer = it }
+        ImageAnalysis.Builder()
+            .setResolutionSelector(
+                ResolutionSelector.Builder()
+                    .setResolutionStrategy(
+                        ResolutionStrategy(
+                            Size(1280, 720),
+                            ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER_THEN_LOWER
+                        )
+                    )
+                    .build()
+            )
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .build()
+            .also { it.setAnalyzer(executor, codeAnalyzer) }
     }
 
     fun startAnalyzing() {
-        DebugLog.d(TAG) { "QR analysis started" }
-        analyzer.startAnalyzing()
-        //_qrString.value = null
+        analyzing = _uploading.value != true
     }
 
-    var cameraStarted = false
+    fun stopAnalyzing() {
+        analyzing = false
+    }
+
+    private fun onCodeRead(code: String) {
+        if (!analyzing) return
+        val scan = scanLinkFrom(code, BuildConfig.APP_LINK_HOST)
+        if (scan == null) {
+            // The same code arrives with every frame: say it once every few seconds.
+            val now = SystemClock.elapsedRealtime()
+            if (now - lastForeignNoticeAt >= FOREIGN_NOTICE_INTERVAL_MS) {
+                lastForeignNoticeAt = now
+                _foreignCode.value = Event(Unit)
+            }
+            return
+        }
+        DebugLog.d(TAG) { "Kamleon scan link read; linking it" }
+        analyzing = false
+        _uploading.value = true
+        upload(scan)
+    }
+
+    /** Links a scan that arrived through an app link. */
+    fun uploadQRtoFirestore(qrResponse: QRResponse) = upload(qrResponse)
+
+    private fun upload(scan: QRResponse) {
+        viewModelScope.launch {
+            val result = firestoreDataSource.uploadQrId(scan)
+            _uploading.value = false
+            _qrUploaded.value = Event(actionResultOf(result))
+        }
+    }
+
+    override fun onCleared() {
+        if (analyzer != null) imageAnalysis.clearAnalyzer()
+        analyzer?.close()
+        analysisExecutor?.shutdown()
+    }
 
     companion object {
         private val TAG = QrViewModel::class.java.simpleName
+        private const val FOREIGN_NOTICE_INTERVAL_MS = 3_000L
     }
 }

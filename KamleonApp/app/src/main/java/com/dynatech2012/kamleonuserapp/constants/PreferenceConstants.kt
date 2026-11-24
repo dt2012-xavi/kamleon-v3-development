@@ -18,4 +18,6 @@ object PreferenceConstants {
     const val PREF_FIRST_LOGIN = "firstLogin"
     const val PREF_ACCEPTED_POLICY = "acceptedPolicy"
     const val PREF_NEW_MEASURE = "newMeasure"
+    /** Whether the scanner's how-to sheet has been shown once; after that it opens from its button. */
+    const val PREF_SCAN_INTRO_SEEN = "scanIntroSeen"
 }

@@ -89,7 +89,8 @@ android {
         }
     }
     // All four environments share an applicationId (installing one replaces the others).
-    // The app link host is injected into the manifest; also review each flavor's UrlConstants.
+    // The app link host is injected into the manifest and BuildConfig.APP_LINK_HOST (which the in-app
+    // scanner checks codes against); also review each flavor's UrlConstants.
     flavorDimensions += "environment"
     productFlavors {
         internal{
@@ -99,6 +100,7 @@ android {
             resValue "string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}"
             def appLinkHost = "kamleon-v3-internal.vercel.app"
             manifestPlaceholders = [appLinkHost: appLinkHost]
+            buildConfigField "String", "APP_LINK_HOST", "\"${appLinkHost}\""
         }
         development {
             dimension = "environment"
@@ -107,6 +109,7 @@ android {
             resValue "string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}"
             def appLinkHost = "dev.kamleon.app"
             manifestPlaceholders = [appLinkHost: appLinkHost]
+            buildConfigField "String", "APP_LINK_HOST", "\"${appLinkHost}\""
         }
         prod {
             dimension = "environment"
@@ -117,6 +120,7 @@ android {
             resValue "string", "app_version", "${defaultConfig.versionName}"
             def appLinkHost = "kamleon.app"
             manifestPlaceholders = [appLinkHost: appLinkHost]
+            buildConfigField "String", "APP_LINK_HOST", "\"${appLinkHost}\""
         }
         preProduction {
             dimension = "environment"
@@ -125,6 +129,7 @@ android {
             resValue "string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}"
             def appLinkHost = "pre.kamleon.app"
             manifestPlaceholders = [appLinkHost: appLinkHost]
+            buildConfigField "String", "APP_LINK_HOST", "\"${appLinkHost}\""
         }
     }
     compileOptions {
