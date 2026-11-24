@@ -72,6 +72,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.views.HeaderBackButton
 import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.security.PasswordLength
 import com.dynatech2012.kamleonuserapp.security.PasswordStrength
@@ -152,13 +153,13 @@ fun PwdScreen(
 
     val horizontal = dimensionResource(R.dimen.margin_horizontal_header)
     Column(Modifier.fillMaxSize().background(colorResource(R.color.white))) {
-        SettingsBackButton(
+        HeaderBackButton(
             onClick = onBack,
             modifier = Modifier.padding(
                 start = horizontal,
                 top = dimensionResource(R.dimen.margin_top_header),
                 bottom = dimensionResource(R.dimen.margin_bottom_header)
-            )
+            ).testTag("pwd_back")
         )
         KamleonFormLayout(
             barHorizontalPadding = horizontal,
@@ -299,35 +300,6 @@ internal fun pwdFieldErrors(
         else -> null
     }
 )
-
-/** Round back button of the settings screens: a 36dp white circle with an 8dp shadow. */
-@Composable
-private fun SettingsBackButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    val label = stringResource(R.string.nav_back)
-    Box(
-        modifier = modifier
-            .size(36.dp)
-            .shadow(8.dp, CircleShape)
-            .background(colorResource(R.color.white), CircleShape)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                role = Role.Button,
-                onClick = onClick
-            )
-            .semantics { contentDescription = label }
-            .testTag("pwd_back"),
-        contentAlignment = Alignment.Center
-    ) {
-        // ImageView 20dp with 3dp end padding: the chevron is drawn slightly left of centre.
-        Image(
-            painter = painterResource(R.drawable.ic_arrow_back_ios_new_24),
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier.size(20.dp).padding(end = 3.dp)
-        )
-    }
-}
 
 /**
  * Settings card (`bg_setting_list_shadow`): #FAFAFA rounded rectangle over six 1dp rings of
