@@ -361,8 +361,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         DebugLog.d(TAG) { "on user data changed" }
         val initials = getString(
             R.string.user_name_initials,
-            userData.name.substring(0, 1).uppercase(),
-            userData.lastName.substring(0, 1).uppercase()
+            userData.name.take(1).uppercase(),
+            userData.lastName.take(1).uppercase()
         )
         binding.tvSettingProfileName.text = initials
         binding.tvProfileName.text =

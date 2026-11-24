@@ -66,7 +66,6 @@ class MainViewModel @Inject constructor(
     val imageLoader: ImageLoader
 ) : ViewModel() {
 
-    var graphicType: Int = -1
 
     var fName: String? = ""
     var lName: String? = ""

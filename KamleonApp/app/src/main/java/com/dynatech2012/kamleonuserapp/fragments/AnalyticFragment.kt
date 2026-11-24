@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -12,6 +13,7 @@ import com.dynatech2012.kamleonuserapp.databinding.ActivityAnalyticBinding
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.analytics.AnalyticsScreen
 import com.dynatech2012.kamleonuserapp.views.cards.AnalyticType
+import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.dynatech2012.kamleonuserapp.views.home.HomeProfile
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -47,16 +49,16 @@ class AnalyticFragment : BaseFragment<ActivityAnalyticBinding>() {
     }
 
     private fun openGraph(type: AnalyticType) {
-        viewModel.graphicType = when (type) {
-            AnalyticType.HYDRATION -> 0
-            AnalyticType.ELECTROLYTE -> 1
-            AnalyticType.VOLUME -> 2
+        val graphType = when (type) {
+            AnalyticType.HYDRATION -> KamleonGraphDataType.hydration
+            AnalyticType.ELECTROLYTE -> KamleonGraphDataType.electrolytes
+            AnalyticType.VOLUME -> KamleonGraphDataType.volume
         }
-        navigate(R.id.action_tabFragment_to_graphicsFragment)
+        navigate(R.id.action_tabFragment_to_graphicsFragment, GraphicsFragment.argsFor(graphType))
     }
 
-    private fun navigate(action: Int) {
+    private fun navigate(action: Int, args: Bundle? = null) {
         val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
-        navHostFragment.navController.navigate(action)
+        navHostFragment.navController.navigate(action, args)
     }
 }

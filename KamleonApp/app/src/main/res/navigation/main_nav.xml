@@ -50,6 +50,10 @@
         android:name="com.dynatech2012.kamleonuserapp.fragments.GraphicsFragment"
         android:label="activity_graphics"
         tools:layout="@layout/activity_graphics">
+        <argument
+            android:name="graphType"
+            app:argType="string"
+            android:defaultValue="hydration" />
         <action
             android:id="@+id/action_graphicsFragment_to_settingFragment"
             app:destination="@id/settingFragment" />

@@ -75,7 +75,7 @@ class ImagePickFragment : BottomSheetDialogFragment() {
     }
 
     private fun onUserDataChanged(userData: CustomUser) {
-        val initials = getString(R.string.user_name_initials, userData.name.substring(0, 1).uppercase(), userData.lastName.substring(0, 1).uppercase())
+        val initials = getString(R.string.user_name_initials, userData.name.take(1).uppercase(), userData.lastName.take(1).uppercase())
         binding.tvSettingsPickProfileName.text = initials
     }
 

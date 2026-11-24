@@ -1,7 +1,8 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
 import com.dynatech2012.kamleonuserapp.views.padForSystemBars
-import android.view.View
+import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -23,8 +24,6 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
 
     override fun setBinding(): ActivityGraphicsBinding = ActivityGraphicsBinding.inflate(layoutInflater)
 
-    private val graphTypes = arrayOf(KamleonGraphDataType.hydration, KamleonGraphDataType.electrolytes, KamleonGraphDataType.volume)
-
     override fun initView() {
         binding.root.padForSystemBars()
         /*
@@ -32,10 +31,11 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         binding.graphViewNew.setData(yearData)
          */
 
-        val typeFromIntent = viewModel.graphicType
-        binding.graphViewNew.setGraphDataType(graphTypes[typeFromIntent])
+        // Read from the arguments, so the same graph comes back after the process is recreated.
+        val graphType = graphTypeOf(arguments)
+        binding.graphViewNew.setGraphDataType(graphType)
 
-        binding.tvNavTitle.text = graphTypes[typeFromIntent].identifier
+        binding.tvNavTitle.text = graphType.identifier
 
         initObservers()
     }
@@ -51,16 +51,16 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         }
     }
     private fun initObservers() {
-        viewModel.userData.observe(this, this::onUserDataChanged)
-        viewModel.measures.observe(this, this::onGetMeasures)
-        viewModel.averageMonthlyMeasures.observe(this, this::onGetAverageMonthlyMeasures)
-        viewModel.averageDailyMeasures.observe(this, this::onGetAverageDailyMeasures)
-        viewModel.userImageUrl.observe(this, this::onUserImageChanged)
+        viewModel.userData.observe(viewLifecycleOwner, this::onUserDataChanged)
+        viewModel.measures.observe(viewLifecycleOwner, this::onGetMeasures)
+        viewModel.averageMonthlyMeasures.observe(viewLifecycleOwner, this::onGetAverageMonthlyMeasures)
+        viewModel.averageDailyMeasures.observe(viewLifecycleOwner, this::onGetAverageDailyMeasures)
+        viewModel.userImageUrl.observe(viewLifecycleOwner, this::onUserImageChanged)
     }
 
     private fun onUserDataChanged(userData: CustomUser) {
         DebugLog.d(SettingFragment.TAG) { "on user data changed" }
-        val initials = getString(R.string.user_name_initials, userData.name.substring(0, 1).uppercase(), userData.lastName.substring(0, 1).uppercase())
+        val initials = getString(R.string.user_name_initials, userData.name.take(1).uppercase(), userData.lastName.take(1).uppercase())
         binding.tvGraphicProfileName.text = initials
     }
 
@@ -133,6 +133,17 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
 
     companion object {
         val TAG: String = GraphicsFragment::class.java.simpleName
+
+        /** Navigation argument with the [KamleonGraphDataType] name of the graph to show. */
+        const val ARG_GRAPH_TYPE = "graphType"
+
+        /** The arguments that open the graph of [type]. */
+        fun argsFor(type: KamleonGraphDataType): Bundle = bundleOf(ARG_GRAPH_TYPE to type.name)
+
+        /** The graph [args] ask for; hydration when they name none or an unknown one. */
+        fun graphTypeOf(args: Bundle?): KamleonGraphDataType =
+            KamleonGraphDataType.entries.firstOrNull { it.name == args?.getString(ARG_GRAPH_TYPE) }
+                ?: KamleonGraphDataType.hydration
         // const val EXTRA_KEY_TYPE = "ExtraKeyType"
     }
 }
