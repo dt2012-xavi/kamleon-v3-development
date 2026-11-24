@@ -2,10 +2,10 @@ package com.dynatech2012.kamleonuserapp.models
 
 /**
  * Hydration band of a sample, from its score: 1-32 severely dehydrated, 33-66 dehydrated, 67-90 hydrated,
- * 91+ overhydrated. The graphs' streak counts any score from 67 up, overhydrated included.
+ * 91+ very well hydrated. The graphs' streak counts any score from 67 up.
  */
 enum class HydrationLevel {
-    SeverelyDehydrated, Dehydrated, Hydrated, Overhydrated;
+    SeverelyDehydrated, Dehydrated, Hydrated, VeryHydrated;
 
     companion object {
         const val DEHYDRATED_MIN = 33
@@ -16,7 +16,7 @@ enum class HydrationLevel {
             score < DEHYDRATED_MIN -> SeverelyDehydrated
             score < HYDRATED_MIN -> Dehydrated
             score <= HYDRATED_MAX -> Hydrated
-            else -> Overhydrated
+            else -> VeryHydrated
         }
 
         /** Whether a (possibly averaged) score counts for the streak: hydrated or above, with no upper limit. */

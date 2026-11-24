@@ -40,8 +40,8 @@ class AnalyticsCardsTest {
     fun aPreciseSampleIsJudgedOnEachMetric() {
         val (hydration, electrolytes, volume) = analyticsCardsOf(sample(score = 95, cond = 12f, vol = 300f))
         assertEquals(95, hydration.value)
-        assertEquals(R.string.analytic_overhydrated, hydration.subtitle)
-        assertEquals(R.string.analytic_hydratation_over, hydration.description)
+        assertEquals(R.string.analytic_very_hydrated, hydration.subtitle)
+        assertEquals(R.string.analytic_hydratation_optimal, hydration.description)
         assertEquals(12, electrolytes.value)
         assertEquals(R.string.analytic_elec_normal, electrolytes.subtitle)
         assertEquals(300, volume.value)
@@ -52,17 +52,17 @@ class AnalyticsCardsTest {
     @Test
     fun hydrationBands() {
         fun card(score: Int) = analyticsCardsOf(sample(score, 10f, 200f))[0]
-        // 1-32 severely dehydrated, 33-66 dehydrated, 67-90 hydrated, 91+ overhydrated.
+        // 1-32 severely dehydrated, 33-66 dehydrated, 67-90 hydrated, 91+ very well hydrated.
         listOf(
             1 to R.string.analytic_severely_dehydrated, 32 to R.string.analytic_severely_dehydrated,
             33 to R.string.analytic_dehydrated, 66 to R.string.analytic_dehydrated,
             67 to R.string.analytic_hydrated, 90 to R.string.analytic_hydrated,
-            91 to R.string.analytic_overhydrated, 99 to R.string.analytic_overhydrated,
+            91 to R.string.analytic_very_hydrated, 99 to R.string.analytic_very_hydrated,
         ).forEach { (score, subtitle) -> assertEquals("score $score", subtitle, card(score).subtitle) }
         assertEquals(R.string.analytic_hydratation_under, card(66).description)
         assertEquals(R.string.analytic_hydratation_optimal, card(67).description)
         assertEquals(R.string.analytic_hydratation_optimal, card(90).description)
-        assertEquals(R.string.analytic_hydratation_over, card(91).description)
+        assertEquals(R.string.analytic_hydratation_optimal, card(91).description)
     }
 
     @Test

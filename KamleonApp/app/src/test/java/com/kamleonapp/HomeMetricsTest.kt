@@ -29,15 +29,15 @@ class HomeMetricsTest {
     }
 
     @Test fun hydrationBands() {
-        // 1-32 severely dehydrated, 33-66 dehydrated, 67-90 hydrated, 91+ overhydrated.
+        // 1-32 severely dehydrated, 33-66 dehydrated, 67-90 hydrated, 91+ very well hydrated.
         assertEquals(HydrationLevel.SeverelyDehydrated, HydrationLevel.of(1))
         assertEquals(HydrationLevel.SeverelyDehydrated, HydrationLevel.of(32))
         assertEquals(HydrationLevel.Dehydrated, HydrationLevel.of(33))
         assertEquals(HydrationLevel.Dehydrated, HydrationLevel.of(66))
         assertEquals(HydrationLevel.Hydrated, HydrationLevel.of(67))
         assertEquals(HydrationLevel.Hydrated, HydrationLevel.of(90))
-        assertEquals(HydrationLevel.Overhydrated, HydrationLevel.of(91))
-        assertEquals(HydrationLevel.Overhydrated, HydrationLevel.of(100))
+        assertEquals(HydrationLevel.VeryHydrated, HydrationLevel.of(91))
+        assertEquals(HydrationLevel.VeryHydrated, HydrationLevel.of(100))
     }
 
     @Test fun theHydrationStreakCountsFrom67WithNoUpperLimit() {

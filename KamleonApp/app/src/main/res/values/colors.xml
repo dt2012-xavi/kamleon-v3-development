@@ -108,11 +108,10 @@
     <color name="debug_yellow">#FFC107</color>
 
     <!-- Home background gradients, from the top-left to the bottom-right corner -->
-    <!-- Hydrated is the optimum band; overhydrated drifts towards amber like the web's orange dot. -->
-    <color name="home_bg_hydrated_start">#46D5C8</color>
-    <color name="home_bg_hydrated_end">#7BC364</color>
-    <color name="home_bg_overhydrated_start">#55D2A0</color>
-    <color name="home_bg_overhydrated_end">#FAB928</color>
+    <color name="home_bg_very_hydrated_start">#46D5C8</color>
+    <color name="home_bg_very_hydrated_end">#7BC364</color>
+    <color name="home_bg_hydrated_start">#55D2A0</color>
+    <color name="home_bg_hydrated_end">#FAB928</color>
     <color name="home_bg_dehydrated_start">#EBCD2D</color>
     <color name="home_bg_dehydrated_end">#FA6923</color>
     <color name="home_bg_severely_dehydrated_start">#F58723</color>

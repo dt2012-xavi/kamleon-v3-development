@@ -47,7 +47,7 @@ class HomeScreenTest {
     fun aSampleShowsItsScoreVerdictAndMetrics() {
         setScreen(HomeContent.Sample(sample(100)))
         composeRule.onNodeWithContentDescription(context.getString(R.string.home_score_description, 100)).assertIsDisplayed()
-        composeRule.onNodeWithText(context.getString(R.string.analytic_overhydrated)).assertIsDisplayed()
+        composeRule.onNodeWithText(context.getString(R.string.analytic_very_hydrated)).assertIsDisplayed()
         composeRule.onNodeWithText(context.getString(R.string.home_metric_electrolytes)).assertIsDisplayed()
     }
 

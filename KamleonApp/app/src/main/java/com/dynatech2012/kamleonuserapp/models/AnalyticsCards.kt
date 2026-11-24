@@ -39,13 +39,13 @@ fun analyticsCardsOf(measure: MeasureData?): List<AnalyticsCard> {
                 HydrationLevel.SeverelyDehydrated -> R.string.analytic_severely_dehydrated
                 HydrationLevel.Dehydrated -> R.string.analytic_dehydrated
                 HydrationLevel.Hydrated -> R.string.analytic_hydrated
-                HydrationLevel.Overhydrated -> R.string.analytic_overhydrated
+                HydrationLevel.VeryHydrated -> R.string.analytic_very_hydrated
             },
             description = when (hydrationLevel) {
                 null -> null
                 HydrationLevel.SeverelyDehydrated, HydrationLevel.Dehydrated -> R.string.analytic_hydratation_under
                 HydrationLevel.Hydrated -> R.string.analytic_hydratation_optimal
-                HydrationLevel.Overhydrated -> R.string.analytic_hydratation_over
+                HydrationLevel.VeryHydrated -> R.string.analytic_hydratation_optimal
             },
         ),
         AnalyticsCard(
