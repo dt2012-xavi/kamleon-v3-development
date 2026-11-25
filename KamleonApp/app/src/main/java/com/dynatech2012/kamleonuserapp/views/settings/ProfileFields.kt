@@ -4,10 +4,10 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 /**
- * The editable fields of Settings' Personal data, each edited in its own sheet. Name groups the
- * name and the surname.
+ * The fields of Settings edited in a profile sheet: Personal data (Name groups the name and the
+ * surname) and the PIN.
  */
-enum class ProfileField { NAME, GENDER, BIRTH, HEIGHT, WEIGHT }
+enum class ProfileField { NAME, GENDER, BIRTH, HEIGHT, WEIGHT, PIN }
 
 /** How Personal data shows and picks heights and weights. */
 object ProfileValues {
@@ -44,4 +44,12 @@ object ProfileValues {
     /** The wheel's whole values: [range], stretched so a saved value outside it can still be shown. */
     fun wheelValues(range: IntRange, start: Int): List<String> =
         (minOf(range.first, start)..maxOf(range.last, start)).map { it.toString() }
+
+    const val PIN_LENGTH = 6
+
+    /** What a PIN field keeps of typed or pasted text: digits only, at most [PIN_LENGTH]. */
+    fun pinInput(text: String): String = text.filter { it.isDigit() }.take(PIN_LENGTH)
+
+    /** Whether [pin] is a whole PIN. */
+    fun isCompletePin(pin: String): Boolean = pin.length == PIN_LENGTH && pin.all { it.isDigit() }
 }

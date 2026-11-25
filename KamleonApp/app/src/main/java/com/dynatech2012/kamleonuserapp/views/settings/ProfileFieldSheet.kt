@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
@@ -53,6 +55,7 @@ import androidx.lifecycle.lifecycleScope
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.extensions.addYears
+import com.dynatech2012.kamleonuserapp.extensions.sha256
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
@@ -80,18 +83,19 @@ private const val MIN_AGE_YEARS = 14
 private const val WHEEL_OFFSET = 2
 
 /**
- * One Personal data field's sheet: a title, the field's control and Save. Save stays off until the
- * value changes (and, for the name, while the name or the surname is empty), turns into a spinner
- * while saving, and [onSave] gets the profile fields to write.
+ * The frame every Settings sheet shares: the light rounded surface, the handle, the [title], the
+ * sheet's [content] and Save. Save is off unless [saveEnabled] and turns into a spinner while
+ * [saving].
  */
 @Composable
-fun ProfileFieldSheetContent(
-    field: ProfileField,
-    user: CustomUser,
+fun SettingsSheetFrame(
+    title: String,
+    saveEnabled: Boolean,
     saving: Boolean,
-    onSave: (Map<String, Any>) -> Unit
+    onSave: () -> Unit,
+    saveTestTag: String = "profile_sheet_save",
+    content: @Composable ColumnScope.() -> Unit
 ) {
-    var pending by remember { mutableStateOf<Map<String, Any>?>(null) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -108,29 +112,53 @@ fun ProfileFieldSheetContent(
         )
         Spacer(Modifier.height(16.dp))
         Text(
-            text = stringResource(field.title()),
+            text = title,
             style = kamleonTitle(),
             color = colorResource(R.color.kamleon_dark_grey),
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth().testTag("profile_sheet_title")
         )
         Spacer(Modifier.height(20.dp))
-        val save = { pending?.let(onSave); Unit }
+        content()
+        Spacer(Modifier.height(24.dp))
+        KamleonRoundButton(
+            text = stringResource(R.string.setting_button_save),
+            onClick = onSave,
+            enabled = saveEnabled,
+            loading = saving,
+            testTag = saveTestTag
+        )
+    }
+}
+
+/**
+ * One field's sheet: Save stays off until the value changes (and, for the name, while the name or
+ * the surname is empty; for the PIN, until both entries are six matching digits), and [onSave]
+ * gets the profile fields to write.
+ */
+@Composable
+fun ProfileFieldSheetContent(
+    field: ProfileField,
+    user: CustomUser,
+    saving: Boolean,
+    onSave: (Map<String, Any>) -> Unit
+) {
+    var pending by remember { mutableStateOf<Map<String, Any>?>(null) }
+    val save = { pending?.let(onSave); Unit }
+    SettingsSheetFrame(
+        title = stringResource(field.title()),
+        saveEnabled = pending != null,
+        saving = saving,
+        onSave = save
+    ) {
         when (field) {
             ProfileField.NAME -> NameEditor(user, onChange = { pending = it }, onDone = save)
             ProfileField.GENDER -> GenderEditor(user, onChange = { pending = it })
             ProfileField.BIRTH -> BirthEditor(user, onChange = { pending = it })
             ProfileField.HEIGHT -> HeightEditor(user, onChange = { pending = it })
             ProfileField.WEIGHT -> WeightEditor(user, onChange = { pending = it })
+            ProfileField.PIN -> PinEditor(onChange = { pending = it }, onDone = save)
         }
-        Spacer(Modifier.height(24.dp))
-        KamleonRoundButton(
-            text = stringResource(R.string.setting_button_save),
-            onClick = save,
-            enabled = pending != null,
-            loading = saving,
-            testTag = "profile_sheet_save"
-        )
     }
 }
 
@@ -140,6 +168,7 @@ private fun ProfileField.title() = when (this) {
     ProfileField.BIRTH -> R.string.profile_sheet_title_birth
     ProfileField.HEIGHT -> R.string.profile_sheet_title_height
     ProfileField.WEIGHT -> R.string.profile_sheet_title_weight
+    ProfileField.PIN -> R.string.profile_sheet_title_pin
 }
 
 /** Name and surname; each must have something besides spaces. Done on the keyboard saves. */
@@ -181,8 +210,51 @@ private fun NameEditor(user: CustomUser, onChange: (Map<String, Any>?) -> Unit, 
     }
 }
 
+/**
+ * The new PIN twice: six digits each, saved as its hash. No current PIN is asked: the person
+ * holding the signed-in phone may set it.
+ */
 @Composable
-private fun FieldLabel(text: String) {
+private fun PinEditor(onChange: (Map<String, Any>?) -> Unit, onDone: () -> Unit) {
+    // PINs are deliberately kept out of saved instance state.
+    var pin by remember { mutableStateOf("") }
+    var confirm by remember { mutableStateOf("") }
+    val focus = remember { FocusRequester() }
+    LaunchedEffect(Unit) { focus.requestFocus() }
+    val mismatch = ProfileValues.isCompletePin(pin) && ProfileValues.isCompletePin(confirm) && pin != confirm
+    LaunchedEffect(pin, confirm) {
+        onChange(if (ProfileValues.isCompletePin(pin) && pin == confirm) mapOf("pin" to pin.sha256()) else null)
+    }
+    Column(Modifier.fillMaxWidth()) {
+        FieldLabel(stringResource(R.string.pin_new))
+        KamleonTextField(
+            value = pin,
+            onValueChange = { pin = ProfileValues.pinInput(it) },
+            placeholder = stringResource(R.string.profile_sheet_pin_hint),
+            secure = true,
+            keyboardType = KeyboardType.NumberPassword,
+            focusRequester = focus,
+            testTag = "profile_sheet_pin"
+        )
+        Spacer(Modifier.height(16.dp))
+        FieldLabel(stringResource(R.string.pin_confirm))
+        KamleonTextField(
+            value = confirm,
+            onValueChange = { confirm = ProfileValues.pinInput(it) },
+            placeholder = stringResource(R.string.profile_sheet_pin_hint),
+            secure = true,
+            keyboardType = KeyboardType.NumberPassword,
+            imeAction = ImeAction.Done,
+            onImeAction = onDone,
+            errorText = if (mismatch) stringResource(R.string.pin_error_dontmatch) else null,
+            testTag = "profile_sheet_pin_confirm"
+        )
+    }
+}
+
+/** The small label above a field in a Settings sheet. */
+@Composable
+internal fun FieldLabel(text: String) {
     Text(
         text = text,
         style = kamleonCaption(),
@@ -341,16 +413,8 @@ class ProfileFieldSheet : BottomSheetDialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        val sheetDialog = dialog as? BottomSheetDialog ?: return
-        // The content draws its own rounded surface.
-        sheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            ?.setBackgroundColor(Color.TRANSPARENT)
-        sheetDialog.behavior.apply {
-            skipCollapsed = true
-            state = BottomSheetBehavior.STATE_EXPANDED
-            // Dragging the wheels must turn them, not pull the sheet down.
-            isDraggable = field == ProfileField.NAME || field == ProfileField.GENDER
-        }
+        // Dragging the wheels must turn them, not pull the sheet down.
+        showExpanded(draggable = field !in setOf(ProfileField.BIRTH, ProfileField.HEIGHT, ProfileField.WEIGHT))
     }
 
     private fun save(fields: Map<String, Any>) {
@@ -363,7 +427,9 @@ class ProfileFieldSheet : BottomSheetDialogFragment() {
             saving = false
             isCancelable = true
             if (response.isSuccess) {
-                parentFragmentManager.setFragmentResult(RESULT_SAVED, bundleOf())
+                val message = if (field == ProfileField.PIN) R.string.dialog_reset_pin_success_description
+                else R.string.dialog_saved_text
+                parentFragmentManager.setFragmentResult(RESULT_SAVED, bundleOf(RESULT_MESSAGE to message))
                 dismissAllowingStateLoss()
             } else {
                 showActionFailedSheet(response.error)
@@ -373,10 +439,27 @@ class ProfileFieldSheet : BottomSheetDialogFragment() {
 
     companion object {
         const val RESULT_SAVED = "profile_field_saved"
+        /** The text to confirm the save with, a string resource, in the [RESULT_SAVED] bundle. */
+        const val RESULT_MESSAGE = "message"
         private const val ARG_FIELD = "profile_field"
 
         fun newInstance(field: ProfileField) = ProfileFieldSheet().apply {
             arguments = bundleOf(ARG_FIELD to field.name)
         }
+    }
+}
+
+/**
+ * Shows a Settings sheet fully expanded on a transparent container (the content draws its own
+ * rounded surface). Call from onStart.
+ */
+fun BottomSheetDialogFragment.showExpanded(draggable: Boolean) {
+    val sheetDialog = dialog as? BottomSheetDialog ?: return
+    sheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        ?.setBackgroundColor(Color.TRANSPARENT)
+    sheetDialog.behavior.apply {
+        skipCollapsed = true
+        state = BottomSheetBehavior.STATE_EXPANDED
+        isDraggable = draggable
     }
 }

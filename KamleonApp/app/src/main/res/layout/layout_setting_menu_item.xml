@@ -30,6 +30,8 @@
         android:textAlignment="textEnd"
         android:paddingHorizontal="4dp"
         android:id="@+id/tvValue"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textSize="@dimen/ts_14"
         android:textAppearance="@style/TextAppearance.Kamleon.Book"
         tools:text="value"

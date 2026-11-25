@@ -6,6 +6,7 @@ import android.os.Build
 import android.provider.Settings
 import android.graphics.Color
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.activityViewModels
@@ -30,6 +31,7 @@ import com.dynatech2012.kamleonuserapp.views.SheetResult
 import com.dynatech2012.kamleonuserapp.views.SheetSpec
 import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
 import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -39,6 +41,7 @@ import java.time.format.FormatStyle
 import com.dynatech2012.kamleonuserapp.views.showProfileImage
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.views.settings.ProfileField
+import com.dynatech2012.kamleonuserapp.views.settings.PasswordSheet
 import com.dynatech2012.kamleonuserapp.views.settings.ProfileFieldSheet
 import com.dynatech2012.kamleonuserapp.views.settings.ProfileValues
 
@@ -90,8 +93,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         initObservers()
         onKamleonSheetResult(SHEET_LOGOUT) { if (it == SheetResult.PRIMARY) logout() }
         onKamleonSheetResult(SHEET_NOTIFICATIONS_BLOCKED) { if (it == SheetResult.PRIMARY) openNotificationSettings() }
-        childFragmentManager.setFragmentResultListener(ProfileFieldSheet.RESULT_SAVED, viewLifecycleOwner) { _, _ ->
-            showSavedDialog()
+        childFragmentManager.setFragmentResultListener(ProfileFieldSheet.RESULT_SAVED, viewLifecycleOwner) { _, result ->
+            showSavedDialog(result.getInt(ProfileFieldSheet.RESULT_MESSAGE, R.string.dialog_saved_text))
         }
         viewModel.getUserData()
     }
@@ -140,8 +143,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
     }
 
-    private fun showSavedDialog() {
-        Snackbar.make(binding.root, R.string.dialog_saved_text, Snackbar.LENGTH_SHORT).show()
+    private fun showSavedDialog(@StringRes message: Int) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun showLogoutDialog() {
@@ -186,13 +189,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
     override fun onMenuItemClicked(menuView: SettingMenuItemView) {
         when (menuView) {
-            binding.accMenuItemPwd -> {
-                findNavController().navigate(R.id.action_settingFragment_to_pwdFragment)
-            }
-
-            binding.accMenuItemPin -> {
-                findNavController().navigate(R.id.action_settingFragment_to_pinFragment)
-            }
+            binding.accMenuItemPwd -> showSheet { PasswordSheet() }
+            binding.accMenuItemPin -> showProfileSheet(ProfileField.PIN)
 
             binding.accMenuItemHelp -> {
                 //viewModel.tutorialComingFromHome = false
@@ -219,10 +217,15 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
     }
 
-    /** One sheet at a time: a second tap while one is opening does nothing. */
     private fun showProfileSheet(field: ProfileField) {
-        if (viewModel.userData.value == null || childFragmentManager.findFragmentByTag(PROFILE_SHEET) != null) return
-        ProfileFieldSheet.newInstance(field).show(childFragmentManager, PROFILE_SHEET)
+        if (viewModel.userData.value == null) return
+        showSheet { ProfileFieldSheet.newInstance(field) }
+    }
+
+    /** One Settings sheet at a time: a second tap while one is opening does nothing. */
+    private fun showSheet(create: () -> BottomSheetDialogFragment) {
+        if (childFragmentManager.findFragmentByTag(PROFILE_SHEET) != null) return
+        create().show(childFragmentManager, PROFILE_SHEET)
     }
 
     private fun initObservers() {

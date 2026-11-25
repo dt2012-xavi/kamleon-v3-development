@@ -46,4 +46,17 @@ class ProfileValuesTest {
         assertEquals("95", ProfileValues.wheelValues(100..250, 95).first())
         assertEquals("260", ProfileValues.wheelValues(30..250, 260).last())
     }
+
+    @Test
+    fun `a PIN keeps only six digits`() {
+        assertEquals("123456", ProfileValues.pinInput("12a34 5678"))
+        assertEquals("", ProfileValues.pinInput("abc"))
+    }
+
+    @Test
+    fun `only six digits make a whole PIN`() {
+        assertEquals(true, ProfileValues.isCompletePin("012345"))
+        assertEquals(false, ProfileValues.isCompletePin("12345"))
+        assertEquals(false, ProfileValues.isCompletePin("12345a"))
+    }
 }

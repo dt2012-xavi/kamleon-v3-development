@@ -167,62 +167,17 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun changePin(oldPin: String, newPin: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val oldPinHash = oldPin.sha256()
-            DebugLog.i("PIN") { "PIN change requested" }
-
-            if (oldPinHash != userData.value?.pin) {
-                DebugLog.i("PIN") { "PIN change rejected: current PIN mismatch" }
-                val exception = Exception(Constants.UNMATCHING_PIN)
-                val response = Response.Failure(exception)
-                _userUpdated.postValue(response)
-            } else {
-                val newPinHash = newPin.sha256()
-                DebugLog.i("PIN") { "PIN change accepted; updating profile" }
-                val data = hashMapOf<String, Any>("pin" to newPinHash)
-                val response = firestoreRepo.updateUser(data)
-                DebugLog.i("PIN") { "PIN update completed: success=${response.isSuccess}" }
-                //_userUpdated.postValue(true)
-                _userUpdated.postValue(response)
-            }
-        }
-    }
-
-    fun changeEmail(currentPwd: String, newEmail: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            userRepository.changeEmail(currentPwd, newEmail)
-            val data = hashMapOf<String, Any>("email" to newEmail)
-            val response = firestoreRepo.updateUser(data)
-            //_userUpdated.postValue(true)
-            _userUpdated.postValue(response)
-        }
-    }
-
-    private val _pwdChanging = MutableLiveData(false)
-    /** True while a password change (policy check plus reauthentication) is in flight. */
-    val pwdChanging: LiveData<Boolean> = _pwdChanging
-
     /** Live strength feedback for the new password field. */
     suspend fun passwordStrength(password: String): PasswordStrength = passwordPolicy.estimateStrength(password)
 
-    fun changePwd(oldPwd: String, newPwd: String) {
-        if (_pwdChanging.value == true) return
-        _pwdChanging.value = true
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                // The new password must pass the policy before the account is touched.
-                val policy = passwordPolicy.validate(newPwd)
-                if (policy is PasswordPolicyResult.Rejected) {
-                    _userUpdated.postValue(Response.Failure(PasswordPolicyException(policy.reason)))
-                    return@launch
-                }
-                val response = userRepository.changePwd(oldPwd, newPwd)
-                //_userUpdated.postValue(true)
-                _userUpdated.postValue(response)
-            } finally {
-                _pwdChanging.postValue(false)
-            }
+    /**
+     * Changes the password: the new one must pass the policy before the account is touched, then
+     * the account is reauthenticated with [oldPwd]. The sheet waits for the result itself.
+     */
+    suspend fun changePassword(oldPwd: String, newPwd: String): Response<Unit> = withContext(Dispatchers.IO) {
+        when (val policy = passwordPolicy.validate(newPwd)) {
+            is PasswordPolicyResult.Rejected -> Response.Failure(PasswordPolicyException(policy.reason))
+            else -> userRepository.changePwd(oldPwd, newPwd)
         }
     }
 
@@ -394,28 +349,12 @@ class MainViewModel @Inject constructor(
 
     }
 
-    private val _resetPwdSuccess = MutableLiveData<ActionResult>()
-    val resetPwdSuccess: LiveData<ActionResult> = _resetPwdSuccess
-    fun resetPwd() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val userEmail = userRepository.email
-            if (!userEmail.isNullOrEmpty()) {
-                _resetPwdSuccess.postValue(actionResultOf(cloudFunctions.resetPwd(userEmail)))
-            }
-        }
-    }
+    /** The signed-in user's e-mail, where a password reset link goes; null when there is none. */
+    val accountEmail: String? get() = userRepository.email?.takeIf { it.isNotEmpty() }
 
-    private val _resetPINSuccess = MutableLiveData<ActionResult>()
-    val resetPINSuccess: LiveData<ActionResult> = _resetPINSuccess
-
-    fun resetPIN() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val userEmail = userRepository.email
-            val userUUid = userRepository.uuid
-            if (!userEmail.isNullOrEmpty() && !userUUid.isNullOrEmpty()) {
-                _resetPINSuccess.postValue(actionResultOf(cloudFunctions.resetPin(userEmail, userUUid)))
-            }
-        }
+    /** Emails the signed-in user a link to reset the password; null when there is no e-mail. */
+    suspend fun sendPasswordReset(): ActionResult? = withContext(Dispatchers.IO) {
+        accountEmail?.let { actionResultOf(cloudFunctions.resetPwd(it)) }
     }
 
 

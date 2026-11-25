@@ -11,7 +11,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
 import com.dynatech2012.kamleonuserapp.application.AppTheme
-import com.dynatech2012.kamleonuserapp.fragments.PwdScreen
+import com.dynatech2012.kamleonuserapp.fragments.PasswordSheetContent
 import com.dynatech2012.kamleonuserapp.security.PasswordStrength
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -24,7 +24,7 @@ class PwdScreenTest {
     private var new by mutableStateOf("")
     private var confirm by mutableStateOf("")
     private var saved = 0
-    private var back = 0
+    private var forgot = 0
 
     private fun setScreen(
         currentError: Int? = null,
@@ -33,13 +33,13 @@ class PwdScreenTest {
         checking: Boolean = false
     ) = composeRule.setContent {
         AppTheme(useDarkTheme = false) {
-            PwdScreen(
+            PasswordSheetContent(
                 currentPassword = current, newPassword = new, confirmPassword = confirm,
                 currentError = currentError, newError = newError,
                 checking = checking, passwordStrength = strength,
                 onCurrentPasswordChange = { current = it }, onNewPasswordChange = { new = it },
                 onConfirmPasswordChange = { confirm = it },
-                onSave = { saved++ }, onForgotPassword = {}, onBack = { back++ }
+                onSave = { saved++ }, onForgotPassword = { forgot++ }
             )
         }
     }
@@ -124,9 +124,9 @@ class PwdScreenTest {
     }
 
     @Test
-    fun backButtonNavigatesBack() {
+    fun forgotPasswordAsksForTheEmail() {
         setScreen()
-        composeRule.onNodeWithTag("pwd_back").performClick()
-        composeRule.runOnIdle { assertEquals(1, back) }
+        composeRule.onNodeWithTag("pwd_forgot").performClick()
+        composeRule.runOnIdle { assertEquals(1, forgot) }
     }
 }

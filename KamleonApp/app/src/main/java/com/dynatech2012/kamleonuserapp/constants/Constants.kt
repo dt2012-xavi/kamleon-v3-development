@@ -6,7 +6,6 @@ object Constants {
     const val DEBUG_MODE = false
 
     // Errors
-    const val UNMATCHING_PIN = "Unmatching PIN"
 
     // Results
     const val PICK_IMAGE = "pickImage"

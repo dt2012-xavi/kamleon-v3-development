@@ -99,6 +99,10 @@
     <string name="forgotpwd_can_not_reset">Can\’t reset your password?</string>
     <string name="forgotpwd_create_new">Create new account</string>
     <string name="forgotpwd_or">OR</string>
+    <string name="forgotpwd_sent">We’ve sent you a link to get back into your account</string>
+    <string name="forgotpwd_confirm_title">Reset your password?</string>
+    <string name="forgotpwd_confirm_desc">We’ll send a link to %1$s to get back into your account.</string>
+    <string name="forgotpwd_send_error">We couldn’t send the login link. Please try again.</string>
 
     <!-- Privacy -->
     <string name="privacy_title">Privacy</string>
@@ -159,9 +163,7 @@
     <string name="setting_label_tos">TERMS AND CONDITIONS</string>
     <string name="setting_label_pp">PRIVACY POLICY</string>
 
-    <string name="setting_desc_acc1">The password is the personalized combination of characters that you enter to access the website and the app securely. </string>
-    <string name="setting_desc_acc2">The PIN is the personalized code that you enter on the screen before starting your experience.</string>
-
+    <string name="setting_desc_security">Your password signs you in to the app and the website. Your PIN is the code you enter on the Kamleon screen before you start.</string>
     <string name="setting_label_acc_info">ACCOUNT INFORMATION</string>
     <string name="setting_label_org">ORGANIZATION</string>
     <string name="setting_label_org_short">ORG.</string>
@@ -180,7 +182,10 @@
     <string name="profile_sheet_title_birth">Date of birth</string>
     <string name="profile_sheet_title_height">Height</string>
     <string name="profile_sheet_title_weight">Weight</string>
+    <string name="profile_sheet_title_password">Password</string>
+    <string name="profile_sheet_title_pin">PIN</string>
     <string name="profile_sheet_name_hint">Name</string>
+    <string name="profile_sheet_pin_hint">6 digits</string>
     <string name="profile_sheet_surname_hint">Surname</string>
     <string name="unit_cm" translatable="false">cm</string>
     <string name="unit_kg" translatable="false">kg</string>
@@ -210,33 +215,20 @@
     <string name="setting_change_photo">Change profile photo</string>
 
     <!-- Email -->
-    <string name="email_email">E-MAIL</string>
-    <string name="email_new">NEW E-MAIL</string>
-    <string name="email_confirm">CONFIRM E-MAIL</string>
 
     <!-- Pin -->
-    <string name="pin_settings"><u>Forgot PIN?</u></string>
-    <string name="pin_title">SET A NEW PIN</string>
-    <string name="pin_pin">CURRENT PIN</string>
     <string name="pin_new">NEW PIN</string>
     <string name="pin_confirm">CONFIRM PIN</string>
-
-    <string name="pin_desc">The PIN is the personalized code that you enter on the screen before starting your experience.\n\n<b>Set Up Your PIN:</b>\n1. Enter a six digits numeric code of your choice.\n2. Confirm and start your secure journey!</string>
-    <string name="pin_error_title">Error</string>
     <string name="pin_error_dontmatch">New PIN and Confirm PIN do not match</string>
-    <string name="pin_error_pin">Current PIN is not valid</string>
 
     <string name="pwd_error_title">Error</string>
     <string name="pwd_error_dontmatch">New password and confirm password do not match</string>
     <string name="pwd_error_generic">There was an error updating your password</string>
 
     <!-- Change Pass -->
-    <string name="pwd_title">SET A NEW PASSWORD</string>
     <string name="pwd_password">CURRENT PASSWORD</string>
     <string name="pwd_new">NEW PASSWORD</string>
     <string name="pwd_confirm">CONFIRM PASSWORD</string>
-
-    <string name="pwd_desc">The password is the personalized combination of characters that you enter to access the website securely.\n\n<b>Set Up Your Password:</b>\n1. Choose a strong password: Use a combination of letters, numbers, and symbols and ensure it\'s unique and not easily guessable.\n2. Confirm and start your secure journey!</string>
 
     <!-- Delete account -->
     <string name="delete_title">Deactivate or delete your account</string>
@@ -393,7 +385,6 @@
     <string name="dialog_reset_pwd_error_title">Error</string>
     <string name="dialog_reset_pwd_error_description">User not found</string>
     <string name="dialog_reset_pin_success_description">You\'ve successfully changed your PIN</string>
-    <string name="dialog_reset_pin_error_description">There was an error changing your PIN</string>
     <string name="scan_hint">Scan the QR code shown on the S-Urinal</string>
     <string name="scan_not_kamleon">This QR code isn’t from Kamleon</string>
     <string name="scan_linking">Linking your scan</string>

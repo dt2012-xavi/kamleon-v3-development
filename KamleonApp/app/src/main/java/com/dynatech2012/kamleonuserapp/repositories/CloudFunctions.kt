@@ -93,9 +93,6 @@ class CloudFunctions(
     suspend fun resetPwd(email: String): ResponseNullable<Nothing> =
         callEmailFunction("sendPasswordEmail", hashMapOf("email" to email), "Reset Password email sent successfully")
 
-    suspend fun resetPin(email: String, userId: String): ResponseNullable<Nothing> =
-        callEmailFunction("sendPINEmail", hashMapOf("email" to email, "id" to userId), "Reset PIN email sent successfully")
-
     suspend fun sendVerificationEmail(
         userId: String,
         email: String,

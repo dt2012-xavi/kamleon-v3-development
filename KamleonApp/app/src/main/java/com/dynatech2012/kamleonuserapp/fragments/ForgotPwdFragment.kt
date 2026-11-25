@@ -59,7 +59,7 @@ class ForgotPwdFragment : Fragment() {
     }
 
     private fun showSuccessDialog() {
-        Snackbar.make(requireView(), R.string.dialog_reset_pwd_success_description, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(requireView(), R.string.forgotpwd_sent, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun showErrorDialog(failure: Exception?) {

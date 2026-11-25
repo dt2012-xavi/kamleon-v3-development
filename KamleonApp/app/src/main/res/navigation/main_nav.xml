@@ -65,15 +65,6 @@
         android:label="activity_setting"
         tools:layout="@layout/activity_setting">
         <action
-            android:id="@+id/action_settingFragment_to_emailFragment"
-            app:destination="@id/emailFragment" />
-        <action
-            android:id="@+id/action_settingFragment_to_pinFragment"
-            app:destination="@id/pinFragment" />
-        <action
-            android:id="@+id/action_settingFragment_to_pwdFragment"
-            app:destination="@id/pwdFragment" />
-        <action
             android:id="@+id/action_settingFragment_to_deleteFragment"
             app:destination="@id/deleteFragment" />
         <action
@@ -84,45 +75,11 @@
             app:destination="@id/helpFragment" />
 
     </fragment>
-
-    <fragment
-        android:id="@+id/emailFragment"
-        android:name="com.dynatech2012.kamleonuserapp.fragments.EmailFragment"
-        android:label="activity_email"
-        tools:layout="@layout/activity_email">
-        <action
-            android:id="@+id/action_emailFragment_to_onboardingFragment"
-            app:destination="@id/onboardingFragment" />
-    </fragment>
     <fragment
         android:id="@+id/deleteFragment"
         android:name="com.dynatech2012.kamleonuserapp.fragments.DeleteFragment"
         android:label="activity_delete"
         tools:layout="@layout/activity_delete" />
-    <fragment
-        android:id="@+id/pinFragment"
-        android:name="com.dynatech2012.kamleonuserapp.fragments.PinFragment"
-        android:label="activity_pin"
-        tools:layout="@layout/activity_pin">
-        <action
-            android:id="@+id/action_pinFragment_to_privacyFragment"
-            app:destination="@id/privacyFragment" />
-        <action
-            android:id="@+id/action_pinFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/pwdFragment"
-        android:name="com.dynatech2012.kamleonuserapp.fragments.PwdFragment"
-        android:label="activity_pwd"
-        tools:layout="@layout/activity_pwd">
-        <action
-            android:id="@+id/action_pwdFragment_to_privacyFragment"
-            app:destination="@id/privacyFragment" />
-        <action
-            android:id="@+id/action_pwdFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-    </fragment>
 
     <fragment
         android:id="@+id/helpFragment"
