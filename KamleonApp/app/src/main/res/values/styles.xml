@@ -7,9 +7,6 @@
     <style name="CircularMediumFont">
         <item name="android:fontFamily">@font/circular_pro_medium</item>
     </style>
-    <style name="CircularBoldFont">
-        <item name="android:fontFamily">@font/circular_pro_bold</item>
-    </style>
     <style name="CircularBookFont">
         <item name="android:fontFamily">@font/circular_pro_boo</item>
     </style>
