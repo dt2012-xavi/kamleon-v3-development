@@ -2,28 +2,6 @@
 <issues format="6" by="lint 8.13.2" type="baseline" client="gradle" dependencies="true" name="AGP (8.13.2)" variant="all" version="8.13.2">
 
     <issue
-        id="SuspiciousImport"
-        message="Don&apos;t include `android.R` here; use a fully qualified name for each usage instead"
-        errorLine1="import android.R"
-        errorLine2="~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/activities/MainActivity.kt"
-            line="4"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="CustomViewStyleable"
-        message="By convention, the custom view (`AnalyticListItemView`) and the declare-styleable (`AnalyticListItemViewStyle`) should have the same name (various editor features rely on this convention)"
-        errorLine1="            context.obtainStyledAttributes(attrs, R.styleable.AnalyticListItemViewStyle)"
-        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/cards/AnalyticListItemView.kt"
-            line="52"
-            column="51"/>
-    </issue>
-
-    <issue
         id="CustomViewStyleable"
         message="By convention, the custom view (`DataPicker`) and the declare-styleable (`Picker`) should have the same name (various editor features rely on this convention)"
         errorLine1="        val a = context.obtainStyledAttributes(attrs, R.styleable.Picker)"
@@ -33,7 +11,6 @@
             line="61"
             column="55"/>
     </issue>
-
     <issue
         id="CustomViewStyleable"
         message="By convention, the custom view (`DatePicker`) and the declare-styleable (`Picker`) should have the same name (various editor features rely on this convention)"
@@ -44,29 +21,6 @@
             line="52"
             column="55"/>
     </issue>
-
-    <issue
-        id="CustomViewStyleable"
-        message="By convention, the custom view (`HomeListItemView`) and the declare-styleable (`AnalyticListItemViewStyle`) should have the same name (various editor features rely on this convention)"
-        errorLine1="            context.obtainStyledAttributes(attrs, R.styleable.AnalyticListItemViewStyle)"
-        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/cards/HomeListItemView.kt"
-            line="52"
-            column="51"/>
-    </issue>
-
-    <issue
-        id="CustomViewStyleable"
-        message="By convention, the custom view (`InvitationListItemView`) and the declare-styleable (`NotificationListItemViewStyle`) should have the same name (various editor features rely on this convention)"
-        errorLine1="            context.obtainStyledAttributes(attrs, R.styleable.NotificationListItemViewStyle)"
-        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/InvitationListItemView.kt"
-            line="61"
-            column="51"/>
-    </issue>
-
     <issue
         id="CustomViewStyleable"
         message="By convention, the custom view (`KamleonInputBox`) and the declare-styleable (`KamleonInputBoxStyle`) should have the same name (various editor features rely on this convention)"
@@ -77,18 +31,6 @@
             line="53"
             column="51"/>
     </issue>
-
-    <issue
-        id="CustomViewStyleable"
-        message="By convention, the custom view (`SettingMenuItemView`) and the declare-styleable (`SettingMenuItemViewStyle`) should have the same name (various editor features rely on this convention)"
-        errorLine1="            context.obtainStyledAttributes(attrs, R.styleable.SettingMenuItemViewStyle)"
-        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/SettingMenuItemView.kt"
-            line="77"
-            column="51"/>
-    </issue>
-
     <issue
         id="CustomViewStyleable"
         message="By convention, the custom view (`TimePicker`) and the declare-styleable (`Picker`) should have the same name (various editor features rely on this convention)"
@@ -99,304 +41,6 @@
             line="53"
             column="55"/>
     </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="        return String.format(&quot;%.1f&quot;, barItemVal)"
-        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/graph/views/KmlnGraphView.kt"
-            line="176"
-            column="16"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="                String.format(&quot;%d&quot;, avgValue.toInt())"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/graph/views/KmlnHeaderView.kt"
-            line="116"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="                String.format(&quot;%.1f&quot;, avgValue)"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/graph/views/KmlnHeaderView.kt"
-            line="120"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
-        errorLine1="                String.format(&quot;%d&quot;, avgValue.toInt())"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/graph/views/KmlnHeaderView.kt"
-            line="124"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="QueryPermissionsNeeded"
-        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
-        errorLine1="        if (intent.resolveActivity(requireContext().packageManager) != null) {"
-        errorLine2="                   ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/HelpFragment.kt"
-            line="45"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="AndroidGradlePluginVersion"
-        message="A newer version of com.android.application than 8.13.2 is available: 9.5.1"
-        errorLine1="agp = &quot;8.13.2&quot;"
-        errorLine2="      ~~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="2"
-            column="7"/>
-    </issue>
-
-    <issue
-        id="AndroidGradlePluginVersion"
-        message="A newer version of com.android.library than 8.13.2 is available: 9.5.1"
-        errorLine1="agp = &quot;8.13.2&quot;"
-        errorLine2="      ~~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="2"
-            column="7"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of com.google.gms.google-services than 4.5.0 is available: 4.6.0"
-        errorLine1="googleServices = &quot;4.5.0&quot;"
-        errorLine2="                 ~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="5"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of com.google.firebase:firebase-bom than 34.19.0 is available: 35.2.0"
-        errorLine1="firebaseBom = &quot;34.19.0&quot;"
-        errorLine2="              ~~~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="7"
-            column="15"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.compose:compose-bom than 2026.06.00 is available: 2026.09.00"
-        errorLine1="composeBom = &quot;2026.06.00&quot;"
-        errorLine2="             ~~~~~~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="8"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.core:core-ktx than 1.17.0 is available: 1.19.1"
-        errorLine1="coreKtx = &quot;1.17.0&quot;"
-        errorLine2="          ~~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="13"
-            column="11"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.constraintlayout:constraintlayout than 2.2.1 is available: 2.2.2"
-        errorLine1="constraintlayout = &quot;2.2.1&quot;"
-        errorLine2="                   ~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="14"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of com.google.android.material:material than 1.13.0 is available: 1.14.0"
-        errorLine1="material = &quot;1.13.0&quot;"
-        errorLine2="           ~~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="16"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.9.3 is available: 2.11.0"
-        errorLine1="lifecycle = &quot;2.9.3&quot;"
-        errorLine2="            ~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="17"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.navigation:navigation-fragment-ktx than 2.9.4 is available: 2.10.2"
-        errorLine1="navigation = &quot;2.9.4&quot;"
-        errorLine2="             ~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="18"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.navigation:navigation-ui-ktx than 2.9.4 is available: 2.10.2"
-        errorLine1="navigation = &quot;2.9.4&quot;"
-        errorLine2="             ~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="18"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.hilt:hilt-navigation-compose than 1.3.0 is available: 1.4.0"
-        errorLine1="hiltNavigationCompose = &quot;1.3.0&quot;"
-        errorLine2="                        ~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="21"
-            column="25"/>
-    </issue>
-
-    <issue
-        id="LockedOrientationActivity"
-        message="Expecting `android:screenOrientation=&quot;unspecified&quot;` or `&quot;fullSensor&quot;` for this activity so the user can use the application in any orientation and provide a great experience on Chrome OS devices"
-        errorLine1="            android:screenOrientation=&quot;portrait&quot; />"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="56"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="LockedOrientationActivity"
-        message="Expecting `android:screenOrientation=&quot;unspecified&quot;` or `&quot;fullSensor&quot;` for this activity so the user can use the application in any orientation and provide a great experience on Chrome OS devices"
-        errorLine1="            android:screenOrientation=&quot;portrait&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="61"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of org.jetbrains.kotlin.android than 2.2.21 is available: 2.4.21"
-        errorLine1="kotlin = &quot;2.2.21&quot;"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="3"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of org.jetbrains.kotlin.plugin.compose than 2.2.21 is available: 2.4.21"
-        errorLine1="kotlin = &quot;2.2.21&quot;"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="3"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.google.dagger.hilt.android than 2.58 is available: 2.60.1"
-        errorLine1="hilt = &quot;2.58&quot;"
-        errorLine2="       ~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="4"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.google.dagger:hilt-android than 2.58 is available: 2.60.1"
-        errorLine1="hilt = &quot;2.58&quot;"
-        errorLine2="       ~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="4"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.google.dagger:hilt-compiler than 2.58 is available: 2.60.1"
-        errorLine1="hilt = &quot;2.58&quot;"
-        errorLine2="       ~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="4"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.google.code.gson:gson than 2.13.2 is available: 2.15.0"
-        errorLine1="gson = &quot;2.13.2&quot;"
-        errorLine2="       ~~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="25"
-            column="8"/>
-    </issue>
-
-    <issue
-        id="ExtraText"
-        message="Unexpected text found in drawable file: &quot;>&quot;"
-        errorLine1="        &lt;layer-list xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>>"
-        errorLine2="                                                                               ~">
-        <location
-            file="src/main/res/drawable/checked.xml"
-            line="6"
-            column="80"/>
-    </issue>
-
-    <issue
-        id="ExtraText"
-        message="Unexpected text found in layout file: &quot;>&quot;"
-        errorLine1="            >"
-        errorLine2="            ~">
-        <location
-            file="src/main/res/layout/fragment_scan_intro.xml"
-            line="32"
-            column="13"/>
-    </issue>
-
     <issue
         id="MutableCollectionMutableState"
         message="Creating a MutableState object with a mutable collection type"
@@ -407,7 +51,6 @@
             line="30"
             column="37"/>
     </issue>
-
     <issue
         id="PrivateResource"
         message="The resource `@dimen/mtrl_switch_thumb_size` is marked as private in com.google.android.material:material:1.13.0"
@@ -418,7 +61,6 @@
             line="5"
             column="20"/>
     </issue>
-
     <issue
         id="PrivateResource"
         message="The resource `@dimen/mtrl_switch_thumb_size` is marked as private in com.google.android.material:material:1.13.0"
@@ -429,7 +71,6 @@
             line="6"
             column="21"/>
     </issue>
-
     <issue
         id="PrivateResource"
         message="The resource `@drawable/mtrl_switch_thumb_pressed` is marked as private in com.google.android.material:material:1.13.0"
@@ -440,7 +81,6 @@
             line="11"
             column="27"/>
     </issue>
-
     <issue
         id="PrivateResource"
         message="The resource `@drawable/mtrl_switch_thumb_checked` is marked as private in com.google.android.material:material:1.13.0"
@@ -451,7 +91,6 @@
             line="16"
             column="27"/>
     </issue>
-
     <issue
         id="PrivateResource"
         message="The resource `@drawable/mtrl_switch_thumb_checked` is marked as private in com.google.android.material:material:1.13.0"
@@ -462,7 +101,6 @@
             line="21"
             column="27"/>
     </issue>
-
     <issue
         id="PrivateResource"
         message="The resource `@drawable/mtrl_switch_thumb_pressed` is marked as private in com.google.android.material:material:1.13.0"
@@ -473,7 +111,6 @@
             line="26"
             column="27"/>
     </issue>
-
     <issue
         id="PrivateResource"
         message="The resource `@drawable/mtrl_switch_thumb_pressed_checked` is marked as private in com.google.android.material:material:1.13.0"
@@ -484,7 +121,6 @@
             line="31"
             column="27"/>
     </issue>
-
     <issue
         id="PrivateResource"
         message="The resource `@drawable/mtrl_switch_thumb_pressed_checked` is marked as private in com.google.android.material:material:1.13.0"
@@ -495,7 +131,6 @@
             line="36"
             column="27"/>
     </issue>
-
     <issue
         id="PrivateResource"
         message="The resource `@drawable/mtrl_switch_thumb_pressed_unchecked` is marked as private in com.google.android.material:material:1.13.0"
@@ -506,7 +141,6 @@
             line="41"
             column="27"/>
     </issue>
-
     <issue
         id="PrivateResource"
         message="The resource `@drawable/mtrl_switch_thumb_checked_pressed` is marked as private in com.google.android.material:material:1.13.0"
@@ -517,7 +151,6 @@
             line="46"
             column="27"/>
     </issue>
-
     <issue
         id="PrivateResource"
         message="The resource `@drawable/mtrl_switch_thumb_checked_unchecked` is marked as private in com.google.android.material:material:1.13.0"
@@ -528,7 +161,6 @@
             line="51"
             column="27"/>
     </issue>
-
     <issue
         id="PrivateResource"
         message="The resource `@drawable/mtrl_switch_thumb_checked_pressed` is marked as private in com.google.android.material:material:1.13.0"
@@ -539,7 +171,6 @@
             line="56"
             column="27"/>
     </issue>
-
     <issue
         id="PrivateResource"
         message="The resource `@drawable/mtrl_switch_thumb_unchecked_pressed` is marked as private in com.google.android.material:material:1.13.0"
@@ -550,7 +181,6 @@
             line="61"
             column="27"/>
     </issue>
-
     <issue
         id="PrivateResource"
         message="The resource `@drawable/mtrl_switch_thumb_unchecked_checked` is marked as private in com.google.android.material:material:1.13.0"
@@ -561,193 +191,24 @@
             line="66"
             column="27"/>
     </issue>
-
-    <issue
-        id="DiscouragedApi"
-        message="Fixed screen orientations will be ignored in most cases, starting from Android 16. Android is moving toward a model where apps are expected to adapt to various orientations, display sizes, and aspect ratios."
-        errorLine1="            android:screenOrientation=&quot;portrait&quot; />"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="56"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="DiscouragedApi"
-        message="Fixed screen orientations will be ignored in most cases, starting from Android 16. Android is moving toward a model where apps are expected to adapt to various orientations, display sizes, and aspect ratios."
-        errorLine1="            android:screenOrientation=&quot;portrait&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="61"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseCompatLoadingForDrawables"
-        message="Use `AppCompatResources.getDrawable()`"
-        errorLine1="            containerView.background = context.getDrawable(R.drawable.kmln_bg_streak_view)"
-        errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/graph/views/KmlnFooterView.kt"
-            line="100"
-            column="40"/>
-    </issue>
-
-    <issue
-        id="UseCompatLoadingForDrawables"
-        message="Use `AppCompatResources.getDrawable()`"
-        errorLine1="            containerView.background = context.getDrawable(R.drawable.kmln_bg_streak_view)"
-        errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/graph/views/KmlnFooterView.kt"
-            line="100"
-            column="40"/>
-    </issue>
-
-    <issue
-        id="UseCompatLoadingForDrawables"
-        message="Use `AppCompatResources.getDrawable()`"
-        errorLine1="            containerView.background = context.getDrawable(R.drawable.kmln_bg_streak_view_off)"
-        errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/graph/views/KmlnFooterView.kt"
-            line="105"
-            column="40"/>
-    </issue>
-
-    <issue
-        id="UseCompatLoadingForDrawables"
-        message="Use `AppCompatResources.getDrawable()`"
-        errorLine1="            containerView.background = context.getDrawable(R.drawable.kmln_bg_streak_view_off)"
-        errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/graph/views/KmlnFooterView.kt"
-            line="105"
-            column="40"/>
-    </issue>
-
-    <issue
-        id="NotifyDataSetChanged"
-        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
-        errorLine1="        notifyDataSetChanged()"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/adapters/HomeListAdapter.kt"
-            line="24"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="NotifyDataSetChanged"
-        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
-        errorLine1="        notifyDataSetChanged()"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/adapters/TipListAdapter.kt"
-            line="22"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="ObsoleteLayoutParam"
-        message="Invalid layout param in a `LinearLayout`: `layout_centerInParent`"
-        errorLine1="            android:layout_centerInParent=&quot;true&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_date_picker.xml"
-            line="32"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is never &lt; 30"
-        errorLine1="        if (Build.VERSION.SDK_INT &lt; 29) return"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/activities/MainActivity.kt"
-            line="353"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 30"
-        errorLine1="        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/application/MyApplication.kt"
-            line="17"
-            column="31"/>
-    </issue>
-
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 30"
-        errorLine1="        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/service/NotificationService.kt"
-            line="114"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 30"
-        errorLine1="                if (SDK_INT >= 28) {"
-        errorLine2="                    ~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/ScanIntroFragment.kt"
-            line="42"
-            column="21"/>
-    </issue>
-
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 30"
-        errorLine1="                if (Build.VERSION.SDK_INT >= 28) {"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/SplashFragment.kt"
-            line="43"
-            column="21"/>
-    </issue>
-
     <issue
         id="ObsoleteSdkInt"
         message="This folder configuration (`v24`) is unnecessary; `minSdkVersion` is 30. Merge all the resources in this folder into `drawable`.">
         <location
             file="src/main/res/drawable-v24"/>
     </issue>
-
     <issue
         id="ObsoleteSdkInt"
         message="This folder configuration (`v26`) is unnecessary; `minSdkVersion` is 30. Merge all the resources in this folder into `mipmap-anydpi`.">
         <location
             file="src/development/res/mipmap-anydpi-v26"/>
     </issue>
-
     <issue
         id="ObsoleteSdkInt"
         message="This folder configuration (`v26`) is unnecessary; `minSdkVersion` is 30. Merge all the resources in this folder into `mipmap-anydpi`.">
         <location
             file="src/main/res/mipmap-anydpi-v26"/>
     </issue>
-
-    <issue
-        id="ObsoleteSdkInt"
-        message="Unnecessary; `SDK_INT` is always >= 29"
-        errorLine1="        &lt;item name=&quot;android:forceDarkAllowed&quot; tools:targetApi=&quot;q&quot;>false&lt;/item>"
-        errorLine2="                                              ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="25"
-            column="47"/>
-    </issue>
-
     <issue
         id="UseCompoundDrawables"
         message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
@@ -758,7 +219,6 @@
             line="41"
             column="10"/>
     </issue>
-
     <issue
         id="UseCompoundDrawables"
         message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
@@ -769,7 +229,6 @@
             line="66"
             column="10"/>
     </issue>
-
     <issue
         id="UseCompoundDrawables"
         message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
@@ -780,128 +239,6 @@
             line="91"
             column="10"/>
     </issue>
-
-    <issue
-        id="UseCompoundDrawables"
-        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
-        errorLine1="                &lt;LinearLayout"
-        errorLine2="                 ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="208"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="UseCompoundDrawables"
-        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
-        errorLine1="                &lt;LinearLayout"
-        errorLine2="                 ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="240"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="UseCompoundDrawables"
-        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
-        errorLine1="                &lt;LinearLayout"
-        errorLine2="                 ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="272"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="UseCompoundDrawables"
-        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
-        errorLine1="                        &lt;LinearLayout"
-        errorLine2="                         ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="181"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="UseCompoundDrawables"
-        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
-        errorLine1="                        &lt;LinearLayout"
-        errorLine2="                         ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="218"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="UseCompoundDrawables"
-        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
-        errorLine1="                    &lt;LinearLayout"
-        errorLine2="                     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="252"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="UseCompoundDrawables"
-        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
-        errorLine1="        &lt;LinearLayout"
-        errorLine2="         ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_image_pick.xml"
-            line="50"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="UseCompoundDrawables"
-        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
-        errorLine1="        &lt;LinearLayout"
-        errorLine2="         ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_image_pick.xml"
-            line="76"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="UseCompoundDrawables"
-        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
-        errorLine1="        &lt;LinearLayout"
-        errorLine2="         ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_image_pick.xml"
-            line="102"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="UseCompoundDrawables"
-        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
-        errorLine1="                &lt;LinearLayout"
-        errorLine2="                 ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_invitation.xml"
-            line="234"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="UseCompoundDrawables"
-        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
-        errorLine1="        &lt;LinearLayout"
-        errorLine2="         ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_scan_intro.xml"
-            line="23"
-            column="10"/>
-    </issue>
-
     <issue
         id="AutoboxingStateCreation"
         message="Prefer `mutableIntStateOf` instead of `mutableStateOf`"
@@ -912,7 +249,6 @@
             line="20"
             column="31"/>
     </issue>
-
     <issue
         id="AutoboxingStateCreation"
         message="Prefer `mutableIntStateOf` instead of `mutableStateOf`"
@@ -923,7 +259,6 @@
             line="23"
             column="33"/>
     </issue>
-
     <issue
         id="AutoboxingStateCreation"
         message="Prefer `mutableIntStateOf` instead of `mutableStateOf`"
@@ -934,7 +269,6 @@
             line="31"
             column="35"/>
     </issue>
-
     <issue
         id="AutoboxingStateCreation"
         message="Prefer `mutableIntStateOf` instead of `mutableStateOf`"
@@ -945,7 +279,6 @@
             line="32"
             column="31"/>
     </issue>
-
     <issue
         id="AutoboxingStateCreation"
         message="Prefer `mutableIntStateOf` instead of `mutableStateOf`"
@@ -956,7 +289,6 @@
             line="38"
             column="33"/>
     </issue>
-
     <issue
         id="AutoboxingStateCreation"
         message="Prefer `mutableIntStateOf` instead of `mutableStateOf`"
@@ -967,7 +299,6 @@
             line="18"
             column="31"/>
     </issue>
-
     <issue
         id="AutoboxingStateCreation"
         message="Prefer `mutableIntStateOf` instead of `mutableStateOf`"
@@ -978,7 +309,6 @@
             line="21"
             column="33"/>
     </issue>
-
     <issue
         id="AutoboxingStateCreation"
         message="Prefer `mutableIntStateOf` instead of `mutableStateOf`"
@@ -989,29 +319,6 @@
             line="23"
             column="35"/>
     </issue>
-
-    <issue
-        id="DisableBaselineAlignment"
-        message="Set `android:baselineAligned=&quot;false&quot;` on this element for better performance"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_tab.xml"
-            line="69"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/bg_color_activity` with a theme that also paints a background (inferred theme is `@style/Theme.KamleonApp`)"
-        errorLine1="    android:background=&quot;@color/bg_color_activity&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_email.xml"
-            line="7"
-            column="5"/>
-    </issue>
-
     <issue
         id="Overdraw"
         message="Possible overdraw: Root element paints background `@color/bg_color_activity` with a theme that also paints a background (inferred theme is `@style/Theme.KamleonApp`)"
@@ -1022,29 +329,6 @@
             line="7"
             column="5"/>
     </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/white` with a theme that also paints a background (inferred theme is `@style/Theme.KamleonApp`)"
-        errorLine1="    android:background=&quot;@color/white&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_graphics.xml"
-            line="7"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/white` with a theme that also paints a background (inferred theme is `@style/Theme.KamleonApp`)"
-        errorLine1="    android:background=&quot;@color/white&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_help.xml"
-            line="7"
-            column="5"/>
-    </issue>
-
     <issue
         id="Overdraw"
         message="Possible overdraw: Root element paints background `@color/bg_color_activity` with a theme that also paints a background (inferred theme is `@style/Theme_KamleonApp_Splash`)"
@@ -1055,7 +339,6 @@
             line="7"
             column="5"/>
     </issue>
-
     <issue
         id="Overdraw"
         message="Possible overdraw: Root element paints background `?attr/colorSurface` with a theme that also paints a background (inferred theme is `@style/Theme.KamleonApp`)"
@@ -1066,7 +349,6 @@
             line="7"
             column="5"/>
     </issue>
-
     <issue
         id="Overdraw"
         message="Possible overdraw: Root element paints background `@color/bg_color_activity` with a theme that also paints a background (inferred theme is `@style/Theme_KamleonApp`)"
@@ -1077,7 +359,6 @@
             line="7"
             column="5"/>
     </issue>
-
     <issue
         id="Overdraw"
         message="Possible overdraw: Root element paints background `@color/bg_color_activity` with a theme that also paints a background (inferred theme is `@style/Theme.KamleonApp`)"
@@ -1088,18 +369,6 @@
             line="7"
             column="5"/>
     </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/white` with a theme that also paints a background (inferred theme is `@style/Theme.KamleonApp`)"
-        errorLine1="    android:background=&quot;@color/white&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pin.xml"
-            line="7"
-            column="5"/>
-    </issue>
-
     <issue
         id="Overdraw"
         message="Possible overdraw: Root element paints background `@color/bg_color_activity` with a theme that also paints a background (inferred theme is `@style/Theme.KamleonApp`)"
@@ -1110,18 +379,6 @@
             line="7"
             column="5"/>
     </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/white` with a theme that also paints a background (inferred theme is `@style/Theme.KamleonApp`)"
-        errorLine1="    android:background=&quot;@color/white&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pwd.xml"
-            line="7"
-            column="5"/>
-    </issue>
-
     <issue
         id="Overdraw"
         message="Possible overdraw: Root element paints background `?attr/colorSurface` with a theme that also paints a background (inferred theme is `@style/Theme.KamleonApp`)"
@@ -1132,7 +389,6 @@
             line="7"
             column="5"/>
     </issue>
-
     <issue
         id="Overdraw"
         message="Possible overdraw: Root element paints background `@color/bg_color_activity` with a theme that also paints a background (inferred theme is `@style/Theme.KamleonApp`)"
@@ -1143,18 +399,6 @@
             line="7"
             column="5"/>
     </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/bg_color_activity` with a theme that also paints a background (inferred theme is `@style/Theme.KamleonApp`)"
-        errorLine1="    android:background=&quot;@color/bg_color_activity&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="7"
-            column="5"/>
-    </issue>
-
     <issue
         id="Overdraw"
         message="Possible overdraw: Root element paints background `?attr/colorSurface` with a theme that also paints a background (inferred theme is `@style/Theme.KamleonApp`)"
@@ -1165,7 +409,6 @@
             line="7"
             column="5"/>
     </issue>
-
     <issue
         id="Overdraw"
         message="Possible overdraw: Root element paints background `@color/bg_color_activity` with a theme that also paints a background (inferred theme is `@style/Theme.KamleonApp`)"
@@ -1176,7 +419,6 @@
             line="7"
             column="5"/>
     </issue>
-
     <issue
         id="Overdraw"
         message="Possible overdraw: Root element paints background `@color/kamleon_dark_grey` with a theme that also paints a background (inferred theme is `@style/Theme.KamleonApp`)"
@@ -1187,7 +429,6 @@
             line="8"
             column="5"/>
     </issue>
-
     <issue
         id="Overdraw"
         message="Possible overdraw: Root element paints background `@color/backgroundColor` with a theme that also paints a background (inferred theme is `@android:style/Theme.Holo`)"
@@ -1198,18 +439,6 @@
             line="5"
             column="5"/>
     </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.layout.activity_setting_copia` appears to be unused"
-        errorLine1="&lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2="^">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="2"
-            column="1"/>
-    </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.app_icon_background` appears to be unused"
@@ -1220,7 +449,6 @@
             line="2"
             column="1"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.app_icon_foreground_test` appears to be unused"
@@ -1231,14 +459,12 @@
             line="1"
             column="1"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.bell` appears to be unused">
         <location
             file="src/main/res/drawable/bell.png"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.bg_btn_round_border_normal` appears to be unused"
@@ -1249,7 +475,6 @@
             line="2"
             column="1"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.bg_btn_round_border_pressed` appears to be unused"
@@ -1260,43 +485,18 @@
             line="2"
             column="1"/>
     </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.bg_modal_btn_n` appears to be unused"
-        errorLine1="&lt;layer-list xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; >"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/bg_modal_btn_n.xml"
-            line="2"
-            column="1"/>
-    </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.bg_nav_back_circle` appears to be unused">
         <location
             file="src/main/res/drawable-nodpi/bg_nav_back_circle.png"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.bg_setting_option_layout_org` appears to be unused">
         <location
             file="src/main/res/drawable-nodpi/bg_setting_option_layout_org.png"/>
     </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.bg_setting_option_shadow` appears to be unused"
-        errorLine1="&lt;layer-list xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; >"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/bg_setting_option_shadow.xml"
-            line="2"
-            column="1"/>
-    </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.bg_tab` appears to be unused"
@@ -1307,25 +507,12 @@
             line="2"
             column="1"/>
     </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.bg_tab_button_shadow` appears to be unused"
-        errorLine1="&lt;layer-list xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; >"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/bg_tab_button_shadow.xml"
-            line="2"
-            column="1"/>
-    </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.color_bars` appears to be unused">
         <location
             file="src/main/res/drawable/color_bars.png"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.color.colorPrimary` appears to be unused"
@@ -1336,7 +523,6 @@
             line="3"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.color.colorPrimaryDark` appears to be unused"
@@ -1347,7 +533,6 @@
             line="4"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.color.colorAccent` appears to be unused"
@@ -1358,7 +543,6 @@
             line="5"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.color.white93` appears to be unused"
@@ -1369,7 +553,6 @@
             line="6"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.color.white80` appears to be unused"
@@ -1380,7 +563,6 @@
             line="7"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.color.white50` appears to be unused"
@@ -1391,40 +573,6 @@
             line="8"
             column="12"/>
     </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.color_grey1` appears to be unused"
-        errorLine1="    &lt;color name=&quot;color_grey1&quot;>#bbbbbb&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="../datepicker/src/main/res/values/colors.xml"
-            line="11"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.white05` appears to be unused"
-        errorLine1="    &lt;color name=&quot;white05&quot;>#0DFFFFFF&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="11"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.kmln_graph_color_orange_semitransp` appears to be unused"
-        errorLine1="    &lt;color name=&quot;kmln_graph_color_orange_semitransp&quot;>#90FF5C55&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="13"
-            column="12"/>
-    </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.color.kmln_graph_header_item_bkg_active` appears to be unused"
@@ -1435,227 +583,6 @@
             line="22"
             column="12"/>
     </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.kmln_greenShadow0` appears to be unused"
-        errorLine1="    &lt;color name=&quot;kmln_greenShadow0&quot;>#9961DFD8&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="33"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.kmln_greenShadow1` appears to be unused"
-        errorLine1="    &lt;color name=&quot;kmln_greenShadow1&quot;>#5561DFD8&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="34"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.kmln_greenShadow2` appears to be unused"
-        errorLine1="    &lt;color name=&quot;kmln_greenShadow2&quot;>#2461DFD8&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="35"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.kmln_greenShadow3` appears to be unused"
-        errorLine1="    &lt;color name=&quot;kmln_greenShadow3&quot;>#1261DFD8&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="36"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.kmln_greenShadow4` appears to be unused"
-        errorLine1="    &lt;color name=&quot;kmln_greenShadow4&quot;>#0861DFD8&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="37"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.kamleon_blue_dark` appears to be unused"
-        errorLine1="    &lt;color name=&quot;kamleon_blue_dark&quot;>#00A59B&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="40"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.kamleon_dark_grey_20` appears to be unused"
-        errorLine1="    &lt;color name=&quot;kamleon_dark_grey_20&quot;>#33221E1E&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="46"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.kamleon_dark_grey_05` appears to be unused"
-        errorLine1="    &lt;color name=&quot;kamleon_dark_grey_05&quot;>#0D221E1E&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="47"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.calendar_mode_shadow_0` appears to be unused"
-        errorLine1="    &lt;color name=&quot;calendar_mode_shadow_0&quot;>#01000000&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="68"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.calendar_mode_shadow_1` appears to be unused"
-        errorLine1="    &lt;color name=&quot;calendar_mode_shadow_1&quot;>#02000000&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="69"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.calendar_mode_shadow_2` appears to be unused"
-        errorLine1="    &lt;color name=&quot;calendar_mode_shadow_2&quot;>#04000000&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="70"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.calendar_mode_shadow_3` appears to be unused"
-        errorLine1="    &lt;color name=&quot;calendar_mode_shadow_3&quot;>#06000000&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="71"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.calendar_mode_shadow_4` appears to be unused"
-        errorLine1="    &lt;color name=&quot;calendar_mode_shadow_4&quot;>#08000000&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="72"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.calendar_mode_shadow_5` appears to be unused"
-        errorLine1="    &lt;color name=&quot;calendar_mode_shadow_5&quot;>#10000000&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="73"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.color_red_40` appears to be unused"
-        errorLine1="    &lt;color name=&quot;color_red_40&quot;>#33FC664E&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="81"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.kamleon_blue_40` appears to be unused"
-        errorLine1="    &lt;color name=&quot;kamleon_blue_40&quot;>#332FD5CB&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="82"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.color_secondary` appears to be unused"
-        errorLine1="    &lt;color name=&quot;color_secondary&quot;>#808285&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="84"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.debug_blue` appears to be unused"
-        errorLine1="    &lt;color name=&quot;debug_blue&quot;>#3F51B5&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="105"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.debug_green` appears to be unused"
-        errorLine1="    &lt;color name=&quot;debug_green&quot;>#4CAF50&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="106"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.color.debug_yellow` appears to be unused"
-        errorLine1="    &lt;color name=&quot;debug_yellow&quot;>#FFC107&lt;/color>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/colors.xml"
-            line="107"
-            column="12"/>
-    </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.ts_8` appears to be unused"
@@ -1666,7 +593,6 @@
             line="3"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.ts_10` appears to be unused"
@@ -1677,7 +603,6 @@
             line="4"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.ts_11` appears to be unused"
@@ -1688,7 +613,6 @@
             line="5"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.ts_15` appears to be unused"
@@ -1699,7 +623,6 @@
             line="9"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.ts_17` appears to be unused"
@@ -1710,7 +633,6 @@
             line="11"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.ts_18` appears to be unused"
@@ -1721,7 +643,6 @@
             line="12"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.ts_22` appears to be unused"
@@ -1732,7 +653,6 @@
             line="14"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.ts_25` appears to be unused"
@@ -1743,7 +663,6 @@
             line="16"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.ts_26` appears to be unused"
@@ -1754,7 +673,6 @@
             line="17"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.ts_28` appears to be unused"
@@ -1765,7 +683,6 @@
             line="18"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.ts_40` appears to be unused"
@@ -1776,7 +693,6 @@
             line="22"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.setting_option_view_height` appears to be unused"
@@ -1787,7 +703,6 @@
             line="42"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.setting_option_view_radius` appears to be unused"
@@ -1798,7 +713,6 @@
             line="43"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.setting_option_btn_padding_h` appears to be unused"
@@ -1809,7 +723,6 @@
             line="44"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.setting_option_btn_padding_v` appears to be unused"
@@ -1820,7 +733,6 @@
             line="45"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.setting_item_margin_v` appears to be unused"
@@ -1831,7 +743,6 @@
             line="51"
             column="12"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.dimen.setting_item_padding_v` appears to be unused"
@@ -1842,62 +753,6 @@
             line="53"
             column="12"/>
     </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.dimen.tab_bottom_shadow_height` appears to be unused"
-        errorLine1="    &lt;dimen name=&quot;tab_bottom_shadow_height&quot;>10dp&lt;/dimen>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/dimens.xml"
-            line="57"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.dimen.kmln_graph_footer_streak_title_text_size` appears to be unused"
-        errorLine1="    &lt;dimen name=&quot;kmln_graph_footer_streak_title_text_size&quot;>18sp&lt;/dimen>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/dimens.xml"
-            line="61"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.dimen.shadow_round_rect_bottom_padding` appears to be unused"
-        errorLine1="    &lt;dimen name=&quot;shadow_round_rect_bottom_padding&quot;>4dp&lt;/dimen>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/dimens.xml"
-            line="79"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.dimen.kmln_graph_header_padding_v` appears to be unused"
-        errorLine1="    &lt;dimen name=&quot;kmln_graph_header_padding_v&quot;>8dp&lt;/dimen>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/dimens.xml"
-            line="84"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.dimen.kmln_graph_header_item_height` appears to be unused"
-        errorLine1="    &lt;dimen name=&quot;kmln_graph_header_item_height&quot;>30dp&lt;/dimen>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/dimens.xml"
-            line="86"
-            column="12"/>
-    </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.ic_add_24` appears to be unused"
@@ -1908,7 +763,6 @@
             line="1"
             column="1"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.ic_launcher_background` appears to be unused"
@@ -1919,7 +773,6 @@
             line="2"
             column="1"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.ic_launcher_foreground` appears to be unused"
@@ -1930,7 +783,6 @@
             line="1"
             column="1"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.ic_notifications` appears to be unused"
@@ -1941,102 +793,78 @@
             line="1"
             column="1"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.icn_add_circle` appears to be unused">
         <location
             file="src/main/res/drawable-nodpi/icn_add_circle.png"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.icn_button_camera` appears to be unused">
         <location
             file="src/main/res/drawable-nodpi/icn_button_camera.png"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.icn_eye_on` appears to be unused">
         <location
             file="src/main/res/drawable-nodpi/icn_eye_on.png"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.icn_setting_close` appears to be unused">
         <location
             file="src/main/res/drawable-nodpi/icn_setting_close.png"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.icn_setting_logout` appears to be unused">
         <location
             file="src/main/res/drawable-nodpi/icn_setting_logout.png"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.icn_setting_noti_badge` appears to be unused">
         <location
             file="src/main/res/drawable-nodpi/icn_setting_noti_badge.png"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.icn_setting_pref` appears to be unused">
         <location
             file="src/main/res/drawable-nodpi/icn_setting_pref.png"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.icn_setting_user` appears to be unused">
         <location
             file="src/main/res/drawable-nodpi/icn_setting_user.png"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.icn_streak_off` appears to be unused">
         <location
             file="src/main/res/drawable-xxhdpi/icn_streak_off.png"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.icn_streak_on` appears to be unused">
         <location
             file="src/main/res/drawable-xxhdpi/icn_streak_on.png"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.img_circle_profile` appears to be unused">
         <location
             file="src/main/res/drawable-nodpi/img_circle_profile.png"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.img_scan_qr_intro` appears to be unused">
         <location
             file="src/main/res/drawable-xxhdpi/img_scan_qr_intro.png"/>
     </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.drawable.kmln_bg_graph_header_item` appears to be unused"
-        errorLine1="&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2="^">
-        <location
-            file="src/main/res/drawable/kmln_bg_graph_header_item.xml"
-            line="2"
-            column="1"/>
-    </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.outline_eye_24` appears to be unused"
@@ -2047,14 +875,12 @@
             line="1"
             column="1"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.pb_electrolytes_orange` appears to be unused">
         <location
             file="src/main/res/drawable/pb_electrolytes_orange.png"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.shape_ring` appears to be unused"
@@ -2065,7 +891,6 @@
             line="15"
             column="1"/>
     </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.string.title_activity_init` appears to be unused"
@@ -2076,619 +901,12 @@
             line="9"
             column="13"/>
     </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.forgotpwd_settings` appears to be unused"
-        errorLine1="    &lt;string name=&quot;forgotpwd_settings&quot;>&lt;u>Forgot password?&lt;/u>&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="46"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.array.onboard_gender_values` appears to be unused"
-        errorLine1="    &lt;string-array name=&quot;onboard_gender_values&quot;>"
-        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="84"
-            column="19"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.setting_label_location` appears to be unused"
-        errorLine1="    &lt;string name=&quot;setting_label_location&quot;>LOCATION&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="128"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.setting_label_awuta` appears to be unused"
-        errorLine1="    &lt;string name=&quot;setting_label_awuta&quot;>ALLOW WHILE USING THE APP&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="129"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.setting_label_allow_once` appears to be unused"
-        errorLine1="    &lt;string name=&quot;setting_label_allow_once&quot;>ALLOW ONCE&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="130"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.setting_label_not_allow` appears to be unused"
-        errorLine1="    &lt;string name=&quot;setting_label_not_allow&quot;>DON\&apos;T ALLOW&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="131"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.setting_desc_pref3` appears to be unused"
-        errorLine1="    &lt;string name=&quot;setting_desc_pref3&quot;>Enable Kamleon to use location data for personalized services, while considering privacy implications.&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="135"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.qr_scan_now` appears to be unused"
-        errorLine1="    &lt;string name=&quot;qr_scan_now&quot;>SCAN NOW!&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="190"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.noti_role_change` appears to be unused"
-        errorLine1="    &lt;string name=&quot;noti_role_change&quot;>Role Change&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="213"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.noti_channel_id` appears to be unused"
-        errorLine1="    &lt;string name=&quot;noti_channel_id&quot;>kamleonChannel&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="218"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.noti_see_all_arrow` appears to be unused"
-        errorLine1="    &lt;string name=&quot;noti_see_all_arrow&quot;>>&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="224"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.dialog_cancel` appears to be unused"
-        errorLine1="    &lt;string name=&quot;dialog_cancel&quot;>CANCEL&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="266"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.error_login` appears to be unused"
-        errorLine1="    &lt;string name=&quot;error_login&quot;>Error login&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="293"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.premium_landpage_backsoon` appears to be unused"
-        errorLine1="    &lt;string name=&quot;premium_landpage_backsoon&quot;>We will get back to you soon&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="298"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.premium_landpage_requestsent` appears to be unused"
-        errorLine1="    &lt;string name=&quot;premium_landpage_requestsent&quot;>Request sent&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="300"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.recommendation_hydration_title` appears to be unused"
-        errorLine1="    &lt;string name=&quot;recommendation_hydration_title&quot;>Recommendation&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="358"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.error_camera_permission_denied` appears to be unused"
-        errorLine1="    &lt;string name=&quot;error_camera_permission_denied&quot;>Permission denied&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="368"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.error_start_camera` appears to be unused"
-        errorLine1="    &lt;string name=&quot;error_start_camera&quot;>Error starting camera&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="369"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.switch_thumb_path_checked` appears to be unused"
-        errorLine1="    &lt;string name=&quot;switch_thumb_path_checked&quot; translatable=&quot;false&quot;>M4,16 A12,12 0 0,1 16,4 H16 A12,12 0 0,1 16,28 H16 A12,12 0 0,1 4,16&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="382"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.string.switch_thumb_path_unchecked` appears to be unused"
-        errorLine1="    &lt;string name=&quot;switch_thumb_path_unchecked&quot; translatable=&quot;false&quot;>M,16 A8,8 0 0,1 16,8 H16 A8,8 0 0,1 16,24 H16 A8,8 0 0,1 8,16&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="383"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.onboardSpinnerItemStyle` appears to be unused"
-        errorLine1="    &lt;style name=&quot;onboardSpinnerItemStyle&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="22"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.Button` appears to be unused"
-        errorLine1="    &lt;style name=&quot;Button&quot; />"
-        errorLine2="           ~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="29"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.Button_Kamleon` appears to be unused"
-        errorLine1="    &lt;style name=&quot;Button.Kamleon&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="30"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.Button_Kamleon_Primary` appears to be unused"
-        errorLine1="    &lt;style name=&quot;Button.Kamleon.Primary&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="35"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.capsuleShape` appears to be unused"
-        errorLine1="    &lt;style name=&quot;capsuleShape&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="42"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.Circular` appears to be unused"
-        errorLine1="    &lt;style name=&quot;Circular&quot; parent=&quot;android:Widget.TextView&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="48"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.Circular_Inverse` appears to be unused"
-        errorLine1="    &lt;style name=&quot;Circular.Inverse&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="54"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.Circular_Regular` appears to be unused"
-        errorLine1="    &lt;style name=&quot;Circular.Regular&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="57"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.Circular_Medium` appears to be unused"
-        errorLine1="    &lt;style name=&quot;Circular.Medium&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="60"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.Circular_Bold` appears to be unused"
-        errorLine1="    &lt;style name=&quot;Circular.Bold&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="63"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.Circular_Book` appears to be unused"
-        errorLine1="    &lt;style name=&quot;Circular.Book&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="66"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.TextAppearance_Kamleon_Regular` appears to be unused"
-        errorLine1="    &lt;style name=&quot;TextAppearance.Kamleon.Regular&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="77"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.TextAppearance_Kamleon_Medium` appears to be unused"
-        errorLine1="    &lt;style name=&quot;TextAppearance.Kamleon.Medium&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="80"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        message="The resource `R.style.TextAppearance_Kamleon_Overline` appears to be unused"
-        errorLine1="    &lt;style name=&quot;TextAppearance.Kamleon.Overline&quot;>"
-        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values/styles.xml"
-            line="136"
-            column="12"/>
-    </issue>
-
     <issue
         id="UnusedResources"
         message="The resource `R.drawable.tip1` appears to be unused">
         <location
             file="src/main/res/drawable-xxhdpi/tip1.png"/>
     </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="                &lt;LinearLayout"
-        errorLine2="                 ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_email.xml"
-            line="75"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="                &lt;LinearLayout"
-        errorLine2="                 ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pin.xml"
-            line="75"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="                &lt;LinearLayout"
-        errorLine2="                 ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pwd.xml"
-            line="75"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="                        &lt;LinearLayout"
-        errorLine2="                         ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="181"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="                        &lt;LinearLayout"
-        errorLine2="                         ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="218"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary"
-        errorLine1="                    &lt;LinearLayout"
-        errorLine2="                     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="252"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="            &lt;LinearLayout"
-        errorLine2="             ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_tab.xml"
-            line="93"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary"
-        errorLine1="            &lt;LinearLayout"
-        errorLine2="             ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_tab.xml"
-            line="122"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary"
-        errorLine1="            &lt;LinearLayout"
-        errorLine2="             ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_tab.xml"
-            line="151"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_analytics_list_item.xml"
-            line="8"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `FrameLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_dialog_email_verification.xml"
-            line="9"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `FrameLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_dialog_ok.xml"
-            line="9"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `FrameLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_dialog_policy.xml"
-            line="9"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `FrameLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_dialog_profile_ready.xml"
-            line="7"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `FrameLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_dialog_yn.xml"
-            line="7"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `FrameLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_dialog_yn_delete.xml"
-            line="7"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `LinearLayout` parent is possibly unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_kmln_footer.xml"
-            line="11"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `RelativeLayout` layout or its `LinearLayout` parent is possibly unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="    &lt;RelativeLayout"
-        errorLine2="     ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_kmln_option.xml"
-            line="8"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `RelativeLayout` layout or its `FrameLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="    &lt;RelativeLayout"
-        errorLine2="     ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_viewholder_tip_list.xml"
-            line="9"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="TooManyViews"
-        message="`activity_setting.xml` has more than 80 views, bad for performance"
-        errorLine1="                        &lt;TextView"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="743"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="TooManyViews"
-        message="`activity_setting_copia.xml` has more than 80 views, bad for performance"
-        errorLine1="                        &lt;TextView"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="707"
-            column="26"/>
-    </issue>
-
     <issue
         id="IconXmlAndPng"
         message="The following images appear both as density independent `.xml` files and as bitmap files: src/main/res/drawable-nodpi/bg_tab.9.png, src/main/res/drawable/bg_tab.xml">
@@ -2697,348 +915,108 @@
         <location
             file="src/main/res/drawable-nodpi/bg_tab.9.png"/>
     </issue>
-
     <issue
         id="GifUsage"
         message="Using the `.gif` format for bitmaps is discouraged">
         <location
             file="src/main/res/drawable/animation_qr.gif"/>
     </issue>
-
     <issue
         id="GifUsage"
         message="Using the `.gif` format for bitmaps is discouraged">
         <location
             file="src/main/res/drawable-xxhdpi/splash.gif"/>
     </issue>
-
     <issue
         id="IconLocation"
         message="Found bitmap drawable `res/drawable/animation_qr.gif` in densityless folder">
         <location
             file="src/main/res/drawable/animation_qr.gif"/>
     </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/animation_qr_p.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/animation_qr_p.png"/>
-    </issue>
-
     <issue
         id="IconLocation"
         message="Found bitmap drawable `res/drawable/bell.png` in densityless folder">
         <location
             file="src/main/res/drawable/bell.png"/>
     </issue>
-
     <issue
         id="IconLocation"
         message="Found bitmap drawable `res/drawable/bg_tutorial_1.png` in densityless folder">
         <location
             file="src/main/res/drawable/bg_tutorial_1.png"/>
     </issue>
-
     <issue
         id="IconLocation"
         message="Found bitmap drawable `res/drawable/bg_tutorial_2.png` in densityless folder">
         <location
             file="src/main/res/drawable/bg_tutorial_2.png"/>
     </issue>
-
     <issue
         id="IconLocation"
         message="Found bitmap drawable `res/drawable/bg_tutorial_3.png` in densityless folder">
         <location
             file="src/main/res/drawable/bg_tutorial_3.png"/>
     </issue>
-
     <issue
         id="IconLocation"
         message="Found bitmap drawable `res/drawable/bg_tutorial_4.png` in densityless folder">
         <location
             file="src/main/res/drawable/bg_tutorial_4.png"/>
     </issue>
-
     <issue
         id="IconLocation"
         message="Found bitmap drawable `res/drawable/bg_tutorial_5.png` in densityless folder">
         <location
             file="src/main/res/drawable/bg_tutorial_5.png"/>
     </issue>
-
     <issue
         id="IconLocation"
         message="Found bitmap drawable `res/drawable/bg_tutorial_6.png` in densityless folder">
         <location
             file="src/main/res/drawable/bg_tutorial_6.png"/>
     </issue>
-
     <issue
         id="IconLocation"
         message="Found bitmap drawable `res/drawable/color_bars.png` in densityless folder">
         <location
             file="src/main/res/drawable/color_bars.png"/>
     </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/image_profile.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/image_profile.png"/>
-    </issue>
-
     <issue
         id="IconLocation"
         message="Found bitmap drawable `res/drawable/pb_electrolytes_blue.png` in densityless folder">
         <location
             file="src/main/res/drawable/pb_electrolytes_blue.png"/>
     </issue>
-
     <issue
         id="IconLocation"
         message="Found bitmap drawable `res/drawable/pb_electrolytes_grey.png` in densityless folder">
         <location
             file="src/main/res/drawable/pb_electrolytes_grey.png"/>
     </issue>
-
     <issue
         id="IconLocation"
         message="Found bitmap drawable `res/drawable/pb_electrolytes_orange.png` in densityless folder">
         <location
             file="src/main/res/drawable/pb_electrolytes_orange.png"/>
     </issue>
-
     <issue
         id="IconLocation"
         message="Found bitmap drawable `res/drawable/pb_electrolytes_red.png` in densityless folder">
         <location
             file="src/main/res/drawable/pb_electrolytes_red.png"/>
     </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/recom3.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/recom3.png"/>
-    </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/recom7.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/recom7.png"/>
-    </issue>
-
-    <issue
-        id="IconDensities"
-        message="Missing the following drawables in `drawable-xhdpi`: icn_circular_check.png, icn_circular_uncheck.png, icn_streak_off.png, icn_streak_on.png, img_bottom_sheet_line.png... (13 more)">
-        <location
-            file="src/main/res/drawable-xhdpi"/>
-    </issue>
-
     <issue
         id="IconDensities"
         message="Missing the following drawables in `drawable-xxhdpi`: img_camera_rect.png (found in drawable-xhdpi)">
         <location
             file="src/main/res/drawable-xxhdpi"/>
     </issue>
-
     <issue
         id="IconMissingDensityFolder"
         message="Missing density variation folders in `src/main/res`: drawable-hdpi, drawable-mdpi">
         <location
             file="src/main/res"/>
     </issue>
-
-    <issue
-        id="TextFields"
-        message="This text field does not specify an `inputType`"
-        errorLine1="                        &lt;EditText"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="353"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="TextFields"
-        message="This text field does not specify an `inputType`"
-        errorLine1="                        &lt;EditText"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="391"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="TextFields"
-        message="This text field does not specify an `inputType`"
-        errorLine1="                        &lt;EditText"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="325"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="TextFields"
-        message="This text field does not specify an `inputType`"
-        errorLine1="                        &lt;EditText"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="363"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="Autofill"
-        message="Missing `autofillHints` attribute"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_email.xml"
-            line="89"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="Autofill"
-        message="Missing `autofillHints` attribute"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_email.xml"
-            line="128"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="Autofill"
-        message="Missing `autofillHints` attribute"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_email.xml"
-            line="161"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="Autofill"
-        message="Missing `autofillHints` attribute"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pin.xml"
-            line="89"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="Autofill"
-        message="Missing `autofillHints` attribute"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pin.xml"
-            line="136"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="Autofill"
-        message="Missing `autofillHints` attribute"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pin.xml"
-            line="177"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="Autofill"
-        message="Missing `autofillHints` attribute"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pwd.xml"
-            line="90"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="Autofill"
-        message="Missing `autofillHints` attribute"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pwd.xml"
-            line="139"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="Autofill"
-        message="Missing `autofillHints` attribute"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pwd.xml"
-            line="184"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="Autofill"
-        message="Missing `autofillHints` attribute"
-        errorLine1="                        &lt;EditText"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="353"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="Autofill"
-        message="Missing `autofillHints` attribute"
-        errorLine1="                        &lt;EditText"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="391"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="Autofill"
-        message="Missing `autofillHints` attribute"
-        errorLine1="                        &lt;EditText"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="325"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="Autofill"
-        message="Missing `autofillHints` attribute"
-        errorLine1="                        &lt;EditText"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="363"
-            column="26"/>
-    </issue>
-
     <issue
         id="Autofill"
         message="Missing `autofillHints` attribute"
@@ -3049,62 +1027,6 @@
             line="25"
             column="10"/>
     </issue>
-
-    <issue
-        id="ButtonCase"
-        message="The standard Android way to capitalize CANCEL is &quot;Cancel&quot; (tip: use `@android:string/cancel` instead)"
-        errorLine1="    &lt;string name=&quot;dialog_cancel&quot;>CANCEL&lt;/string>"
-        errorLine2="                                 ~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="266"
-            column="34"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toUri` instead?"
-        errorLine1="        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(with))"
-        errorLine2="                                                       ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/base/BaseActivity.kt"
-            line="63"
-            column="56"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toUri` instead?"
-        errorLine1="        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(with))"
-        errorLine2="                                                       ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/base/BaseFragment.kt"
-            line="64"
-            column="56"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toUri` instead?"
-        errorLine1="            data = Uri.parse(&quot;mailto:$with&quot;)"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/base/BaseFragment.kt"
-            line="70"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toUri` instead?"
-        errorLine1="            data = Uri.parse(&quot;mailto:$with&quot;)"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/base/BaseFragment.kt"
-            line="70"
-            column="20"/>
-    </issue>
-
     <issue
         id="UseKtx"
         message="Use the KTX extension function `Context.withStyledAttributes` instead?"
@@ -3115,7 +1037,6 @@
             line="61"
             column="17"/>
     </issue>
-
     <issue
         id="UseKtx"
         message="Use the KTX extension function `Int.toDrawable` instead?"
@@ -3126,7 +1047,6 @@
             line="106"
             column="34"/>
     </issue>
-
     <issue
         id="UseKtx"
         message="Use the KTX extension function `Int.toDrawable` instead?"
@@ -3137,7 +1057,6 @@
             line="106"
             column="34"/>
     </issue>
-
     <issue
         id="UseKtx"
         message="Use the KTX extension function `Int.toDrawable` instead?"
@@ -3148,7 +1067,6 @@
             line="107"
             column="22"/>
     </issue>
-
     <issue
         id="UseKtx"
         message="Use the KTX extension function `Int.toDrawable` instead?"
@@ -3159,7 +1077,6 @@
             line="107"
             column="22"/>
     </issue>
-
     <issue
         id="UseKtx"
         message="Use the KTX extension function `Context.withStyledAttributes` instead?"
@@ -3170,326 +1087,6 @@
             line="52"
             column="17"/>
     </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/DatePickerFragment.kt"
-            line="63"
-            column="46"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/ForgotPwdFragment.kt"
-            line="89"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toUri` instead?"
-        errorLine1="            data = Uri.parse(&quot;mailto:&quot;) // only email apps should handle this"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/HelpFragment.kt"
-            line="40"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toUri` instead?"
-        errorLine1="            data = Uri.parse(&quot;mailto:&quot;) // only email apps should handle this"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/HelpFragment.kt"
-            line="40"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/HelpFragment.kt"
-            line="81"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/InvitationFragment.kt"
-            line="51"
-            column="46"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `String.toUri` instead?"
-        errorLine1="        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(with))"
-        errorLine2="                                                       ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/InvitationFragment.kt"
-            line="184"
-            column="56"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension property `View.isInvisible` instead?"
-        errorLine1="        if (labelView.visibility == INVISIBLE) {"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/graph/KamleonGraphView.kt"
-            line="221"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/LoginFragment.kt"
-            line="144"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/LoginFragment.kt"
-            line="172"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/activities/MainActivity.kt"
-            line="173"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `SharedPreferences.edit` instead?"
-        errorLine1="        with(sharedPref.edit()) {"
-        errorLine2="             ~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/activities/MainActivity.kt"
-            line="329"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/OnboardingFragment.kt"
-            line="363"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/PinFragment.kt"
-            line="153"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/PwdFragment.kt"
-            line="149"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/ScanIntroFragment.kt"
-            line="60"
-            column="46"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        savedDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/SettingFragment.kt"
-            line="202"
-            column="51"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/SettingFragment.kt"
-            line="219"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/SettingFragment.kt"
-            line="257"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/SettingFragment.kt"
-            line="274"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/SettingFragment.kt"
-            line="292"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `SharedPreferences.edit` instead?"
-        errorLine1="        mEditor = mSharedPreferences.edit()"
-        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/utils/SharedPrefUtil.kt"
-            line="27"
-            column="19"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `SharedPreferences.edit` instead?"
-        errorLine1="        mEditor = mSharedPreferences.edit()"
-        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/utils/SharedPrefUtil.kt"
-            line="40"
-            column="19"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `SharedPreferences.edit` instead?"
-        errorLine1="        mEditor = mSharedPreferences.edit()"
-        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/utils/SharedPrefUtil.kt"
-            line="53"
-            column="19"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `SharedPreferences.edit` instead?"
-        errorLine1="        mEditor = mSharedPreferences.edit()"
-        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/utils/SharedPrefUtil.kt"
-            line="66"
-            column="19"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `SharedPreferences.edit` instead?"
-        errorLine1="        mEditor = mSharedPreferences.edit()"
-        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/utils/SharedPrefUtil.kt"
-            line="73"
-            column="19"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `SharedPreferences.edit` instead?"
-        errorLine1="        mSharedPreferences.edit().clear().apply()"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/utils/SharedPrefUtil.kt"
-            line="177"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `SharedPreferences.edit` instead?"
-        errorLine1="        mEditor = mSharedPreferences.edit()"
-        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/utils/SharedPrefUtil.kt"
-            line="187"
-            column="19"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        message="Use the KTX extension function `Int.toDrawable` instead?"
-        errorLine1="        logoutDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))"
-        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/TabFragment.kt"
-            line="319"
-            column="52"/>
-    </issue>
-
     <issue
         id="UseKtx"
         message="Use the KTX extension function `Context.withStyledAttributes` instead?"
@@ -3500,7 +1097,6 @@
             line="53"
             column="17"/>
     </issue>
-
     <issue
         id="ClickableViewAccessibility"
         message="`onTouch` lambda should call `View#performClick` when a click is detected"
@@ -3511,29 +1107,6 @@
             line="161"
             column="40"/>
     </issue>
-
-    <issue
-        id="ClickableViewAccessibility"
-        message="Custom view ``FrameLayout`` has `setOnTouchListener` called on it but does not override `performClick`"
-        errorLine1="        contentLayout.setOnTouchListener(object : OnTouchListener {"
-        errorLine2="        ^">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/graph/KamleonGraphView.kt"
-            line="66"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="ClickableViewAccessibility"
-        message="`onTouch` should call `View#performClick` when a click is detected"
-        errorLine1="            override fun onTouch(v: View?, event: MotionEvent?): Boolean {"
-        errorLine2="                         ~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/graph/KamleonGraphView.kt"
-            line="67"
-            column="26"/>
-    </issue>
-
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
@@ -3544,7 +1117,6 @@
             line="9"
             column="6"/>
     </issue>
-
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
@@ -3555,18 +1127,6 @@
             line="31"
             column="10"/>
     </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_home.xml"
-            line="9"
-            column="6"/>
-    </issue>
-
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
@@ -3577,7 +1137,6 @@
             line="10"
             column="6"/>
     </issue>
-
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
@@ -3588,7 +1147,6 @@
             line="32"
             column="10"/>
     </issue>
-
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
@@ -3599,40 +1157,6 @@
             line="10"
             column="6"/>
     </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="                    &lt;ImageView"
-        errorLine2="                     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pin.xml"
-            line="101"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="                    &lt;ImageView"
-        errorLine2="                     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pin.xml"
-            line="148"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="                    &lt;ImageView"
-        errorLine2="                     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pin.xml"
-            line="189"
-            column="22"/>
-    </issue>
-
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
@@ -3643,7 +1167,6 @@
             line="9"
             column="6"/>
     </issue>
-
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
@@ -3654,7 +1177,6 @@
             line="49"
             column="14"/>
     </issue>
-
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
@@ -3665,7 +1187,6 @@
             line="74"
             column="14"/>
     </issue>
-
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
@@ -3676,40 +1197,6 @@
             line="99"
             column="14"/>
     </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="                    &lt;ImageView"
-        errorLine2="                     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pwd.xml"
-            line="103"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="                    &lt;ImageView"
-        errorLine2="                     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pwd.xml"
-            line="152"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="                    &lt;ImageView"
-        errorLine2="                     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pwd.xml"
-            line="197"
-            column="22"/>
-    </issue>
-
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
@@ -3720,194 +1207,6 @@
             line="21"
             column="10"/>
     </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageView"
-        errorLine2="             ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="67"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageView"
-        errorLine2="             ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="63"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="                &lt;ImageView"
-        errorLine2="                 ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_tab.xml"
-            line="99"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="                &lt;ImageView"
-        errorLine2="                 ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_tab.xml"
-            line="128"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="                &lt;ImageView"
-        errorLine2="                 ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_tab.xml"
-            line="157"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_data_picker.xml"
-            line="35"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_date_picker.xml"
-            line="22"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_image_pick.xml"
-            line="18"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageView"
-        errorLine2="             ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_image_pick.xml"
-            line="60"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageView"
-        errorLine2="             ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_image_pick.xml"
-            line="86"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageView"
-        errorLine2="             ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_image_pick.xml"
-            line="112"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_invitation.xml"
-            line="19"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="                    &lt;ImageView"
-        errorLine2="                     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_invitation.xml"
-            line="249"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_scan_intro.xml"
-            line="14"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageView"
-        errorLine2="             ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_scan_intro.xml"
-            line="34"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_analytics_list_item.xml"
-            line="50"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="            &lt;ImageView"
-        errorLine2="             ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_invitation_pending_list_item.xml"
-            line="20"
-            column="14"/>
-    </issue>
-
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
@@ -3918,7 +1217,6 @@
             line="46"
             column="14"/>
     </issue>
-
     <issue
         id="ContentDescription"
         message="Missing `contentDescription` attribute on image"
@@ -3929,183 +1227,6 @@
             line="51"
             column="14"/>
     </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_kmln_footer.xml"
-            line="20"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="    &lt;ImageView"
-        errorLine2="     ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_setting_menu_item.xml"
-            line="61"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="ContentDescription"
-        message="Missing `contentDescription` attribute on image"
-        errorLine1="        &lt;ImageView"
-        errorLine2="         ~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_viewholder_tip_list.xml"
-            line="47"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="LabelFor"
-        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_email.xml"
-            line="89"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="LabelFor"
-        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_email.xml"
-            line="128"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="LabelFor"
-        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_email.xml"
-            line="161"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="LabelFor"
-        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pin.xml"
-            line="89"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="LabelFor"
-        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pin.xml"
-            line="136"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="LabelFor"
-        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pin.xml"
-            line="177"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="LabelFor"
-        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pwd.xml"
-            line="90"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="LabelFor"
-        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pwd.xml"
-            line="139"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="LabelFor"
-        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
-        errorLine1="                    &lt;EditText"
-        errorLine2="                     ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_pwd.xml"
-            line="184"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="LabelFor"
-        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
-        errorLine1="                        &lt;EditText"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="353"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="LabelFor"
-        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
-        errorLine1="                        &lt;EditText"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="391"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="LabelFor"
-        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
-        errorLine1="                        &lt;EditText"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="325"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="LabelFor"
-        message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
-        errorLine1="                        &lt;EditText"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="363"
-            column="26"/>
-    </issue>
-
     <issue
         id="LabelFor"
         message="Missing accessibility label: provide either a view with an `android:labelFor` that references this view or provide an `android:hint`"
@@ -4116,73 +1237,6 @@
             line="25"
             column="10"/>
     </issue>
-
-    <issue
-        id="SetTextI18n"
-        message="Number formatting does not take into account locale settings. Consider using `String.format` instead."
-        errorLine1="        binding.lastMeasure.text = measure.score.toString()"
-        errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/HomeFragment.kt"
-            line="99"
-            column="36"/>
-    </issue>
-
-    <issue
-        id="SetTextI18n"
-        message="Number formatting does not take into account locale settings. Consider using `String.format` instead."
-        errorLine1="            tvValue1.text = active.toString()"
-        errorLine2="                            ~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/views/graph/views/KmlnFooterView.kt"
-            line="82"
-            column="29"/>
-    </issue>
-
-    <issue
-        id="SetTextI18n"
-        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
-        errorLine1="        qrDebugging.text = qrDebugging.text.toString() + &quot;\n&quot; + text"
-        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/TabFragment.kt"
-            line="308"
-            column="28"/>
-    </issue>
-
-    <issue
-        id="SetTextI18n"
-        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
-        errorLine1="        qrDebugging.text = qrDebugging.text.toString() + &quot;\n&quot; + text"
-        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/dynatech2012/kamleonuserapp/fragments/TabFragment.kt"
-            line="308"
-            column="28"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;maria.garcia@gmail.com&quot;, should use `@string` resource"
-        errorLine1="                        android:text=&quot;maria.garcia@gmail.com&quot;/>"
-        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_email.xml"
-            line="100"
-            column="25"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;0&quot;, should use `@string` resource"
-        errorLine1="                android:text=&quot;0&quot;"
-        errorLine2="                ~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_home.xml"
-            line="133"
-            column="17"/>
-    </issue>
-
     <issue
         id="HardcodedText"
         message="Hardcoded string &quot;test&quot;, should use `@string` resource"
@@ -4193,304 +1247,6 @@
             line="58"
             column="17"/>
     </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;name&quot;, should use `@string` resource"
-        errorLine1="                            android:text=&quot;name&quot;"
-        errorLine2="                            ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="361"
-            column="29"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;sur_name&quot;, should use `@string` resource"
-        errorLine1="                            android:text=&quot;sur_name&quot;"
-        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="399"
-            column="29"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;name&quot;, should use `@string` resource"
-        errorLine1="                            android:text=&quot;name&quot;"
-        errorLine2="                            ~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="333"
-            column="29"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;sur_name&quot;, should use `@string` resource"
-        errorLine1="                            android:text=&quot;sur_name&quot;"
-        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="371"
-            column="29"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;Version: 1.1&quot;, should use `@string` resource"
-        errorLine1="                    android:text=&quot;Version: 1.1&quot;"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="618"
-            column="21"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;11111&quot;, should use `@string` resource"
-        errorLine1="                android:text=&quot;11111&quot;"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_analytics_list_item.xml"
-            line="28"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;11111&quot;, should use `@string` resource"
-        errorLine1="                android:text=&quot;11111&quot;"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_analytics_list_item.xml"
-            line="37"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;Your last urine hydration is on the recommended level.&quot;, should use `@string` resource"
-        errorLine1="                android:text=&quot;Your last urine hydration is on the recommended level.&quot;"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_analytics_list_item.xml"
-            line="47"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;Log Out&quot;, should use `@string` resource"
-        errorLine1="            android:text=&quot;Log Out&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_dialog_yn.xml"
-            line="37"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;Cancel&quot;, should use `@string` resource"
-        errorLine1="            android:text=&quot;Cancel&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_dialog_yn.xml"
-            line="52"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;Log Out&quot;, should use `@string` resource"
-        errorLine1="            android:text=&quot;Log Out&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_dialog_yn_delete.xml"
-            line="38"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;Cancel&quot;, should use `@string` resource"
-        errorLine1="            android:text=&quot;Cancel&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_dialog_yn_delete.xml"
-            line="53"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;Jul 12, 2023&quot;, should use `@string` resource"
-        errorLine1="            android:text=&quot;Jul 12, 2023&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_kmln_header.xml"
-            line="75"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;%&quot;, should use `@string` resource"
-        errorLine1="                android:text=&quot;%&quot;"
-        errorLine2="                ~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_kmln_label.xml"
-            line="38"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;OPT&quot;, should use `@string` resource"
-        errorLine1="            android:text=&quot;OPT&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_kmln_option.xml"
-            line="20"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;Tip&quot;, should use `@string` resource"
-        errorLine1="                android:text=&quot;Tip&quot;"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_viewholder_tip_list.xml"
-            line="25"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`@id/tvNavTitle` can overlap `@id/cv_graph_profile` if @id/tvNavTitle grows due to localized text expansion"
-        errorLine1="        &lt;TextView"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_graphics.xml"
-            line="47"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`@id/tv_setting_account_org` can overlap `TextView-1` if @string/setting_label_org, @id/tv_setting_account_org grow due to localized text expansion"
-        errorLine1="                        &lt;TextView"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="683"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`@id/tv_setting_account_center` can overlap `TextView-1` if @string/setting_label_center, @id/tv_setting_account_center grow due to localized text expansion"
-        errorLine1="                        &lt;TextView"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="713"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`@id/tv_setting_account_team` can overlap `TextView-1` if @string/setting_label_team, @id/tv_setting_account_team grow due to localized text expansion"
-        errorLine1="                        &lt;TextView"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="743"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`TextView-5` can overlap `TextView-1` if @string/setting_label_org_short, @string/setting_label_team grow due to localized text expansion"
-        errorLine1="                        &lt;TextView"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="787"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`TextView-5` can overlap `TextView-3` if @string/setting_label_center, @string/setting_label_team grow due to localized text expansion"
-        errorLine1="                        &lt;TextView"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting.xml"
-            line="787"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`@id/tv_setting_account_org` can overlap `TextView-1` if @string/setting_label_org, @id/tv_setting_account_org grow due to localized text expansion"
-        errorLine1="                        &lt;TextView"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="655"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`@id/tv_setting_account_center` can overlap `TextView-1` if @string/setting_label_center, @id/tv_setting_account_center grow due to localized text expansion"
-        errorLine1="                        &lt;TextView"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="685"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`@id/tv_setting_account_team` can overlap `TextView-1` if @string/setting_label_team, @id/tv_setting_account_team grow due to localized text expansion"
-        errorLine1="                        &lt;TextView"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="715"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`TextView-5` can overlap `TextView-1` if @string/setting_label_org_short, @string/setting_label_team grow due to localized text expansion"
-        errorLine1="                        &lt;TextView"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="759"
-            column="26"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`TextView-5` can overlap `TextView-3` if @string/setting_label_center, @string/setting_label_team grow due to localized text expansion"
-        errorLine1="                        &lt;TextView"
-        errorLine2="                         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_setting_copia.xml"
-            line="759"
-            column="26"/>
-    </issue>
-
     <issue
         id="RelativeOverlap"
         message="`@id/inputBoxTextView` can overlap `LinearLayout-3` if @string/placeholder_email grows due to localized text expansion"
@@ -4501,29 +1257,6 @@
             line="8"
             column="6"/>
     </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`@id/tv_org_team_name` can overlap `@id/tv_org_center_name` if @id/tv_org_center_name, @id/tv_org_team_name grow due to localized text expansion"
-        errorLine1="        &lt;TextView"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_kamleon_organization_item.xml"
-            line="38"
-            column="10"/>
-    </issue>
-
-    <issue
-        id="RelativeOverlap"
-        message="`@id/tv_org_team_name` can overlap `@id/tv_org_org_name` if @id/tv_org_org_name, @id/tv_org_team_name grow due to localized text expansion"
-        errorLine1="        &lt;TextView"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_kamleon_organization_item.xml"
-            line="38"
-            column="10"/>
-    </issue>
-
     <issue
         id="RtlSymmetry"
         message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
@@ -4534,7 +1267,6 @@
             line="45"
             column="13"/>
     </issue>
-
     <issue
         id="RtlSymmetry"
         message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
@@ -4545,7 +1277,6 @@
             line="64"
             column="17"/>
     </issue>
-
     <issue
         id="RtlSymmetry"
         message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
@@ -4556,7 +1287,6 @@
             line="70"
             column="13"/>
     </issue>
-
     <issue
         id="RtlSymmetry"
         message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
@@ -4567,7 +1297,6 @@
             line="89"
             column="17"/>
     </issue>
-
     <issue
         id="RtlSymmetry"
         message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
@@ -4578,7 +1307,6 @@
             line="94"
             column="13"/>
     </issue>
-
     <issue
         id="RtlSymmetry"
         message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
@@ -4589,7 +1317,6 @@
             line="114"
             column="17"/>
     </issue>
-
     <issue
         id="RtlSymmetry"
         message="When you define `paddingEnd` you should probably also define `paddingStart` for right-to-left symmetry"
@@ -4600,7 +1327,6 @@
             line="127"
             column="13"/>
     </issue>
-
     <issue
         id="RtlSymmetry"
         message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
@@ -4611,7 +1337,6 @@
             line="97"
             column="13"/>
     </issue>
-
     <issue
         id="RtlSymmetry"
         message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
@@ -4622,7 +1347,6 @@
             line="31"
             column="13"/>
     </issue>
-
     <issue
         id="RtlSymmetry"
         message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
@@ -4633,18 +1357,838 @@
             line="45"
             column="13"/>
     </issue>
-
     <issue
-        id="RtlSymmetry"
-        message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
-        errorLine1="        android:paddingStart=&quot;26dp&quot;"
-        errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
+        id="RtlEnabled"
+        message="The project references RTL attributes, but does not explicitly enable or disable RTL support with `android:supportsRtl` in the manifest">
         <location
-            file="src/main/res/layout/layout_kmln_header.xml"
+            file="src/main/AndroidManifest.xml"/>
+    </issue>
+    <issue
+        id="SuspiciousImport"
+        message="Don&apos;t include `android.R` here; use a fully qualified name for each usage instead"
+        errorLine1="import android.R"
+        errorLine2="~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/dynatech2012/kamleonuserapp/activities/MainActivity.kt"
+            line="6"
+            column="1"/>
+    </issue>
+    <issue
+        id="CustomViewStyleable"
+        message="By convention, the custom view (`SettingMenuItemView`) and the declare-styleable (`SettingMenuItemViewStyle`) should have the same name (various editor features rely on this convention)"
+        errorLine1="            context.obtainStyledAttributes(attrs, R.styleable.SettingMenuItemViewStyle)"
+        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/dynatech2012/kamleonuserapp/views/SettingMenuItemView.kt"
+            line="84"
+            column="51"/>
+    </issue>
+    <issue
+        id="LockedOrientationActivity"
+        message="Expecting `android:screenOrientation=&quot;unspecified&quot;` or `&quot;fullSensor&quot;` for this activity so the user can use the application in any orientation and provide a great experience on Chrome OS devices"
+        errorLine1="            android:screenOrientation=&quot;portrait&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="59"
+            column="13"/>
+    </issue>
+    <issue
+        id="LockedOrientationActivity"
+        message="Expecting `android:screenOrientation=&quot;unspecified&quot;` or `&quot;fullSensor&quot;` for this activity so the user can use the application in any orientation and provide a great experience on Chrome OS devices"
+        errorLine1="            android:screenOrientation=&quot;portrait&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="67"
+            column="13"/>
+    </issue>
+    <issue
+        id="DiscouragedApi"
+        message="Fixed screen orientations will be ignored in most cases, starting from Android 16. Android is moving toward a model where apps are expected to adapt to various orientations, display sizes, and aspect ratios."
+        errorLine1="            android:screenOrientation=&quot;portrait&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="59"
+            column="13"/>
+    </issue>
+    <issue
+        id="DiscouragedApi"
+        message="Fixed screen orientations will be ignored in most cases, starting from Android 16. Android is moving toward a model where apps are expected to adapt to various orientations, display sizes, and aspect ratios."
+        errorLine1="            android:screenOrientation=&quot;portrait&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="67"
+            column="13"/>
+    </issue>
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; `SDK_INT` is always >= 30"
+        errorLine1="        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {"
+        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/dynatech2012/kamleonuserapp/application/MyApplication.kt"
+            line="20"
+            column="31"/>
+    </issue>
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; `SDK_INT` is always >= 30"
+        errorLine1="        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/dynatech2012/kamleonuserapp/service/NotificationService.kt"
+            line="100"
+            column="13"/>
+    </issue>
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; `SDK_INT` is always >= 29"
+        errorLine1="        &lt;item name=&quot;android:forceDarkAllowed&quot; tools:targetApi=&quot;q&quot;>false&lt;/item>"
+        errorLine2="                                              ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="22"
+            column="47"/>
+    </issue>
+    <issue
+        id="UseCompoundDrawables"
+        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
+        errorLine1="    &lt;LinearLayout"
+        errorLine2="     ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_image_pick.xml"
+            line="73"
+            column="6"/>
+    </issue>
+    <issue
+        id="UseCompoundDrawables"
+        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
+        errorLine1="    &lt;LinearLayout"
+        errorLine2="     ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_image_pick.xml"
+            line="87"
+            column="6"/>
+    </issue>
+    <issue
+        id="UseCompoundDrawables"
+        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
+        errorLine1="    &lt;LinearLayout"
+        errorLine2="     ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_image_pick.xml"
+            line="101"
+            column="6"/>
+    </issue>
+    <issue
+        id="DisableBaselineAlignment"
+        message="Set `android:baselineAligned=&quot;false&quot;` on this element for better performance"
+        errorLine1="    &lt;LinearLayout"
+        errorLine2="     ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_tab.xml"
+            line="159"
+            column="6"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.app_icon_foreground_dev` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/app_icon_foreground_dev.xml"
+            line="1"
+            column="1"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.color_grey1` appears to be unused"
+        errorLine1="    &lt;color name=&quot;color_grey1&quot;>#bbbbbb&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="../datepicker/src/main/res/values/colors.xml"
+            line="10"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.white05` appears to be unused"
+        errorLine1="    &lt;color name=&quot;white05&quot;>#0DFFFFFF&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="10"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.kmln_graph_color_orange_semitransp` appears to be unused"
+        errorLine1="    &lt;color name=&quot;kmln_graph_color_orange_semitransp&quot;>#90FF5C55&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="12"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.kmln_greenShadow0` appears to be unused"
+        errorLine1="    &lt;color name=&quot;kmln_greenShadow0&quot;>#9961DFD8&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="32"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.kmln_greenShadow1` appears to be unused"
+        errorLine1="    &lt;color name=&quot;kmln_greenShadow1&quot;>#5561DFD8&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="33"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.kmln_greenShadow2` appears to be unused"
+        errorLine1="    &lt;color name=&quot;kmln_greenShadow2&quot;>#2461DFD8&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="34"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.kmln_greenShadow3` appears to be unused"
+        errorLine1="    &lt;color name=&quot;kmln_greenShadow3&quot;>#1261DFD8&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="35"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.kmln_greenShadow4` appears to be unused"
+        errorLine1="    &lt;color name=&quot;kmln_greenShadow4&quot;>#0861DFD8&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="36"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.kamleon_blue_dark` appears to be unused"
+        errorLine1="    &lt;color name=&quot;kamleon_blue_dark&quot;>#00A59B&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
             line="39"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.kamleon_dark_grey_20` appears to be unused"
+        errorLine1="    &lt;color name=&quot;kamleon_dark_grey_20&quot;>#33221E1E&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="44"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.calendar_mode_shadow_0` appears to be unused"
+        errorLine1="    &lt;color name=&quot;calendar_mode_shadow_0&quot;>#01000000&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="64"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.calendar_mode_shadow_1` appears to be unused"
+        errorLine1="    &lt;color name=&quot;calendar_mode_shadow_1&quot;>#02000000&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="65"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.calendar_mode_shadow_2` appears to be unused"
+        errorLine1="    &lt;color name=&quot;calendar_mode_shadow_2&quot;>#04000000&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="66"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.calendar_mode_shadow_3` appears to be unused"
+        errorLine1="    &lt;color name=&quot;calendar_mode_shadow_3&quot;>#06000000&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="67"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.calendar_mode_shadow_4` appears to be unused"
+        errorLine1="    &lt;color name=&quot;calendar_mode_shadow_4&quot;>#08000000&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="68"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.calendar_mode_shadow_5` appears to be unused"
+        errorLine1="    &lt;color name=&quot;calendar_mode_shadow_5&quot;>#10000000&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="69"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.color_red_40` appears to be unused"
+        errorLine1="    &lt;color name=&quot;color_red_40&quot;>#33FC664E&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="76"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.kamleon_blue_40` appears to be unused"
+        errorLine1="    &lt;color name=&quot;kamleon_blue_40&quot;>#332FD5CB&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="77"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.color_secondary` appears to be unused"
+        errorLine1="    &lt;color name=&quot;color_secondary&quot;>#808285&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="79"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.debug_blue` appears to be unused"
+        errorLine1="    &lt;color name=&quot;debug_blue&quot;>#3F51B5&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="98"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.debug_green` appears to be unused"
+        errorLine1="    &lt;color name=&quot;debug_green&quot;>#4CAF50&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="99"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.debug_yellow` appears to be unused"
+        errorLine1="    &lt;color name=&quot;debug_yellow&quot;>#FFC107&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="100"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.dimen.tab_bottom_shadow_height` appears to be unused"
+        errorLine1="    &lt;dimen name=&quot;tab_bottom_shadow_height&quot;>10dp&lt;/dimen>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/dimens.xml"
+            line="60"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.dimen.kmln_graph_footer_streak_title_text_size` appears to be unused"
+        errorLine1="    &lt;dimen name=&quot;kmln_graph_footer_streak_title_text_size&quot;>18sp&lt;/dimen>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/dimens.xml"
+            line="63"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.dimen.shadow_round_rect_bottom_padding` appears to be unused"
+        errorLine1="    &lt;dimen name=&quot;shadow_round_rect_bottom_padding&quot;>4dp&lt;/dimen>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/dimens.xml"
+            line="68"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.dimen.kmln_graph_header_padding_v` appears to be unused"
+        errorLine1="    &lt;dimen name=&quot;kmln_graph_header_padding_v&quot;>8dp&lt;/dimen>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/dimens.xml"
+            line="70"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.dimen.kmln_graph_header_item_height` appears to be unused"
+        errorLine1="    &lt;dimen name=&quot;kmln_graph_header_item_height&quot;>30dp&lt;/dimen>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/dimens.xml"
+            line="72"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.forgotpwd_settings` appears to be unused"
+        errorLine1="    &lt;string name=&quot;forgotpwd_settings&quot;>&lt;u>Forgot password?&lt;/u>&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="95"
+            column="13"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.array.onboard_gender_values` appears to be unused"
+        errorLine1="    &lt;string-array name=&quot;onboard_gender_values&quot;>"
+        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="143"
+            column="19"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.setting_label_location` appears to be unused"
+        errorLine1="    &lt;string name=&quot;setting_label_location&quot;>LOCATION&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="214"
+            column="13"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.setting_label_awuta` appears to be unused"
+        errorLine1="    &lt;string name=&quot;setting_label_awuta&quot;>ALLOW WHILE USING THE APP&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="215"
+            column="13"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.setting_label_allow_once` appears to be unused"
+        errorLine1="    &lt;string name=&quot;setting_label_allow_once&quot;>ALLOW ONCE&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="216"
+            column="13"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.setting_label_not_allow` appears to be unused"
+        errorLine1="    &lt;string name=&quot;setting_label_not_allow&quot;>DON\&apos;T ALLOW&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="217"
+            column="13"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.setting_desc_pref3` appears to be unused"
+        errorLine1="    &lt;string name=&quot;setting_desc_pref3&quot;>Enable Kamleon to use location data for personalized services, while considering privacy implications.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="221"
+            column="13"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.qr_scan_now` appears to be unused"
+        errorLine1="    &lt;string name=&quot;qr_scan_now&quot;>SCAN NOW!&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="260"
+            column="13"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.noti_channel_id` appears to be unused"
+        errorLine1="    &lt;string name=&quot;noti_channel_id&quot;>kamleonChannel&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="343"
+            column="13"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.dialog_cancel` appears to be unused"
+        errorLine1="    &lt;string name=&quot;dialog_cancel&quot;>CANCEL&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="412"
+            column="13"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.error_login` appears to be unused"
+        errorLine1="    &lt;string name=&quot;error_login&quot;>Error login&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="453"
+            column="13"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.error_camera_permission_denied` appears to be unused"
+        errorLine1="    &lt;string name=&quot;error_camera_permission_denied&quot;>Permission denied&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="465"
+            column="13"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.error_start_camera` appears to be unused"
+        errorLine1="    &lt;string name=&quot;error_start_camera&quot;>Error starting camera&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="466"
+            column="13"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.switch_thumb_path_checked` appears to be unused"
+        errorLine1="    &lt;string name=&quot;switch_thumb_path_checked&quot; translatable=&quot;false&quot;>M4,16 A12,12 0 0,1 16,4 H16 A12,12 0 0,1 16,28 H16 A12,12 0 0,1 4,16&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="479"
+            column="13"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.switch_thumb_path_unchecked` appears to be unused"
+        errorLine1="    &lt;string name=&quot;switch_thumb_path_unchecked&quot; translatable=&quot;false&quot;>M,16 A8,8 0 0,1 16,8 H16 A8,8 0 0,1 16,24 H16 A8,8 0 0,1 8,16&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="480"
+            column="13"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.onboardSpinnerItemStyle` appears to be unused"
+        errorLine1="    &lt;style name=&quot;onboardSpinnerItemStyle&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="19"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.Button` appears to be unused"
+        errorLine1="    &lt;style name=&quot;Button&quot; />"
+        errorLine2="           ~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="26"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.Button_Kamleon` appears to be unused"
+        errorLine1="    &lt;style name=&quot;Button.Kamleon&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="27"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.Button_Kamleon_Primary` appears to be unused"
+        errorLine1="    &lt;style name=&quot;Button.Kamleon.Primary&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="32"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.capsuleShape` appears to be unused"
+        errorLine1="    &lt;style name=&quot;capsuleShape&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="39"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.Circular` appears to be unused"
+        errorLine1="    &lt;style name=&quot;Circular&quot; parent=&quot;android:Widget.TextView&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="45"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.Circular_Inverse` appears to be unused"
+        errorLine1="    &lt;style name=&quot;Circular.Inverse&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="51"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.Circular_Regular` appears to be unused"
+        errorLine1="    &lt;style name=&quot;Circular.Regular&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="54"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.Circular_Medium` appears to be unused"
+        errorLine1="    &lt;style name=&quot;Circular.Medium&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="57"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.Circular_Bold` appears to be unused"
+        errorLine1="    &lt;style name=&quot;Circular.Bold&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="60"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.Circular_Book` appears to be unused"
+        errorLine1="    &lt;style name=&quot;Circular.Book&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="63"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.TextAppearance_Kamleon_Regular` appears to be unused"
+        errorLine1="    &lt;style name=&quot;TextAppearance.Kamleon.Regular&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="74"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.TextAppearance_Kamleon_Medium` appears to be unused"
+        errorLine1="    &lt;style name=&quot;TextAppearance.Kamleon.Medium&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="77"
+            column="12"/>
+    </issue>
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.TextAppearance_Kamleon_Overline` appears to be unused"
+        errorLine1="    &lt;style name=&quot;TextAppearance.Kamleon.Overline&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/styles.xml"
+            line="124"
+            column="12"/>
+    </issue>
+    <issue
+        id="UselessParent"
+        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary; transfer the `background` attribute to the other view"
+        errorLine1="            &lt;LinearLayout"
+        errorLine2="             ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_tab.xml"
+            line="183"
+            column="14"/>
+    </issue>
+    <issue
+        id="UselessParent"
+        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary"
+        errorLine1="            &lt;LinearLayout"
+        errorLine2="             ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_tab.xml"
+            line="212"
+            column="14"/>
+    </issue>
+    <issue
+        id="UselessParent"
+        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary"
+        errorLine1="            &lt;LinearLayout"
+        errorLine2="             ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_tab.xml"
+            line="241"
+            column="14"/>
+    </issue>
+    <issue
+        id="IconDensities"
+        message="Missing the following drawables in `drawable-xhdpi`: icn_circular_check.png, icn_circular_uncheck.png, icn_streak_off.png, icn_streak_on.png, img_logo.png... (4 more)">
+        <location
+            file="src/main/res/drawable-xhdpi"/>
+    </issue>
+    <issue
+        id="ButtonCase"
+        message="The standard Android way to capitalize CANCEL is &quot;Cancel&quot; (tip: use `@android:string/cancel` instead)"
+        errorLine1="    &lt;string name=&quot;dialog_cancel&quot;>CANCEL&lt;/string>"
+        errorLine2="                                 ~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="412"
+            column="34"/>
+    </issue>
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        mEditor = mSharedPreferences.edit()"
+        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/dynatech2012/kamleonuserapp/utils/SharedPrefUtil.kt"
+            line="26"
+            column="19"/>
+    </issue>
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        mEditor = mSharedPreferences.edit()"
+        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/dynatech2012/kamleonuserapp/utils/SharedPrefUtil.kt"
+            line="39"
+            column="19"/>
+    </issue>
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        mSharedPreferences.edit().clear().apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/dynatech2012/kamleonuserapp/utils/SharedPrefUtil.kt"
+            line="136"
             column="9"/>
     </issue>
-
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        mEditor = mSharedPreferences.edit()"
+        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/dynatech2012/kamleonuserapp/utils/SharedPrefUtil.kt"
+            line="146"
+            column="19"/>
+    </issue>
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="                &lt;ImageView"
+        errorLine2="                 ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_tab.xml"
+            line="189"
+            column="18"/>
+    </issue>
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="                &lt;ImageView"
+        errorLine2="                 ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_tab.xml"
+            line="218"
+            column="18"/>
+    </issue>
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="                &lt;ImageView"
+        errorLine2="                 ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_tab.xml"
+            line="247"
+            column="18"/>
+    </issue>
+    <issue
+        id="ContentDescription"
+        message="Missing `contentDescription` attribute on image"
+        errorLine1="    &lt;ImageView"
+        errorLine2="     ~~~~~~~~~">
+        <location
+            file="src/main/res/layout/layout_setting_menu_item.xml"
+            line="59"
+            column="6"/>
+    </issue>
     <issue
         id="RtlSymmetry"
         message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
@@ -4652,37 +2196,13 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/layout_setting_menu_item.xml"
-            line="65"
+            line="63"
             column="9"/>
     </issue>
-
     <issue
-        id="RtlHardcoded"
-        message="Consider replacing `android:layout_marginRight` with `android:layout_marginEnd=&quot;4dp&quot;` to better support right-to-left layouts"
-        errorLine1="            android:layout_marginRight=&quot;4dp&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        id="ObsoleteSdkInt"
+        message="This folder configuration (`v26`) is unnecessary; `minSdkVersion` is 30. Merge all the resources in this folder into `mipmap-anydpi`.">
         <location
-            file="src/main/res/layout/layout_viewholder_tip_list.xml"
-            line="52"
-            column="13"/>
+            file="src/preProduction/res/mipmap-anydpi-v26"/>
     </issue>
-
-    <issue
-        id="RtlHardcoded"
-        message="Consider replacing `android:layout_alignParentRight` with `android:layout_alignParentEnd=&quot;true&quot;` to better support right-to-left layouts"
-        errorLine1="            android:layout_alignParentRight=&quot;true&quot;/>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/layout_viewholder_tip_list.xml"
-            line="55"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="RtlEnabled"
-        message="The project references RTL attributes, but does not explicitly enable or disable RTL support with `android:supportsRtl` in the manifest">
-        <location
-            file="src/main/AndroidManifest.xml"/>
-    </issue>
-
 </issues>
