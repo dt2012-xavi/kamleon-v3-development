@@ -111,11 +111,6 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/ts_16</item>
     </style>
-    <!-- Subtitle2: 14sp -->
-    <style name="TextAppearance.Kamleon.Subtitle2">
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">@dimen/ts_14</item>
-    </style>
     <!-- Body1: 16sp -->
     <style name="TextAppearance.Kamleon.Body1">
         <item name="android:textSize">@dimen/ts_16</item>
@@ -128,24 +123,11 @@
     <style name="TextAppearance.Kamleon.Button">
         <item name="android:textSize">@dimen/ts_16</item>
     </style>
-    <!-- Caption: 12sp -->
-    <style name="TextAppearance.Kamleon.Caption">
-        <item name="android:textSize">@dimen/ts_12</item>
-    </style>
     <!-- Overline: 10sp -->
     <style name="TextAppearance.Kamleon.Overline">
         <item name="android:textSize">@dimen/ts_10</item>
     </style>
 
-    <style name="TextStyle" />
-    <style name="TextStyle.Kamleon">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-    <!-- For white foreground if light mode -->
-    <style name="TextStyle.Kamleon.Inverse">
-        <item name="android:textColor">?attr/colorOnSurfaceInverse</item>
-    </style>
 
 
 

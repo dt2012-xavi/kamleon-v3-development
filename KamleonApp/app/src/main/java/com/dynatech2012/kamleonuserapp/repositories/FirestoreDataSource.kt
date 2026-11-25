@@ -12,7 +12,6 @@ import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.kANALYSIS_TYP
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Gender
-import com.dynatech2012.kamleonuserapp.models.InvitationStatus
 import com.dynatech2012.kamleonuserapp.models.KamleonLegal
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.models.RawMeasureData
@@ -26,7 +25,6 @@ import com.dynatech2012.kamleonuserapp.network.NetworkGate
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.google.firebase.Firebase
 
-import com.google.firebase.firestore.AggregateSource
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
@@ -251,14 +249,6 @@ class FirestoreDataSource @Inject constructor(
     }
 
     // Invitations
-
-    suspend fun getNewInvitations(): Int {
-        val doc = db.collection(USERS_COLLECTION)
-            .whereEqualTo("email", userRepository.email)
-            .whereEqualTo("status", InvitationStatus.SENT.rawValue)
-            .count()
-        return gate.safeCall(CallKind.Read) { doc.get(AggregateSource.SERVER).await().count.toInt() }.dataValue ?: 0
-    }
 
     suspend fun updateToken(): Response<Boolean> {
         val userId = uuid ?: return Response.Failure(Exception("User not logged in"))

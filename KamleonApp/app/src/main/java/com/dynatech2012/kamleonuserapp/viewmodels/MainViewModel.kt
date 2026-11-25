@@ -18,19 +18,18 @@ import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_NEW_ME
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
 import com.dynatech2012.kamleonuserapp.database.MeasureData
-import com.dynatech2012.kamleonuserapp.extensions.addDays
 import com.dynatech2012.kamleonuserapp.extensions.sha256
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.HomeStatus
 import com.dynatech2012.kamleonuserapp.models.homeStatusAfterLoad
 import com.dynatech2012.kamleonuserapp.models.Event
 import com.dynatech2012.kamleonuserapp.models.Gender
-import com.dynatech2012.kamleonuserapp.models.Invitation
-import com.dynatech2012.kamleonuserapp.models.InvitationStatus
+import com.dynatech2012.kamleonuserapp.models.InvitationItem
 import com.dynatech2012.kamleonuserapp.models.RoleGroup
 import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.DatabaseDataSource
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
+import com.dynatech2012.kamleonuserapp.repositories.InvitationsDataSource
 import com.dynatech2012.kamleonuserapp.repositories.MeasuresRepository
 import com.dynatech2012.kamleonuserapp.repositories.RealtimeDataSource
 import com.dynatech2012.kamleonuserapp.network.SessionWatcher
@@ -61,6 +60,7 @@ class MainViewModel @Inject constructor(
     private val databaseRepository: DatabaseDataSource,
     private val realtime: RealtimeDataSource,
     private val cloudFunctions: CloudFunctions,
+    private val invitationsSource: InvitationsDataSource,
     private val passwordPolicy: PasswordPolicy,
     private val sessionCleaner: SessionCleaner,
     sessionWatcher: SessionWatcher,
@@ -381,89 +381,43 @@ class MainViewModel @Inject constructor(
         //_newNotificationMeasure.postValue(false)
     }
 
-    private val _newInvitations = MutableLiveData<Boolean>()
-    val newInvitations: LiveData<Boolean> = _newInvitations
-    fun updateInvitationsCount() {
+    private val _invitations = MutableLiveData<List<InvitationItem>>()
+    /** The invitations the bell lists: pending ones and the ones accepted in the last days. */
+    val invitations: LiveData<List<InvitationItem>> = _invitations
+    /** The bell's dot: a pending invitation the user has not seen yet. */
+    val hasUnreadInvitations: LiveData<Boolean> = _invitations.map { list -> list.any { it.unread } }
+
+    /** Reloads the invitations in the background, for the bell. */
+    fun refreshInvitations() {
+        viewModelScope.launch { loadInvitations() }
+    }
+
+    /** Reloads the invitations; the list keeps its last value when this fails. */
+    suspend fun loadInvitations(): Response<List<InvitationItem>> = withContext(Dispatchers.IO) {
+        invitationsSource.load().also { if (it is Response.Success) _invitations.postValue(it.data) }
+    }
+
+    /** Accepts an invitation; on success the profile is reloaded so the new role shows. */
+    suspend fun acceptInvitation(id: String): Response<Unit> = withContext(Dispatchers.IO) {
+        invitationsSource.accept(id).also { if (it is Response.Success) getUserData() }
+    }
+
+    suspend fun declineInvitation(id: String): Response<Unit> = withContext(Dispatchers.IO) {
+        invitationsSource.decline(id)
+    }
+
+    suspend fun dismissInvitation(id: String): Response<Unit> = withContext(Dispatchers.IO) {
+        invitationsSource.dismiss(id)
+    }
+
+    /** Marks these invitations as seen; it outlives the sheet that asks for it. */
+    fun markInvitationsRead(ids: List<String>) {
+        if (ids.isEmpty()) return
         viewModelScope.launch(Dispatchers.IO) {
-            val invitationsCount = firestoreRepo.getNewInvitations()
-            _newInvitations.postValue(invitationsCount > 0)
+            invitationsSource.markRead(ids)
+            loadInvitations()
         }
     }
-
-    private val _pendingInvitations = MutableLiveData<ArrayList<Invitation>>()
-    val pendingInvitations: LiveData<ArrayList<Invitation>> = _pendingInvitations
-    private val _oldInvitations = MutableLiveData<ArrayList<Invitation>>()
-    val oldInvitations: LiveData<ArrayList<Invitation>> = _oldInvitations
-    private val _recentInvitations = MutableLiveData<ArrayList<Invitation>>()
-    val recentInvitations: LiveData<ArrayList<Invitation>> = _recentInvitations
-    private val _recentInvitationModified = MutableLiveData<Boolean>()
-    val recentInvitationModified: LiveData<Boolean> = _recentInvitationModified
-    private var gettingInvitationsAfterModifyingOne = false
-    fun resetGettingInvitationsAfterModifyingOne() {
-        gettingInvitationsAfterModifyingOne = false
-        _recentInvitationModified.postValue(false)
-    }
-
-    fun getInvitations() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = cloudFunctions.getInvitations()
-            DebugLog.d(TAG) { "HHH getInvitations: ${response.dataValue?.size}" }
-            val invitations = response.dataValue ?: ArrayList()
-            val pendingInvitations =
-                invitations.filter { it.status == InvitationStatus.SENT } as ArrayList<Invitation>
-            _pendingInvitations.postValue(pendingInvitations)
-            if (gettingInvitationsAfterModifyingOne) {
-                gettingInvitationsAfterModifyingOne = false
-                _recentInvitationModified.postValue(true)
-            }
-            // 30 days ago
-            DebugLog.d(TAG) { "HHH getInvitations pending: ${pendingInvitations.size}" }
-            val thirtyDaysAgo = Date().addDays(-30)
-            _recentInvitations.postValue(invitations.filter { it.status != InvitationStatus.SENT && it.dateSent >= thirtyDaysAgo } as ArrayList<Invitation>?)
-            val oldInvitations =
-                invitations.filter { it.status != InvitationStatus.SENT } as ArrayList<Invitation>
-            //val oldInvitations = invitations.filter { it.status != InvitationStatus.SENT && it.dateSent < thirtyDaysAgo } as ArrayList<Invitation>
-            /*val inFake = arrayListOf(Invitation("1", "1", "1", "1", Date(), Date(), Date().addDays(-40), InvitationStatus.SENT, InvitationRole.CENTERSTAFF_ADMIN))
-            oldInvitations.addAll(inFake)*/
-            _oldInvitations.postValue(oldInvitations)
-        }
-    }
-
-    fun acceptInvitation(invitation: Invitation, optional: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val invitationId = invitation.id
-            val isAdmin = invitation.isAdmin
-            val opt = optional && !isAdmin
-            DebugLog.d(TAG) { "Accepting invitation" }
-            val response = cloudFunctions.acceptInvitation(invitationId, opt)
-            if (response.isSuccess) {
-                DebugLog.d(TAG) { "HHH acceptInvitation: success" }
-                if (isAdmin)
-                    firestoreRepo.updateLegal(true, false, false)
-                else
-                    firestoreRepo.updateLegal(false, true, true)
-                gettingInvitationsAfterModifyingOne = true
-                getInvitations()
-            } else {
-                DebugLog.d(TAG) { "HHH acceptInvitation: failure" }
-            }
-        }
-    }
-
-    fun rejectInvitation(invitationId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = cloudFunctions.rejectInvitation(invitationId)
-            if (response.isSuccess) {
-                gettingInvitationsAfterModifyingOne = true
-                DebugLog.d(TAG) { "HHH rejectInvitation: success" }
-                getInvitations()
-            } else {
-                DebugLog.d(TAG) { "HHH rejectInvitation: failure" }
-            }
-        }
-    }
-
-
 
     private val _averageDailyMeasures = MutableLiveData<ArrayList<AverageDailyMeasureData>>()
     val averageDailyMeasures: LiveData<ArrayList<AverageDailyMeasureData>> =

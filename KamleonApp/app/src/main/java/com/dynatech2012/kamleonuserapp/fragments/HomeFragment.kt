@@ -7,6 +7,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.views.InvitationsSheet
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.databinding.ActivityHomeBinding
 import com.dynatech2012.kamleonuserapp.models.HomeStatus
@@ -27,7 +28,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         binding.cvHomeScreen.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         binding.cvHomeScreen.setContent { HomeRoute() }
         viewModel.getUserData()
-        viewModel.getInvitations()
+        viewModel.refreshInvitations()
     }
 
     override fun initEvent() = Unit
@@ -38,7 +39,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         val imageUrl by viewModel.userImageUrl.observeAsState()
         val lastMeasure by viewModel.lastMeasure.observeAsState()
         val status by viewModel.homeStatus.observeAsState(HomeStatus.Loading)
-        val invitations by viewModel.pendingInvitations.observeAsState()
+        val unreadInvitations by viewModel.hasUnreadInvitations.observeAsState(false)
 
         val profile = HomeProfile(
             initials = user?.let { getString(R.string.user_name_initials, it.name.take(1).uppercase(), it.lastName.take(1).uppercase()) },
@@ -48,7 +49,7 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
         HomeScreen(
             content = homeContentOf(lastMeasure, status),
             profile = profile,
-            hasNotifications = invitations?.isNotEmpty() == true,
+            hasNotifications = unreadInvitations,
             onProfileClick = ::openSettings,
             onNotificationsClick = ::openInvitations,
             onScan = { (parentFragment?.parentFragment as? TabFragment)?.openScanner() },
@@ -58,10 +59,8 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
 
     /** The same invitations sheet the settings open. */
     private fun openInvitations() {
-        if (childFragmentManager.findFragmentByTag(INVITATIONS_TAG) != null) return
-        InvitationFragment.newInstance(object : BottomFragmentDismissListener {
-            override fun onDismissFragment() = Unit
-        }).show(childFragmentManager, INVITATIONS_TAG)
+        if (childFragmentManager.findFragmentByTag(InvitationsSheet.TAG) != null) return
+        InvitationsSheet().show(childFragmentManager, InvitationsSheet.TAG)
     }
 
     private fun openSettings() {
@@ -72,6 +71,5 @@ class HomeFragment : BaseFragment<ActivityHomeBinding>() {
 
     companion object {
         val TAG: String = HomeFragment::class.java.simpleName
-        private const val INVITATIONS_TAG = "home_invitations"
     }
 }

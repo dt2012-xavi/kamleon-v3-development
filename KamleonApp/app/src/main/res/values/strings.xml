@@ -304,23 +304,45 @@
     <string name="graph_label_item_value">%1$s%2$s</string>
 
     <!-- Invitation -->
-    <string name="notifications">Notifications</string>
-    <string name="noti_invite_req">Invitation Request</string>
-    <string name="noti_role_change">Role Change</string>
-    <string name="noti_confirm">Confirm</string>
-    <string name="noti_deny">Deny</string>
-    <string name="noti_temp_desc1">DIR Diagonal has added you to the spinning team.</string>
-    <string name="noti_temp_desc2">Kamleon has assigned you the role of administrator of DIR Diagonal.</string>
+    <string name="invitations_title">Notifications</string>
+    <string name="invitations_empty">You have no invitations.</string>
+    <string name="invitations_error">We couldn’t load your invitations. Check your connection and try again.</string>
+    <string name="invitations_previous">Previous invitations</string>
+    <string name="invitations_see_all">See all previous invitations</string>
+    <string name="invitation_text">%1$s invited you to join %2$s as %3$s</string>
+    <string name="invitation_text_no_entity">%1$s invited you to be %2$s</string>
+    <string name="invitation_accepted_text">You joined %1$s as %2$s</string>
+    <string name="invitation_accepted_text_no_entity">You are now %1$s</string>
+    <string name="invitation_someone">Someone</string>
+    <string name="invitation_today">Today</string>
+    <string name="invitation_yesterday">Yesterday</string>
+    <plurals name="invitation_days_ago">
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
+    </plurals>
+    <string name="invitation_expires_today">Expires today</string>
+    <plurals name="invitation_expires_in">
+        <item quantity="one">Expires in %d day</item>
+        <item quantity="other">Expires in %d days</item>
+    </plurals>
+    <string name="invitation_expired">Expired</string>
+    <string name="invitation_accepted">Accepted</string>
+    <string name="invitation_declined_state">Declined</string>
+    <string name="invitation_privacy">I agree to the %1$s</string>
+    <string name="invitation_privacy_link">Privacy Policy</string>
+    <string name="invitation_accept">Accept</string>
+    <string name="invitation_decline">Decline</string>
+    <string name="invitation_dismiss">Dismiss</string>
+    <string name="invitation_loading">Loading…</string>
+    <string name="invitation_accepted_msg">Invitation accepted</string>
+    <string name="invitation_declined">Invitation declined</string>
+    <string name="invitation_accept_failed">Could not accept the invitation</string>
+    <string name="invitation_decline_failed">Could not decline the invitation</string>
+    <string name="invitation_dismiss_failed">Could not dismiss the invitation</string>
+    <string name="invitation_no_longer_valid">This invitation is no longer valid.</string>
     <string name="noti_channel_id">kamleonChannel</string>
     <string name="noti_newmeasure_title">New measure!</string>
     <string name="noti_newmeasure_text">You can check its results in the app.</string>
-    <string name="noti_last_30_days">Last 30 days</string>
-    <string name="noti_all_time">All time</string>
-    <string name="noti_see_all"><u>See all notifications</u></string>
-    <string name="noti_see_all_arrow">></string>
-    <string name="noti_pending_policy">I agree to the <u><b>Privacy Policy.</b></u>*</string>
-    <string name="noti_pending_consent">I give my consent for the data controller to process my personal data, including physiological data, for the purpose of structuring and displaying them in the user profile. Please refer to the <u>consent information.</u>*\n\nFor more information on the processing of personal data carried out by the data controller, please refer to the privacy policy.</string>
-    <string name="noti_pending_name_consent">I give my consent to display the initials of my name or, if provided, my profile picture on the urinal screen for login purposes.</string>
 
 
     <!--HomeScreen-->

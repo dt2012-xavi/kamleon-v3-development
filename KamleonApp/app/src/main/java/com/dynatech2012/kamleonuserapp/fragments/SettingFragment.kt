@@ -15,12 +15,16 @@ import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.views.showActionFailedSheet
 import com.dynatech2012.kamleonuserapp.BuildConfig
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.views.home.NotificationsButton
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.getValue
+import com.dynatech2012.kamleonuserapp.views.InvitationsSheet
 import com.dynatech2012.kamleonuserapp.activities.InitActivity
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.constants.UrlConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivitySettingBinding
 import com.dynatech2012.kamleonuserapp.models.CustomUser
-import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.utils.notificationPermissionAsked
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
@@ -70,6 +74,11 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     override fun initView() {
         DebugLog.d(TAG) { "init view" }
         binding.tvSettingVersion.text = getString(R.string.setting_version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
+        binding.cvSettingBell.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+        binding.cvSettingBell.setContent {
+            val unread by viewModel.hasUnreadInvitations.observeAsState(false)
+            NotificationsButton(hasNotifications = unread, onClick = ::openInvitations)
+        }
 
         val menuItems: Array<SettingMenuItemView> = arrayOf(
             binding.accMenuItemEmail,
@@ -120,12 +129,6 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             DebugLog.d(TAG) { "image pick dialog after show" }
         }
 
-        binding.btnSettingNoti.setOnClickListener {
-            //binding.btnSettingNotiBadge.visibility = View.GONE
-            val notiFragment = InvitationFragment.newInstance(onDismissPickImage)
-            notiFragment.show(parentFragmentManager, "Notifications")
-        }
-
         binding.btnSettingClose.setOnClickListener {
             //val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
             //val navController = navHostFragment.navController
@@ -138,6 +141,11 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
         // The deletion request is made on the web.
         binding.tvDelete.setOnClickListener { openWebPage(UrlConstants.URL_DELETE) }
+    }
+
+    private fun openInvitations() {
+        if (childFragmentManager.findFragmentByTag(InvitationsSheet.TAG) != null) return
+        InvitationsSheet().show(childFragmentManager, InvitationsSheet.TAG)
     }
 
     private fun openWebPage(url: String) {
@@ -224,7 +232,6 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     private fun initObservers() {
         viewModel.userData.observe(viewLifecycleOwner, this::onUserDataChanged)
         viewModel.userImageUrl.observe(viewLifecycleOwner, this::onUserImageChanged)
-        viewModel.pendingInvitations.observe(viewLifecycleOwner, this::onGetPendingInvitations)
     }
 
     private fun onUserDataChanged(userData: CustomUser) {
@@ -337,12 +344,6 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
     private fun onUserImageChanged(url: String?) {
         binding.ivSettProfile.showProfileImage(url, viewModel.imageLoader)
-    }
-
-    private fun onGetPendingInvitations(invitations: ArrayList<Invitation>) {
-        if (invitations.isNotEmpty())
-            binding.btnSettingNotiBadge.visibility = View.VISIBLE
-        else binding.btnSettingNotiBadge.visibility = View.GONE
     }
 
     companion object {
