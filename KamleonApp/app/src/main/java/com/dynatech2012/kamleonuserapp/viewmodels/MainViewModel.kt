@@ -526,11 +526,6 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun updateNotificationStatus(on: Boolean) {
-        val data = hashMapOf<String, Any>()
-        data["notifications"] = hashMapOf("analytics" to on)
-        updateUserData(data)
-    }
 
 
     private val _averageDailyMeasures = MutableLiveData<ArrayList<AverageDailyMeasureData>>()

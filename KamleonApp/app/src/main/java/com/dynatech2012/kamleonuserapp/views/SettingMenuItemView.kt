@@ -33,8 +33,14 @@ class SettingMenuItemView : LinearLayout {
         if (switch?.visibility == VISIBLE) {
             switch?.isClickable = true
             switch?.setOnClickListener {
-                //switch?.isChecked = !(switch?.isChecked ?: false)
                 menuItemListener?.onSwitchChanged(this, switch?.isChecked ?: false)
+            }
+            // The whole row flips the switch, not only the switch itself.
+            view.isClickable = true
+            view.setOnClickListener {
+                val sw = switch ?: return@setOnClickListener
+                sw.toggle()
+                menuItemListener?.onSwitchChanged(this, sw.isChecked)
             }
         } else {
             view.isClickable = true

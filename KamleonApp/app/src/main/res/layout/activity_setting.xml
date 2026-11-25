@@ -277,7 +277,7 @@
                         android:layout_height="@dimen/setting_menu_item_height"
                         app:settingRightArrow="false"
                         app:settingRightSwitch="true"
-                        app:settingTypeLabel="@string/setting_label_analytics"
+                        app:settingTypeLabel="@string/setting_label_new_score"
                         app:settingTypeValue="" />
 
                 </LinearLayout>
@@ -291,6 +291,38 @@
                     android:textAppearance="@style/TextAppearance.Kamleon.Book"
                     android:textColor="@color/kamleon_secondary_grey_50"
                     android:textSize="@dimen/ts_12" />
+
+                <!-- Shown while the phone blocks Kamleon's notifications. -->
+                <LinearLayout
+                    android:id="@+id/llNotiBlocked"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="8dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/setting_noti_blocked_short"
+                        android:textAppearance="@style/TextAppearance.Kamleon.Book"
+                        android:textColor="@color/kamleon_dark_grey"
+                        android:textSize="@dimen/ts_12" />
+
+                    <TextView
+                        android:id="@+id/tvNotiOpenSettings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:minHeight="40dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/setting_noti_open_settings"
+                        android:textAppearance="@style/TextAppearance.Kamleon.Bold"
+                        android:textColor="@color/kamleon_blue"
+                        android:textSize="@dimen/ts_12" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"

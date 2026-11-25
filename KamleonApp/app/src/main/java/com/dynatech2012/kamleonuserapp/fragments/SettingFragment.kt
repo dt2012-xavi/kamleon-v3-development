@@ -9,6 +9,7 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +32,7 @@ import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
 import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -54,10 +56,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             requireContext().notificationPermissionAsked = true
-            if (granted) {
-                notificationsEnabledInProfile = true
-                viewModel.updateNotificationStatus(true)
-            }
+            if (granted) saveNotifications(true)
             refreshNotificationSwitch()
         }
     private val onDismissPickImage = object : BottomFragmentDismissListener {
@@ -130,6 +129,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             //findNavController().navigateUp()
             //activity?.finish()
         }
+
+        binding.tvNotiOpenSettings.setOnClickListener { openNotificationSettings() }
 
         binding.tvDelete.setOnClickListener {
             val navHostFragment =
@@ -281,19 +282,14 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     /** On only when the profile wants notifications and the system lets the app show them. */
     private fun refreshNotificationSwitch() {
         if (view == null) return
-        binding.smNotiSwitch.getSwitchComp()?.isChecked =
-            notificationsEnabledInProfile && notificationsAllowedBySystem
+        val allowed = notificationsAllowedBySystem
+        binding.smNotiSwitch.getSwitchComp()?.isChecked = notificationsEnabledInProfile && allowed
+        binding.llNotiBlocked.visibility = if (allowed) View.GONE else View.VISIBLE
     }
 
     private fun onNotificationsSwitched(isOn: Boolean) {
-        if (!isOn) {
-            notificationsEnabledInProfile = false
-            viewModel.updateNotificationStatus(false)
-            return
-        }
-        if (notificationsAllowedBySystem) {
-            notificationsEnabledInProfile = true
-            viewModel.updateNotificationStatus(true)
+        if (!isOn || notificationsAllowedBySystem) {
+            saveNotifications(isOn)
             return
         }
         // The system blocks notifications: the switch stays off until that changes.
@@ -308,6 +304,26 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         } else {
             showNotificationsBlockedDialog()
+        }
+    }
+
+    /**
+     * Saves whether the profile wants notifications. The switch moves at once; if the save fails it
+     * goes back and the error is shown. The result is this screen's alone, so the PIN and password
+     * screens never see it.
+     */
+    private fun saveNotifications(on: Boolean) {
+        val before = notificationsEnabledInProfile
+        notificationsEnabledInProfile = on
+        refreshNotificationSwitch()
+        viewLifecycleOwner.lifecycleScope.launch {
+            val response = // Only this entry: other notification settings in the profile stay as they are.
+            viewModel.saveProfile(mapOf("notifications.analytics" to on))
+            if (!response.isSuccess) {
+                notificationsEnabledInProfile = before
+                refreshNotificationSwitch()
+                showActionFailedSheet(response.error)
+            }
         }
     }
 
