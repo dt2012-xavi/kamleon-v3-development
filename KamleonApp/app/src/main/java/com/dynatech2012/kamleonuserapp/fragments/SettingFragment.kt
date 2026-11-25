@@ -6,8 +6,6 @@ import android.os.Build
 import android.provider.Settings
 import android.graphics.Color
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.activityViewModels
@@ -21,11 +19,9 @@ import com.dynatech2012.kamleonuserapp.adapters.OrganizationsListAdapter
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.constants.UrlConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivitySettingBinding
-import com.dynatech2012.kamleonuserapp.extensions.addYears
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.Organization
-import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.utils.notificationPermissionAsked
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
@@ -34,25 +30,23 @@ import com.dynatech2012.kamleonuserapp.views.SheetSpec
 import com.dynatech2012.kamleonuserapp.views.onKamleonSheetResult
 import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import com.google.android.material.snackbar.Snackbar
-import com.ozcanalasalvar.datepicker.view.datepicker.DateChangeListener
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.GregorianCalendar
+import java.time.format.FormatStyle
 import com.dynatech2012.kamleonuserapp.views.showProfileImage
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
+import com.dynatech2012.kamleonuserapp.views.settings.ProfileField
+import com.dynatech2012.kamleonuserapp.views.settings.ProfileFieldSheet
+import com.dynatech2012.kamleonuserapp.views.settings.ProfileValues
 
 @AndroidEntryPoint
 class SettingFragment : BaseFragment<ActivitySettingBinding>(),
-    SettingMenuItemView.SettingMenuItemViewListener, DateChangeListener {
+    SettingMenuItemView.SettingMenuItemViewListener {
     override fun setBinding(): ActivitySettingBinding =
         ActivitySettingBinding.inflate(layoutInflater)
 
-    private var dateFragment: DatePickerFragment? = null
     private val viewModel: MainViewModel by activityViewModels()
-    private var dataTypeToChange: String? = null
 
     // What the profile says about notifications. The switch shows it only while the system also
     // lets the app post notifications (see [refreshNotificationSwitch]).
@@ -71,35 +65,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
         }
     }
-    private val onDismissDatePicker = object : BottomFragmentDismissListener {
-        override fun onDismissFragment() {
-
-        }
-    }
-
-    private val onDismissGenderPicker = object : BottomFragmentDismissListener {
-        override fun onDismissFragment() {
-
-        }
-    }
-
-    private val onDismissWeightPicker = object : BottomFragmentDismissListener {
-        override fun onDismissFragment() {
-
-        }
-    }
-
-    private val onDismissHeightPicker = object : BottomFragmentDismissListener {
-        override fun onDismissFragment() {
-
-        }
-    }
-
     override fun initView() {
         DebugLog.d(TAG) { "init view" }
-
-        binding.etAccName.imeOptions = EditorInfo.IME_ACTION_DONE
-        binding.etAccSurName.imeOptions = EditorInfo.IME_ACTION_DONE
 
         val menuItems: Array<SettingMenuItemView> = arrayOf(
             binding.accMenuItemEmail,
@@ -109,6 +76,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             binding.accMenuItemTOS,
             binding.accMenuItemDSP,
             binding.accMenuItemPP,
+            binding.prefMenuItemName,
             binding.prefMenuItemWeight,
             binding.prefMenuItemHeight,
             binding.prefMenuItemGender,
@@ -123,17 +91,15 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         initObservers()
         onKamleonSheetResult(SHEET_LOGOUT) { if (it == SheetResult.PRIMARY) logout() }
         onKamleonSheetResult(SHEET_NOTIFICATIONS_BLOCKED) { if (it == SheetResult.PRIMARY) openNotificationSettings() }
+        childFragmentManager.setFragmentResultListener(ProfileFieldSheet.RESULT_SAVED, viewLifecycleOwner) { _, _ ->
+            showSavedDialog()
+        }
         viewModel.getUserData()
     }
 
     override fun initEvent() {
         binding.btnLogout.setOnClickListener {
             showLogoutDialog()
-        }
-
-        binding.btnSave.setOnClickListener {
-            //showReadyDialog()
-            updateUserData()
         }
 
         binding.profileLayout.setOnClickListener {
@@ -211,16 +177,6 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         viewModel.logout()
     }
 
-    private fun showDateNotAllowedDialog() {
-        childFragmentManager.showKamleonSheet(
-            SHEET_DATE_NOT_ALLOWED,
-            SheetSpec(
-                message = getString(R.string.dialog_profile_date_not_allowed),
-                primary = getString(R.string.dialog_ok)
-            )
-        )
-    }
-
     override fun onSwitchChanged(menuView: SettingMenuItemView, isOn: Boolean) {
         when (menuView) {
             binding.smNotiSwitch -> onNotificationsSwitched(isOn)
@@ -254,59 +210,25 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
                 openWebBrowser(UrlConstants.URL_POLICY_APP)
             }
 
-            binding.prefMenuItemWeight -> {
-                showWeightPicker()
-            }
-
-            binding.prefMenuItemHeight -> {
-                showHeightPicker()
-            }
-
-            binding.prefMenuItemGender -> {
-                showGenderPicker()
-            }
-
-            binding.prefMenuItemBirth -> {
-                showDatePicker()
-            }
+            binding.prefMenuItemName -> showProfileSheet(ProfileField.NAME)
+            binding.prefMenuItemGender -> showProfileSheet(ProfileField.GENDER)
+            binding.prefMenuItemBirth -> showProfileSheet(ProfileField.BIRTH)
+            binding.prefMenuItemHeight -> showProfileSheet(ProfileField.HEIGHT)
+            binding.prefMenuItemWeight -> showProfileSheet(ProfileField.WEIGHT)
         }
     }
 
-    private fun showDatePicker() {
-        dateFragment = DatePickerFragment.newInstance(
-            onDismissDatePicker, this,
-            viewModel.userData.value?.dateOfBirth!!
-        )
-        dateFragment?.show(parentFragmentManager, "DatePicker")
-    }
-
-    private fun showHeightPicker() {
-        dataTypeToChange = "height"
-        val value = viewModel.userData.value?.height?.toString()
-        val dataFragment = DataPickerFragment.newInstance(onDismissHeightPicker, "height", value)
-        dataFragment.show(parentFragmentManager, "HeightPicker")
-    }
-
-    private fun showWeightPicker() {
-        dataTypeToChange = "weight"
-        val value = viewModel.userData.value?.weight?.toString()
-        val dataFragment = DataPickerFragment.newInstance(onDismissWeightPicker, "weight", value)
-        dataFragment.show(parentFragmentManager, "WeightPicker")
-    }
-
-    private fun showGenderPicker() {
-        dataTypeToChange = "gender"
-        val value = viewModel.userData.value?.gender?.toString()
-        val dataFragment = DataPickerFragment.newInstance(onDismissGenderPicker, "gender", value)
-        dataFragment.show(parentFragmentManager, "GenderPicker")
+    /** One sheet at a time: a second tap while one is opening does nothing. */
+    private fun showProfileSheet(field: ProfileField) {
+        if (viewModel.userData.value == null || childFragmentManager.findFragmentByTag(PROFILE_SHEET) != null) return
+        ProfileFieldSheet.newInstance(field).show(childFragmentManager, PROFILE_SHEET)
     }
 
     private fun initObservers() {
-        viewModel.userData.observe(this, this::onUserDataChanged)
-        viewModel.userProfiles.observe(this, this::onUserProfilesChanged)
-        viewModel.userUpdated.observe(this, this::onUserDataUpdated)
-        viewModel.userImageUrl.observe(this, this::onUserImageChanged)
-        viewModel.pendingInvitations.observe(this, this::onGetPendingInvitations)
+        viewModel.userData.observe(viewLifecycleOwner, this::onUserDataChanged)
+        viewModel.userProfiles.observe(viewLifecycleOwner, this::onUserProfilesChanged)
+        viewModel.userImageUrl.observe(viewLifecycleOwner, this::onUserImageChanged)
+        viewModel.pendingInvitations.observe(viewLifecycleOwner, this::onGetPendingInvitations)
     }
 
     private fun setupAdapter() {
@@ -325,54 +247,24 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         binding.tvSettingProfileName.text = initials
         binding.tvProfileName.text =
             getString(R.string.setting_display_name, userData.name, userData.lastName)
-        binding.etAccSurName.setText(userData.lastName)
-        binding.etAccName.setText(userData.name)
         binding.accMenuItemEmail.setValue(userData.email)
-        val weightString = when (userData.weight) {
-            null -> {
-                "-"
-            }
-
-            0f -> {
-                "-"
-            }
-
-            else -> {
-                userData.weight.toString()
-            }
-        }
-        binding.prefMenuItemWeight.setValue(
-            getString(
-                R.string.setting_label_user_weight_text,
-                weightString
-            )
-        )
-        val heightString = when (userData.height) {
-            null -> {
-                "-"
-            }
-
-            0f -> {
-                "-"
-            }
-
-            else -> {
-                userData.height.toString()
-            }
-        }
-        binding.prefMenuItemHeight.setValue(
-            getString(
-                R.string.setting_label_user_height_text,
-                heightString
-            )
-        )
+        binding.prefMenuItemName.setValue(getString(R.string.setting_display_name, userData.name, userData.lastName).trim())
         binding.prefMenuItemGender.setValue(userData.gender.raw)
-        val localDate: LocalDate = userData.dateOfBirth.toInstant().atZone(ZoneId.systemDefault())
-            .toLocalDate()
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        val formattedDate = localDate.format(formatter)
-
-        binding.prefMenuItemBirth.setValue(formattedDate)
+        // The date as the phone's language writes it ("24 Nov 1992").
+        binding.prefMenuItemBirth.setValue(
+            userData.dateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
+        )
+        val height = ProfileValues.height(userData.height)
+        binding.prefMenuItemHeight.setValue(
+            height?.let { getString(R.string.setting_label_user_height_text, it.toString()) } ?: ProfileValues.EMPTY,
+            unset = height == null
+        )
+        val weight = ProfileValues.weightText(userData.weight)
+        binding.prefMenuItemWeight.setValue(
+            weight?.let { getString(R.string.setting_label_user_weight_text, it) } ?: ProfileValues.EMPTY,
+            unset = weight == null
+        )
         notificationsEnabledInProfile = userData.notifications["analytics"] ?: true
         refreshNotificationSwitch()
     }
@@ -459,21 +351,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
     }
 
-    private fun onUserDataUpdated(response: Response<Unit>?) {
-        if (response == null) return
-        if (response.isSuccess) showSavedDialog() else showActionFailedSheet(response.error)
-        viewModel.resetUserUpdated()
-    }
-
     private fun onUserImageChanged(url: String?) {
         binding.ivSettProfile.showProfileImage(url, viewModel.imageLoader)
-    }
-
-    private fun updateUserData() {
-        val data = hashMapOf<String, Any>()
-        data["lastName"] = binding.etAccSurName.text.toString()
-        data["name"] = binding.etAccName.text.toString()
-        viewModel.updateUserData(data)
     }
 
     private fun onGetPendingInvitations(invitations: ArrayList<Invitation>) {
@@ -485,19 +364,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     companion object {
         val TAG: String = SettingFragment::class.java.simpleName
         private const val SHEET_LOGOUT = "settings_logout"
-        private const val SHEET_DATE_NOT_ALLOWED = "settings_date_not_allowed"
+        private const val PROFILE_SHEET = "settings_profile_sheet"
         private const val SHEET_NOTIFICATIONS_BLOCKED = "settings_notifications_blocked"
-    }
-
-    override fun onDateChanged(date: Long, day: Int, month: Int, year: Int) {
-        val dateSelected = GregorianCalendar(year, month, day).time
-        val fourteenYAgo = Date().addYears(-14)
-        DebugLog.d(DatePickerFragment.TAG) { "Birth date selection changed" }
-        val isDateAllowed = dateSelected <= fourteenYAgo
-        dateFragment?.enableSaveButton(isDateAllowed)
-        if (!isDateAllowed) {
-            DebugLog.d(DatePickerFragment.TAG) { "Birth date rejected: user must be at least 14" }
-            showDateNotAllowedDialog()
-        }
     }
 }

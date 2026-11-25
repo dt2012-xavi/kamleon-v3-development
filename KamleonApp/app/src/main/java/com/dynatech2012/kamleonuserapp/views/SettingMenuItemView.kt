@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.views
 
+import androidx.core.content.ContextCompat
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -133,8 +134,12 @@ class SettingMenuItemView : LinearLayout {
         }
     }
 
-    fun setValue(value: String) {
+    /** Shows [value]; with [unset] it is the placeholder of a value never set, in a lighter grey. */
+    fun setValue(value: String, unset: Boolean = false) {
         tvValue?.text = value
+        tvValue?.setTextColor(
+            ContextCompat.getColor(context, if (unset) R.color.kamleon_secondary_grey_50 else R.color.kamleon_secondary_grey_70)
+        )
         if (value.isNotEmpty() && tvValue?.visibility != VISIBLE) {
             tvValue?.visibility = VISIBLE
         }

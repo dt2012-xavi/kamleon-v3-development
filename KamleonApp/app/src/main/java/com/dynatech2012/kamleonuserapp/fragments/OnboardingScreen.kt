@@ -179,7 +179,8 @@ fun OnboardingScreen(
                                     offset = 1,
                                     valueUnit = "cm",
                                     startValue = selectedHeight,
-                                    showDecimal = true,
+                                    // Whole centimetres, as in Settings.
+                                    showDecimal = false,
                                     values = heightValues,
                                     textSize = 28,
                                     textBold = true,

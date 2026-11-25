@@ -172,76 +172,14 @@
                     android:orientation="vertical"
                     android:paddingHorizontal="@dimen/setting_category_content_padding">
 
-                    <LinearLayout
+                    <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
+                        android:id="@+id/prefMenuItemName"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="6dp"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingHorizontal="@dimen/setting_item_padding_h">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:paddingHorizontal="4dp"
-                            android:text="@string/setting_label_name"
-                            android:textAppearance="@style/TextAppearance.Kamleon.Bold"
-                            android:textColor="@color/kamleon_secondary_grey_70"
-                            android:textSize="@dimen/ts_14" />
-
-                        <EditText
-                            android:id="@+id/etAccName"
-                            style="@style/CircularRegularFont"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@null"
-                            android:paddingHorizontal="4dp"
-                            android:text="name"
-                            android:textAlignment="textEnd"
-                            android:textColor="@color/kamleon_secondary_grey_70"
-                            android:textSize="@dimen/ts_14" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:layout_marginHorizontal="@dimen/setting_item_padding_h"
-                        android:background="@color/kamleon_secondary_grey_40" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingHorizontal="@dimen/setting_item_padding_h">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:paddingHorizontal="4dp"
-                            android:text="@string/setting_label_surname"
-                            android:textAppearance="@style/TextAppearance.Kamleon.Bold"
-                            android:textColor="@color/kamleon_secondary_grey_70"
-                            android:textSize="@dimen/ts_14" />
-
-                        <EditText
-                            android:id="@+id/etAccSurName"
-                            style="@style/CircularRegularFont"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@null"
-                            android:paddingHorizontal="4dp"
-                            android:text="sur_name"
-                            android:textAlignment="textEnd"
-                            android:textColor="@color/kamleon_secondary_grey_70"
-                            android:textSize="@dimen/ts_14" />
-                    </LinearLayout>
+                        app:settingRightArrow="true"
+                        app:settingRightSwitch="false"
+                        app:settingTypeLabel="@string/setting_label_name"
+                        app:settingTypeValue="" />
 
                     <View
                         android:layout_width="match_parent"
@@ -702,7 +640,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="192dp" />
+                    android:layout_height="24dp" />
 
             </LinearLayout>
 
@@ -710,20 +648,4 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
-        android:id="@+id/btnSave"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginBottom="40dp"
-        android:background="@drawable/bg_btn_round_blue"
-        android:enabled="true"
-        android:paddingVertical="0dp"
-        android:text="@string/setting_button_save"
-        android:textAllCaps="false"
-        android:textAppearance="@style/RoundBlueButtonTextStyle"
-        android:textColor="@drawable/color_text_button_blue_round"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

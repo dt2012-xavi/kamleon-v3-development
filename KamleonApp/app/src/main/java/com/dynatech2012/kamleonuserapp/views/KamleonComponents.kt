@@ -68,12 +68,14 @@ import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
@@ -204,6 +206,9 @@ fun KamleonTextField(
     testTag: String? = null
 ) {
     var secureOn by rememberSaveable { mutableStateOf(true) }
+    // The caret starts after the text, so a prefilled field is edited from its end.
+    var selection by remember { mutableStateOf(TextRange(value.length)) }
+    var composition by remember { mutableStateOf<TextRange?>(null) }
     val interaction = remember { MutableInteractionSource() }
     val focused by interaction.collectIsFocusedAsState()
     if (onFocusChange != null) {
@@ -232,8 +237,12 @@ fun KamleonTextField(
 
     Column(modifier.onSizeChanged { blockSize = it }.bringIntoViewRequester(bringIntoView)) {
         BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
+            value = TextFieldValue(value, selection.coerceIn(value.length), composition),
+            onValueChange = {
+                selection = it.selection
+                composition = it.composition
+                if (it.text != value) onValueChange(it.text)
+            },
             singleLine = true,
             enabled = enabled,
             textStyle = textStyle,
@@ -521,3 +530,6 @@ fun KamleonSwitchRow(prompt: String, action: String, onClick: () -> Unit, modifi
         )
     }
 }
+
+/** This range moved inside a text of [length] characters, for a text that changed from outside. */
+private fun TextRange.coerceIn(length: Int) = TextRange(start.coerceIn(0, length), end.coerceIn(0, length))

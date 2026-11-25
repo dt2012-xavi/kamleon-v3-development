@@ -172,9 +172,18 @@
     <string name="setting_label_user_gender">GENDER</string>
     <string name="setting_label_user_weight">WEIGHT</string>
     <string name="setting_label_user_height">HEIGHT</string>
-    <string name="setting_label_user_weight_text">%1$s Kg</string>
+    <string name="setting_label_user_weight_text">%1$s kg</string>
     <string name="setting_label_user_height_text">%1$s cm</string>
     <string name="setting_label_user_birthdate">DATE OF BIRTH</string>
+    <string name="profile_sheet_title_name">Name</string>
+    <string name="profile_sheet_title_gender">Gender</string>
+    <string name="profile_sheet_title_birth">Date of birth</string>
+    <string name="profile_sheet_title_height">Height</string>
+    <string name="profile_sheet_title_weight">Weight</string>
+    <string name="profile_sheet_name_hint">Name</string>
+    <string name="profile_sheet_surname_hint">Surname</string>
+    <string name="unit_cm" translatable="false">cm</string>
+    <string name="unit_kg" translatable="false">kg</string>
 
     <string name="setting_label_noti">NOTIFICATIONS</string>
     <string name="setting_noti_blocked_msg">Notifications are turned off for Kamleon in your phone\'s settings. Open them to turn notifications on.</string>
@@ -379,7 +388,6 @@
     <string name="dialog_logout_y">Log Out</string>
     <string name="dialog_logout_n">Cancel</string>
     <string name="dialog_deactive_n">Cancel</string>
-    <string name="dialog_profile_date_not_allowed">You have to be at least 14 years old</string>
     <string name="dialog_reset_pwd_success_description">You\’ve successfully changed your password</string>
     <string name="dialog_reset_pwd_error_title">Error</string>
     <string name="dialog_reset_pwd_error_description">User not found</string>

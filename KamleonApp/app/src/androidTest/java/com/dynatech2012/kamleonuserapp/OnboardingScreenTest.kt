@@ -34,7 +34,7 @@ class OnboardingScreenTest {
             OnboardingScreen(
                 step = step, nextLoading = nextLoading, pickerKey = 0,
                 birthDate = date, birthYearsRange = 1904..2012, maxBirthDate = date,
-                heightValues = (140..230).map { "$it" }, weightValues = (30..130).map { "$it" },
+                heightValues = (100..250).map { "$it" }, weightValues = (30..250).map { "$it" },
                 genderValues = listOf("Male", "Female", "Other", "Prefer not to say"),
                 selectedHeight = "", selectedWeight = "", selectedGender = "",
                 onBirthDateChange = { _, _, _, _ -> }, onHeightChange = {}, onWeightChange = {},

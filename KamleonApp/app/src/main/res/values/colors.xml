@@ -117,4 +117,6 @@
     <color name="home_bg_severely_dehydrated_start">#F58723</color>
     <color name="home_bg_severely_dehydrated_end">#F03C23</color>
     <color name="home_bg_no_measure_end">#B8B8B8</color>
+    <!-- The light wheel pickers draw on this grey (the datepicker module's light primary). -->
+    <color name="kamleon_picker_background">#FAFAFA</color>
 </resources>

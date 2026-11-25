@@ -12,6 +12,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.requestFocus
 import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.fragments.RegisterScreen
@@ -174,7 +175,8 @@ class RegisterScreenTest {
         composeRule.onNodeWithTag("register_password").performTextInput("secret1")
         composeRule.onNodeWithTag("register_repeat_password").performTextInput("secret2")
         composeRule.onNodeWithTag("register_repeat_password_error").assertIsDisplayed()
-        composeRule.onNodeWithTag("register_repeat_password").performTextInput("1")
+        // Once both match, the warning goes.
+        composeRule.onNodeWithTag("register_repeat_password").performTextReplacement("secret1")
         composeRule.onNodeWithTag("register_repeat_password_error").assertDoesNotExist()
     }
 

@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import com.dynatech2012.kamleonuserapp.views.settings.ProfileValues
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -64,8 +65,9 @@ class OnboardingFragment : Fragment() {
     private var selectedWeight = DEFAULT_WEIGHT
     private var selectedGender = DEFAULT_GENDER
 
-    private val heightValues = (140..230).map { "$it" }
-    private val weightValues = (30..130).map { "$it" }
+    // The same ranges as Settings' Personal data.
+    private val heightValues = ProfileValues.HEIGHT_RANGE.map { "$it" }
+    private val weightValues = ProfileValues.WEIGHT_RANGE.map { "$it" }
     private val genderValues = Gender.values().map { it.raw }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -333,8 +335,9 @@ class OnboardingFragment : Fragment() {
 
     private companion object {
         // Same "value.decimal" format the wheel pickers report.
-        const val DEFAULT_HEIGHT = "170.0"
-        const val DEFAULT_WEIGHT = "70.0"
+        // Whole centimetres, kilograms with one decimal: as Settings.
+        val DEFAULT_HEIGHT = ProfileValues.DEFAULT_HEIGHT.toString()
+        const val DEFAULT_WEIGHT = ProfileValues.DEFAULT_WEIGHT
         val DEFAULT_GENDER = Gender.none.raw
         const val KEY_STEP = "onboarding_step"
         const val KEY_BIRTH_MILLIS = "onboarding_birth_millis"

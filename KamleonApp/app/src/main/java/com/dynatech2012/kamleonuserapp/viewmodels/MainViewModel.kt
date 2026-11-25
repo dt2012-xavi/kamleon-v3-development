@@ -48,6 +48,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Date
 import javax.inject.Inject
 
@@ -139,32 +140,14 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun changeHeight(newHeight: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val data = hashMapOf<String, Any>("height" to newHeight.toFloat())
-            updateUserData(data)
-        }
-    }
-
-    fun changeWeight(newWeight: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val data = hashMapOf<String, Any>("weight" to newWeight.toFloat())
-            updateUserData(data)
-        }
-    }
-
-    fun changeGender(newGender: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val data = hashMapOf<String, Any>("gender" to newGender)
-            updateUserData(data)
-        }
-    }
-
-    fun changeBirth(newBirth: Date) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val data = hashMapOf<String, Any>("dateOfBirth" to newBirth)
-            updateUserData(data)
-        }
+    /**
+     * Saves Personal data [fields] from a profile sheet and reloads the profile when it worked.
+     * The sheet waits for the result itself, so no other screen sees it.
+     */
+    suspend fun saveProfile(fields: Map<String, Any>): Response<Unit> = withContext(Dispatchers.IO) {
+        val response = firestoreRepo.updateUser(HashMap(fields))
+        if (response.isSuccess) getUserData()
+        response
     }
 
     /** The code to tell the user when the server ended their session; null while it is fine. */
