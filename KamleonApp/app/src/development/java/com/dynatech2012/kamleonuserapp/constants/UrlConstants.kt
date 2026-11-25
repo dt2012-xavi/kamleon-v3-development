@@ -16,5 +16,4 @@ object UrlConstants {
     const val URL_POLICY_APP = "${BASE_URL}legal/app/policy"
     const val URL_POLICY_ADMIN = "${BASE_URL}legal/admin/policy"
     const val URL_DELETE = "${BASE_URL}request-data-deletion"
-    const val URL_DEACTIVATE = "${BASE_URL}request-deactivate-account"
 }

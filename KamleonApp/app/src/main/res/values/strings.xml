@@ -221,7 +221,7 @@
     <string name="setting_desc_pref3">Enable Kamleon to use location data for personalized services, while considering privacy implications.</string>
 
     <string name="setting_display_name">%1$s %2$s</string>
-    <string name="setting_deactivate">Deactivate or delete my account</string>
+    <string name="setting_deactivate">Delete my account</string>
 
     <!-- Image Pick -->
     <string name="image_pick_gallery">Choose from library</string>
@@ -247,11 +247,6 @@
     <string name="pwd_confirm">CONFIRM PASSWORD</string>
 
     <!-- Delete account -->
-    <string name="delete_title">Deactivate or delete your account</string>
-    <string name="delete_deactivate">DEACTIVATE</string>
-    <string name="delete_delete">DELETE</string>
-    <string name="delete_deactivate_desc">Deactivating can be temporary. Your profile, your name and your data will not be available.</string>
-    <string name="delete_delete_desc">Deleting your account will permanently remove all your profile data.</string>
 
 
 
@@ -393,8 +388,9 @@
     <string name="dialog_saved_text">Your modifications have been saved successfully</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">CANCEL</string>
-    <string name="dialog_logout_msg">Are you sure you want to log out of your account?</string>
-    <string name="dialog_logout_y">Log Out</string>
+    <string name="dialog_logout_title">Log out?</string>
+    <string name="dialog_logout_msg">You’ll need your e-mail and password to log in again.</string>
+    <string name="dialog_logout_y">Log out</string>
     <string name="dialog_logout_n">Cancel</string>
     <string name="dialog_deactive_n">Cancel</string>
     <string name="dialog_reset_pwd_success_description">You\’ve successfully changed your password</string>

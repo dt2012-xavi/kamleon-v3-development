@@ -65,19 +65,10 @@
         android:label="activity_setting"
         tools:layout="@layout/activity_setting">
         <action
-            android:id="@+id/action_settingFragment_to_deleteFragment"
-            app:destination="@id/deleteFragment" />
-        <action
             android:id="@+id/action_settingFragment_to_tutorialFragment"
             app:destination="@id/tutorialFragment" />
 
     </fragment>
-    <fragment
-        android:id="@+id/deleteFragment"
-        android:name="com.dynatech2012.kamleonuserapp.fragments.DeleteFragment"
-        android:label="activity_delete"
-        tools:layout="@layout/activity_delete" />
-
     <fragment
         android:id="@+id/tutorialFragment"
         android:name="com.dynatech2012.kamleonuserapp.fragments.TutorialFragment"

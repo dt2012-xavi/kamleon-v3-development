@@ -41,7 +41,6 @@
     <color name="kamleon_blue_pressed">#882FD5CB</color>
 
     <color name="kamleon_dark_grey">#221E1E</color>
-    <color name="kamleon_dark_grey_50">#88221E1E</color>
     <color name="kamleon_dark_grey_20">#33221E1E</color>
     <color name="kamleon_dark_grey_05">#0D221E1E</color>
 
@@ -54,12 +53,6 @@
     <!-- Unfilled part of linear progress bars -->
     <color name="kamleon_progress_track">#EEEFEF</color>
 
-    <color name="shadow_black_0">#01000000</color>
-    <color name="shadow_black_1">#02000000</color>
-    <color name="shadow_black_2">#04000000</color>
-    <color name="shadow_black_3">#06000000</color>
-    <color name="shadow_black_4">#08000000</color>
-    <color name="shadow_black_5">#10000000</color>
 
     <color name="shadow_setting_0">#01000000</color>
     <color name="shadow_setting_1">#02000000</color>
@@ -75,7 +68,6 @@
     <color name="calendar_mode_shadow_4">#08000000</color>
     <color name="calendar_mode_shadow_5">#10000000</color>
 
-    <color name="text_color_category">#424141</color>
 
     <color name="color_fa">#FAFAFA</color>
     <color name="color_fa_40">#66FAFAFA</color>

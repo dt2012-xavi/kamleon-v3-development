@@ -11,7 +11,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.views.showActionFailedSheet
 import com.dynatech2012.kamleonuserapp.BuildConfig
@@ -137,15 +136,11 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
         binding.tvNotiOpenSettings.setOnClickListener { openNotificationSettings() }
 
-        binding.tvDelete.setOnClickListener {
-            val navHostFragment =
-                requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
-            val navController = navHostFragment.navController
-            navController.navigate(R.id.action_settingFragment_to_deleteFragment)
-        }
+        // The deletion request is made on the web.
+        binding.tvDelete.setOnClickListener { openWebPage(UrlConstants.URL_DELETE) }
     }
 
-    private fun openLegal(url: String) {
+    private fun openWebPage(url: String) {
         if (!requireContext().openInAppBrowser(url)) showMessage(R.string.error_no_browser)
     }
 
@@ -157,6 +152,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         childFragmentManager.showKamleonSheet(
             SHEET_LOGOUT,
             SheetSpec(
+                title = getString(R.string.dialog_logout_title),
                 message = getString(R.string.dialog_logout_msg),
                 primary = getString(R.string.dialog_logout_y),
                 secondary = getString(R.string.dialog_logout_n),
@@ -202,9 +198,9 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             binding.accMenuItemContact -> {
                 if (!requireContext().contactSupport()) showMessage(R.string.help_error_mail)
             }
-            binding.accMenuItemDSP -> openLegal(UrlConstants.URL_CONSENT)
-            binding.accMenuItemTOS -> openLegal(UrlConstants.URL_TERMS)
-            binding.accMenuItemPP -> openLegal(UrlConstants.URL_POLICY_APP)
+            binding.accMenuItemDSP -> openWebPage(UrlConstants.URL_CONSENT)
+            binding.accMenuItemTOS -> openWebPage(UrlConstants.URL_TERMS)
+            binding.accMenuItemPP -> openWebPage(UrlConstants.URL_POLICY_APP)
 
             binding.prefMenuItemName -> showProfileSheet(ProfileField.NAME)
             binding.prefMenuItemGender -> showProfileSheet(ProfileField.GENDER)
