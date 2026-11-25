@@ -27,7 +27,7 @@ import com.dynatech2012.kamleonuserapp.models.Event
 import com.dynatech2012.kamleonuserapp.models.Gender
 import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
-import com.dynatech2012.kamleonuserapp.models.Organization
+import com.dynatech2012.kamleonuserapp.models.RoleGroup
 import com.dynatech2012.kamleonuserapp.repositories.CloudFunctions
 import com.dynatech2012.kamleonuserapp.repositories.DatabaseDataSource
 import com.dynatech2012.kamleonuserapp.repositories.FirestoreDataSource
@@ -80,8 +80,6 @@ class MainViewModel @Inject constructor(
 
     private val _userData = MutableLiveData<CustomUser>()
     val userData: LiveData<CustomUser> = _userData
-    private val _userProfiles = MutableLiveData<ArrayList<Organization>>()
-    val userProfiles: LiveData<ArrayList<Organization>> = _userProfiles
     private val _userUpdated = MutableLiveData<Response<Unit>?>()
     val userUpdated: LiveData<Response<Unit>?> = _userUpdated
 
@@ -119,11 +117,6 @@ class MainViewModel @Inject constructor(
                 val user = userResult.dataValue!!
                 _userData.postValue(user)
                 DebugLog.d(TAG) { "User profile has photo: ${profileImageUrlOf(user.imageUrl) != null}" }
-            }
-            val userProfilesResult = cloudFunctions.getUserProfiles()
-            if (userProfilesResult.isSuccess && userProfilesResult.dataValue != null) {
-                val userProfiles = userProfilesResult.dataValue!!
-                _userProfiles.postValue(userProfiles)
             }
             DebugLog.d(TAG) { "User profile refresh completed" }
         }
@@ -347,6 +340,11 @@ class MainViewModel @Inject constructor(
         }
         SharedPrefUtil(appContext).saveBoolean(PREF_NEW_MEASURE, false)
 
+    }
+
+    /** The user's roles, grouped by organization, for the roles sheet. */
+    suspend fun loadUserRoles(): Response<List<RoleGroup>> = withContext(Dispatchers.IO) {
+        firestoreRepo.getUserRoles()
     }
 
     /** The signed-in user's e-mail, where a password reset link goes; null when there is none. */

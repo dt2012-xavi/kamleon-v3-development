@@ -96,6 +96,25 @@ fun SettingsSheetFrame(
     saveTestTag: String = "profile_sheet_save",
     content: @Composable ColumnScope.() -> Unit
 ) {
+    SettingsSheetSurface(title) {
+        content()
+        Spacer(Modifier.height(24.dp))
+        KamleonRoundButton(
+            text = stringResource(R.string.setting_button_save),
+            onClick = onSave,
+            enabled = saveEnabled,
+            loading = saving,
+            testTag = saveTestTag
+        )
+    }
+}
+
+/** The light rounded surface of a Settings sheet with its handle and [title], above [content]. */
+@Composable
+fun SettingsSheetSurface(
+    title: String,
+    content: @Composable ColumnScope.() -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -120,14 +139,6 @@ fun SettingsSheetFrame(
         )
         Spacer(Modifier.height(20.dp))
         content()
-        Spacer(Modifier.height(24.dp))
-        KamleonRoundButton(
-            text = stringResource(R.string.setting_button_save),
-            onClick = onSave,
-            enabled = saveEnabled,
-            loading = saving,
-            testTag = saveTestTag
-        )
     }
 }
 

@@ -5,7 +5,6 @@ import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants
 import com.dynatech2012.kamleonuserapp.models.Invitation
 import com.dynatech2012.kamleonuserapp.models.InvitationStatus
-import com.dynatech2012.kamleonuserapp.models.Organization
 import com.dynatech2012.kamleonuserapp.network.CallKind
 import com.dynatech2012.kamleonuserapp.network.NetworkGate
 import com.google.firebase.Firebase
@@ -76,20 +75,6 @@ class CloudFunctions(
     }
 
     // User profiles
-    suspend fun getUserProfiles(): Response<ArrayList<Organization>> {
-        Timber.d("Loading user profiles")
-        val userId = uuid ?: return Response.Failure(Exception("User not logged in"))
-        val body = hashMapOf("id" to userId)
-        return gate.safeCall(CallKind.Read) {
-            val result = functions.getHttpsCallable("getUserProfiles").call(body).await()
-            val data = result?.data as? ArrayList<HashMap<String, Any>> ?: ArrayList()
-            val organizations = ArrayList<Organization>()
-            data.forEach { organizations.add(Organization(it)) }
-            Timber.d("User profiles loaded: count=%s", organizations.size)
-            organizations
-        }
-    }
-
     suspend fun resetPwd(email: String): ResponseNullable<Nothing> =
         callEmailFunction("sendPasswordEmail", hashMapOf("email" to email), "Reset Password email sent successfully")
 

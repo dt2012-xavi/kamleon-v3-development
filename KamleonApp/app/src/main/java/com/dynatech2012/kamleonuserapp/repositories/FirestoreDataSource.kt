@@ -3,6 +3,9 @@ package com.dynatech2012.kamleonuserapp.repositories
 import android.net.Uri
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants
+import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.CENTERS_COLLECTION
+import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.ORGANIZATIONS_COLLECTION
+import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.TEAMS_COLLECTION
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_COLLECTION
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_TOKEN
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.kANALYSIS_TYPE_URINE
@@ -13,6 +16,10 @@ import com.dynatech2012.kamleonuserapp.models.InvitationStatus
 import com.dynatech2012.kamleonuserapp.models.KamleonLegal
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.models.RawMeasureData
+import com.dynatech2012.kamleonuserapp.models.RoleEntity
+import com.dynatech2012.kamleonuserapp.models.RoleGroup
+import com.dynatech2012.kamleonuserapp.models.RolePermission
+import com.dynatech2012.kamleonuserapp.models.UserRoles
 import com.dynatech2012.kamleonuserapp.models.UserStatus
 import com.dynatech2012.kamleonuserapp.network.CallKind
 import com.dynatech2012.kamleonuserapp.network.NetworkGate
@@ -122,6 +129,34 @@ class FirestoreDataSource @Inject constructor(
             profile
         }
     }
+
+    /**
+     * The user's roles as the web's account details list them: the permission maps of the user
+     * document, with the name (and the organizations' logo) of what each one points at.
+     */
+    suspend fun getUserRoles(): Response<List<RoleGroup>> {
+        val userId = uuid ?: return Response.Failure(Exception("User not logged in"))
+        return gate.safeCall(CallKind.Read) {
+            val snapshot = db.collection(USERS_COLLECTION).document(userId).get().await()
+            val permissions = RolePermission.allFrom(snapshot.data ?: emptyMap())
+            val ids = UserRoles.idsOf(permissions)
+            coroutineScope {
+                val organizations = async { roleEntities(ORGANIZATIONS_COLLECTION, ids.organizations) }
+                val centers = async { roleEntities(CENTERS_COLLECTION, ids.centers) }
+                val teams = async { roleEntities(TEAMS_COLLECTION, ids.teams) }
+                UserRoles.build(permissions, organizations.await(), centers.await(), teams.await())
+            }
+        }
+    }
+
+    /** The documents of [collection] with these [ids], read one by one; the missing ones are left out. */
+    private suspend fun roleEntities(collection: String, ids: Set<String>): Map<String, RoleEntity> =
+        coroutineScope {
+            ids.map { id -> async { id to db.collection(collection).document(id).get().await() } }
+                .awaitAll()
+                .filter { (_, doc) -> doc.exists() }
+                .associate { (id, doc) -> id to RoleEntity(doc.getString("name").orEmpty(), doc.getString("imageUrl")) }
+        }
 
     /**
      * Saves a new profile photo the way the web does: [full] to `profile.jpeg` and [thumbnail] to

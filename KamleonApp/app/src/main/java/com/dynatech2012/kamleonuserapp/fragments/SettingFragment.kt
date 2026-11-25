@@ -13,17 +13,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.dynatech2012.kamleonuserapp.views.showActionFailedSheet
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.InitActivity
-import com.dynatech2012.kamleonuserapp.adapters.OrganizationsListAdapter
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
 import com.dynatech2012.kamleonuserapp.constants.UrlConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivitySettingBinding
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.Invitation
-import com.dynatech2012.kamleonuserapp.models.Organization
 import com.dynatech2012.kamleonuserapp.utils.notificationPermissionAsked
 import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
@@ -42,6 +39,7 @@ import com.dynatech2012.kamleonuserapp.views.showProfileImage
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.views.settings.ProfileField
 import com.dynatech2012.kamleonuserapp.views.settings.PasswordSheet
+import com.dynatech2012.kamleonuserapp.views.settings.UserRolesSheet
 import com.dynatech2012.kamleonuserapp.views.settings.ProfileFieldSheet
 import com.dynatech2012.kamleonuserapp.views.settings.ProfileValues
 
@@ -74,6 +72,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             binding.accMenuItemEmail,
             binding.accMenuItemPwd,
             binding.accMenuItemPin,
+            binding.accMenuItemRoles,
             binding.accMenuItemHelp,
             binding.accMenuItemTOS,
             binding.accMenuItemDSP,
@@ -89,7 +88,6 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         for (menuItem in menuItems) {
             menuItem.setSettingMenuItemListener(this)
         }
-        setupAdapter()
         initObservers()
         onKamleonSheetResult(SHEET_LOGOUT) { if (it == SheetResult.PRIMARY) logout() }
         onKamleonSheetResult(SHEET_NOTIFICATIONS_BLOCKED) { if (it == SheetResult.PRIMARY) openNotificationSettings() }
@@ -191,6 +189,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         when (menuView) {
             binding.accMenuItemPwd -> showSheet { PasswordSheet() }
             binding.accMenuItemPin -> showProfileSheet(ProfileField.PIN)
+            binding.accMenuItemRoles -> showSheet { UserRolesSheet() }
 
             binding.accMenuItemHelp -> {
                 //viewModel.tutorialComingFromHome = false
@@ -230,15 +229,8 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
     private fun initObservers() {
         viewModel.userData.observe(viewLifecycleOwner, this::onUserDataChanged)
-        viewModel.userProfiles.observe(viewLifecycleOwner, this::onUserProfilesChanged)
         viewModel.userImageUrl.observe(viewLifecycleOwner, this::onUserImageChanged)
         viewModel.pendingInvitations.observe(viewLifecycleOwner, this::onGetPendingInvitations)
-    }
-
-    private fun setupAdapter() {
-        val adapter = OrganizationsListAdapter()
-        binding.rvSettingOrganizations.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvSettingOrganizations.adapter = adapter
     }
 
     private fun onUserDataChanged(userData: CustomUser) {
@@ -347,27 +339,6 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
                 .putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
         )
-    }
-
-    private fun onUserProfilesChanged(organizations: ArrayList<Organization>) {
-        DebugLog.d(TAG) { "User profiles changed: count=${organizations.size}" }
-        if (organizations.isEmpty()) {
-            binding.llSettingAccountInfoSingle.visibility = View.GONE
-            binding.llSettingAccountInfoMultiple.visibility = View.GONE
-            return
-        } else if (organizations.size == 1) {
-            binding.llSettingAccountInfoMultiple.visibility = View.GONE
-            binding.tvSettingAccountOrg.text = organizations[0].organizationName
-            binding.tvSettingAccountCenter.text = organizations[0].centerName
-            binding.tvSettingAccountTeam.text = organizations[0].teamName
-            binding.llSettingAccountInfoSingle.visibility = View.VISIBLE
-            return
-        } else {
-            binding.llSettingAccountInfoSingle.visibility = View.GONE
-            val adapter = binding.rvSettingOrganizations.adapter as OrganizationsListAdapter
-            adapter.submitList(organizations.toList())
-            binding.llSettingAccountInfoMultiple.visibility = View.VISIBLE
-        }
     }
 
     private fun onUserImageChanged(url: String?) {

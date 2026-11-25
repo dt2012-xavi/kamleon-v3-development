@@ -17,6 +17,9 @@ object FirebaseConstants {
 
     // Firestore
     const val USERS_COLLECTION = "users"
+    const val ORGANIZATIONS_COLLECTION = "organizations"
+    const val CENTERS_COLLECTION = "centers"
+    const val TEAMS_COLLECTION = "teams"
     const val MEASURES_COLLECTION = "measures"
     const val INVITATIONS_COLLECTION = "invitations"
     const val kAVERAGES = "Averages"

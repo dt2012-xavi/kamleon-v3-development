@@ -165,10 +165,27 @@
 
     <string name="setting_desc_security">Your password signs you in to the app and the website. Your PIN is the code you enter on the Kamleon screen before you start.</string>
     <string name="setting_label_acc_info">ACCOUNT INFORMATION</string>
-    <string name="setting_label_org">ORGANIZATION</string>
-    <string name="setting_label_org_short">ORG.</string>
-    <string name="setting_label_center">CENTER</string>
-    <string name="setting_label_team">TEAM</string>
+    <string name="setting_label_roles">USER ROLES</string>
+    <string name="roles_title">User roles</string>
+    <string name="roles_empty">You don’t have any roles yet.</string>
+    <string name="roles_error">We couldn’t load your roles. Check your connection and try again.</string>
+    <string name="roles_active">Active</string>
+    <string name="roles_inactive">Inactive</string>
+    <string name="roles_center">Center</string>
+    <string name="roles_roster_number">Roster number</string>
+    <string name="roles_permissions">Permissions</string>
+    <string name="roles_screen">Screen: %1$s</string>
+    <string name="roles_pin">PIN: %1$s</string>
+    <string name="role_org_admin">Org admin</string>
+    <string name="role_center_admin">Center admin</string>
+    <string name="role_center_admin_restricted">Center admin restricted</string>
+    <string name="role_team_admin">Team admin</string>
+    <string name="role_team_user">Team user</string>
+    <string name="role_team_viewer">Team viewer</string>
+    <string name="role_kamleon_owner">Kamleon owner</string>
+    <string name="role_kamleon_admin">Kamleon admin</string>
+    <string name="role_kamleon_editor">Kamleon editor</string>
+    <string name="role_kamleon_viewer">Kamleon viewer</string>
 
     <string name="setting_label_user_data">PERSONAL DATA</string>
     <string name="setting_label_user_gender">GENDER</string>
