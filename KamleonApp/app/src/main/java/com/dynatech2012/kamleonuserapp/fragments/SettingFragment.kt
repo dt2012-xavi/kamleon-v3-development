@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.views.showActionFailedSheet
+import com.dynatech2012.kamleonuserapp.BuildConfig
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.activities.InitActivity
 import com.dynatech2012.kamleonuserapp.base.BaseFragment
@@ -40,6 +41,8 @@ import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.views.settings.ProfileField
 import com.dynatech2012.kamleonuserapp.views.settings.PasswordSheet
 import com.dynatech2012.kamleonuserapp.views.settings.UserRolesSheet
+import com.dynatech2012.kamleonuserapp.views.settings.contactSupport
+import com.dynatech2012.kamleonuserapp.views.settings.openInAppBrowser
 import com.dynatech2012.kamleonuserapp.views.settings.ProfileFieldSheet
 import com.dynatech2012.kamleonuserapp.views.settings.ProfileValues
 
@@ -67,13 +70,14 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     }
     override fun initView() {
         DebugLog.d(TAG) { "init view" }
+        binding.tvSettingVersion.text = getString(R.string.setting_version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
 
         val menuItems: Array<SettingMenuItemView> = arrayOf(
             binding.accMenuItemEmail,
             binding.accMenuItemPwd,
             binding.accMenuItemPin,
             binding.accMenuItemRoles,
-            binding.accMenuItemHelp,
+            binding.accMenuItemContact,
             binding.accMenuItemTOS,
             binding.accMenuItemDSP,
             binding.accMenuItemPP,
@@ -92,7 +96,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         onKamleonSheetResult(SHEET_LOGOUT) { if (it == SheetResult.PRIMARY) logout() }
         onKamleonSheetResult(SHEET_NOTIFICATIONS_BLOCKED) { if (it == SheetResult.PRIMARY) openNotificationSettings() }
         childFragmentManager.setFragmentResultListener(ProfileFieldSheet.RESULT_SAVED, viewLifecycleOwner) { _, result ->
-            showSavedDialog(result.getInt(ProfileFieldSheet.RESULT_MESSAGE, R.string.dialog_saved_text))
+            showMessage(result.getInt(ProfileFieldSheet.RESULT_MESSAGE, R.string.dialog_saved_text))
         }
         viewModel.getUserData()
     }
@@ -141,7 +145,11 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
     }
 
-    private fun showSavedDialog(@StringRes message: Int) {
+    private fun openLegal(url: String) {
+        if (!requireContext().openInAppBrowser(url)) showMessage(R.string.error_no_browser)
+    }
+
+    private fun showMessage(@StringRes message: Int) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 
@@ -191,22 +199,12 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             binding.accMenuItemPin -> showProfileSheet(ProfileField.PIN)
             binding.accMenuItemRoles -> showSheet { UserRolesSheet() }
 
-            binding.accMenuItemHelp -> {
-                //viewModel.tutorialComingFromHome = false
-                findNavController().navigate(R.id.action_settingFragment_to_helpFragment)
+            binding.accMenuItemContact -> {
+                if (!requireContext().contactSupport()) showMessage(R.string.help_error_mail)
             }
-
-            binding.accMenuItemDSP -> {
-                openWebBrowser(UrlConstants.URL_CONSENT)
-            }
-
-            binding.accMenuItemTOS -> {
-                openWebBrowser(UrlConstants.URL_TERMS)
-            }
-
-            binding.accMenuItemPP -> {
-                openWebBrowser(UrlConstants.URL_POLICY_APP)
-            }
+            binding.accMenuItemDSP -> openLegal(UrlConstants.URL_CONSENT)
+            binding.accMenuItemTOS -> openLegal(UrlConstants.URL_TERMS)
+            binding.accMenuItemPP -> openLegal(UrlConstants.URL_POLICY_APP)
 
             binding.prefMenuItemName -> showProfileSheet(ProfileField.NAME)
             binding.prefMenuItemGender -> showProfileSheet(ProfileField.GENDER)

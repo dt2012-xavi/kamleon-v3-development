@@ -158,7 +158,6 @@
     <string name="setting_label_password">PASSWORD</string>
     <string name="setting_label_pin">PIN</string>
     <string name="setting_label_info">HELP &amp; LEGAL</string>
-    <string name="setting_label_help">HELP</string>
     <string name="setting_label_dsp">INFORMATION ABOUT CONSENT</string>
     <string name="setting_label_tos">TERMS AND CONDITIONS</string>
     <string name="setting_label_pp">PRIVACY POLICY</string>
@@ -449,12 +448,12 @@
     <string name="error_start_camera">Error starting camera</string>
 
     <!-- Help -->
-    <string name="help_title">HELP</string>
-    <string name="help_appguide">APP GUIDE</string>
-    <string name="help_appguide_subtitle">Learn how to navigate and utilize our app\'s features effectively.</string>
     <string name="help_contact">CONTACT KAMLEON</string>
     <string name="help_contact_subtitle">Get in touch with Kamleon for support, inquiries, or feedback.</string>
     <string name="help_error_mail">No email app found</string>
+    <string name="support_email_subject">Kamleon app support</string>
+    <string name="error_no_browser">No browser found to open this page</string>
+    <string name="setting_version">Version %1$s (%2$d)</string>
 
     <string name="default_value">--</string>
     <string name="user_name_initials">%1$s%2$s</string>

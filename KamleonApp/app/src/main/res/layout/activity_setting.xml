@@ -436,23 +436,32 @@
                     android:paddingHorizontal="@dimen/setting_category_content_padding">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
-                        android:id="@+id/accMenuItemHelp"
+                        android:id="@+id/accMenuItemContact"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"
-                        app:settingTypeLabel="@string/setting_label_help"
+                        app:settingTypeLabel="@string/help_contact"
                         app:settingTypeValue="" />
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:paddingHorizontal="8dp"
+                    android:text="@string/help_contact_subtitle"
+                    android:textAppearance="@style/TextAppearance.Kamleon.Book"
+                    android:textColor="@color/kamleon_secondary_grey_50"
+                    android:textSize="@dimen/ts_12" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
+                    android:layout_marginTop="24dp"
                     android:background="@drawable/bg_pref_container_shadow"
                     android:orientation="vertical"
-                    android:paddingHorizontal="@dimen/setting_category_content_padding"
-                    android:paddingTop="12dp">
+                    android:paddingHorizontal="@dimen/setting_category_content_padding">
 
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:id="@+id/accMenuItemDSP"
@@ -495,6 +504,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/tvSettingVersion"
                     style="@style/CircularRegularFont"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

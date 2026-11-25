@@ -70,9 +70,6 @@
         <action
             android:id="@+id/action_settingFragment_to_tutorialFragment"
             app:destination="@id/tutorialFragment" />
-        <action
-            android:id="@+id/action_settingFragment_to_helpFragment"
-            app:destination="@id/helpFragment" />
 
     </fragment>
     <fragment
@@ -80,20 +77,6 @@
         android:name="com.dynatech2012.kamleonuserapp.fragments.DeleteFragment"
         android:label="activity_delete"
         tools:layout="@layout/activity_delete" />
-
-    <fragment
-        android:id="@+id/helpFragment"
-        android:name="com.dynatech2012.kamleonuserapp.fragments.HelpFragment"
-        android:label="activity_help"
-        tools:layout="@layout/activity_help">
-
-        <action
-            android:id="@+id/action_helpFragment_to_onBoardingFragment"
-            app:destination="@id/tutorialFragment"
-            app:popUpTo="@id/helpFragment"
-            app:popUpToInclusive="false" />
-
-    </fragment>
 
     <fragment
         android:id="@+id/tutorialFragment"
