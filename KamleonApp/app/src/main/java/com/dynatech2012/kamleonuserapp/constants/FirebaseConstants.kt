@@ -22,7 +22,6 @@ object FirebaseConstants {
     const val TEAMS_COLLECTION = "teams"
     const val MEASURES_COLLECTION = "measures"
     const val INVITATIONS_COLLECTION = "invitations"
-    const val kAVERAGES = "Averages"
     const val kUSERID_FIELD = "userID"
     const val kANALYSIS_TYPE = "ID"
     const val kANALYSIS_TYPE_URINE = "urine"

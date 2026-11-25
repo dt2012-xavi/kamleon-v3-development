@@ -8,26 +8,6 @@ import com.dynatech2012.kamleonuserapp.utils.SharedPrefUtil
 
 object InternalStorage {
     //Firestore
-    fun writeLastFirestoreDateOnInternalStorage(mcoContext: Context, sBody: String?) {
-        //writeOnInternalStorage(mcoContext, "lastDateFirestoreChecked", sBody);
-        SharedPrefUtil(mcoContext).saveString(PREF_DATEFIRESTORE, sBody)
-    }
-
-    /**
-     *
-     * <font color="teal">
-     * Edu:<br></br>
-     * Throws not needed anymore
-    </font> */
-    fun readLastFirestoreDateOnInternalStorage(mcoContext: Context): String? {
-        // throws  IOException {
-        /*try {
-            return readFromInternalStorage(mcoContext, "lastDateFirestoreChecked");
-        } catch (IOException e) {
-            return "null";
-        }*/
-        return SharedPrefUtil(mcoContext).getString(PREF_DATEFIRESTORE, null)
-    }
 
     //Realtime Daily
     fun writeLastRealtimeDailyDateOnInternalStorage(mcoContext: Context, sBody: String?) {

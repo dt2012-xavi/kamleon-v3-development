@@ -13,7 +13,6 @@ import com.dynatech2012.kamleonuserapp.views.profileImageUrlOf
 import com.dynatech2012.kamleonuserapp.network.ActionResult
 import com.dynatech2012.kamleonuserapp.network.actionResultOf
 import com.dynatech2012.kamleonuserapp.constants.Constants
-import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_FIRST_LOGIN
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_NEW_MEASURE
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
@@ -80,8 +79,6 @@ class MainViewModel @Inject constructor(
 
     private val _userData = MutableLiveData<CustomUser>()
     val userData: LiveData<CustomUser> = _userData
-    private val _userUpdated = MutableLiveData<Response<Unit>?>()
-    val userUpdated: LiveData<Response<Unit>?> = _userUpdated
 
     private val _userImagePrevUri = MutableLiveData<Uri?>()
     val userImagePrevUri: LiveData<Uri?> = _userImagePrevUri
@@ -119,17 +116,6 @@ class MainViewModel @Inject constructor(
                 DebugLog.d(TAG) { "User profile has photo: ${profileImageUrlOf(user.imageUrl) != null}" }
             }
             DebugLog.d(TAG) { "User profile refresh completed" }
-        }
-    }
-
-    fun updateUserData(data: HashMap<String, Any>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = firestoreRepo.updateUser(data)
-            if (response.isSuccess && response.dataValue != null) {
-                getUserData()
-            }
-            _userUpdated.postValue(response)
-            DebugLog.d(TAG) { "user data changed" }
         }
     }
 
@@ -172,18 +158,6 @@ class MainViewModel @Inject constructor(
             is PasswordPolicyResult.Rejected -> Response.Failure(PasswordPolicyException(policy.reason))
             else -> userRepository.changePwd(oldPwd, newPwd)
         }
-    }
-
-    fun deleteUser() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = userRepository.deleteUser()
-            //_userUpdated.postValue(true)
-            _userUpdated.postValue(response)
-        }
-    }
-
-    fun resetUserUpdated() {
-        _userUpdated.postValue(null)
     }
 
     fun setImageUri(uri: Uri?) {
@@ -362,8 +336,6 @@ class MainViewModel @Inject constructor(
     private val _newNotificationMeasure =  MutableLiveData<Boolean>()
     val newNotificationMeasure: LiveData<Boolean> = _newNotificationMeasure
     */
-    private val _newNotificationToken = MutableLiveData<String>()
-    val newNotificationToken: LiveData<String> = _newNotificationToken
     fun updateUserToken() {
         viewModelScope.launch(Dispatchers.IO) {
             firestoreRepo.updateToken()
@@ -375,10 +347,6 @@ class MainViewModel @Inject constructor(
         DebugLog.d(TAG) { "onGetNotification from viewModel" }
         getUserMeasures()
         //_newNotificationMeasure.postValue(true)
-    }
-
-    fun resetNewNotification() {
-        //_newNotificationMeasure.postValue(false)
     }
 
     private val _invitations = MutableLiveData<List<InvitationItem>>()
@@ -565,12 +533,6 @@ class MainViewModel @Inject constructor(
     }
      */
 
-    fun getFirstLogin(): Boolean {
-        val firstLogin = SharedPrefUtil(appContext).getBoolean(PREF_FIRST_LOGIN, true)
-        SharedPrefUtil(appContext).saveBoolean(PREF_FIRST_LOGIN, false)
-        return firstLogin
-    }
-
 
     fun checkNewMeasures() {
         val newMeasures = SharedPrefUtil(appContext).getBoolean(PREF_NEW_MEASURE, false)
@@ -581,25 +543,6 @@ class MainViewModel @Inject constructor(
 
     var tutorialComingFromHome: Boolean = true
 
-
-    private val _trialSent = MutableLiveData<Boolean>()
-    val trialSent: LiveData<Boolean> = _trialSent
-    fun sendTrialEmail() {
-        DebugLog.d(TAG) { "sendTrialEmail" }
-        val email = userRepository.email
-        if (email == null) {
-            _trialSent.postValue(false)
-            return
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            cloudFunctions.sendTrialEmail(email)
-            _trialSent.postValue(true)
-        }
-    }
-
-    fun resetTrialSent() {
-        _trialSent.postValue(false)
-    }
 
     companion object {
         val TAG = MainViewModel::class.simpleName

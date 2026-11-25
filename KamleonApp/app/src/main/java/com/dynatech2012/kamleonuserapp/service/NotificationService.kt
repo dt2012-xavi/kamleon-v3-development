@@ -157,8 +157,5 @@ class NotificationService : FirebaseMessagingService() {
 
     companion object {
         private val TAG = NotificationService::class.java.simpleName
-        fun getToken(context: Context): String? {
-            return context.getSharedPreferences("_", MODE_PRIVATE).getString("fb", "empty")
-        }
     }
 }

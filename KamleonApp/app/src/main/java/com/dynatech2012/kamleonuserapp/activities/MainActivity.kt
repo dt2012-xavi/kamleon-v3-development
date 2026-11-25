@@ -453,7 +453,4 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), ScanLinkSheet.Host {
         return displayMetrics.heightPixels
     }
 
-    fun dpToPx(context: Context, i: Int): Int {
-        return (i.toFloat() * context.resources.displayMetrics.density).toInt()
-    }
 }

@@ -28,10 +28,6 @@ class KamleonGraphBarDrawData(
     }
 
 
-    private fun filterNonZeroValues() : List<KamleonGraphDataXY> {
-        return values.filter { it.y > 0 }
-    }
-
     private fun filterNonZeroValuesAndNonLowVolumeValues() : List<KamleonGraphDataXY> {
         val preciseData = ArrayList<KamleonGraphDataXY>()
         for (i in 0 until values.size) {

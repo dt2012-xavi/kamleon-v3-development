@@ -36,9 +36,6 @@ class CloudFunctions(
     ): ResponseNullable<Nothing> =
         callEmailFunction("sendEmailVerifyEmail", hashMapOf("id" to userId, "email" to email, "username" to username), null)
 
-    suspend fun sendTrialEmail(email: String): ResponseNullable<Nothing> =
-        callEmailFunction("sendPremiumInterestEmail", hashMapOf("email" to email), null)
-
     /** A function that sends an email: an action. [expectedMessage], when given, is what a successful answer says. */
     private suspend fun callEmailFunction(
         name: String,

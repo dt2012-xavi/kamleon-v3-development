@@ -30,32 +30,6 @@ class SharedPrefUtil(private val mContext: Context) {
     }
 
     /**
-     * Save a int into shared preference
-     *
-     * @param key   The name of the preference to modify
-     * @param value The new value for the preference
-     */
-    fun saveInt(key: String?, value: Int) {
-        mSharedPreferences = mContext.getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE)
-        mEditor = mSharedPreferences.edit()
-        mEditor.putInt(key, value)
-        mEditor.apply()
-    }
-
-    /**
-     * Save a long into shared preference
-     *
-     * @param key   The name of the preference to modify
-     * @param value The new value for the preference
-     */
-    fun saveLong(key: String?, value: Long) {
-        mSharedPreferences = mContext.getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE)
-        mEditor = mSharedPreferences.edit()
-        mEditor.putLong(key, value)
-        mEditor.apply()
-    }
-
-    /**
      * Save a boolean into shared preference
      *
      * @param key   The name of the preference to modify
@@ -65,14 +39,6 @@ class SharedPrefUtil(private val mContext: Context) {
         mSharedPreferences = mContext.getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE)
         mEditor = mSharedPreferences.edit()
         mEditor.putBoolean(key, value)
-        mEditor.apply()
-    }
-
-    fun saveObject(key: String?, item: Any?) {
-        mSharedPreferences = mContext.getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE)
-        mEditor = mSharedPreferences.edit()
-        val json = if (item == null) null else Gson().toJson(item)
-        mEditor.putString(key, json)
         mEditor.apply()
     }
 
@@ -161,12 +127,6 @@ class SharedPrefUtil(private val mContext: Context) {
     fun getBoolean(key: String?, defaultValue: Boolean): Boolean {
         mSharedPreferences = mContext.getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE)
         return mSharedPreferences.getBoolean(key, defaultValue)
-    }
-
-    fun getObject(key: String?, classType: Class<*>?): Any? {
-        mSharedPreferences = mContext.getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE)
-        val json = mSharedPreferences.getString(key, null)
-        return if (json == null) null else Gson().fromJson(json, classType)
     }
 
     /**

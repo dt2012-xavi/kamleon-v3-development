@@ -104,9 +104,6 @@ data class AverageMonthlyMeasureData(
         }
     }
 
-    val allParams: String
-        get() = "averageScore=$hydration, colorChart=$colorChart, maxScore=$maxScore, minScore=$minScore, msCond=$msCond, num=$num, usg=$usg, volume=$volume, year=$year, month=$month"
-
     companion object CREATOR : Parcelable.Creator<AverageMonthlyMeasureData> {
         override fun createFromParcel(parcel: Parcel): AverageMonthlyMeasureData {
             return AverageMonthlyMeasureData(parcel)

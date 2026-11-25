@@ -45,10 +45,6 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         )
     }
 
-    fun getSupportedFragManager() : FragmentManager? {
-        return supportFragmentManager
-    }
-
     abstract fun setBinding(): VB
 
     abstract fun initView()
@@ -62,20 +58,5 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
             DebugLog.e("BaseActivity") { "Ignore exception" }
         }
     }
-    fun hideKeyboardDismissFocus() {
-        hideSoftInput()
-        binding.root.clearFocus()
-    }
 
-    fun showSoftKeyboard(view: View) {
-        if (view.requestFocus()) {
-            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
-        }
-    }
-
-    fun openWebBrowser(with: String) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(with))
-        startActivity(browserIntent)
-    }
 }

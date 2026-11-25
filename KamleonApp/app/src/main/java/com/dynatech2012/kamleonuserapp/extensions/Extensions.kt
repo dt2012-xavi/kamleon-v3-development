@@ -22,10 +22,6 @@ private fun hashString(input: String, algorithm: String): String {
 fun String.toDate(pattern: String, locale: Locale = Locale.US): Date =
     SimpleDateFormat(pattern, locale).parse(this) ?: Date(0)
 
-fun String.capitalize(): String {
-    return this.replaceFirstChar { it.uppercase() }
-}
-
 
 
 private const val DEFAULT_FORMAT_DATE_WITHOUT_TIME = "MMM dd, yyyy"
@@ -68,22 +64,11 @@ fun Date.beginningOfWeek(): Date {
     return this.addDays(-(weekDay - 1)).beginningOfDay
 }
 
-fun Date.endOfWeek(): Date {
-    return this.beginningOfWeek().addDays(6).endOfDay
-}
-
 fun Date.with(weekday: Int = -1): Date {
     val calendar = Calendar.getInstance()
     calendar.time = this
     if (weekday > -1) calendar.set(Calendar.WEEK_OF_MONTH, weekday)
     return calendar.time
-}
-
-val Date.beginningOfYear: Date
-    get() = with(month = 1, day = 1, hour = 0, minute = 0, second = 0, millisecond = 0)
-
-fun Date.endOfYear(ignoreTime: Boolean = false): Date {
-    return with(month = 12, day = 31, hour = if (ignoreTime) 0 else 23, minute = if (ignoreTime) 0 else 59, second = if (ignoreTime) 0 else 59)
 }
 
 val Date.beginningOfMonth: Date
@@ -127,12 +112,6 @@ fun Date.addDays(days: Int): Date{
 }
 fun Date.addHours(hours: Int): Date{
     return add(Calendar.HOUR_OF_DAY, hours)
-}
-fun Date.addMinutes(minutes: Int): Date{
-    return add(Calendar.MINUTE, minutes)
-}
-fun Date.addSeconds(seconds: Int): Date{
-    return add(Calendar.SECOND, seconds)
 }
 
 fun Date.year(): Int {

@@ -77,17 +77,6 @@ class UserRepository(private val gate: NetworkGate) {
             }
     }
 
-    suspend fun changeEmail(currentPwd: String, newEmail: String): Response<Unit> {
-        val oldEmail = auth.currentUser?.email ?: return Response.Failure(Exception("No email"))
-        return gate.safeCall(CallKind.Action) {
-            val credential = EmailAuthProvider.getCredential(oldEmail, currentPwd)
-            // Prompt the user to re-provide their sign-in credentials
-            auth.currentUser?.reauthenticate(credential)?.await()
-            auth.currentUser?.updateEmail(newEmail)?.await()
-            Unit
-        }
-    }
-
     suspend fun changePwd(oldPwd: String, newPwd: String): Response<Unit> {
         val oldEmail = auth.currentUser?.email ?: return Response.Failure(Exception("No email"))
         val credential = EmailAuthProvider.getCredential(oldEmail, oldPwd)
@@ -95,14 +84,6 @@ class UserRepository(private val gate: NetworkGate) {
             // Prompt the user to re-provide their sign-in credentials
             auth.currentUser?.reauthenticate(credential)?.await()
             auth.currentUser?.updatePassword(newPwd)?.await()
-            Unit
-        }
-    }
-
-    suspend fun deleteUser(): Response<Unit> {
-        val user = auth.currentUser ?: return Response.Failure(Exception("No user"))
-        return gate.safeCall(CallKind.Action) {
-            user.delete().await()
             Unit
         }
     }

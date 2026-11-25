@@ -137,11 +137,6 @@ class AuthViewModel @Inject constructor(
         splashDurationCompleted.postValue(true)
     }
 
-    fun resetSplashStateForInit() {
-        splashDurationCompleted.value = false // Or null
-        appInitializationStarted = false
-    }
-
     /**
      * True once the profile document exists. From then on, going back in the onboarding and
      * changing the birth date must update that document ([updateBirthDate]) instead of running the
@@ -272,9 +267,6 @@ class AuthViewModel @Inject constructor(
     }
 
     /*
-    fun locationPermissionGranted() {
-        _uiState.postValue(4)
-    }
     */
 
     fun finishSignup() {

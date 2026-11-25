@@ -33,14 +33,6 @@ class DatabaseDataSource @Inject constructor(
         return ResponseNullable.Success()
     }
 
-    suspend fun getMeasures(date: Long): Response<ArrayList<MeasureData>> {
-        val data = measureDataDao.getMeasuresFromDate(date)
-        return if (data != null)
-            Response.Success(ArrayList(data))
-        else
-            Response.Success(ArrayList())
-    }
-
     suspend fun getAllMeasures(): Response<ArrayList<MeasureData>>
     {
         // get measures from database

@@ -31,10 +31,6 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
         initEvent()
     }
 
-    fun getSupportedFragManager() : FragmentManager? {
-        return activity?.supportFragmentManager
-    }
-
     abstract fun setBinding(): VB
 
     abstract fun initView()
@@ -48,27 +44,5 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
             DebugLog.e("BaseActivity") { "Ignore exception" }
         }
     }
-    fun hideKeyboardDismissFocus() {
-        hideSoftInput()
-        binding.root.clearFocus()
-    }
 
-    fun showSoftKeyboard(view: View) {
-        if (view.requestFocus()) {
-            val imm = activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
-        }
-    }
-
-    fun openWebBrowser(with: String) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(with))
-        startActivity(browserIntent)
-    }
-
-    fun openEmailTo(with: String) {
-        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:$with")
-        }
-        startActivity(emailIntent)
-    }
 }
