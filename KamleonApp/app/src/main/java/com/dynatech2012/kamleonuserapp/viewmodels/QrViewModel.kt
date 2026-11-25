@@ -113,7 +113,6 @@ class QrViewModel @Inject constructor(
         if (_linkState.value != ScanLinkState.Linking) _linkState.value = null
     }
 
-
     override fun onCleared() {
         if (analyzer != null) imageAnalysis.clearAnalyzer()
         analyzer?.close()

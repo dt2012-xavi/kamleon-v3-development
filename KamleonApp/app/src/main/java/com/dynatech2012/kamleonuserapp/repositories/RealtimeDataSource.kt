@@ -35,10 +35,6 @@ class RealtimeDataSource @Inject constructor(
     private val db =  Firebase.database
     private val averagesRef = db.reference.child(REALTIME_COLLECTION_AVERAGES)
 
-    /*
-    private var channel1: SendChannel<ArrayList<AverageDailyMeasureData>>? = null
-    private var channel2: SendChannel<ArrayList<AverageMonthlyMeasureData>>? = null
-    */
     private val uuid: String?
         get() = if (Constants.DEBUG_MODE) USER_UID_DEBUG else userRepository.uuid
 
@@ -48,22 +44,6 @@ class RealtimeDataSource @Inject constructor(
      * Edu:<br></br>
      * Upload a new scanned QR ID to Realtime
     </font> */
-    /*
-    fun uploadQrId(qrId: String?) {
-        //DatabaseReference qrRef = db.getReference(REALTIME_COLLECTION_QR_LOGIN + qrId);
-        try {
-            val qrRef = db.reference.child(REALTIME_COLLECTION_QR_LOGIN).child(
-                qrId!!
-            )
-            Log.d(TAG, "qr upload will begin: \n$qrRef\nuser id: ${this.uuid}")
-            qrRef.setValue(this.uuid)
-                .addOnSuccessListener { Log.d(TAG, "qr upload success") }
-                .addOnFailureListener { e: Exception -> Log.d(TAG, "qr upload failure: $e") }
-        } catch (e: Exception) {
-            Log.d(TAG, "QR upload exception: $e")
-        }
-    }
-    */
 
     /**
      *
@@ -125,15 +105,6 @@ class RealtimeDataSource @Inject constructor(
         }
         return averagesResult(results)
     }
-
-    /*
-    fun closeChannels() {
-        channel1?.close()
-        channel1 = null
-        channel2?.close()
-        channel2 = null
-    }
-    */
 
     companion object {
         private val TAG = RealtimeDataSource::class.java.simpleName

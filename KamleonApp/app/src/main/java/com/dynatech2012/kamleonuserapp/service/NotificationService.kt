@@ -18,16 +18,13 @@ import com.dynatech2012.kamleonuserapp.constants.Constants.NOTIFICATION_KEY_TITL
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.PUSH_NOTIFICATION
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_COLLECTION
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_TOKEN
-import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_NEW_MEASURE
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_USER_ID
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.dynatech2012.kamleonuserapp.utils.SharedPrefUtil
-import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-
 
 class NotificationService : FirebaseMessagingService() {
 
@@ -51,12 +48,6 @@ class NotificationService : FirebaseMessagingService() {
         sharedPrefUtil.saveBoolean(PREF_NEW_MEASURE, true)
     }
 
-    /*
-     * private static int createID() {
-     *     Date now = new Date();
-     *     return Integer.parseInt(new SimpleDateFormat("ddHHmmss", Locale.US).format(now));
-     * }
-     */
     private fun createNewMeasureNotification(context: Context, remoteMessage: RemoteMessage) {
         val data: Map<String, String> = remoteMessage.data
         val title = data[NOTIFICATION_KEY_TITLE]
@@ -64,11 +55,9 @@ class NotificationService : FirebaseMessagingService() {
         var notifMessage = "Message"
         var notifId = 0
         if (title != null) {
-            //if (title == context.getString(R.string.notification_newmeasure_incoming_title)) {
                 notifTitle = context.getString(R.string.noti_newmeasure_title)
                 notifMessage = context.getString(R.string.noti_newmeasure_text)
                 notifId = 101
-            //}
         }
         val intent = Intent(applicationContext, MainActivity::class.java)
         val pendingIntent =
@@ -97,7 +86,6 @@ class NotificationService : FirebaseMessagingService() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        //notificationManager.notify(createID(), builder.build());
         notificationManager.notify(notifId, builder.build())
 
         //App opened and in HomeFragment (broadcast the message so it can be received from the HomeFragment)
@@ -106,7 +94,6 @@ class NotificationService : FirebaseMessagingService() {
         // Send data to the app if it is in foreground
         DebugLog.d(TAG) { "onGetNotification from Notification Service" }
         LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification)
-        //Notification.instance?.addOrderBoolean(true)
     }
 
     fun createNotificationChannel(context: Context, channelId: String, channelName: String) {
@@ -119,41 +106,6 @@ class NotificationService : FirebaseMessagingService() {
             notificationManager?.createNotificationChannel(channel)
         }
     }
-
-    /*
-    class Notification private constructor() {
-        private val newOrderString: MutableLiveData<String> = MutableLiveData()
-        private val newOrderBoolean: MutableLiveData<Boolean> = MutableLiveData()
-        fun getNewOrder(): LiveData<String> {
-            return newOrderString
-        }
-
-        fun getNewOrderBoolean(): LiveData<Boolean> {
-            return newOrderBoolean
-        }
-        fun addOrderString(orderID: String) {
-            newOrderString.postValue(orderID)
-        }
-        fun addOrderBoolean(received: Boolean) {
-            newOrderBoolean.postValue(received)
-        }
-
-        fun reset() {
-            newOrderString.postValue("")
-            newOrderBoolean.postValue(false)
-        }
-        companion object {
-            var instance: Notification? = null
-                get() {
-                    if (field == null) {
-                        field = Notification()
-                    }
-                    return field
-                }
-                private set
-        }
-    }
-     */
 
     companion object {
         private val TAG = NotificationService::class.java.simpleName

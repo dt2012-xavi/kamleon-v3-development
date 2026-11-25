@@ -8,7 +8,6 @@ import java.time.ZoneId
 import java.util.Date
 import javax.inject.Inject
 
-
 class MeasuresRepository @Inject constructor(
     private val database: DatabaseDataSource,
     private val firestore: FirestoreDataSource,
@@ -100,12 +99,6 @@ class MeasuresRepository @Inject constructor(
             if (measures?.isNotEmpty() == true) {
                 DebugLog.d(TAG) { "got measures from FS not empty" }
                 saveNewAverageDailyMeasuresToDB(measures)
-                /*
-                val saveJob = coroutineScope { async {
-                       saveNewAverageDailyMeasuresToDB(measures)
-                    } }
-                saveJob.await()
-                */
             } }
         return response
     }
@@ -126,12 +119,6 @@ class MeasuresRepository @Inject constructor(
             if (measures?.isNotEmpty() == true) {
                 DebugLog.d(TAG) { "got measures from FS not empty" }
                 saveNewAverageMonthlyMeasuresToDB(measures)
-                /*
-                val saveJob = coroutineScope { async {
-                       saveNewAverageMonthlyMeasuresToDB(measures)
-                    } }
-                saveJob.await()
-                */
             } }
         return response
     }
@@ -142,29 +129,6 @@ class MeasuresRepository @Inject constructor(
             database.saveAverageMonthlyMeasures(ArrayList(measureDataListNotNull))
         }
     }
-
-    /*
-    fun closeChannels() {
-        realtimeRepository.closeChannels()
-    }
-    */
-
-    /*
-    fun getAllUserDailyAverages(userId: String?): Flow<Response<ArrayList<AverageDailyMeasureData>>> = callbackFlow {
-        realtime.getAllDaysAverages(userId).collect {
-            insertNewAverageDailyMeasuresToDB(it)
-            trySend(Response.Success(it))
-        }
-        awaitClose {  }
-    }
-    fun getAllUserMonthlyAverages(userId: String?): Flow<Response<ArrayList<AverageMonthlyMeasureData>>> = callbackFlow {
-        realtime.getAllMonthsAverages(userId).collect {
-            insertNewAverageMonthlyMeasuresToDB(it)
-            trySend(Response.Success(it))
-        }
-        awaitClose {  }
-    }
-    */
 
     companion object {
         val TAG = MeasuresRepository::class.simpleName

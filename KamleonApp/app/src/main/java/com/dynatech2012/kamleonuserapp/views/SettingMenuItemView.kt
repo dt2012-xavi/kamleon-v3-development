@@ -132,11 +132,6 @@ class SettingMenuItemView : LinearLayout {
 
         if (switchState) {
             switch?.isEnabled = true
-            /*switch?.isClickable = true
-            switch?.setOnClickListener {
-                switch?.isChecked = !(switch?.isChecked ?: false)
-                menuItemListener?.onSwitchChanged(this, switch?.isChecked ?: false)
-            }*/
         }
     }
 

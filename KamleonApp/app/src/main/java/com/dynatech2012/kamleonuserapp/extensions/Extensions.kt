@@ -22,8 +22,6 @@ private fun hashString(input: String, algorithm: String): String {
 fun String.toDate(pattern: String, locale: Locale = Locale.US): Date =
     SimpleDateFormat(pattern, locale).parse(this) ?: Date(0)
 
-
-
 private const val DEFAULT_FORMAT_DATE_WITHOUT_TIME = "MMM dd, yyyy"
 
 fun Date.formatDate(formatStr: String? = KamleonUtils.DEFAULT_FORMAT_DATE_WITHOUT_TIME): String {
@@ -166,7 +164,6 @@ val Date.isLastWeek: Boolean
         return calendar.after(sevenDaysAgo)
     }
 
-
 val Date.formatTimeForPopup: String
     get() {
         val date = this
@@ -206,7 +203,6 @@ val Date.formatTimeForPopup: String
 
     }
 
-
 val Date.formatTime: String
     get() {
         val date = this
@@ -245,8 +241,6 @@ val Date.formatTime: String
         }
 
     }
-
-
 
 val Int.dp: Int get() = (this / Resources.getSystem().displayMetrics.density).toInt()
 val Int.px: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()

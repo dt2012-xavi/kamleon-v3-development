@@ -2,7 +2,6 @@ package com.dynatech2012.kamleonuserapp.views.graph.data
 
 import com.dynatech2012.kamleonuserapp.extensions.addDays
 import com.dynatech2012.kamleonuserapp.extensions.addMonths
-import com.dynatech2012.kamleonuserapp.extensions.addYears
 import com.dynatech2012.kamleonuserapp.extensions.beginningOfDay
 import com.dynatech2012.kamleonuserapp.extensions.beginningOfMonth
 import com.dynatech2012.kamleonuserapp.extensions.endOfDay
@@ -26,7 +25,6 @@ class KamleonGraphBarDrawData(
     fun endDate() : Date {
         return calcEndDateFrom(mode, date)
     }
-
 
     private fun filterNonZeroValuesAndNonLowVolumeValues() : List<KamleonGraphDataXY> {
         val preciseData = ArrayList<KamleonGraphDataXY>()

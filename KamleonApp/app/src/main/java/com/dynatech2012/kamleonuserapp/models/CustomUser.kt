@@ -1,7 +1,6 @@
 package com.dynatech2012.kamleonuserapp.models
 
 import com.dynatech2012.kamleonuserapp.extensions.sha256
-import java.security.MessageDigest
 import java.util.Date
 
 data class CustomUser(
@@ -33,7 +32,6 @@ data class CustomUser(
     var legal: KamleonLegal = KamleonLegal()
 
     )
-
 
 enum class Gender (val raw: String)
 {

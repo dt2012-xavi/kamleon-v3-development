@@ -15,8 +15,6 @@ data class AverageMonthlyMeasureData(
     var id: String,
 
     //date: 10/2021
-    //year = 2021
-    //month = 202110
     var hydration: Double,
     var colorChart: Float,
     var maxScore: Int,
@@ -58,7 +56,6 @@ data class AverageMonthlyMeasureData(
         dataSnapshot.child("msCond").value.toString().toDouble(),
     )
 
-
     constructor(parcel: Parcel) : this(
         parcel.readString()!!, //id
         parcel.readDouble(),
@@ -73,7 +70,6 @@ data class AverageMonthlyMeasureData(
         parcel.readLong(),
         parcel.readDouble()
     )
-
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)

@@ -22,9 +22,6 @@ data class AverageDailyMeasureData (
     var id: String = "",
 
     //date: 24/10/2021
-    //year = 2021
-    //month = 202110
-    //day = 20211024
     var hydration: Double = 0.0,
     var colorChart: Float = 0f,
     var maxScore: Int = 0,

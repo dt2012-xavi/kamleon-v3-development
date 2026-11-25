@@ -10,7 +10,6 @@ import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
-
 @AndroidEntryPoint
 class TutorialFragment : BaseFragment<FragmentTutorialBinding>() {
     override fun setBinding(): FragmentTutorialBinding = FragmentTutorialBinding.inflate(layoutInflater)

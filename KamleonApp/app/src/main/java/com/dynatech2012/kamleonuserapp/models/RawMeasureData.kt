@@ -1,7 +1,6 @@
 package com.dynatech2012.kamleonuserapp.models
 
 import androidx.room.TypeConverters
-import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.PropertyName
 import java.sql.Timestamp
 import java.util.Date
@@ -42,7 +41,6 @@ data class RawMeasureData(
     var type: MeasureType? = null, //String
     @get:PropertyName("Prediction_Precision") @set:PropertyName("Prediction_Precision")
     var precision: MeasurePrecision? = null, //String
-    //var precision: String? = null, //String
 
     @TypeConverters(IntVectorTypeConverter::class)
     var xyz: IntArray,

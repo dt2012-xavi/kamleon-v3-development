@@ -3,7 +3,6 @@ package com.dynatech2012.kamleonuserapp.views.cards
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -144,7 +143,6 @@ fun HydrationView(hydration: Int?) {
             maxValue = 100,
             progressBackgroundColor = colorResource(id = R.color.transparent),
             progressIndicatorColor = Color.Red,
-            //completedColor = colorResource(id = R.color.kamleon_blue),
             modifier = Modifier
                 .fillMaxHeight()
                 .aspectRatio(1f)

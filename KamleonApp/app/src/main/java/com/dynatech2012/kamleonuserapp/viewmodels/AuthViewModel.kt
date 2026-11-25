@@ -17,7 +17,6 @@ import com.dynatech2012.kamleonuserapp.repositories.Response
 import com.dynatech2012.kamleonuserapp.network.SessionWatcher
 import com.dynatech2012.kamleonuserapp.repositories.SessionCleaner
 import com.dynatech2012.kamleonuserapp.repositories.UserRepository
-import com.dynatech2012.kamleonuserapp.security.PasswordLength
 import com.dynatech2012.kamleonuserapp.security.PasswordPolicy
 import com.dynatech2012.kamleonuserapp.security.PasswordPolicyReason
 import com.dynatech2012.kamleonuserapp.security.PasswordPolicyResult
@@ -266,9 +265,6 @@ class AuthViewModel @Inject constructor(
         _uiState.postValue(4)
     }
 
-    /*
-    */
-
     fun finishSignup() {
         viewModelScope.launch(Dispatchers.IO) {
             val registerResult = firestoreRepo.createUserStep2(height, weight, gender)
@@ -496,7 +492,6 @@ class AuthViewModel @Inject constructor(
 
     /** The email of the signed-in account, to tell the user where the verification email went. */
     val signedInEmail: String? get() = authRepo.email
-
 
     private fun isValidEmail(target: CharSequence): Boolean {
         return !TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches()

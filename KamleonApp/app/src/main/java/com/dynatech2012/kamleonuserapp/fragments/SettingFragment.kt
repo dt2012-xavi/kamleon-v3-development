@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
-import android.graphics.Color
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.activity.result.contract.ActivityResultContracts
@@ -115,26 +114,13 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         }
 
         binding.profileLayout.setOnClickListener {
-            /*val lastImagePickFragment = childFragmentManager.fragments.lastOrNull() as? ImagePickFragment
-            val ft = childFragmentManager.beginTransaction()
-            if (lastImagePickFragment != null) {
-                ft.remove(lastImagePickFragment)
-                //return@setOnClickListener
-            }
-            Log.d(TAG, "show pick image fragment"
-             */
             val pickFragment = ImagePickFragment.newInstance(onDismissPickImage)
-            //ft.add(pickFragment, "ImagePick").commit()
             pickFragment.show(childFragmentManager, "ImagePick")
             DebugLog.d(TAG) { "image pick dialog after show" }
         }
 
         binding.btnSettingClose.setOnClickListener {
-            //val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
-            //val navController = navHostFragment.navController
             findNavController().popBackStack()
-            //findNavController().navigateUp()
-            //activity?.finish()
         }
 
         binding.tvNotiOpenSettings.setOnClickListener { openNotificationSettings() }

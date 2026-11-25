@@ -1,21 +1,13 @@
 package com.dynatech2012.kamleonuserapp.base
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
-import android.graphics.Rect
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.doOnLayout
-import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
-import com.dynatech2012.kamleonuserapp.activities.MainActivity
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {

@@ -1,7 +1,5 @@
 package com.dynatech2012.kamleonuserapp.views.graph
 
-import com.dynatech2012.kamleonuserapp.extensions.toDate
-import java.util.Date
 
 class KamleonUtils {
     companion object {

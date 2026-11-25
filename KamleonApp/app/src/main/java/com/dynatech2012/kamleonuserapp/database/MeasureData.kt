@@ -17,13 +17,10 @@ import java.util.Date
 data class MeasureData (
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
-    //var measureId : String = "null",
     var isNew: Boolean = false,
 
-    //    private long analysisDate; //Date
     var analysisDate: Long = 0, //Date
 
-    //    private long GS_lastUpdateAnalysis; //Timestamp
     var gS_lastUpdateAnalysis: Long = 0, //Timestamp
     var measEventDuration: Int = 0,
     var volTime: Int = 0,
@@ -96,7 +93,6 @@ data class MeasureData (
 
     constructor() : this (
         id = 0,
-        //measureId = "null",
         isNew = false,
         analysisDate = 0,
         gS_lastUpdateAnalysis = 0,
@@ -146,7 +142,6 @@ data class MeasureData (
     )
 
     constructor(rawMeasureData: RawMeasureData) : this (
-        //measureId = rawMeasureData.measureId,
         analysisDate = rawMeasureData.analysisDate?.time ?: 0,
         gS_lastUpdateAnalysis = 0,//rawMeasureData.gS_lastUpdateAnalysis.time,
         measEventDuration = rawMeasureData.measEventDuration,
@@ -180,7 +175,6 @@ data class MeasureData (
         gS_Observation = rawMeasureData.gS_Observation,
         type = rawMeasureData.type,
         precision = rawMeasureData.precision,
-        //precision = MeasurePrecision.fromString(rawMeasureData.precision),
         xyz = rawMeasureData.xyz,
         minxyz = rawMeasureData.minxyz,
         maxxyz = rawMeasureData.maxxyz,
@@ -197,7 +191,6 @@ data class MeasureData (
 
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
-        //parcel.readString() ?: "null",
         parcel.readByte() != 0.toByte(),
         parcel.readLong(),
         parcel.readLong(),
@@ -251,7 +244,6 @@ data class MeasureData (
     override fun compareTo(other: MeasureData): Int {
         val date1 = Date(analysisDate)
         val date2 = Date(other.analysisDate)
-        //        if (getAnalysisDate() == null || o.getAnalysisDate() == null)
         return if (date1 == null || date2 == null) 0 else date1.compareTo(date2)
     }
 
@@ -306,7 +298,6 @@ data class MeasureData (
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(id)
-        //parcel.writeString(measureId)
         parcel.writeByte(if (isNew) 1 else 0)
         parcel.writeLong(analysisDate)
         parcel.writeLong(gS_lastUpdateAnalysis)
@@ -377,7 +368,6 @@ data class MeasureData (
         other as MeasureData
 
         if (id != other.id) return false
-        //if (measureId != other.measureId) return false
         if (isNew != other.isNew) return false
         if (analysisDate != other.analysisDate) return false
         if (gS_lastUpdateAnalysis != other.gS_lastUpdateAnalysis) return false
@@ -462,7 +452,6 @@ data class MeasureData (
 
     override fun hashCode(): Int {
         var result = id.hashCode()
-        //result = 31 * result + measureId.hashCode()
         result = 31 * result + isNew.hashCode()
         result = 31 * result + analysisDate.hashCode()
         result = 31 * result + gS_lastUpdateAnalysis.hashCode()

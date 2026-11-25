@@ -47,7 +47,6 @@ import com.dynatech2012.kamleonuserapp.views.marginForNavigationBar
 import com.dynatech2012.kamleonuserapp.views.showScanIntroSheet
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class TabFragment : BaseFragment<ActivityTabBinding>() {
     private val viewModel: MainViewModel by activityViewModels()
@@ -234,7 +233,6 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
         private const val FOREIGN_NOTICE_MS = 2_500L
         private const val PREVIEW_FADE_MS = 150L
     }
-
 
     // Scan
     /** What the scanner shows: the camera, or the panel that says why it can't use it. */

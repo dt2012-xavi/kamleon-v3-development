@@ -6,7 +6,6 @@ import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
-import androidx.core.view.updatePadding
 
 /** Status bar, navigation bar and display cutout: what edge-to-edge content must stay clear of. */
 fun WindowInsetsCompat.systemBarsAndCutout(): Insets =

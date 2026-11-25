@@ -48,13 +48,6 @@ fun VolumeProgressIndicator(
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
 
-/*        val animateFloat = remember { Animatable(0f) }
-        LaunchedEffect(animateFloat) {
-            animateFloat.animateTo(
-                targetValue = currentValue / maxValue.toFloat(),
-                animationSpec = tween(durationMillis = 2000, easing = FastOutSlowInEasing)
-            )
-        }*/
         val displayValue = remember { (currentValue ?: 0) / maxValue.toFloat() }
 
         Canvas(
@@ -123,7 +116,6 @@ fun VolumeProgressIndicatorPreview() {
             .alpha(1f)
     )
 }
-
 
 // Diameter of the indicator circle
 private val CircularIndicatorDiameter = 100.dp

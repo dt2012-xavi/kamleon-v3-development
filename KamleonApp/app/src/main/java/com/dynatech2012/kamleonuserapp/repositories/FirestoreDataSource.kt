@@ -25,7 +25,6 @@ import com.dynatech2012.kamleonuserapp.network.NetworkGate
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.google.firebase.Firebase
 
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.firestore
@@ -38,13 +37,9 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import java.util.Date
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class FirestoreDataSource @Inject constructor(
     private val userRepository: UserRepository,
@@ -269,7 +264,6 @@ class FirestoreDataSource @Inject constructor(
         }
     }
 
-    //suspend fun updateLegal(isAdmin: Boolean): Response<Boolean> {
     suspend fun updateLegal(
         policyAdmin: Boolean,
         policyApp: Boolean,
@@ -311,7 +305,6 @@ class FirestoreDataSource @Inject constructor(
             true
         }
     }
-
 
     companion object {
         val TAG = FirestoreDataSource::class.simpleName

@@ -10,7 +10,6 @@ import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_REALTI
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_USER_EMAIL
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_USER_ID
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_USER_PASSWORD
-import com.google.gson.Gson
 
 class SharedPrefUtil(private val mContext: Context) {
     lateinit var mSharedPreferences: SharedPreferences
@@ -159,8 +158,6 @@ class SharedPrefUtil(private val mContext: Context) {
         removeKey(PREF_FIRST_LOGIN)
         removeKey(PREF_ACCEPTED_POLICY)
     }
-
-
 
     companion object {
         /**

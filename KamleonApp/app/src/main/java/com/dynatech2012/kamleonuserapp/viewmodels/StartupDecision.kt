@@ -92,7 +92,6 @@ internal suspend fun verifiedAfterReload(
     reload: suspend () -> Boolean?
 ): Boolean = cachedVerified || (reload() ?: false)
 
-
 /**
  * Runs the startup check and turns an unexpected exception into a failure the caller can show. Without it
  * an exception in the coroutine would leave the screen on the splash for ever. Cancellation is not a

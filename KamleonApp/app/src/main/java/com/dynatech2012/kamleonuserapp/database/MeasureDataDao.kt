@@ -25,23 +25,4 @@ interface MeasureDataDao {
     @Query("DELETE FROM MeasureData")
     suspend fun deleteAllMeasures()
 
-    /*
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertGroupItems(ArrayList<GroupItem> items)
-
-    @Delete
-    void deleteGroupItem(GroupItem groupItem);
-
-    @Update
-    void updateGroupItem(GroupItem groupItem);
-
-    @Query("SELECT * FROM GroupItem WHERE groupId = :groupId")
-    GroupItem getGroupItemById(String groupId);
-
-    @Query("SELECT * FROM GroupItem")
-    List<GroupItem> getGroupItems();
-
-    @Query("DELETE FROM GroupItem")
-    void deleteAllGroupItems();
-    */
 }

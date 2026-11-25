@@ -51,15 +51,6 @@ fun Modifier.coloredShadow(
                 shadowColor
             )
 
-            /*
-            if (blurRadius != 0.dp) {
-                frameworkPaint.maskFilter = android.graphics.BlurMaskFilter(
-                    blurRadius.toPx(),
-                    android.graphics.BlurMaskFilter.Blur.NORMAL
-                )
-            }
-
-             */
             it.drawRoundRect(
                 0f,
                 0f,
@@ -71,7 +62,6 @@ fun Modifier.coloredShadow(
             )
         }
 }
-
 
 @Composable
 fun ClippedShadowCard(

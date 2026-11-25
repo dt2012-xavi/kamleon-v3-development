@@ -33,7 +33,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    //val intVectorTypeConverter = IntVectorTypeConverter()
     @Provides
     @Singleton
     fun networkMonitorProvider(@ApplicationContext appContext: Context): NetworkMonitor = AndroidNetworkMonitor(appContext)
@@ -74,11 +73,9 @@ object AppModule {
     @Provides
     @Singleton
     fun databaseDataSourceProvider(measureDataDao: MeasureDataDao, dailyMeasureDataDao: AverageDailyMeasureDataDao, monthlyMeasureDataDao: AverageMonthlyMeasureDataDao): DatabaseDataSource = DatabaseDataSource(measureDataDao, dailyMeasureDataDao, monthlyMeasureDataDao)
-    //fun databaseDataSourceProvider(/*measureDataDao: MeasureDataDao*/): DatabaseDataSource = DatabaseDataSource(/*measureDataDao*/)
     @Provides
     @Singleton
     fun clodFunctionsProvider(userRepository: UserRepository, gate: NetworkGate): CloudFunctions = CloudFunctions(userRepository, gate)
-
 
     @Provides
     @Singleton

@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.net.Uri
@@ -31,7 +30,6 @@ import androidx.navigation.fragment.NavHostFragment
 import com.dynatech2012.kamleonuserapp.base.BaseActivity
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.PUSH_NOTIFICATION
-import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants
 import com.dynatech2012.kamleonuserapp.databinding.ActivityMainBinding
 import com.dynatech2012.kamleonuserapp.extensions.px
 import com.dynatech2012.kamleonuserapp.models.QRResponse
@@ -49,7 +47,6 @@ import com.dynatech2012.kamleonuserapp.viewmodels.MainViewModel
 import com.dynatech2012.kamleonuserapp.viewmodels.QrViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
-
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(), ScanLinkSheet.Host {
@@ -149,28 +146,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), ScanLinkSheet.Host {
                 }
             }
         // TODO: trying to disable swipe navigation gesture
-        /*
-        binding.root.apply {
-            doOnLayout {
-                // updating exclusion rect
-                val rects = mutableListOf<Rect>()
-                rects.add(Rect(0,(height/2 - 75).px, 150.px, 150.px))
-                //rects.add(Rect(width.px - 150.px,0, 150.px, (height.px/2)))
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    Log.d(TAG, "setting systemGestureExclusionRects")
-                    systemGestureExclusionRects = rects
-                }
-            }
-        }
-        val content = binding.root
-        val treeObserver = content.viewTreeObserver;
-        treeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                content.viewTreeObserver.removeOnGlobalLayoutListener(this);
-                //updateGestureExclusion(this@MainActivity)
-            }
-        })
-        */
         onKamleonSheetResult(NOTIFICATIONS_INTRO_SHEET) {
             // The sheet is only shown from Android 13, where this permission exists.
             if (it == SheetResult.PRIMARY && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -182,15 +157,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), ScanLinkSheet.Host {
     }
 
     private fun initObservers() {
-        /*
-        NotificationService.Notification.instance?.getNewOrderBoolean()?.observe(this) {
-            Log.d(TAG, "notification received")
-            if (it) {
-                viewModel.onGetNotification()
-                NotificationService.Notification.instance?.reset()
-            }
-        }
-         */
         setupFirebaseMessagingReceiver()
         viewModel.updateUserToken()
 
@@ -252,35 +218,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), ScanLinkSheet.Host {
     private lateinit var currentImageUri: Uri
 
     private fun takePicture() {
-        /*
-        if (Build.VERSION.SDK_INT >= 30) {
-            if (!Environment.isExternalStorageManager()) {
-                val getPermission = Intent()
-                getPermission.action = ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
-                startActivity(getPermission)
-                requestPermissionLauncher.launch(
-                    ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
-                )
-            }
-
-        }*/
-        //val root = File(getExternalStorageDirectory()/*cacheDir*/, "my_images")
         val root = File(
             getExternalFilesDir(
                 Environment.DIRECTORY_PICTURES
             ), "my_images"
         )
-        //val root = File(filesDir/*cacheDir*/, "my_images")
         // Create request to write to media storage
         if (!root.mkdirs()) {
             DebugLog.e(TAG) { "Directory not created" }
         }
         val fname = "img_${System.currentTimeMillis()}.jpg"
         val sdImageMainDirectory = File(root, fname)
-        //sdImageMainDirectory.createNewFile()
-        /*val sdImageMainDirectory = File.createTempFile ("img_${System.currentTimeMillis()}", ".jpg", getExternalStorageDirectory()).apply {
-            createNewFile()
-        }*/
         currentImageUri = FileProvider.getUriForFile(
             this,
             "$packageName.fileprovider",

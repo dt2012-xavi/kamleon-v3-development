@@ -33,7 +33,6 @@ class ForgotPwdViewModel @Inject constructor(
         }
     }
 
-
     companion object {
         private val TAG = ForgotPwdViewModel::class.java.simpleName
     }

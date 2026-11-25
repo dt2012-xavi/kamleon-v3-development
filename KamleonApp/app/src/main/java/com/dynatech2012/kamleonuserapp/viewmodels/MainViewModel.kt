@@ -12,12 +12,10 @@ import com.dynatech2012.kamleonuserapp.views.forgetCachedImages
 import com.dynatech2012.kamleonuserapp.views.profileImageUrlOf
 import com.dynatech2012.kamleonuserapp.network.ActionResult
 import com.dynatech2012.kamleonuserapp.network.actionResultOf
-import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_NEW_MEASURE
 import com.dynatech2012.kamleonuserapp.database.AverageDailyMeasureData
 import com.dynatech2012.kamleonuserapp.database.AverageMonthlyMeasureData
 import com.dynatech2012.kamleonuserapp.database.MeasureData
-import com.dynatech2012.kamleonuserapp.extensions.sha256
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.models.HomeStatus
 import com.dynatech2012.kamleonuserapp.models.homeStatusAfterLoad
@@ -66,7 +64,6 @@ class MainViewModel @Inject constructor(
     /** The app-wide image loader; the screens that show the avatar load it with this one. */
     val imageLoader: ImageLoader
 ) : ViewModel() {
-
 
     var fName: String? = ""
     var lName: String? = ""
@@ -233,7 +230,6 @@ class MainViewModel @Inject constructor(
                 DebugLog.d(TAG) { "got measures from FS success size: ${responseMeasuresFS.dataValue?.size}" }
                 responseMeasuresFS.dataValue?.let { measuresFB ->
                     measuresLoaded.addAll(measuresFB)
-                    //_measures.postValue(measuresFB)
                     _measures.postValue(measuresLoaded)
                     if (measuresFB.size > 0) {
                         DebugLog.d(TAG) { "got measures from FS not empty" }
@@ -289,28 +285,6 @@ class MainViewModel @Inject constructor(
                     _averageMonthlyMeasures.postValue(monthlyLoaded)
                 }
             }
-            //}
-            //}
-            /*
-            // get all averages from FS
-                measuresRepository.getAllUserDailyAverages(userRepository.uuid)
-                    .collect { avDa ->
-                        avDa.dataValue?.let { dailyMeasures ->
-                            Log.d(
-                                TAG,
-                                "got measures all daily finally 2 size ${dailyMeasures.size}"
-                            )
-                            dailyLoaded.addAll(dailyMeasures)
-                            _averageDailyMeasures.postValue(dailyLoaded)
-                        } }
-                measuresRepository.getAllUserMonthlyAverages(userRepository.uuid)
-                    .collect { avMon ->
-                        avMon.dataValue?.let { monthlyMeasures ->
-                            Log.d(TAG, "got measures all monthly finally 2 size ${monthlyMeasures.size}")
-                            monthlyLoaded.addAll(monthlyMeasures)
-                            _averageMonthlyMeasures.postValue(monthlyLoaded)
-                        } }
-            */
         }
         SharedPrefUtil(appContext).saveBoolean(PREF_NEW_MEASURE, false)
 
@@ -329,24 +303,17 @@ class MainViewModel @Inject constructor(
         accountEmail?.let { actionResultOf(cloudFunctions.resetPwd(it)) }
     }
 
-
     // NOTIFICATIONS AND INVITATIONS
 
-    /*
-    private val _newNotificationMeasure =  MutableLiveData<Boolean>()
-    val newNotificationMeasure: LiveData<Boolean> = _newNotificationMeasure
-    */
     fun updateUserToken() {
         viewModelScope.launch(Dispatchers.IO) {
             firestoreRepo.updateToken()
-            //_newNotificationToken.postValue(token)
         }
     }
 
     fun onGetNotification() {
         DebugLog.d(TAG) { "onGetNotification from viewModel" }
         getUserMeasures()
-        //_newNotificationMeasure.postValue(true)
     }
 
     private val _invitations = MutableLiveData<List<InvitationItem>>()
@@ -395,7 +362,6 @@ class MainViewModel @Inject constructor(
     val averageMonthlyMeasures: LiveData<ArrayList<AverageMonthlyMeasureData>> =
         _averageMonthlyMeasures
 
-
     // AVERAGES
     /**
      *
@@ -407,65 +373,6 @@ class MainViewModel @Inject constructor(
      * (from database and from realtime)
     </font> */
 
-    /*
-        var areDailyDBLoaded: Boolean = false
-    var areDailyFirestoreDownloaded = false
-        var areMonthlyDBLoaded = false
-    var areMonthlyFirestoreDownloaded = false
-
-    private fun insertNewAverageDailyMeasuresToDB(measureDataList: List<AverageDailyMeasureData?>?) {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (measureDataList != null) {
-                val measureDataListNotNull = measureDataList.filterNotNull()
-                databaseRepository.saveAverageDailyMeasures(ArrayList(measureDataListNotNull))
-            }
-        }
-    }
-
-    private fun getAllAverageDailyMeasuresDB() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = databaseRepository.getAllAverageDailyMeasures()
-            if (response.isSuccess && response.dataValue != null) {
-                _averageDailyMeasures.postValue(response.dataValue)
-            }
-        }
-    }
-    */
-
-
-    /*
-    fun getAverageDailyMeasures(): LiveData<ArrayList<AverageDailyMeasureData>> {
-        val observable: MediatorLiveData<ArrayList<AverageDailyMeasureData>> =
-            MediatorLiveData<ArrayList<AverageDailyMeasureData>>()
-        if (areDailyDBLoaded && areDailyFirestoreDownloaded) {
-            observable.setValue(dailyLoaded)
-        } else {
-            // Get local measures
-            observable.addSource(averageDailyMeasures) { measureData: ArrayList<AverageDailyMeasureData> ->
-                //add at beginning of array local measures
-                Log.d(
-                    TAG,
-                    "daily average from DB received: size: " + measureData.size
-                )
-                dailyLoaded.addAll(0, measureData)
-                observable.postValue(dailyLoaded)
-            }
-            // Get remote measures
-            observable.addSource(
-                getNewAverageDailyMeasuresRealtime()) { measureData: ArrayList<AverageDailyMeasureData> ->
-                    //add to the end of array remote new measures
-                    dailyLoaded.addAll(measureData)
-                    observable.postValue(dailyLoaded)
-                    //Save new measures to local database as new
-                    insertNewAverageDailyMeasuresToDB(measureData)
-                }
-        }
-        getAllAverageDailyMeasuresDB()
-        return observable
-    }
-
-     */
-
     /**
      *
      * <font color="teal">
@@ -476,64 +383,6 @@ class MainViewModel @Inject constructor(
      * (from database and from realtime)
     </font> */
 
-    /*
-    private fun insertNewAverageMonthlyMeasuresToDB(measureDataList: List<AverageMonthlyMeasureData?>?) {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (measureDataList != null) {
-                val measureDataListNotNull = measureDataList.filterNotNull()
-                databaseRepository.saveAverageMonthlyMeasures(ArrayList(measureDataListNotNull))
-            }
-        }
-    }
-
-    private val _allAverageMonthlyMeasuresDB =  MutableLiveData<ArrayList<AverageMonthlyMeasureData>>()
-    val allAverageMonthlyMeasuresDB: LiveData<ArrayList<AverageMonthlyMeasureData>> = _allAverageMonthlyMeasuresDB
-    private fun getAllAverageMonthlyMeasuresDB() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = databaseRepository.getAllAverageMonthlyMeasures()
-            if (response.isSuccess && response.dataValue != null) {
-                _allAverageMonthlyMeasuresDB.postValue(response.dataValue)
-            }
-        }
-    }
-     */
-
-    /*
-    fun getAverageMonthlyMeasures(): LiveData<ArrayList<AverageMonthlyMeasureData>> {
-        val observable: MediatorLiveData<ArrayList<AverageMonthlyMeasureData>> =
-            MediatorLiveData<ArrayList<AverageMonthlyMeasureData>>()
-        if (areMonthlyDBLoaded && areMonthlyFirestoreDownloaded) {
-            observable.setValue(monthlyLoaded)
-        } else {
-            // Get local measures
-            observable.addSource(
-                allAverageMonthlyMeasuresDB
-            ) { measureData: ArrayList<AverageMonthlyMeasureData> ->
-                //add at beginning of array local measures
-                Log.d(
-                    TAG,
-                    "monthly average from DB received: size: " + measureData.size
-                )
-                monthlyLoaded.addAll(0, measureData)
-                observable.postValue(monthlyLoaded)
-            }
-            // Get remote measures
-            observable.addSource(
-                getNewAverageMonthlyMeasuresRealtime()
-            ) { measureData: ArrayList<AverageMonthlyMeasureData> ->
-                //add to the end of array remote new measures
-                monthlyLoaded.addAll(measureData)
-                observable.postValue(monthlyLoaded)
-                //Save new measures to local database as new
-                insertNewAverageMonthlyMeasuresToDB(measureData)
-            }
-        }
-        getAllAverageMonthlyMeasuresDB()
-        return observable
-    }
-     */
-
-
     fun checkNewMeasures() {
         val newMeasures = SharedPrefUtil(appContext).getBoolean(PREF_NEW_MEASURE, false)
         if (newMeasures) {
@@ -543,64 +392,8 @@ class MainViewModel @Inject constructor(
 
     var tutorialComingFromHome: Boolean = true
 
-
     companion object {
         val TAG = MainViewModel::class.simpleName
     }
 }
 
-
-/*
-    private fun getNewAverageDailyMeasuresRealtime(): LiveData<ArrayList<AverageDailyMeasureData>> {
-        val lastDateCheckRealtimeDaily: String? =
-            InternalStorage.readLastRealtimeDailyDateOnInternalStorage(appContext)
-        Log.d(TAG, "lastDateCheckRealtimeDaily: $lastDateCheckRealtimeDaily"
-        )
-        //2.- update last read measure (internal storage)
-        val dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
-        val now = dtf.format(LocalDateTime.now())
-        InternalStorage.writeLastRealtimeDailyDateOnInternalStorage(
-            appContext,
-            now
-        )
-        Log.d(TAG, "now: $now")
-        val userId = userRepository.uuid ?: throw Exception("no user")
-        // if there is a date saved in Shared Preferences -> download only from last date check
-        return if (lastDateCheckRealtimeDaily != null) {
-            //download only the NEW measures
-            Log.d(TAG, "download only NEW")
-            realtime.getAllAverageDailyMeasuresAfterDate(lastDateCheckRealtimeDaily, now, userId)
-        } else {
-            realtime.getAllAverageDailyMeasures(userId)
-        }
-    }
-
-
-    private fun getNewAverageMonthlyMeasuresRealtime(): LiveData<ArrayList<AverageMonthlyMeasureData>> {
-
-        val lastDateCheckRealtimeMonthly: String? =
-            InternalStorage.readLastRealtimeMonthlyDateOnInternalStorage(appContext)
-        Log.d(TAG, "lastDateCheckRealtimeMonthly: $lastDateCheckRealtimeMonthly")
-        //2.- update last read measure (internal storage)
-        val dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
-        val now = dtf.format(LocalDateTime.now())
-        InternalStorage.writeLastRealtimeMonthlyDateOnInternalStorage(
-            appContext,
-            now
-        )
-        Log.d(TAG, "now: $now")
-        val userId = userRepository.uuid ?: throw Exception("no user")
-        // if there is a date saved in Shared Preferences -> download only from last date check
-        return if (lastDateCheckRealtimeMonthly != null) {
-            //download only the NEW measures
-            Log.d(TAG, "download only NEW")
-            realtime.getAllAverageMonthlyMeasuresAfterDate(
-                lastDateCheckRealtimeMonthly,
-                now,
-                userId
-            )
-        } else {
-            realtime.getAllAverageMonthlyMeasures(userId)
-        }
-    }
- */

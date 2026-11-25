@@ -47,15 +47,6 @@ fun AnimatedCircularProgressIndicator(
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         val animateFloat = remember { (currentValue ?: 0) / maxValue.toFloat() }
-        /*
-        val animateFloat = remember { Animatable(0f) }
-        LaunchedEffect(animateFloat) {
-            animateFloat.animateTo(
-                targetValue = currentValue / maxValue.toFloat(),
-                animationSpec = tween(durationMillis = 2000, easing = FastOutSlowInEasing)
-            )
-        }
-        */
 
         if (currentValue != null) {
             Canvas(
@@ -73,7 +64,6 @@ fun AnimatedCircularProgressIndicator(
                     style = stroke,
                     radius = size.minDimension / 2.0f - diameterOffset
                 )
-                //drawCircularProgressIndicator(startAngle, sweep, progressIndicatorColor, stroke)
                 rotate(270f, Offset(size.width / 2, size.height / 2)) {
                     drawCircularProgressIndicator(
                         startAngle + 90,
@@ -90,15 +80,6 @@ fun AnimatedCircularProgressIndicator(
                         stroke
                     )
                 }
-                /*
-            if (currentValue == maxValue) {
-                drawCircle(
-                    color = completedColor,
-                    style = stroke,
-                    radius = size.minDimension / 2.0f - diameterOffset
-                )
-            }
-            */
             }
         }
     }
@@ -116,13 +97,6 @@ private fun DrawScope.drawCircularProgressIndicator(
     val diameterOffset = stroke.width / 2
     val arcDimen = size.width - 2 * diameterOffset
     drawArc(
-        //color = color,
-        /*brush = Brush.sweepGradient( // !!! that what
-            0f to Color(0x00EF7B7B),
-            0.9f to Color(0xFFEF7B7B),
-            0.91f to Color(0x00EF7B7B), // there was a problem with start of the gradient, maybe there way to solve it better
-            1f to Color(0x00EF7B7B)
-        ),*/
         brush = Brush.sweepGradient(
             0f to colorList[0],
             0.25f to colorList[1],
@@ -130,7 +104,6 @@ private fun DrawScope.drawCircularProgressIndicator(
             0.75f to colorList[3],
             0.98f to colorList[4],
             1f to colorList[0],
-            //center = Offset(size.width / 2, size.height / 2),
         ),
         startAngle = startAngle,
         sweepAngle = sweep,
@@ -156,8 +129,6 @@ private fun DrawScope.drawBallProgressIndicator(
     DebugLog.d("PB") { "Progress Bar color sweep: $sweep _ lerp: ${sweep / 360f}" }
     val finalColor = when (val percentage = (sweep) / 360f)
     {
-        //in 0.0f..0.2f -> lerp(colorList[0], colorList[1], percentage)
-        //in 0.2f..0.4f -> lerp(colorList[1], colorList[2], percentage)
         in 0f..0.25f ->  {
             val lerp = interpolate(0.0f, 0.25f, percentage)
             val fc = lerp(colorList[0], colorList[1], lerp)
@@ -196,7 +167,6 @@ private fun DrawScope.drawBallProgressIndicator(
             0.96f to colorList[4],
             0.99f to colorList[4],
             1f to colorList[0],
-            //center = Offset(size.width / 2, size.height / 2),
         ),
          */
         radius = stroke.width,
@@ -204,8 +174,6 @@ private fun DrawScope.drawBallProgressIndicator(
             diameterOffset + arcDimen / 2 + (arcDimen / 2) * Math.cos(Math.toRadians((startAngle + sweep).toDouble())).toFloat(),
             diameterOffset + arcDimen / 2 + (arcDimen / 2) * Math.sin(Math.toRadians((startAngle + sweep).toDouble())).toFloat()
         )
-        //style = style,
-        //radius = size.minDimension / 2.0f - diameterOffset
     )
 }
 
