@@ -42,38 +42,38 @@ data class RawMeasureData(
     @get:PropertyName("Prediction_Precision") @set:PropertyName("Prediction_Precision")
     var precision: MeasurePrecision? = null, //String
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var xyz: IntArray,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var minxyz: IntArray,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var maxxyz: IntArray,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var stdxyz: IntArray,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var waterXYZ: IntArray,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var colorUrineRGB //[int,int,int]
             : IntArray,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var a11Band: IntArray,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var min11Band: IntArray,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var max11Band: IntArray,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var std11Band: IntArray,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var water11Band: IntArray
     ) : Comparable<RawMeasureData> {
 

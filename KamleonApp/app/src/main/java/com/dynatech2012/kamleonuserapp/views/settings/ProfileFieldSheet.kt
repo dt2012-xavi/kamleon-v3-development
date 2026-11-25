@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,7 +48,6 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.dynatech2012.kamleonuserapp.R
@@ -440,7 +438,7 @@ class ProfileFieldSheet : BottomSheetDialogFragment() {
             if (response.isSuccess) {
                 val message = if (field == ProfileField.PIN) R.string.dialog_reset_pin_success_description
                 else R.string.dialog_saved_text
-                parentFragmentManager.setFragmentResult(RESULT_SAVED, bundleOf(RESULT_MESSAGE to message))
+                parentFragmentManager.setFragmentResult(RESULT_SAVED, Bundle().apply { putInt(RESULT_MESSAGE, message) })
                 dismissAllowingStateLoss()
             } else {
                 showActionFailedSheet(response.error)
@@ -455,7 +453,7 @@ class ProfileFieldSheet : BottomSheetDialogFragment() {
         private const val ARG_FIELD = "profile_field"
 
         fun newInstance(field: ProfileField) = ProfileFieldSheet().apply {
-            arguments = bundleOf(ARG_FIELD to field.name)
+            arguments = Bundle().apply { putString(ARG_FIELD, field.name) }
         }
     }
 }

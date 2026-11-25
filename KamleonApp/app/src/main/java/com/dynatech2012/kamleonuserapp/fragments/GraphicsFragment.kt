@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -68,7 +67,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         const val ARG_GRAPH_TYPE = "graphType"
 
         /** The arguments that open the graph of [type]. */
-        fun argsFor(type: KamleonGraphDataType): Bundle = bundleOf(ARG_GRAPH_TYPE to type.name)
+        fun argsFor(type: KamleonGraphDataType): Bundle = Bundle().apply { putString(ARG_GRAPH_TYPE, type.name) }
 
         /** The graph [args] ask for; hydration when they name none or an unknown one. */
         fun graphTypeOf(args: Bundle?): KamleonGraphDataType =

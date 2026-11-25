@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.views
 
+import coil.annotation.ExperimentalCoilApi
 import android.view.View
 import android.widget.ImageView
 import coil.ImageLoader
@@ -42,6 +43,7 @@ internal fun ImageView.showProfileImage(url: String?, loader: ImageLoader) {
  * The photo is always uploaded to the same storage path, so after a new upload the old copy may still be
  * cached under an unchanged address. Forgetting what is cached makes the next load fetch the new one.
  */
+@OptIn(ExperimentalCoilApi::class)
 internal fun ImageLoader.forgetCachedImages(url: String?) {
     memoryCache?.clear()
     if (url != null) diskCache?.remove(url)

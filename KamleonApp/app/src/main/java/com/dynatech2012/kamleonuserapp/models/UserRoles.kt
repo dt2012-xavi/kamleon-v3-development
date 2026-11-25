@@ -5,7 +5,7 @@ import com.dynatech2012.kamleonuserapp.R
 import java.text.Collator
 
 /** The roles a user can hold, in the order they are listed inside an organization. */
-enum class RoleKind(val raw: List<String>, @StringRes val label: Int) {
+enum class RoleKind(val raw: List<String>, @param:StringRes val label: Int) {
     ORG_ADMIN(listOf("orgstaff_admin"), R.string.role_org_admin),
     CENTER_ADMIN(listOf("centerstaff_owner"), R.string.role_center_admin),
     CENTER_ADMIN_RESTRICTED(listOf("centerstaff_admin_restricted"), R.string.role_center_admin_restricted),

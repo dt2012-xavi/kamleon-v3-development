@@ -43,7 +43,7 @@ class CloudFunctions(
         expectedMessage: String?
     ): ResponseNullable<Nothing> = gate.safeCallNullable(CallKind.Action) {
         val result = functions.getHttpsCallable(name).call(body).await()
-        val message = (result.data as? HashMap<String, String>)?.get("message")
+        val message = (result.data as? Map<*, *>)?.get("message")
         if (expectedMessage != null && message != expectedMessage) throw Exception("$message")
         Timber.d("Email function %s answered", name)
     }

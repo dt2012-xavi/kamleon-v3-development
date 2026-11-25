@@ -13,7 +13,7 @@ import kotlinx.coroutines.withTimeoutOrNull
  * signs in next on this phone does not inherit it.
  */
 class SessionCleaner @Inject constructor(
-    @ApplicationContext private val appContext: Context,
+    @param:ApplicationContext private val appContext: Context,
     private val firestoreRepo: FirestoreDataSource,
     private val databaseRepository: DatabaseDataSource
 ) {

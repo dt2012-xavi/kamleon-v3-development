@@ -322,11 +322,11 @@ private val PASSWORD_ERRORS = setOf(
 )
 
 private class RegisterFieldErrors(
-    @StringRes val firstName: Int?,
-    @StringRes val lastName: Int?,
-    @StringRes val email: Int?,
-    @StringRes val password: Int?,
-    @StringRes val repeat: Int?
+    @param:StringRes val firstName: Int?,
+    @param:StringRes val lastName: Int?,
+    @param:StringRes val email: Int?,
+    @param:StringRes val password: Int?,
+    @param:StringRes val repeat: Int?
 )
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 740)

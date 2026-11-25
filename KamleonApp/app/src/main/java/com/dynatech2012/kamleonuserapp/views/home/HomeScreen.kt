@@ -289,9 +289,9 @@ private fun HomeEmptyState(
 
 /** The colors, and the verdict, a state of Home is shown with. */
 private class HomeLook(
-    @ColorRes val start: Int,
-    @ColorRes val end: Int,
-    @StringRes val message: Int,
+    @param:ColorRes val start: Int,
+    @param:ColorRes val end: Int,
+    @param:StringRes val message: Int,
     /** Light text on a strong gradient; dark text on the grey ones. */
     val lightText: Boolean,
 )

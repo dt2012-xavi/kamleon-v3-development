@@ -1,5 +1,7 @@
 package com.dynatech2012.kamleonuserapp.views.graph.data
 
+import com.dynatech2012.kamleonuserapp.extensions.monthIndex
+import com.dynatech2012.kamleonuserapp.extensions.dayOfWeekIndex
 import com.dynatech2012.kamleonuserapp.database.AveragesData
 import com.dynatech2012.kamleonuserapp.extensions.addDays
 import com.dynatech2012.kamleonuserapp.extensions.addMonths
@@ -15,9 +17,9 @@ fun KamleonGraphBarDrawData.barLabel(index: Int): String {
     val startDate = startDate()
     return when (mode) {
         KamleonGraphViewMode.Daily -> names.hour(index)
-        KamleonGraphViewMode.Weekly -> names.days[startDate.addDays(index).day]
+        KamleonGraphViewMode.Weekly -> names.days[startDate.addDays(index).dayOfWeekIndex]
         KamleonGraphViewMode.Monthly -> startDate.addDays(index).formatDate("dd MMM, yyyy")
-        KamleonGraphViewMode.Yearly -> names.months[startDate.addMonths(index).month]
+        KamleonGraphViewMode.Yearly -> names.months[startDate.addMonths(index).monthIndex]
     }
 }
 

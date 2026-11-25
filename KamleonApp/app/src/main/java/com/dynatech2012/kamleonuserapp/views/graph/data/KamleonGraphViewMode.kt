@@ -1,5 +1,8 @@
 package com.dynatech2012.kamleonuserapp.views.graph.data
 
+import com.dynatech2012.kamleonuserapp.extensions.dayOfMonth
+import com.dynatech2012.kamleonuserapp.extensions.monthIndex
+import com.dynatech2012.kamleonuserapp.extensions.dayOfWeekIndex
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.extensions.addDays
 import com.dynatech2012.kamleonuserapp.extensions.addMonths
@@ -32,16 +35,16 @@ enum class KamleonGraphViewMode(val identifier: String) {
         } else if (this == Monthly) {
             // it begins with 1 so that it starts with the second one, the last is not printed
             for (step in 1 until (steps - 1) step 2 ) {
-                aryRet.add(KamleonGraphAxisLabelItem(step.toDouble(), (startDate.addDays(step).date).toString()))
+                aryRet.add(KamleonGraphAxisLabelItem(step.toDouble(), startDate.addDays(step).dayOfMonth.toString()))
             }
         } else if (this == Weekly) {
             DebugLog.d("LLL") { "Weekly.." }
             for (step in names.days.indices) {
-                aryRet.add(KamleonGraphAxisLabelItem(step.toDouble(), names.days[startDate.addDays(step).day]))
+                aryRet.add(KamleonGraphAxisLabelItem(step.toDouble(), names.days[startDate.addDays(step).dayOfWeekIndex]))
             }
         } else if (this == Yearly) {
             for (step in names.months.indices) {
-                aryRet.add(KamleonGraphAxisLabelItem(step.toDouble(), names.months[startDate.addMonths(step).month]))
+                aryRet.add(KamleonGraphAxisLabelItem(step.toDouble(), names.months[startDate.addMonths(step).monthIndex]))
             }
         }
 

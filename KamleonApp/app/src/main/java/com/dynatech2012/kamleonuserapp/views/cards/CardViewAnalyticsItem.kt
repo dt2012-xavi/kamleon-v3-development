@@ -125,7 +125,7 @@ fun CardViewAnalyticsItem(
     }
 }
 
-enum class AnalyticType(@StringRes val title: Int, @PluralsRes val valueDescription: Int) {
+enum class AnalyticType(@param:StringRes val title: Int, @param:PluralsRes val valueDescription: Int) {
     HYDRATION(R.string.analytic_metric_hydration, R.plurals.analytic_value_hydration),
     ELECTROLYTE(R.string.analytic_metric_electrolytes, R.plurals.analytic_value_electrolytes),
     VOLUME(R.string.analytic_metric_volume, R.plurals.analytic_value_volume),

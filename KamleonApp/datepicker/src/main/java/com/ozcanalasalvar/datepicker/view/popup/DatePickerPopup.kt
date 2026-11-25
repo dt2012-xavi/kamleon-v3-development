@@ -2,7 +2,6 @@ package com.ozcanalasalvar.datepicker.view.popup
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -107,12 +106,6 @@ class DatePickerPopup(private val context: Context) : BottomSheetDialogFragment(
 
         fun darkModeEnabled(darkModeEnabled: Boolean): Builder {
             datePicker!!.setDarkModeEnabled(darkModeEnabled)
-            return this
-        }
-
-        @Deprecated("")
-        fun pickerMode(appearanceMode: Int): Builder {
-            datePicker!!.setPickerMode(appearanceMode)
             return this
         }
 

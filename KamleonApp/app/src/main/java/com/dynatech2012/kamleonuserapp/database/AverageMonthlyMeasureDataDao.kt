@@ -16,17 +16,11 @@ interface AverageMonthlyMeasureDataDao {
     @Query("DELETE FROM AverageMonthlyMeasureData WHERE month < :month")
     suspend fun deleteAverageMonthlyMeasuresFromMonth(month: Int)
 
-    @Query("SELECT * FROM AverageMonthlyMeasureData WHERE month <= :month")
-    suspend fun getAverageMonthlyMeasuresFromMonth(month: Int): List<AverageMonthlyMeasureData>?
-
     @Query("DELETE FROM AverageMonthlyMeasureData WHERE year < :year")
     suspend fun deleteAverageMonthlyMeasuresFromYear(year: Int)
 
-    @Query("SELECT * FROM AverageMonthlyMeasureData WHERE year <= :year")
-    suspend fun getAverageMonthlyMeasuresFromYear(year: Int): List<AverageMonthlyMeasureData?>?
-
     @Query("SELECT * FROM AverageMonthlyMeasureData")
-    suspend fun getAllAverageMonthlyMeasures(): List<AverageMonthlyMeasureData>?
+    suspend fun getAllAverageMonthlyMeasures(): List<AverageMonthlyMeasureData>
 
     @Query("DELETE FROM AverageMonthlyMeasureData")
     suspend fun deleteAllAverageMonthlyMeasures()

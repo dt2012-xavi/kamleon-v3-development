@@ -37,11 +37,8 @@ class DatabaseDataSource @Inject constructor(
     {
         // get measures from database
         val data = measureDataDao.getAllMeasures()
-        DebugLog.d(TAG) { "measures data size: " + data?.size }
-        return if (data != null)
-            Response.Success(ArrayList(data))
-        else
-            Response.Success(ArrayList())
+        DebugLog.d(TAG) { "measures data size: " + data.size }
+        return Response.Success(ArrayList(data))
     }
 
     /**
@@ -56,11 +53,7 @@ class DatabaseDataSource @Inject constructor(
     }
 
     suspend fun getAllAverageDailyMeasures(): Response<ArrayList<AverageDailyMeasureData>> {
-        val data = averageDailyMeasureDataDao.getAllAverageDailyMeasures()
-        return if (data != null)
-            Response.Success(ArrayList(data))
-        else
-            Response.Success(ArrayList())
+        return Response.Success(ArrayList(averageDailyMeasureDataDao.getAllAverageDailyMeasures()))
     }
 
     /**
@@ -75,11 +68,7 @@ class DatabaseDataSource @Inject constructor(
     }
 
     suspend fun getAllAverageMonthlyMeasures(): Response<ArrayList<AverageMonthlyMeasureData>> {
-        val data = averageMonthlyMeasureDataDao.getAllAverageMonthlyMeasures()
-        return if (data != null)
-            Response.Success(ArrayList(data))
-        else
-            Response.Success(ArrayList())
+        return Response.Success(ArrayList(averageMonthlyMeasureDataDao.getAllAverageMonthlyMeasures()))
     }
 
     suspend fun deleteAllMeasures() {

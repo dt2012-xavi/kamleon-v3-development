@@ -1,11 +1,12 @@
 package com.dynatech2012.kamleonuserapp.views.cards
 
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
+import androidx.compose.ui.graphics.nativePaint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -42,7 +43,7 @@ fun Modifier.coloredShadow(
         val transparent = color.copy(alpha= 0f).toArgb()
         this.drawIntoCanvas {
             val paint = Paint()
-            val frameworkPaint = paint.asFrameworkPaint()
+            val frameworkPaint = paint.nativePaint
             frameworkPaint.color = transparent
             frameworkPaint.setShadowLayer(
                 shadowRadius.toPx(),
@@ -135,7 +136,7 @@ fun ShadowBox(
     Layout(
         {
             ClippedShadow(elevation, shape, modifier)
-            CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
                 content()
             }
         },

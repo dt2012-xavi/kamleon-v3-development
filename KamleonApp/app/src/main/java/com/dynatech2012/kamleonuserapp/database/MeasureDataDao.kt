@@ -16,11 +16,8 @@ interface MeasureDataDao {
     @Query("DELETE FROM MeasureData WHERE analysisDate < :analysisDate")
     suspend fun deleteMeasuresFromDate(analysisDate: Long)
 
-    @Query("SELECT * FROM MeasureData WHERE analysisDate <= :date")
-    suspend fun getMeasuresFromDate(date: Long): List<MeasureData>?
-
     @Query("SELECT * FROM MeasureData ORDER BY analysisDate DESC")
-    suspend fun getAllMeasures(): List<MeasureData>?
+    suspend fun getAllMeasures(): List<MeasureData>
 
     @Query("DELETE FROM MeasureData")
     suspend fun deleteAllMeasures()

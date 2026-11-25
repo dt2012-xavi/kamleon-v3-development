@@ -9,17 +9,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.util.DisplayMetrics
-import android.view.View
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -31,7 +27,6 @@ import com.dynatech2012.kamleonuserapp.base.BaseActivity
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.PUSH_NOTIFICATION
 import com.dynatech2012.kamleonuserapp.databinding.ActivityMainBinding
-import com.dynatech2012.kamleonuserapp.extensions.px
 import com.dynatech2012.kamleonuserapp.models.QRResponse
 import com.dynatech2012.kamleonuserapp.utils.NotificationAsk
 import com.dynatech2012.kamleonuserapp.utils.notificationAskFor
@@ -381,24 +376,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), ScanLinkSheet.Host {
         root.post {
             navHost.navController.addOnDestinationChangedListener { _, _, _ -> ViewCompat.requestApplyInsets(root) }
         }
-    }
-
-    private var exclusionRects: MutableList<Rect> = ArrayList()
-
-    fun updateGestureExclusion(activity: AppCompatActivity) {
-        if (Build.VERSION.SDK_INT < 29) return
-        exclusionRects.clear()
-        val rect = Rect(0, 0, 150.px, getScreenHeight(activity))
-        exclusionRects.add(rect)
-        binding.root.systemGestureExclusionRects = exclusionRects
-        activity.findViewById<View>(R.id.content).systemGestureExclusionRects =
-            exclusionRects
-    }
-
-    private fun getScreenHeight(activity: AppCompatActivity): Int {
-        val displayMetrics = DisplayMetrics()
-        activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics.heightPixels
     }
 
 }

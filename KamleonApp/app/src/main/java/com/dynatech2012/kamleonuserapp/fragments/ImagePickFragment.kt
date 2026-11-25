@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -44,12 +43,12 @@ class ImagePickFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.layoutLibrary.setOnClickListener {
             activity?.supportFragmentManager?.setFragmentResult(
-                Constants.PICK_IMAGE, bundleOf(Constants.PICK_IMAGE_BUNDLE to true)
+                Constants.PICK_IMAGE, Bundle().apply { putBoolean(Constants.PICK_IMAGE_BUNDLE, true) }
             )
         }
         binding.layoutCamera.setOnClickListener {
             activity?.supportFragmentManager?.setFragmentResult(
-                Constants.TAKE_IMAGE, bundleOf(Constants.TAKE_IMAGE_BUNDLE to true)
+                Constants.TAKE_IMAGE, Bundle().apply { putBoolean(Constants.TAKE_IMAGE_BUNDLE, true) }
             )
         }
         binding.layoutRemove.setOnClickListener { viewModel.removeUserImage() }

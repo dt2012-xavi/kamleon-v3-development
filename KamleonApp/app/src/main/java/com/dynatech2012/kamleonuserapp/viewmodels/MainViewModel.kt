@@ -50,7 +50,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    @ApplicationContext private val appContext: Context,
+    @param:ApplicationContext private val appContext: Context,
     private val userRepository: UserRepository,
     private val firestoreRepo: FirestoreDataSource,
     private val measuresRepository: MeasuresRepository,

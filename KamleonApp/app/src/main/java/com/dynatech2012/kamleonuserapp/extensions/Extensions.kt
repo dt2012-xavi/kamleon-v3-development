@@ -244,3 +244,16 @@ val Date.formatTime: String
 
 val Int.dp: Int get() = (this / Resources.getSystem().displayMetrics.density).toInt()
 val Int.px: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()
+
+
+/** Day of the week as the old Date.getDay(): 0 is Sunday. */
+val Date.dayOfWeekIndex: Int
+    get() = Calendar.getInstance().apply { time = this@dayOfWeekIndex }.get(Calendar.DAY_OF_WEEK) - 1
+
+/** Month as the old Date.getMonth(): 0 is January. */
+val Date.monthIndex: Int
+    get() = Calendar.getInstance().apply { time = this@monthIndex }.get(Calendar.MONTH)
+
+/** Day of the month as the old Date.getDate(): 1 to 31. */
+val Date.dayOfMonth: Int
+    get() = Calendar.getInstance().apply { time = this@dayOfMonth }.get(Calendar.DAY_OF_MONTH)

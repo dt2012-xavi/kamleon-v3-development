@@ -17,7 +17,7 @@ import timber.log.Timber
 
 @HiltViewModel
 class ForgotPwdViewModel @Inject constructor(
-    @ApplicationContext private val appContext: Context,
+    @param:ApplicationContext private val appContext: Context,
     private val cloudFunctions: CloudFunctions
 
 ) : ViewModel() {

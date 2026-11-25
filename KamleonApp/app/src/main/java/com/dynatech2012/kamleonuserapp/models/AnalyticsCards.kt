@@ -10,9 +10,9 @@ data class AnalyticsCard(
     val type: AnalyticType,
     val value: Int?,
     val isPrecise: Boolean,
-    @StringRes val subtitle: Int,
+    @param:StringRes val subtitle: Int,
     /** Null when there is nothing to explain (no reading). */
-    @StringRes val description: Int?,
+    @param:StringRes val description: Int?,
     /** The electrolyte band, which picks the gauge colour; null on the other cards. */
     val electrolyteLevel: ElectrolyteLevel? = null,
 )

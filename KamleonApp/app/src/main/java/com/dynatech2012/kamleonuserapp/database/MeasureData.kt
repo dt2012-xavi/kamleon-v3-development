@@ -54,38 +54,38 @@ data class MeasureData (
     var type: MeasureType? = null, //String
     var precision: MeasurePrecision? = null, //String
 
-    @TypeConverters( IntVectorTypeConverter::class )
+    @param:TypeConverters( IntVectorTypeConverter::class )
     var xyz: IntArray? = null, //ArrayList<Integer> xyz = new ArrayList<Integer>();
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var minxyz: IntArray? = null,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var maxxyz: IntArray? = null,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var stdxyz: IntArray? = null,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var waterXYZ: IntArray? = null,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var colorUrineRGB //[int,int,int]
             : IntArray? = null,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var a11Band: IntArray? = null,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var min11Band: IntArray? = null,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var max11Band: IntArray? = null,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var std11Band: IntArray? = null,
 
-    @TypeConverters(IntVectorTypeConverter::class)
+    @param:TypeConverters(IntVectorTypeConverter::class)
     var water11Band //[int,...,int]
             : IntArray? = null,
     override var timestamp: Long,
@@ -242,9 +242,7 @@ data class MeasureData (
 
     //Sort by date a list of MeasureData (ArrayList<MeasureData> measuresData)
     override fun compareTo(other: MeasureData): Int {
-        val date1 = Date(analysisDate)
-        val date2 = Date(other.analysisDate)
-        return if (date1 == null || date2 == null) 0 else date1.compareTo(date2)
+        return Date(analysisDate).compareTo(Date(other.analysisDate))
     }
 
     override fun toString(): String {

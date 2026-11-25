@@ -11,7 +11,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.dynatech2012.kamleonuserapp.R
@@ -149,7 +148,7 @@ class PasswordSheet : BottomSheetDialogFragment() {
             if (done) {
                 parentFragmentManager.setFragmentResult(
                     ProfileFieldSheet.RESULT_SAVED,
-                    bundleOf(ProfileFieldSheet.RESULT_MESSAGE to message)
+                    Bundle().apply { putInt(ProfileFieldSheet.RESULT_MESSAGE, message) }
                 )
                 dismissAllowingStateLoss()
             }

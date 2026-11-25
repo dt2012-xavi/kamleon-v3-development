@@ -51,7 +51,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -82,7 +81,7 @@ data class SheetSpec(
     val destructive: Boolean = false,
     val dismissible: Boolean = true,
     val linkUrl: String? = null,
-    @DrawableRes val image: Int? = null
+    @param:DrawableRes val image: Int? = null
 ) {
     internal fun toBundle(requestKey: String) = Bundle().apply {
         putString(ARG_KEY, requestKey)
@@ -357,7 +356,7 @@ class KamleonSheet : BottomSheetDialogFragment() {
     private fun report(result: SheetResult): Boolean {
         if (delivered) return false
         delivered = true
-        parentFragmentManager.setFragmentResult(requestKey, bundleOf(RESULT to result.name))
+        parentFragmentManager.setFragmentResult(requestKey, Bundle().apply { putString(RESULT, result.name) })
         return true
     }
 
