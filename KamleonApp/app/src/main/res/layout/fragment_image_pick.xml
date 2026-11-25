@@ -1,130 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/bg_bottom_sheet_fragment"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_sheet_light"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingHorizontal="24dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="24dp"
     tools:context=".fragments.ImagePickFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="48dp"
-        android:paddingTop="12dp"
-        android:gravity="center"
-        android:paddingBottom="36dp"
-        android:orientation="vertical">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/img_bottom_sheet_line"/>
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:background="@drawable/bg_sheet_handle" />
+
+    <!-- The avatar preview; the ring turns while the new photo uploads. -->
+    <FrameLayout
+        android:layout_width="112dp"
+        android:layout_height="112dp"
+        android:layout_marginTop="16dp">
+
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="100dp"
-            android:layout_margin="10dp"
             android:id="@+id/cv_settings_pick_profile"
-            android:elevation="8dp"
-            app:cardBackgroundColor="?attr/colorSurface">
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="center"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="48dp"
+            app:cardElevation="4dp">
+
             <TextView
                 android:id="@+id/tv_settings_pick_profile_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="@string/default_value"
                 android:textAppearance="@style/TextAppearance.Kamleon.Headline5"
-                android:textColor="@color/kamleon_secondary_grey_60"
-                android:layout_gravity="center"/>
+                android:textColor="@color/kamleon_secondary_grey_60" />
+
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="96dp"
-                android:layout_height="96dp"
                 android:id="@+id/iv_settings_pick_profile_image"
-                android:visibility="invisible"/>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:visibility="invisible" />
         </androidx.cardview.widget.CardView>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="16dp"
-            android:background="@color/color_fa"/>
-        <LinearLayout
-            android:layout_width="match_parent"
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/pi_settings_pick_upload"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/layoutLibrary"
-            android:paddingHorizontal="10dp"
-            android:gravity="center"
-            android:paddingVertical="8dp"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
+            android:layout_gravity="center"
+            android:contentDescription="@string/image_pick_uploading"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:indicatorColor="@color/kamleon_blue"
+            app:indicatorSize="108dp"
+            app:trackThickness="3dp"
+            tools:visibility="visible" />
+    </FrameLayout>
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                app:tint="@color/color_fa"
-                android:src="@drawable/ic_photo"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/CircularRegularFont"
-                android:textSize="@dimen/ts_16"
-                android:layout_marginStart="8dp"
-                android:text="@string/image_pick_gallery"
-                android:textColor="@color/color_fa"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/kamleon_secondary_grey_40" />
 
-        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layoutLibrary"
+        style="@style/Widget.Kamleon.SheetRow">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/layoutCamera"
-            android:paddingHorizontal="10dp"
-            android:gravity="center"
-            android:paddingVertical="8dp"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
+        <ImageView
+            style="@style/Widget.Kamleon.SheetRowIcon"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_photo" />
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                app:tint="@color/color_fa"
-                android:src="@drawable/ic_camera"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/CircularRegularFont"
-                android:textSize="@dimen/ts_16"
-                android:layout_marginStart="8dp"
-                android:text="@string/image_pick_camera"
-                android:textColor="@color/color_fa"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/layoutRemove"
-            android:paddingHorizontal="10dp"
-            android:gravity="center"
-            android:paddingVertical="8dp"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                app:tint="@color/color_red"
-                android:src="@drawable/ic_trash"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/CircularRegularFont"
-                android:textSize="@dimen/ts_16"
-                android:layout_marginStart="8dp"
-                android:text="@string/image_pick_remove"
-                android:textColor="@color/color_red"/>
-
-        </LinearLayout>
-
+        <TextView
+            style="@style/Widget.Kamleon.SheetRowText"
+            android:text="@string/image_pick_gallery" />
     </LinearLayout>
 
-</FrameLayout>
+    <LinearLayout
+        android:id="@+id/layoutCamera"
+        style="@style/Widget.Kamleon.SheetRow">
+
+        <ImageView
+            style="@style/Widget.Kamleon.SheetRowIcon"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_camera" />
+
+        <TextView
+            style="@style/Widget.Kamleon.SheetRowText"
+            android:text="@string/image_pick_camera" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutRemove"
+        style="@style/Widget.Kamleon.SheetRow"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            style="@style/Widget.Kamleon.SheetRowIcon"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_trash"
+            app:tint="@color/color_red" />
+
+        <TextView
+            style="@style/Widget.Kamleon.SheetRowText"
+            android:text="@string/image_pick_remove"
+            android:textColor="@color/color_red" />
+    </LinearLayout>
+
+</LinearLayout>

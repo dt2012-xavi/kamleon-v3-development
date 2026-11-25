@@ -145,17 +145,15 @@
 
     <!-- Settings -->
     <string name="setting_button_save">Save</string>
-    <string name="setting_option_account">ACCOUNT</string>
-    <string name="setting_option_pref">PREFERENCES</string>
-    <string name="setting_option_logout">LOG OUT</string>
+    <string name="setting_button_logout">Log out</string>
 
-    <string name="setting_label_acc_data">ACCOUNT DATA</string>
+    <string name="setting_label_acc_data">SIGN-IN &amp; SECURITY</string>
     <string name="setting_label_surname">SURNAME</string>
     <string name="setting_label_name">NAME</string>
     <string name="setting_label_email">E-MAIL</string>
     <string name="setting_label_password">PASSWORD</string>
     <string name="setting_label_pin">PIN</string>
-    <string name="setting_label_info">INFORMATION</string>
+    <string name="setting_label_info">HELP &amp; LEGAL</string>
     <string name="setting_label_help">HELP</string>
     <string name="setting_label_dsp">INFORMATION ABOUT CONSENT</string>
     <string name="setting_label_tos">TERMS AND CONDITIONS</string>
@@ -170,7 +168,7 @@
     <string name="setting_label_center">CENTER</string>
     <string name="setting_label_team">TEAM</string>
 
-    <string name="setting_label_user_data">USER DATA</string>
+    <string name="setting_label_user_data">PERSONAL DATA</string>
     <string name="setting_label_user_gender">GENDER</string>
     <string name="setting_label_user_weight">WEIGHT</string>
     <string name="setting_label_user_height">HEIGHT</string>
@@ -198,6 +196,8 @@
     <string name="image_pick_gallery">Choose from library</string>
     <string name="image_pick_camera">Take photo</string>
     <string name="image_pick_remove">Remove current picture</string>
+    <string name="image_pick_uploading">Uploading photo</string>
+    <string name="setting_change_photo">Change profile photo</string>
 
     <!-- Email -->
     <string name="email_email">E-MAIL</string>

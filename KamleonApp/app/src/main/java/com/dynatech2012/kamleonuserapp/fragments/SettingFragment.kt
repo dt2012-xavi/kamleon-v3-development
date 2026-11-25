@@ -51,7 +51,6 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         ActivitySettingBinding.inflate(layoutInflater)
 
     private var dateFragment: DatePickerFragment? = null
-    private var isSettingAccount: Boolean = true
     private val viewModel: MainViewModel by activityViewModels()
     private var dataTypeToChange: String? = null
 
@@ -98,7 +97,6 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
 
     override fun initView() {
         DebugLog.d(TAG) { "init view" }
-        updateOptionViewUI()
 
         binding.etAccName.imeOptions = EditorInfo.IME_ACTION_DONE
         binding.etAccSurName.imeOptions = EditorInfo.IME_ACTION_DONE
@@ -129,21 +127,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     }
 
     override fun initEvent() {
-        binding.llSettingAccount.setOnClickListener {
-            if (!isSettingAccount) {
-                isSettingAccount = true
-                updateOptionViewUI()
-            }
-        }
-
-        binding.llSettingPrefs.setOnClickListener {
-            if (isSettingAccount) {
-                isSettingAccount = false
-                updateOptionViewUI()
-            }
-        }
-
-        binding.llSettingLogout.setOnClickListener {
+        binding.btnLogout.setOnClickListener {
             showLogoutDialog()
         }
 
@@ -186,32 +170,6 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
                 requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
             val navController = navHostFragment.navController
             navController.navigate(R.id.action_settingFragment_to_deleteFragment)
-        }
-    }
-
-    private fun updateOptionViewUI() {
-        if (isSettingAccount) {
-            //binding.optionViewAcc.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.bg_setting_option_layout))
-//            binding.optionViewAcc.setBackgroundResource(R.drawable.bg_setting_option_layout)
-//            binding.optionViewAcc.setBackgroundResource(R.drawable.bg_setting_option_shadow)
-            //binding.optionViewPref.setImageDrawable(null)
-
-            binding.optionViewAcc.visibility = View.VISIBLE
-            binding.optionViewPref.visibility = View.INVISIBLE
-
-            binding.layoutAccount.visibility = View.VISIBLE
-            binding.layoutPreference.visibility = View.GONE
-        } else {
-            //binding.optionViewAcc.setImageDrawable(null)
-            //binding.optionViewPref.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.bg_setting_option_layout))
-//            binding.optionViewPref.setBackgroundResource(R.drawable.bg_setting_option_layout)
-//            binding.optionViewPref.setBackgroundResource(R.drawable.bg_setting_option_shadow)
-
-            binding.optionViewAcc.visibility = View.INVISIBLE
-            binding.optionViewPref.visibility = View.VISIBLE
-
-            binding.layoutAccount.visibility = View.GONE
-            binding.layoutPreference.visibility = View.VISIBLE
         }
     }
 

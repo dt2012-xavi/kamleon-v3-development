@@ -28,6 +28,11 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.StorageException
 import com.google.firebase.storage.storage
+import com.google.firebase.storage.storageMetadata
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -118,32 +123,68 @@ class FirestoreDataSource @Inject constructor(
         }
     }
 
-    suspend fun updateUserImage(uri: Uri): Response<Boolean> {
+    /**
+     * Saves a new profile photo the way the web does: [full] to `profile.jpeg` and [thumbnail] to
+     * `profile_thumbnail.jpeg`, uploaded at the same time and overwriting the previous ones, then
+     * one update of `imageUrl` and `imageUrlThumbnail` (no other field). If the full photo fails,
+     * nothing is written. If only the thumbnail fails, `imageUrl` is still saved and
+     * `imageUrlThumbnail` is left as it was.
+     */
+    suspend fun updateUserImage(full: Uri, thumbnail: Uri): Response<Boolean> {
         val userId = uuid ?: return Response.Failure(Exception())
         val doc = db.collection(USERS_COLLECTION).document(userId)
-        val ref = storage.reference.child("users/$userId/profile.jpeg")
+        val fullRef = storage.reference.child(profilePhotoPath(userId))
+        val thumbnailRef = storage.reference.child(profileThumbnailPath(userId))
+        val metadata = storageMetadata { contentType = "image/jpeg" }
         // A photo can take longer than the default time limit on a slow connection.
         return gate.safeCall(CallKind.Action, timeoutMs = IMAGE_UPLOAD_TIMEOUT_MS) {
-            ref.putFile(uri).await()
-            val url = ref.downloadUrl.await()
-            doc.update(hashMapOf("imageUrl" to url.toString()) as Map<String, Any>).await()
+            coroutineScope {
+                val thumbnailUrl = async {
+                    try {
+                        thumbnailRef.putFile(thumbnail, metadata).await()
+                        thumbnailRef.downloadUrl.await().toString()
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        DebugLog.e(TAG) { "Profile thumbnail upload failed: ${e.javaClass.simpleName}" }
+                        null
+                    }
+                }
+                fullRef.putFile(full, metadata).await()
+                val fields = mutableMapOf<String, Any>(IMAGE_URL to fullRef.downloadUrl.await().toString())
+                thumbnailUrl.await()?.let { fields[IMAGE_URL_THUMBNAIL] = it }
+                doc.update(fields).await()
+            }
             true
         }
     }
 
+    /**
+     * Removes the profile photo the way the web does: deletes both files (one already missing, or
+     * one that cannot be deleted, does not stop it) and empties `imageUrl` and `imageUrlThumbnail`.
+     */
     suspend fun removeUserImage(): Response<Boolean> {
         val userId = uuid ?: return Response.Failure(Exception())
         val doc = db.collection(USERS_COLLECTION).document(userId)
-        val ref = storage.reference.child("users/$userId/profile.jpeg")
         return gate.safeCall(CallKind.Action) {
-            // A photo already missing from storage is what was asked for; the address must still be cleared.
-            try {
-                ref.delete().await()
-            } catch (e: StorageException) {
-                if (e.errorCode != StorageException.ERROR_OBJECT_NOT_FOUND) throw e
+            coroutineScope {
+                listOf(profilePhotoPath(userId), profileThumbnailPath(userId)).map { path ->
+                    async { deleteIgnoringErrors(path) }
+                }.awaitAll()
             }
-            doc.update(hashMapOf("imageUrl" to "") as Map<String, Any>).await()
+            doc.update(mapOf<String, Any>(IMAGE_URL to "", IMAGE_URL_THUMBNAIL to "")).await()
             true
+        }
+    }
+
+    private suspend fun deleteIgnoringErrors(path: String) {
+        try {
+            storage.reference.child(path).delete().await()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            val notFound = (e as? StorageException)?.errorCode == StorageException.ERROR_OBJECT_NOT_FOUND
+            if (!notFound) DebugLog.e(TAG) { "Profile photo delete failed: ${e.javaClass.simpleName}" }
         }
     }
 
@@ -249,6 +290,10 @@ class FirestoreDataSource @Inject constructor(
 
     companion object {
         val TAG = FirestoreDataSource::class.simpleName
+        private const val IMAGE_URL = "imageUrl"
+        private const val IMAGE_URL_THUMBNAIL = "imageUrlThumbnail"
+        private fun profilePhotoPath(userId: String) = "users/$userId/profile.jpeg"
+        private fun profileThumbnailPath(userId: String) = "users/$userId/profile_thumbnail.jpeg"
         private const val IMAGE_UPLOAD_TIMEOUT_MS = 60_000L
     }
 }

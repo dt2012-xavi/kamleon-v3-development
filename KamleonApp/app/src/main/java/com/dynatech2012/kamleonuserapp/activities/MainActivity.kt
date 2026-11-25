@@ -17,6 +17,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.DisplayMetrics
 import android.view.View
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -126,16 +127,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(), ScanLinkSheet.Host {
 
     override fun initView() {
         setupSystemBarInsets()
-        val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {
-            val galleryUri = it
-            viewModel.setImageUri(galleryUri)
+        // Android's photo picker: no storage permission, and the photos screen people expect.
+        val galleryLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            // Cancelled: the photo sheet stays open.
+            uri?.let(viewModel::setImageUri)
         }
         supportFragmentManager
             .setFragmentResultListener(Constants.PICK_IMAGE, this) { _, bundle ->
                 DebugLog.d(TAG) { "result from activity pick" }
                 val result = bundle.getBoolean(Constants.PICK_IMAGE_BUNDLE)
                 if (result) {
-                    galleryLauncher.launch("image/*")
+                    galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                 }
             }
         supportFragmentManager

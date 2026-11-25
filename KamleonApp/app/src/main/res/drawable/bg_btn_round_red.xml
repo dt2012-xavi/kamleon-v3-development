@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The app's round button (bg_btn_round_blue) in red, for actions such as logging out. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="@color/color_red_pressed" />
+            <corners android:radius="@dimen/round_blue_button_corner_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <solid android:color="@color/color_red" />
+            <corners android:radius="@dimen/round_blue_button_corner_radius" />
+        </shape>
+    </item>
+</selector>

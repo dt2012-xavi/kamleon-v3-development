@@ -42,6 +42,7 @@ import com.dynatech2012.kamleonuserapp.security.PasswordPolicyException
 import com.dynatech2012.kamleonuserapp.security.PasswordPolicyResult
 import com.dynatech2012.kamleonuserapp.security.PasswordStrength
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
+import com.dynatech2012.kamleonuserapp.utils.ProfilePhoto
 import com.dynatech2012.kamleonuserapp.utils.SharedPrefUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -92,6 +93,10 @@ class MainViewModel @Inject constructor(
 
     /** The avatar address, or null when the account has no photo. The screens load it themselves. */
     val userImageUrl: LiveData<String?> = _userData.map { profileImageUrlOf(it.imageUrl) }
+
+    /** A new photo is being prepared and uploaded. */
+    private val _userImageUploading = MutableLiveData(false)
+    val userImageUploading: LiveData<Boolean> = _userImageUploading
 
     private val _userImageFailed = MutableLiveData<Event<ActionResult>>()
     val userImageFailed: LiveData<Event<ActionResult>> = _userImageFailed
@@ -255,8 +260,12 @@ class MainViewModel @Inject constructor(
         if (uri == null) {
             _userImageUri.postValue(Event(Unit))
         } else {
+            _userImageUploading.postValue(true)
             viewModelScope.launch(Dispatchers.IO) {
-                val response = firestoreRepo.updateUserImage(uri)
+                // The 568 px photo and its 256 px thumbnail, as the web saves them.
+                val prepared = ProfilePhoto.prepare(appContext, uri)
+                val response = if (prepared == null) Response.Failure(Exception("Unreadable photo"))
+                else firestoreRepo.updateUserImage(prepared.full, prepared.thumbnail)
                 if (response.isSuccess && response.dataValue != null) {
                     // Same storage path every time: forget the cached copy so the new photo is fetched.
                     imageLoader.forgetCachedImages(_userData.value?.imageUrl)
@@ -266,6 +275,7 @@ class MainViewModel @Inject constructor(
                     _userImagePrevUri.postValue(null)
                     _userImageFailed.postValue(Event(actionResultOf(response)))
                 }
+                _userImageUploading.postValue(false)
                 _userImageUri.postValue(Event(Unit))
             }
         }
