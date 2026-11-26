@@ -49,7 +49,8 @@ import com.ozcanalasalvar.datepicker.ui.theme.lightPallet
 import com.ozcanalasalvar.datepicker.utils.DateUtils
 import com.ozcanalasalvar.wheelview.WheelView
 import com.ozcanalasalvar.wheelview.SelectorOptions
-import java.text.DateFormatSymbols
+import java.time.Month
+import java.time.format.TextStyle
 import java.util.Locale
 
 
@@ -129,9 +130,8 @@ fun WheelDatePicker(
                     selectedDate = selectedDate.withMonth(months[it])
                 },
                 content = {
-                    Log.d("TAG", "ssss month: ${months[it]} _ ${DateFormatSymbols().months[months[it]]}")
                     Text(
-                        text = DateFormatSymbols(Locale.US).months[months[it]],
+                        text = monthName(months[it]),
                         textAlign = TextAlign.Start,
                         modifier = Modifier.width(150.dp),//.background(color = colorLightTextSecondary),
                         fontSize = fontSize.sp,
@@ -219,4 +219,11 @@ fun DatePickerPreview() {
         textBold = true,
         darkModeEnabled = false,
         onDateChanged = { _, _, _, _ -> })
+}
+
+/** Month [index] (0 is January) in the phone's language, as said on its own and capitalized: "Enero". */
+private fun monthName(index: Int): String {
+    val locale = Locale.getDefault()
+    return Month.of(index + 1).getDisplayName(TextStyle.FULL_STANDALONE, locale)
+        .replaceFirstChar { it.titlecase(locale) }
 }

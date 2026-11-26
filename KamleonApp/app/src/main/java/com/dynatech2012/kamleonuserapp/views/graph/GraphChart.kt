@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.MatTheme
-import com.dynatech2012.kamleonuserapp.extensions.formatTimeForPopup
+import com.dynatech2012.kamleonuserapp.extensions.timeText
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphBarDrawData
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphDataType
 import com.dynatech2012.kamleonuserapp.views.graph.data.KamleonGraphViewMode
@@ -336,7 +336,7 @@ private fun SampleRows(data: KamleonGraphBarDrawData, index: Int, unit: String) 
         for (sample in data.barSamples(index)) {
             val value = if (sample.isPrecise) sample.scoreValue(data.type).toInt().toString() else stringResource(R.string.graph_label_low_volume)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(Date(sample.timestamp).formatTimeForPopup, color = grey, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = MatTheme.fontFamily)
+                Text(Date(sample.timestamp).timeText(), color = grey, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = MatTheme.fontFamily)
                 Text(
                     stringResource(R.string.graph_label_item_value, value, if (sample.isPrecise) unit else ""),
                     color = black, fontSize = 12.sp, fontFamily = MatTheme.fontFamily,

@@ -1,0 +1,447 @@
+<resources>
+
+    <!-- Login & Sign Up -->
+    <string name="placeholder_first_name">Nom</string>
+    <string name="placeholder_last_name">Cognoms</string>
+    <string name="placeholder_email">Correu electrònic</string>
+    <string name="placeholder_password">Contrasenya</string>
+    <string name="placeholder_password_repeat">Repeteix la contrasenya</string>
+
+    <!-- Login -->
+    <string name="login_title">Inicia la sessió</string>
+    <string name="login_desc">Introdueix les teves dades per continuar. Si les has oblidat, t’ajudem.</string>
+    <string name="login_desc_pending_scan">Inicia la sessió per acabar l’escaneig. Vincularem al teu compte el codi QR que has escanejat.</string>
+    <string name="login_btn_signin">Inicia la sessió</string>
+    <string name="auth_show_password">Mostra la contrasenya</string>
+    <string name="auth_hide_password">Amaga la contrasenya</string>
+    <string name="login_alert_title_login_error">Dades no vàlides.</string>
+    <string name="login_alert_description_not_verified_email">Correu electrònic no verificat. Revisa el teu correu</string>
+    <string name="login_alert_description_not_valid_email">Correu electrònic no vàlid</string>
+    <string name="login_alert_description_user_not_found">No s’ha trobat l’usuari</string>
+    <string name="login_alert_description_wrong_pass">Contrasenya incorrecta</string>
+    <string name="login_alert_description_login_error_unknown">Error desconegut</string>
+
+    <string name="login_forgot_pwd"><u>Has oblidat la contrasenya?</u></string>
+    <string name="login_not_have_account">Encara no tens compte?</string>
+    <string name="login_signup"><u>Registra’t</u></string>
+
+    <!-- Sign Up -->
+    <string name="signup_title">Registre</string>
+    <string name="signup_desc">Introdueix les teves dades per accedir a les teves analítiques</string>
+    <string name="signup_btn_create_account">Crea el compte</string>
+    <string name="signup_have_account">Ja tens un compte?</string>
+    <string name="signup_login"><u>Inicia la sessió</u></string>
+    <string name="signup_error_empty_fields">Introdueix el teu nom i els teus cognoms</string>
+    <string name="password_hint">Fes servir 8 o més lletres, números i símbols</string>
+    <string name="password_strength_weak">Contrasenya feble</string>
+    <string name="password_strength_good">Contrasenya bona</string>
+    <string name="password_strength_strong">Contrasenya segura</string>
+    <string name="password_error_too_short">La contrasenya ha de tenir almenys 8 caràcters</string>
+    <string name="password_error_too_long">La contrasenya ha de tenir 128 caràcters o menys</string>
+    <string name="password_error_weak">Aquesta contrasenya és massa fàcil d’endevinar. Prova’n una de més llarga o menys habitual</string>
+    <string name="password_error_breached">Aquesta contrasenya ha aparegut en una filtració de dades. Tria’n una altra</string>
+    <string name="pwd_error_same_as_current">La contrasenya nova ha de ser diferent de l’actual</string>
+    <string name="pwd_error_new_required">Introdueix una contrasenya nova</string>
+    <string name="nav_back">Enrere</string>
+    <string name="field_error_email_required">Introdueix el teu correu electrònic</string>
+    <string name="field_error_password_required">Introdueix la teva contrasenya</string>
+    <string name="signup_error_first_name_required">Introdueix el teu nom</string>
+    <string name="signup_error_last_name_required">Introdueix els teus cognoms</string>
+    <string name="signup_error_repeat_required">Repeteix la contrasenya</string>
+    <string name="signup_error_password_mismatch">Les contrasenyes no coincideixen</string>
+    <string name="signup_error_email_pattern">Fes servir un correu electrònic vàlid</string>
+    <string name="signup_session_expired">La teva sessió ha acabat. Inicia la sessió per acabar de configurar el teu compte.</string>
+    <string name="signup_existing_account_title">No s’ha pogut crear el compte</string>
+    <string name="signup_existing_account_message">Si ja tens un compte, inicia la sessió o fes servir Has oblidat la contrasenya? per recuperar l’accés.</string>
+    <string name="signup_error_server_error">Hi ha hagut un problema amb el registre. Torna-ho a provar</string>
+    <string name="signup_complete_profile">Completa el perfil</string>
+    <string name="startup_network_error">No s’ha pogut carregar el teu compte. Revisa la connexió i torna-ho a provar.</string>
+    <string name="startup_error_title">No hem pogut carregar el teu compte</string>
+    <string name="startup_error_message">Revisa la connexió i torna-ho a provar.</string>
+    <string name="startup_error_message_offline">Revisa la connexió i torna-ho a provar. També pots continuar sense connexió amb les dades d’aquest mòbil.</string>
+    <string name="startup_continue_offline">Continua sense connexió</string>
+    <string name="startup_server_error_title">Alguna cosa no ha anat bé</string>
+    <string name="startup_server_error_message">No hem pogut carregar el teu compte per un problema nostre. Pots tornar-ho a provar, o tancar la sessió i tornar-la a iniciar. En tancar la sessió s’esborren les dades desades en aquest mòbil.</string>
+    <string name="policy_retry_title">No hem pogut desar la teva resposta</string>
+    <string name="policy_retry_message">Revisa la connexió i torna-ho a provar. També pots tancar la sessió; en tancar-la s’esborren les dades desades en aquest mòbil.</string>
+    <string name="verify_done">Ja he verificat el meu correu</string>
+    <string name="verification_still_pending">El teu correu encara no està verificat. Obre l’enllaç que t’hem enviat i torna-ho a provar.</string>
+    <string name="verification_email_failed">No hem pogut enviar el correu. Revisa la connexió i torna-ho a provar.</string>
+    <string name="action_failed_title">No s’ha pogut completar</string>
+    <string name="action_failed_message">Alguna cosa no ha anat bé. Torna-ho a provar.</string>
+    <string name="error_code_line">Codi d’error: %1$s</string>
+    <string name="session_ended_title">La teva sessió ha acabat</string>
+    <string name="session_ended_message">Torna a iniciar la sessió. Si continua passant, contacta amb la teva organització o amb el suport de Kamleon.</string>
+    <string name="login_error_title_generic">No s’ha pogut iniciar la sessió</string>
+    <string name="login_error_title_network">Sense connexió</string>
+    <string name="login_error_title_too_many">Massa intents</string>
+    <string name="login_error_message_too_many">Espera uns minuts i torna-ho a provar.</string>
+    <string name="login_error_title_disabled">Compte desactivat</string>
+    <string name="login_error_message_disabled">El teu compte s’ha desactivat. Contacta amb la teva organització o amb el suport de Kamleon per recuperar l’accés.</string>
+    <string name="login_account_rejected_title">No hem pogut obrir el teu compte</string>
+    <string name="login_account_rejected_message">Ara mateix no es pot accedir al teu compte. Contacta amb la teva organització o amb el suport de Kamleon si continua passant.</string>
+    <string name="retry">Torna-ho a provar</string>
+    <string name="verification_email_sent">Correu de verificació enviat. Revisa la safata d’entrada.</string>
+
+    <!-- Forgot Pwd -->
+    <string name="forgotpwd_settings"><u>Has oblidat la contrasenya?</u></string>
+    <string name="forgotpwd_title">Problemes per iniciar la sessió?</string>
+    <string name="forgotpwd_desc">Introdueix el teu correu electrònic i t’enviarem un enllaç per tornar a entrar al teu compte.</string>
+    <string name="forgotpwd_send">Envia l’enllaç d’accés</string>
+    <string name="forgotpwd_can_not_reset">No pots restablir la contrasenya?</string>
+    <string name="forgotpwd_contact">Contacta amb Kamleon</string>
+    <string name="forgotpwd_sent">T’hem enviat un enllaç per tornar a entrar al teu compte</string>
+    <string name="forgotpwd_sending">S’està enviant l’enllaç…</string>
+    <string name="forgotpwd_sent_if_account">Si hi ha un compte amb aquest correu, rebràs un enllaç per tornar-hi a entrar.</string>
+    <string name="forgotpwd_confirm_title">Vols restablir la contrasenya?</string>
+    <string name="forgotpwd_confirm_desc">Enviarem un enllaç a %1$s per tornar a entrar al teu compte.</string>
+    <string name="forgotpwd_send_error">No hem pogut enviar l’enllaç d’accés. Torna-ho a provar.</string>
+
+    <!-- Privacy -->
+    <string name="privacy_title">Privadesa</string>
+    <string name="privacy_item1">Accepto la Política de privadesa.*</string>
+    <string name="privacy_item2">Accepto els Termes i condicions.*</string>
+    <string name="privacy_item3">Dono el meu consentiment perquè el responsable del tractament tracti les meves dades personals, incloses les dades fisiològiques, amb la finalitat d’estructurar-les i mostrar-les al perfil d’usuari. Consulta la informació sobre el consentiment*\n\n\nPer a més informació sobre el tractament de dades personals que fa el responsable del tractament, consulta la política de privadesa.</string>
+    <string name="privacy_note">*Pots revocar el teu consentiment en qualsevol moment enviant un missatge a <u>info@kamleon.com</u></string>
+    <string name="privacy_button_next">Següent</string>
+    <string name="privacy_word_terms">Termes i condicions</string>
+    <string name="privacy_word_privacy">Política de privadesa</string>
+    <string name="privacy_word_consent">informació sobre el consentiment</string>
+    <string name="privacy_button_accept_all">Accepta-ho tot</string>
+
+    <!-- Onboarding -->
+    <string name="onboard_button_skip">Omet</string>
+    <string name="onboard_button_next">Següent</string>
+    <string name="onboard_button_start">Comencem!</string>
+    <string name="onboard_step_counter">Pas %1$d de %2$d</string>
+    <string name="onboard_why_birthday">Fem servir la teva edat per interpretar bé els teus resultats. Has de tenir almenys %1$d anys.</string>
+    <string name="onboard_why_height">Es fa servir per personalitzar la teva anàlisi.</string>
+    <string name="onboard_why_weight">Es fa servir per personalitzar la teva anàlisi.</string>
+    <string name="onboard_why_gender">Es fa servir per personalitzar la teva anàlisi. Pots triar no dir-ho.</string>
+    <string name="onboard_bottom_text">Pots canviar-ho més endavant a la configuració de l’app</string>
+    <string name="onboard_bottom_later">Omet, ho ompliré més endavant</string>
+    <string name="onboard_noti_title">Estigues al dia de la teva última mostra</string>
+    <string name="onboard_noti_sub1">Activa les notificacions</string>
+    <string name="onboard_noti_sub2">T’enviarem la teva puntuació Kamleon just després de cada ús de l’urinari. Pots canviar-ho quan vulguis a Configuració.</string>
+    <string name="onboard_location_title">Adapta la hidratació al temps que fa</string>
+    <string name="onboard_location_sub1">Activa la ubicació</string>
+    <string name="onboard_location_sub2">Permet que Kamleon faci servir les dades d’ubicació per a serveis personalitzats, tenint en compte la teva privadesa.</string>
+    <string name="onboard_birthday_title">Data de naixement</string>
+    <string name="onboard_height_title">Indica la teva alçada</string>
+    <string name="onboard_weight_title">Indica el teu pes</string>
+    <string name="onboard_gender_title">Indica el teu gènere</string>
+
+    <string-array name="onboard_gender_values">
+        <item>Home</item>
+        <item>Dona</item>
+        <item>Altre</item>
+        <item>Prefereixo no dir-ho</item>
+    </string-array>
+
+    <!-- Settings -->
+    <string name="setting_button_save">Desa</string>
+    <string name="setting_button_logout">Tanca la sessió</string>
+    <string name="setting_logging_out">S’està tancant la sessió…</string>
+
+    <string name="setting_label_acc_data">ACCÉS I SEGURETAT</string>
+    <string name="setting_label_surname">COGNOMS</string>
+    <string name="setting_label_name">NOM</string>
+    <string name="setting_label_email">CORREU ELECTRÒNIC</string>
+    <string name="setting_label_password">CONTRASENYA</string>
+    <string name="setting_label_pin">PIN</string>
+    <string name="setting_label_info">AJUDA I INFORMACIÓ LEGAL</string>
+    <string name="setting_label_dsp">INFORMACIÓ SOBRE EL CONSENTIMENT</string>
+    <string name="setting_label_tos">TERMES I CONDICIONS</string>
+    <string name="setting_label_pp">POLÍTICA DE PRIVADESA</string>
+
+    <string name="setting_desc_security">La teva contrasenya et dona accés a l’app i al web. El teu PIN és el codi que introdueixes a la pantalla de Kamleon abans de començar.</string>
+    <string name="setting_label_acc_info">INFORMACIÓ DEL COMPTE</string>
+    <string name="setting_label_roles">ROLS D’USUARI</string>
+    <string name="roles_title">Rols d’usuari</string>
+    <string name="roles_empty">Encara no tens cap rol.</string>
+    <string name="roles_error">No hem pogut carregar els teus rols. Revisa la connexió i torna-ho a provar.</string>
+    <string name="roles_active">Actiu</string>
+    <string name="roles_inactive">Inactiu</string>
+    <string name="roles_center">Centre</string>
+    <string name="roles_roster_number">Dorsal</string>
+    <string name="roles_permissions">Permisos</string>
+    <string name="roles_screen">Pantalla: %1$s</string>
+    <string name="roles_pin">PIN: %1$s</string>
+    <string name="role_org_admin">Admin. d’organització</string>
+    <string name="role_center_admin">Admin. de centre</string>
+    <string name="role_center_admin_restricted">Admin. de centre restringit</string>
+    <string name="role_team_admin">Admin. d’equip</string>
+    <string name="role_team_user">Usuari d’equip</string>
+    <string name="role_team_viewer">Lector d’equip</string>
+    <string name="role_kamleon_owner">Propietari Kamleon</string>
+    <string name="role_kamleon_admin">Admin. Kamleon</string>
+    <string name="role_kamleon_editor">Editor Kamleon</string>
+    <string name="role_kamleon_viewer">Lector Kamleon</string>
+
+    <string name="setting_label_user_data">DADES PERSONALS</string>
+    <string name="setting_label_user_gender">GÈNERE</string>
+    <string name="setting_label_user_weight">PES</string>
+    <string name="setting_label_user_height">ALÇADA</string>
+    <string name="setting_label_user_birthdate">DATA DE NAIXEMENT</string>
+    <string name="profile_sheet_title_name">Nom</string>
+    <string name="profile_sheet_title_gender">Gènere</string>
+    <string name="profile_sheet_title_birth">Data de naixement</string>
+    <string name="profile_sheet_title_height">Alçada</string>
+    <string name="profile_sheet_title_weight">Pes</string>
+    <string name="profile_sheet_title_password">Contrasenya</string>
+    <string name="profile_sheet_title_pin">PIN</string>
+    <string name="profile_sheet_name_hint">Nom</string>
+    <string name="profile_sheet_pin_hint">6 dígits</string>
+    <string name="profile_sheet_surname_hint">Cognoms</string>
+
+    <string name="setting_label_noti">NOTIFICACIONS</string>
+    <string name="setting_noti_blocked_msg">Les notificacions de Kamleon estan desactivades a la configuració del mòbil. Obre-la per activar-les.</string>
+    <string name="setting_noti_open_settings">Obre la configuració</string>
+    <string name="setting_noti_blocked_short">Les notificacions estan desactivades a la configuració del mòbil.</string>
+    <string name="setting_label_new_score">NOTIFICACIÓ DE PUNTUACIÓ NOVA</string>
+    <string name="setting_label_location">UBICACIÓ</string>
+    <string name="setting_label_awuta">PERMET MENTRE S’UTILITZA L’APP</string>
+    <string name="setting_label_allow_once">PERMET NOMÉS AQUESTA VEGADA</string>
+    <string name="setting_label_not_allow">NO HO PERMETIS</string>
+
+    <string name="setting_desc_pref1">Les dades d’usuari són essencials per oferir resultats i recomanacions personalitzats i precisos.</string>
+    <string name="setting_desc_pref2">Rebràs una notificació de Kamleon amb la teva puntuació després de cada ús de l’urinari.</string>
+    <string name="setting_desc_pref3">Permet que Kamleon faci servir les dades d’ubicació per a serveis personalitzats, tenint en compte la teva privadesa.</string>
+
+    <string name="setting_deactivate">Elimina el meu compte</string>
+
+    <!-- Image Pick -->
+    <string name="image_pick_gallery">Tria de la galeria</string>
+    <string name="image_pick_camera">Fes una foto</string>
+    <string name="image_pick_remove">Treu la foto actual</string>
+    <string name="image_pick_uploading">S’està pujant la foto</string>
+    <string name="setting_change_photo">Canvia la foto de perfil</string>
+
+    <!-- Pin -->
+    <string name="pin_new">PIN NOU</string>
+    <string name="pin_confirm">CONFIRMA EL PIN</string>
+    <string name="pin_error_dontmatch">El PIN nou i la confirmació no coincideixen</string>
+
+    <string name="pwd_error_title">Error</string>
+    <string name="pwd_error_dontmatch">La contrasenya nova i la confirmació no coincideixen</string>
+    <string name="pwd_error_generic">Hi ha hagut un error en actualitzar la contrasenya</string>
+
+    <!-- Change Pass -->
+    <string name="pwd_password">CONTRASENYA ACTUAL</string>
+    <string name="pwd_new">CONTRASENYA NOVA</string>
+    <string name="pwd_confirm">CONFIRMA LA CONTRASENYA</string>
+
+    <!-- Tab -->
+    <string name="tab_home">INICI</string>
+    <string name="tab_analytic">ANALÍTIQUES</string>
+    <string name="tab_qr">ESCANEJA</string>
+
+    <!-- QR -->
+    <string name="qr_scan_now">ESCANEJA ARA!</string>
+
+    <!-- Graph -->
+    <string name="graph_header_item_daily">Diari</string>
+    <string name="graph_header_item_weekly">Setmanal</string>
+    <string name="graph_header_item_monthly">Mensual</string>
+    <string name="graph_header_item_yearly">Anual</string>
+
+    <string name="graph_header_average">MITJANA</string>
+    <string name="graph_footer_streak">Ratxa</string>
+    <string name="graph_footer_limit">Límits</string>
+
+    <string name="graph_label_optimum">Òptim</string>
+    <string name="graph_no_samples">No hi ha mostres vàlides en aquest període</string>
+    <string name="graph_label_low_volume">Volum baix</string>
+    <string name="graph_chart_description">Gràfic de %1$s, %2$s. Mitjana: %3$s%4$s.</string>
+    <string-array name="graph_day_names">
+        <item>Dg</item>
+        <item>Dl</item>
+        <item>Dt</item>
+        <item>Dc</item>
+        <item>Dj</item>
+        <item>Dv</item>
+        <item>Ds</item>
+    </string-array>
+    <string-array name="graph_month_names">
+        <item>Gen</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Abr</item>
+        <item>Mai</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Ago</item>
+        <item>Set</item>
+        <item>Oct</item>
+        <item>Nov</item>
+        <item>Des</item>
+    </string-array>
+    <string name="graph_label_minimum">Mínim</string>
+    <string name="graph_label_maximum">Màxim</string>
+
+    <!-- Invitation -->
+    <string name="invitations_title">Notificacions</string>
+    <string name="invitations_empty">No tens invitacions.</string>
+    <string name="invitations_error">No hem pogut carregar les teves invitacions. Revisa la connexió i torna-ho a provar.</string>
+    <string name="invitations_previous">Invitacions anteriors</string>
+    <string name="invitations_see_all">Mostra totes les invitacions anteriors</string>
+    <string name="invitation_text">%1$s t’ha convidat a unir-te a %2$s com a %3$s</string>
+    <string name="invitation_text_no_entity">%1$s t’ha convidat a ser %2$s</string>
+    <string name="invitation_accepted_text">T’has unit a %1$s com a %2$s</string>
+    <string name="invitation_accepted_text_no_entity">Ara ets %1$s</string>
+    <string name="invitation_someone">Algú</string>
+    <string name="invitation_today">Avui</string>
+    <string name="invitation_yesterday">Ahir</string>
+    <plurals name="invitation_days_ago">
+        <item quantity="one">Fa %d dia</item>
+        <item quantity="many">Fa %d dies</item>
+        <item quantity="other">Fa %d dies</item>
+    </plurals>
+    <string name="invitation_expires_today">Caduca avui</string>
+    <plurals name="invitation_expires_in">
+        <item quantity="one">Caduca d’aquí a %d dia</item>
+        <item quantity="many">Caduca d’aquí a %d dies</item>
+        <item quantity="other">Caduca d’aquí a %d dies</item>
+    </plurals>
+    <string name="invitation_expired">Caducada</string>
+    <string name="invitation_accepted">Acceptada</string>
+    <string name="invitation_declined_state">Rebutjada</string>
+    <string name="invitation_privacy">Accepto la %1$s</string>
+    <string name="invitation_privacy_link">Política de privadesa</string>
+    <string name="invitation_accept">Accepta</string>
+    <string name="invitation_decline">Rebutja</string>
+    <string name="invitation_dismiss">Descarta</string>
+    <string name="invitation_loading">S’està carregant…</string>
+    <string name="invitation_accepted_msg">Invitació acceptada</string>
+    <string name="invitation_declined">Invitació rebutjada</string>
+    <string name="invitation_accept_failed">No s’ha pogut acceptar la invitació</string>
+    <string name="invitation_decline_failed">No s’ha pogut rebutjar la invitació</string>
+    <string name="invitation_dismiss_failed">No s’ha pogut descartar la invitació</string>
+    <string name="invitation_no_longer_valid">Aquesta invitació ja no és vàlida.</string>
+    <string name="noti_channel_name">Puntuació nova</string>
+    <string name="noti_channel_description">La teva puntuació Kamleon després de cada ús de l’urinari.</string>
+    <string name="noti_newmeasure_title">Mesura nova!</string>
+    <string name="noti_newmeasure_text">Pots consultar-ne els resultats a l’app.</string>
+
+    <!--HomeScreen-->
+    <string name="home_metric_electrolytes">Electròlits</string>
+    <string name="home_metric_volume">Volum</string>
+    <string name="home_status_loading">S’estan carregant les teves dades…</string>
+    <string name="home_status_empty">Encara no hi ha mostres</string>
+    <string name="home_status_unavailable">Dades no disponibles</string>
+    <string name="home_profile_button">Perfil i configuració</string>
+    <string name="home_notifications_button">Notificacions</string>
+    <string name="home_notifications_button_new">Notificacions, invitacions noves</string>
+    <string name="home_score_description">Puntuació d’hidratació %1$d%%</string>
+    <string name="home_empty_body">Escaneja un codi QR de Kamleon després de la teva propera mostra per veure aquí la teva hidratació.</string>
+    <string name="home_empty_scan">Escaneja el QR</string>
+    <string name="home_unavailable_body">No hem pogut carregar les teves mostres. Revisa la connexió i torna-ho a provar.</string>
+    <string name="home_last_sample_message_default">"última mostra"</string>
+    <string name="home_last_sample_message">"última mostra %1$s"</string>
+    <string name="sample_time_today">avui a les %1$s</string>
+    <string name="sample_time_yesterday">ahir a les %1$s</string>
+    <string name="sample_time_weekday">el %1$s a les %2$s</string>
+
+    <!-- Analytics -->
+    <string name="analytic_severely_dehydrated">Molt deshidratat</string>
+    <string name="analytic_dehydrated">Deshidratat</string>
+    <string name="analytic_hydrated">Hidratat</string>
+    <string name="analytic_very_hydrated">Molt ben hidratat</string>
+
+    <string name="analytic_hydratation_optimal">La hidratació de la teva última orina és al nivell recomanat.</string>
+    <string name="analytic_hydratation_under">La hidratació de la teva última orina és per sota del nivell recomanat.</string>
+
+    <string name="analytic_elec_hypo">Hipotònic</string>
+    <string name="analytic_elec_normal">Equilibrat</string>
+    <string name="analytic_elec_hyper">Hipertònic</string>
+
+    <string name="analytic_elec_under">Els teus nivells d’electròlits són per sota del rang òptim.</string>
+    <string name="analytic_elec_optimal">Els teus nivells d’electròlits són dins del rang òptim.</string>
+    <string name="analytic_elec_above">Els teus nivells d’electròlits són per sobre del rang òptim.</string>
+
+    <string name="analytic_volume_insuff_title">Insuficient</string>
+    <string name="analytic_volume_low">Volum insuficient</string>
+    <string name="analytic_volume_medium">Mitjà</string>
+    <string name="analytic_volume_high">Volum alt</string>
+
+    <string name="analytic_volume_insuff_desc">La teva mostra no té prou volum per analitzar-la. L’anàlisi podria no ser vàlida.</string>
+    <string name="analytic_volume_good">La teva mostra té un bon volum per analitzar-la.</string>
+
+    <string name="analytic_no_data">Sense dades</string>
+    <string name="analytic_metric_hydration">Hidratació</string>
+    <string name="analytic_metric_electrolytes">Electròlits</string>
+    <string name="analytic_metric_volume">Volum</string>
+    <plurals name="analytic_value_hydration">
+        <item quantity="one">%1$d per cent</item>
+        <item quantity="many">%1$d per cent</item>
+        <item quantity="other">%1$d per cent</item>
+    </plurals>
+    <plurals name="analytic_value_electrolytes">
+        <item quantity="one">%1$d mil·lisiemens per centímetre</item>
+        <item quantity="many">%1$d mil·lisiemens per centímetre</item>
+        <item quantity="other">%1$d mil·lisiemens per centímetre</item>
+    </plurals>
+    <plurals name="analytic_value_volume">
+        <item quantity="one">%1$d mil·lilitre</item>
+        <item quantity="many">%1$d mil·lilitres</item>
+        <item quantity="other">%1$d mil·lilitres</item>
+    </plurals>
+    <string name="analytic_note_no_sample">Escaneja el QR de l’S-Urinal després de la teva propera mostra per veure aquí les teves mètriques.</string>
+    <string name="analytic_note_imprecise">Aquesta mostra no tenia prou volum per mesurar amb precisió la hidratació i els electròlits, així que només se’n mostra el volum.</string>
+
+    <!-- Dialog -->
+    <string name="dialog_saved_text">Els teus canvis s’han desat correctament</string>
+    <string name="dialog_ok">D’acord</string>
+    <string name="dialog_cancel">CANCEL·LA</string>
+    <string name="dialog_logout_title">Vols tancar la sessió?</string>
+    <string name="dialog_logout_msg">Necessitaràs el teu correu electrònic i la contrasenya per tornar a iniciar la sessió.</string>
+    <string name="dialog_logout_y">Tanca la sessió</string>
+    <string name="dialog_logout_n">Cancel·la</string>
+    <string name="dialog_deactive_n">Cancel·la</string>
+    <string name="dialog_reset_pwd_success_description">Has canviat la contrasenya correctament</string>
+    <string name="dialog_reset_pwd_error_title">Error</string>
+    <string name="dialog_reset_pin_success_description">Has canviat el PIN correctament</string>
+    <string name="scan_hint">Escaneja el codi QR que apareix a l’S-Urinal</string>
+    <string name="scan_not_kamleon">Aquest codi QR no és de Kamleon</string>
+    <string name="scan_linking">S’està vinculant l’escaneig</string>
+    <string name="scan_invalid_title">Aquest codi QR no es pot fer servir</string>
+    <string name="scan_invalid_message">L’enllaç està incomplet o ha caducat. Torna a escanejar el codi QR de l’S-Urinal.</string>
+    <string name="scan_again">Torna a escanejar</string>
+    <string name="scan_torch_on">Encén la llanterna</string>
+    <string name="scan_torch_off">Apaga la llanterna</string>
+    <string name="scan_help">Com escanejar</string>
+    <string name="scan_intro_message">Apropa el mòbil al codi QR de la pantalla de l’S-Urinal i mantén el codi dins del marc.</string>
+    <string name="scan_camera_denied_title">Cal accés a la càmera</string>
+    <string name="scan_camera_denied_message">Kamleon fa servir la càmera només per escanejar el codi QR de l’S-Urinal.</string>
+    <string name="scan_allow_camera">Permet la càmera</string>
+    <string name="scan_no_camera_title">No hi ha cap càmera disponible</string>
+    <string name="scan_no_camera_message">Per escanejar cal una càmera, i aquest mòbil no en té cap que l’app pugui fer servir.</string>
+    <string name="scan_camera_blocked_message">Kamleon fa servir la càmera només per escanejar el codi QR de l’S-Urinal. Permet-la a la configuració de l’app per escanejar.</string>
+    <string name="dialog_scan_scanned">QR escanejat correctament</string>
+    <string name="dialog_scan_scanned_message">Estàs vinculat a aquest S-Urinal. Els teus resultats apareixeran a l’app quan acabi l’anàlisi.</string>
+    <string name="dialog_scan_failed_title">No hem pogut vincular el codi QR</string>
+    <string name="dialog_scan_failed_message">Revisa la connexió i torna’l a escanejar.</string>
+    <string name="notifications_intro_activate">Activa</string>
+    <string name="notifications_intro_later">Ara no</string>
+    <string name="dialog_policy_title">Política de privadesa</string>
+    <string name="dialog_policy_desc">Protegir la teva privadesa és fonamental. Abans de fer servir l’app, accepta la política. Per a més informació, consulta la <u>Política de privadesa</u></string>
+    <string name="dialog_policy_agree">Accepto</string>
+    <string name="dialog_policy_disagree"><u>No accepto, tanca la sessió</u></string>
+    <string name="dialog_verify_title">Verifica el teu correu</string>
+    <string name="dialog_verify_desc">Hem enviat un correu a %1$s\n\nHas de verificar el teu correu per continuar. Si no has rebut el correu de verificació, revisa la carpeta de correu brossa. També pots prémer el botó de reenviar per rebre’n un altre.</string>
+    <string name="dialog_verify_resend"><u>Reenvia el correu de verificació</u></string>
+
+    <!-- Error -->
+    <string name="error_login">Error en iniciar la sessió</string>
+    <string name="error_camera_permission_denied">Permís denegat</string>
+    <string name="error_start_camera">Error en iniciar la càmera</string>
+
+    <!-- Help -->
+    <string name="help_contact">CONTACTA AMB KAMLEON</string>
+    <string name="help_contact_subtitle">Posa’t en contacte amb Kamleon per a suport, consultes o comentaris.</string>
+    <string name="help_error_mail">No s’ha trobat cap app de correu</string>
+    <string name="support_email_subject">Suport de l’app Kamleon</string>
+    <string name="error_no_browser">No s’ha trobat cap navegador per obrir aquesta pàgina</string>
+    <string name="setting_version">Versió %1$s (%2$d)</string>
+
+</resources>

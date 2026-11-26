@@ -25,6 +25,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.MatTheme
 import com.dynatech2012.kamleonuserapp.database.MeasureData
-import com.dynatech2012.kamleonuserapp.extensions.formatTime
+import com.dynatech2012.kamleonuserapp.extensions.sampleTimeText
 import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
 import com.dynatech2012.kamleonuserapp.models.analyticsCardsOf
 import com.dynatech2012.kamleonuserapp.models.analyticsNoteOf
@@ -66,8 +67,9 @@ fun AnalyticsScreen(
     )
     val cards = remember(measure) { analyticsCardsOf(measure) }
     val note = analyticsNoteOf(measure)
+    val resources = LocalResources.current
     val lastSample = measure?.let { sample ->
-        val date = remember(sample.analysisDate) { Date(sample.analysisDate).formatTime }
+        val date = remember(sample.analysisDate, resources) { Date(sample.analysisDate).sampleTimeText(resources) }
         stringResource(R.string.home_last_sample_message, date)
     } ?: stringResource(R.string.home_last_sample_message_default)
     // Applied at layout, not read during composition: a screen's first frame is composed before the

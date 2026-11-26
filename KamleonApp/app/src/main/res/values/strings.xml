@@ -5,8 +5,8 @@
 
 
     <!-- Activities -->
-    <string name="title_activity_main">MainActivity</string>
-    <string name="title_activity_init">InitActivity</string>
+    <string name="title_activity_main" translatable="false">MainActivity</string>
+    <string name="title_activity_init" translatable="false">InitActivity</string>
 
     <!-- Login & Sign Up -->
     <string name="placeholder_first_name">Name</string>
@@ -121,7 +121,7 @@
     <string name="onboard_button_skip">Skip</string>
     <string name="onboard_button_next">Next</string>
     <string name="onboard_button_start">Start!</string>
-    <string name="onboard_button_step">%1$d/6</string>
+    <string name="onboard_button_step" translatable="false">%1$d/6</string>
     <string name="onboard_step_counter">Step %1$d of %2$d</string>
     <!-- Short reasons shown under each question; copy to be reviewed by product -->
     <string name="onboard_why_birthday" tools:ignore="PluralsCandidate">We use your age to interpret your results correctly. You must be at least %1$d years old.</string>
@@ -192,8 +192,8 @@
     <string name="setting_label_user_gender">GENDER</string>
     <string name="setting_label_user_weight">WEIGHT</string>
     <string name="setting_label_user_height">HEIGHT</string>
-    <string name="setting_label_user_weight_text">%1$s kg</string>
-    <string name="setting_label_user_height_text">%1$s cm</string>
+    <string name="setting_label_user_weight_text" translatable="false">%1$s kg</string>
+    <string name="setting_label_user_height_text" translatable="false">%1$s cm</string>
     <string name="setting_label_user_birthdate">DATE OF BIRTH</string>
     <string name="profile_sheet_title_name">Name</string>
     <string name="profile_sheet_title_gender">Gender</string>
@@ -222,7 +222,7 @@
     <string name="setting_desc_pref2">You will receive a Kamleon notification with the score you have had after every urinal use.</string>
     <string name="setting_desc_pref3">Enable Kamleon to use location data for personalized services, while considering privacy implications.</string>
 
-    <string name="setting_display_name">%1$s %2$s</string>
+    <string name="setting_display_name" translatable="false">%1$s %2$s</string>
     <string name="setting_deactivate">Delete my account</string>
 
     <!-- Image Pick -->
@@ -268,13 +268,13 @@
     <string name="graph_header_item_yearly">Yearly</string>
 
     <string name="graph_header_average">AVERAGE</string>
-    <string name="graph_footer_streak">Streak</string>-->
-    <string name="graph_footer_limit">Limits</string>-->
-    <string name="graph_footer_number_all">/%1$s</string>-->
+    <string name="graph_footer_streak">Streak</string>
+    <string name="graph_footer_limit">Limits</string>
+    <string name="graph_footer_number_all" translatable="false">/%1$s</string>
 
     <string name="graph_label_optimum">Optimum</string>
     <string name="graph_no_samples">No valid samples in this period</string>
-    <string name="graph_bar_hour">%1$d:00 h</string>
+    <string name="graph_bar_hour" translatable="false">%1$d:00 h</string>
     <string name="graph_label_low_volume">Low Volume</string>
     <string name="graph_chart_description">%1$s graph, %2$s. Average: %3$s%4$s.</string>
     <string-array name="graph_day_names">
@@ -303,7 +303,7 @@
     <string name="graph_label_minimum">Minimum</string>
     <string name="graph_label_maximum">Maximum</string>
 
-    <string name="graph_label_item_value">%1$s%2$s</string>
+    <string name="graph_label_item_value" translatable="false">%1$s%2$s</string>
 
     <!-- Invitation -->
     <string name="invitations_title">Notifications</string>
@@ -363,6 +363,9 @@
     <string name="home_unavailable_body">We couldn’t load your samples. Check your connection and try again.</string>
     <string name="home_last_sample_message_default">"last sample"</string>
     <string name="home_last_sample_message">"last sample %1$s"</string>
+    <string name="sample_time_today">today at %1$s</string>
+    <string name="sample_time_yesterday">yesterday at %1$s</string>
+    <string name="sample_time_weekday">%1$s at %2$s</string>
 
     <!-- Analytics -->
     <string name="analytic_severely_dehydrated">Severely Dehydrated</string>
@@ -460,10 +463,10 @@
     <!-- Recommendations -->
 
     <!-- Units -->
-    <string name="unit_percentage">%</string>
-    <string name="unit_electrolites">mS/cm</string>
-    <string name="unit_volume">ml</string>
-    <string name="channel_id">KAMLEON_NOTIFICATIONS_CHANNEL</string>
+    <string name="unit_percentage" translatable="false">%</string>
+    <string name="unit_electrolites" translatable="false">mS/cm</string>
+    <string name="unit_volume" translatable="false">ml</string>
+    <string name="channel_id" translatable="false">KAMLEON_NOTIFICATIONS_CHANNEL</string>
     <string name="error_camera_permission_denied">Permission denied</string>
     <string name="error_start_camera">Error starting camera</string>
 
@@ -475,8 +478,8 @@
     <string name="error_no_browser">No browser found to open this page</string>
     <string name="setting_version">Version %1$s (%2$d)</string>
 
-    <string name="default_value">--</string>
-    <string name="user_name_initials">%1$s%2$s</string>
+    <string name="default_value" translatable="false">--</string>
+    <string name="user_name_initials" translatable="false">%1$s%2$s</string>
 
     <string name="switch_thumb_path_checked" translatable="false">M4,16 A12,12 0 0,1 16,4 H16 A12,12 0 0,1 16,28 H16 A12,12 0 0,1 4,16</string>
     <string name="switch_thumb_path_unchecked" translatable="false">M,16 A8,8 0 0,1 16,8 H16 A8,8 0 0,1 16,24 H16 A8,8 0 0,1 8,16</string>

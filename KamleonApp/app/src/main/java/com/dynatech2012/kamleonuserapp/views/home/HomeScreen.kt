@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -52,7 +53,7 @@ import androidx.compose.ui.unit.sp
 import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.MatTheme
 import com.dynatech2012.kamleonuserapp.database.MeasureData
-import com.dynatech2012.kamleonuserapp.extensions.formatTime
+import com.dynatech2012.kamleonuserapp.extensions.sampleTimeText
 import com.dynatech2012.kamleonuserapp.models.HomeContent
 import com.dynatech2012.kamleonuserapp.models.HydrationLevel
 import com.dynatech2012.kamleonuserapp.models.MeasurePrecision
@@ -160,8 +161,9 @@ private fun HomeSample(content: HomeContent, look: HomeLook, modifier: Modifier 
     val measure = (content as? HomeContent.Sample)?.measure
     val precise = measure?.isPrecise == true
     val textColor = colorResource(if (look.lightText) R.color.color_fa else R.color.kamleon_dark_grey)
+    val resources = LocalResources.current
     val lastSample = measure?.let { sample ->
-        val date = remember(sample.analysisDate) { Date(sample.analysisDate).formatTime }
+        val date = remember(sample.analysisDate, resources) { Date(sample.analysisDate).sampleTimeText(resources) }
         stringResource(R.string.home_last_sample_message, date)
     }?.uppercase() ?: stringResource(R.string.home_last_sample_message_default).uppercase()
 

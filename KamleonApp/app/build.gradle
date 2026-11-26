@@ -54,6 +54,10 @@ android {
             useSupportLibrary = true
         }
     }
+    // English (default), Spanish and Catalan: Android 13+ lists them in the app's language setting.
+    androidResources {
+        generateLocaleConfig = true
+    }
     // Fixed baseline for existing debt: fix new issues instead of regenerating it to hide them.
     // Run lint separately from multivariant builds; see the CI recipe.
     lint {

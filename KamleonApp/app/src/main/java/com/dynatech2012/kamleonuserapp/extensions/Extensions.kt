@@ -1,9 +1,13 @@
 package com.dynatech2012.kamleonuserapp.extensions
 
 import android.content.res.Resources
-import com.dynatech2012.kamleonuserapp.views.graph.KamleonUtils
+import com.dynatech2012.kamleonuserapp.R
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -21,14 +25,6 @@ private fun hashString(input: String, algorithm: String): String {
 
 fun String.toDate(pattern: String, locale: Locale = Locale.US): Date =
     SimpleDateFormat(pattern, locale).parse(this) ?: Date(0)
-
-private const val DEFAULT_FORMAT_DATE_WITHOUT_TIME = "MMM dd, yyyy"
-
-fun Date.formatDate(formatStr: String? = KamleonUtils.DEFAULT_FORMAT_DATE_WITHOUT_TIME): String {
-    return SimpleDateFormat(formatStr, Locale.US).format(
-        this
-    )
-}
 
 fun Date.with(
     year: Int = -1,
@@ -123,12 +119,6 @@ fun Date.month(): Int {
     }.get(Calendar.MONTH)
 }
 
-fun Date.day(): Int {
-    return Calendar.getInstance().apply {
-        time = this@day
-    }.get(Calendar.DAY_OF_MONTH)
-}
-
 val Date.isToday: Boolean
     get() = Calendar.getInstance().apply {
         time = this@isToday
@@ -164,83 +154,34 @@ val Date.isLastWeek: Boolean
         return calendar.after(sevenDaysAgo)
     }
 
-val Date.formatTimeForPopup: String
-    get() {
-        val date = this
-        // If it's today, display the time (e.g., "19:00").
-        if (date.isToday) {
-            val dateFormater = SimpleDateFormat("HH:mm", Locale.US)
-            val stringDate =  dateFormater.format(date)
-            return "$stringDate"
-        }
-        // If it's yesterday, display "Yesterday".
-        else if (date.isYesterday) {
-            val dateFormater = SimpleDateFormat("HH:mm", Locale.US)
-            val stringDate = dateFormater.format(date)
-            return "$stringDate"
-        }
-        // If it's within the last week, display the day name (e.g., "Tuesday").
-        else if (date.isLastWeek) {
+/** "19:00": the time in 24-hour format. */
+fun Date.timeText(locale: Locale = Locale.getDefault()): String = SimpleDateFormat("HH:mm", locale).format(this)
 
-            val dateFormater = SimpleDateFormat("EEEE 'at' HH:mm", Locale.US)
-            return dateFormater.format(date)
-        }
-        // If it's more than one week ago, display the full date.
-        else {
+/**
+ * When a sample was taken, in the phone's language: "today at 19:00", "yesterday at 19:00", "Tuesday
+ * at 19:00" within the last week, or the date ("November 24, 2026") before that.
+ */
+fun Date.sampleTimeText(resources: Resources, locale: Locale = Locale.getDefault()): String = when {
+    isToday -> resources.getString(R.string.sample_time_today, timeText(locale))
+    isYesterday -> resources.getString(R.string.sample_time_yesterday, timeText(locale))
+    isLastWeek -> resources.getString(
+        R.string.sample_time_weekday, SimpleDateFormat("EEEE", locale).format(this), timeText(locale)
+    )
+    else -> localDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).withLocale(locale))
+}
 
-            val day = date.day()
-            val daySuffix = if (day in 11..13) {
-                "th"
-            } else when (day % 10) {
-                1 -> "st"
-                2 -> "nd"
-                3 -> "rd"
-                else -> "th"
-            }
-            val dateFormater = SimpleDateFormat("d'$daySuffix' MMMM yyyy", Locale.US)
-            return dateFormater.format(date)
-        }
+/** The date in the phone's language, medium length: "Nov 24, 2026", "24 nov 2026". */
+fun Date.mediumDateText(locale: Locale = Locale.getDefault()): String =
+    localDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale))
 
-    }
+/** The month's short name in the phone's language, as said on its own: "Nov", "nov.". */
+fun Date.shortMonthText(locale: Locale = Locale.getDefault()): String =
+    localDate().format(DateTimeFormatter.ofPattern("LLL", locale))
 
-val Date.formatTime: String
-    get() {
-        val date = this
-        // If it's today, display the time (e.g., "19:00").
-        if (date.isToday) {
-            val dateFormater = SimpleDateFormat("HH:mm", Locale.US)
-            val stringDate =  dateFormater.format(date)
-            return "Today at $stringDate"
-        }
-        // If it's yesterday, display "Yesterday".
-        else if (date.isYesterday) {
-            val dateFormater = SimpleDateFormat("HH:mm", Locale.US)
-            val stringDate = dateFormater.format(date)
-            return "Yesterday $stringDate"
-        }
-        // If it's within the last week, display the day name (e.g., "Tuesday").
-        else if (date.isLastWeek) {
+/** The year: "2026". */
+fun Date.yearText(): String = localDate().year.toString()
 
-            val dateFormater = SimpleDateFormat("EEEE 'at' HH:mm", Locale.US)
-            return dateFormater.format(date)
-        }
-        // If it's more than one week ago, display the full date.
-        else {
-
-            val day = date.day()
-            val daySuffix = if (day in 11..13) {
-                "th"
-            } else when (day % 10) {
-                1 -> "st"
-                2 -> "nd"
-                3 -> "rd"
-                else -> "th"
-            }
-            val dateFormater = SimpleDateFormat("d'$daySuffix' MMMM yyyy", Locale.US)
-            return dateFormater.format(date)
-        }
-
-    }
+private fun Date.localDate(): LocalDate = toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
 
 val Int.dp: Int get() = (this / Resources.getSystem().displayMetrics.density).toInt()
 val Int.px: Int get() = (this * Resources.getSystem().displayMetrics.density).toInt()

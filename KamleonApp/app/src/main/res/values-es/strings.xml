@@ -1,0 +1,447 @@
+<resources>
+
+    <!-- Login & Sign Up -->
+    <string name="placeholder_first_name">Nombre</string>
+    <string name="placeholder_last_name">Apellidos</string>
+    <string name="placeholder_email">Email</string>
+    <string name="placeholder_password">Contraseña</string>
+    <string name="placeholder_password_repeat">Repite la contraseña</string>
+
+    <!-- Login -->
+    <string name="login_title">Iniciar sesión</string>
+    <string name="login_desc">Introduce tus datos para continuar. Si los has olvidado, te ayudamos.</string>
+    <string name="login_desc_pending_scan">Inicia sesión para terminar el escaneo. Vincularemos a tu cuenta el código QR que has escaneado.</string>
+    <string name="login_btn_signin">Iniciar sesión</string>
+    <string name="auth_show_password">Mostrar contraseña</string>
+    <string name="auth_hide_password">Ocultar contraseña</string>
+    <string name="login_alert_title_login_error">Datos no válidos.</string>
+    <string name="login_alert_description_not_verified_email">Email no verificado. Revisa tu correo</string>
+    <string name="login_alert_description_not_valid_email">Email no válido</string>
+    <string name="login_alert_description_user_not_found">Usuario no encontrado</string>
+    <string name="login_alert_description_wrong_pass">Contraseña incorrecta</string>
+    <string name="login_alert_description_login_error_unknown">Error desconocido</string>
+
+    <string name="login_forgot_pwd"><u>¿Has olvidado la contraseña?</u></string>
+    <string name="login_not_have_account">¿Aún no tienes cuenta?</string>
+    <string name="login_signup"><u>Regístrate</u></string>
+
+    <!-- Sign Up -->
+    <string name="signup_title">Registro</string>
+    <string name="signup_desc">Introduce tus datos para acceder a tus analíticas</string>
+    <string name="signup_btn_create_account">Crear cuenta</string>
+    <string name="signup_have_account">¿Ya tienes una cuenta?</string>
+    <string name="signup_login"><u>Inicia sesión</u></string>
+    <string name="signup_error_empty_fields">Introduce tu nombre y tus apellidos</string>
+    <string name="password_hint">Usa 8 o más letras, números y símbolos</string>
+    <string name="password_strength_weak">Contraseña débil</string>
+    <string name="password_strength_good">Contraseña buena</string>
+    <string name="password_strength_strong">Contraseña segura</string>
+    <string name="password_error_too_short">La contraseña debe tener al menos 8 caracteres</string>
+    <string name="password_error_too_long">La contraseña debe tener 128 caracteres o menos</string>
+    <string name="password_error_weak">Esta contraseña es demasiado fácil de adivinar. Prueba con una más larga o menos común</string>
+    <string name="password_error_breached">Esta contraseña ha aparecido en una filtración de datos. Elige otra</string>
+    <string name="pwd_error_same_as_current">La nueva contraseña debe ser distinta de la actual</string>
+    <string name="pwd_error_new_required">Introduce una nueva contraseña</string>
+    <string name="nav_back">Atrás</string>
+    <string name="field_error_email_required">Introduce tu email</string>
+    <string name="field_error_password_required">Introduce tu contraseña</string>
+    <string name="signup_error_first_name_required">Introduce tu nombre</string>
+    <string name="signup_error_last_name_required">Introduce tus apellidos</string>
+    <string name="signup_error_repeat_required">Repite la contraseña</string>
+    <string name="signup_error_password_mismatch">Las contraseñas no coinciden</string>
+    <string name="signup_error_email_pattern">Usa un email válido</string>
+    <string name="signup_session_expired">Tu sesión ha terminado. Inicia sesión para terminar de configurar tu cuenta.</string>
+    <string name="signup_existing_account_title">No se ha podido crear la cuenta</string>
+    <string name="signup_existing_account_message">Si ya tienes una cuenta, inicia sesión o usa ¿Has olvidado la contraseña? para recuperar el acceso.</string>
+    <string name="signup_error_server_error">Ha habido un problema con el registro. Inténtalo de nuevo</string>
+    <string name="signup_complete_profile">Completar perfil</string>
+    <string name="startup_network_error">No se ha podido cargar tu cuenta. Revisa la conexión e inténtalo de nuevo.</string>
+    <string name="startup_error_title">No hemos podido cargar tu cuenta</string>
+    <string name="startup_error_message">Revisa la conexión e inténtalo de nuevo.</string>
+    <string name="startup_error_message_offline">Revisa la conexión e inténtalo de nuevo. También puedes continuar sin conexión con los datos de este móvil.</string>
+    <string name="startup_continue_offline">Continuar sin conexión</string>
+    <string name="startup_server_error_title">Algo ha ido mal</string>
+    <string name="startup_server_error_message">No hemos podido cargar tu cuenta por un problema nuestro. Puedes volver a intentarlo, o cerrar sesión e iniciarla de nuevo. Al cerrar sesión se borran los datos guardados en este móvil.</string>
+    <string name="policy_retry_title">No hemos podido guardar tu respuesta</string>
+    <string name="policy_retry_message">Revisa la conexión e inténtalo de nuevo. También puedes cerrar sesión; al cerrar sesión se borran los datos guardados en este móvil.</string>
+    <string name="verify_done">Ya he verificado mi email</string>
+    <string name="verification_still_pending">Tu email aún no está verificado. Abre el enlace que te hemos enviado y vuelve a intentarlo.</string>
+    <string name="verification_email_failed">No hemos podido enviar el email. Revisa la conexión e inténtalo de nuevo.</string>
+    <string name="action_failed_title">No se ha podido completar</string>
+    <string name="action_failed_message">Algo ha ido mal. Inténtalo de nuevo.</string>
+    <string name="error_code_line">Código de error: %1$s</string>
+    <string name="session_ended_title">Tu sesión ha terminado</string>
+    <string name="session_ended_message">Vuelve a iniciar sesión. Si sigue pasando, contacta con tu organización o con el soporte de Kamleon.</string>
+    <string name="login_error_title_generic">No se ha podido iniciar sesión</string>
+    <string name="login_error_title_network">Sin conexión</string>
+    <string name="login_error_title_too_many">Demasiados intentos</string>
+    <string name="login_error_message_too_many">Espera unos minutos y vuelve a intentarlo.</string>
+    <string name="login_error_title_disabled">Cuenta desactivada</string>
+    <string name="login_error_message_disabled">Tu cuenta se ha desactivado. Contacta con tu organización o con el soporte de Kamleon para recuperar el acceso.</string>
+    <string name="login_account_rejected_title">No hemos podido abrir tu cuenta</string>
+    <string name="login_account_rejected_message">Ahora mismo no se puede acceder a tu cuenta. Contacta con tu organización o con el soporte de Kamleon si sigue pasando.</string>
+    <string name="retry">Reintentar</string>
+    <string name="verification_email_sent">Email de verificación enviado. Revisa tu bandeja de entrada.</string>
+
+    <!-- Forgot Pwd -->
+    <string name="forgotpwd_settings"><u>¿Has olvidado la contraseña?</u></string>
+    <string name="forgotpwd_title">¿Problemas para iniciar sesión?</string>
+    <string name="forgotpwd_desc">Introduce tu email y te enviaremos un enlace para volver a entrar en tu cuenta.</string>
+    <string name="forgotpwd_send">Enviar enlace de acceso</string>
+    <string name="forgotpwd_can_not_reset">¿No puedes restablecer tu contraseña?</string>
+    <string name="forgotpwd_contact">Contactar con Kamleon</string>
+    <string name="forgotpwd_sent">Te hemos enviado un enlace para volver a entrar en tu cuenta</string>
+    <string name="forgotpwd_sending">Enviando enlace…</string>
+    <string name="forgotpwd_sent_if_account">Si hay una cuenta con este email, recibirás un enlace para volver a entrar.</string>
+    <string name="forgotpwd_confirm_title">¿Restablecer la contraseña?</string>
+    <string name="forgotpwd_confirm_desc">Enviaremos un enlace a %1$s para volver a entrar en tu cuenta.</string>
+    <string name="forgotpwd_send_error">No hemos podido enviar el enlace de acceso. Inténtalo de nuevo.</string>
+
+    <!-- Privacy -->
+    <string name="privacy_title">Privacidad</string>
+    <string name="privacy_item1">Acepto la Política de privacidad.*</string>
+    <string name="privacy_item2">Acepto los Términos y condiciones.*</string>
+    <string name="privacy_item3">Doy mi consentimiento para que el responsable del tratamiento trate mis datos personales, incluidos los datos fisiológicos, con la finalidad de estructurarlos y mostrarlos en el perfil de usuario. Consulta la información sobre el consentimiento*\n\n\nPara más información sobre el tratamiento de datos personales que realiza el responsable del tratamiento, consulta la política de privacidad.</string>
+    <string name="privacy_note">*Puedes revocar tu consentimiento en cualquier momento enviando un mensaje a <u>info@kamleon.com</u></string>
+    <string name="privacy_button_next">Siguiente</string>
+    <string name="privacy_word_terms">Términos y condiciones</string>
+    <string name="privacy_word_privacy">Política de privacidad</string>
+    <string name="privacy_word_consent">información sobre el consentimiento</string>
+    <string name="privacy_button_accept_all">Aceptar todo</string>
+
+    <!-- Onboarding -->
+    <string name="onboard_button_skip">Omitir</string>
+    <string name="onboard_button_next">Siguiente</string>
+    <string name="onboard_button_start">¡Empezar!</string>
+    <string name="onboard_step_counter">Paso %1$d de %2$d</string>
+    <string name="onboard_why_birthday">Usamos tu edad para interpretar bien tus resultados. Debes tener al menos %1$d años.</string>
+    <string name="onboard_why_height">Se usa para personalizar tu análisis.</string>
+    <string name="onboard_why_weight">Se usa para personalizar tu análisis.</string>
+    <string name="onboard_why_gender">Se usa para personalizar tu análisis. Puedes elegir no decirlo.</string>
+    <string name="onboard_bottom_text">Puedes cambiarlo más tarde en los ajustes de la app</string>
+    <string name="onboard_bottom_later">Omitir, lo rellenaré más tarde</string>
+    <string name="onboard_noti_title">Mantente al día de tu última muestra</string>
+    <string name="onboard_noti_sub1">Activa las notificaciones</string>
+    <string name="onboard_noti_sub2">Te enviaremos tu puntuación Kamleon justo después de cada uso del urinario. Puedes cambiarlo cuando quieras en Ajustes.</string>
+    <string name="onboard_location_title">Adapta la hidratación al tiempo que hace</string>
+    <string name="onboard_location_sub1">Activa la ubicación</string>
+    <string name="onboard_location_sub2">Permite que Kamleon use los datos de ubicación para servicios personalizados, teniendo en cuenta tu privacidad.</string>
+    <string name="onboard_birthday_title">Fecha de nacimiento</string>
+    <string name="onboard_height_title">Indica tu altura</string>
+    <string name="onboard_weight_title">Indica tu peso</string>
+    <string name="onboard_gender_title">Indica tu género</string>
+
+    <string-array name="onboard_gender_values">
+        <item>Hombre</item>
+        <item>Mujer</item>
+        <item>Otro</item>
+        <item>Prefiero no decirlo</item>
+    </string-array>
+
+    <!-- Settings -->
+    <string name="setting_button_save">Guardar</string>
+    <string name="setting_button_logout">Cerrar sesión</string>
+    <string name="setting_logging_out">Cerrando sesión…</string>
+
+    <string name="setting_label_acc_data">ACCESO Y SEGURIDAD</string>
+    <string name="setting_label_surname">APELLIDOS</string>
+    <string name="setting_label_name">NOMBRE</string>
+    <string name="setting_label_email">EMAIL</string>
+    <string name="setting_label_password">CONTRASEÑA</string>
+    <string name="setting_label_pin">PIN</string>
+    <string name="setting_label_info">AYUDA E INFORMACIÓN LEGAL</string>
+    <string name="setting_label_dsp">INFORMACIÓN SOBRE EL CONSENTIMIENTO</string>
+    <string name="setting_label_tos">TÉRMINOS Y CONDICIONES</string>
+    <string name="setting_label_pp">POLÍTICA DE PRIVACIDAD</string>
+
+    <string name="setting_desc_security">Tu contraseña te da acceso a la app y a la web. Tu PIN es el código que introduces en la pantalla de Kamleon antes de empezar.</string>
+    <string name="setting_label_acc_info">INFORMACIÓN DE LA CUENTA</string>
+    <string name="setting_label_roles">ROLES DE USUARIO</string>
+    <string name="roles_title">Roles de usuario</string>
+    <string name="roles_empty">Aún no tienes ningún rol.</string>
+    <string name="roles_error">No hemos podido cargar tus roles. Revisa la conexión e inténtalo de nuevo.</string>
+    <string name="roles_active">Activo</string>
+    <string name="roles_inactive">Inactivo</string>
+    <string name="roles_center">Centro</string>
+    <string name="roles_roster_number">Dorsal</string>
+    <string name="roles_permissions">Permisos</string>
+    <string name="roles_screen">Pantalla: %1$s</string>
+    <string name="roles_pin">PIN: %1$s</string>
+    <string name="role_org_admin">Admin. de organización</string>
+    <string name="role_center_admin">Admin. de centro</string>
+    <string name="role_center_admin_restricted">Admin. de centro restringido</string>
+    <string name="role_team_admin">Admin. de equipo</string>
+    <string name="role_team_user">Usuario de equipo</string>
+    <string name="role_team_viewer">Lector de equipo</string>
+    <string name="role_kamleon_owner">Propietario Kamleon</string>
+    <string name="role_kamleon_admin">Admin. Kamleon</string>
+    <string name="role_kamleon_editor">Editor Kamleon</string>
+    <string name="role_kamleon_viewer">Lector Kamleon</string>
+
+    <string name="setting_label_user_data">DATOS PERSONALES</string>
+    <string name="setting_label_user_gender">GÉNERO</string>
+    <string name="setting_label_user_weight">PESO</string>
+    <string name="setting_label_user_height">ALTURA</string>
+    <string name="setting_label_user_birthdate">FECHA DE NACIMIENTO</string>
+    <string name="profile_sheet_title_name">Nombre</string>
+    <string name="profile_sheet_title_gender">Género</string>
+    <string name="profile_sheet_title_birth">Fecha de nacimiento</string>
+    <string name="profile_sheet_title_height">Altura</string>
+    <string name="profile_sheet_title_weight">Peso</string>
+    <string name="profile_sheet_title_password">Contraseña</string>
+    <string name="profile_sheet_title_pin">PIN</string>
+    <string name="profile_sheet_name_hint">Nombre</string>
+    <string name="profile_sheet_pin_hint">6 dígitos</string>
+    <string name="profile_sheet_surname_hint">Apellidos</string>
+
+    <string name="setting_label_noti">NOTIFICACIONES</string>
+    <string name="setting_noti_blocked_msg">Las notificaciones de Kamleon están desactivadas en los ajustes del móvil. Ábrelos para activarlas.</string>
+    <string name="setting_noti_open_settings">Abrir ajustes</string>
+    <string name="setting_noti_blocked_short">Las notificaciones están desactivadas en los ajustes del móvil.</string>
+    <string name="setting_label_new_score">NOTIFICACIÓN DE NUEVA PUNTUACIÓN</string>
+    <string name="setting_label_location">UBICACIÓN</string>
+    <string name="setting_label_awuta">PERMITIR MIENTRAS SE USA LA APP</string>
+    <string name="setting_label_allow_once">PERMITIR SOLO ESTA VEZ</string>
+    <string name="setting_label_not_allow">NO PERMITIR</string>
+
+    <string name="setting_desc_pref1">Los datos de usuario son esenciales para ofrecer resultados y recomendaciones personalizados y precisos.</string>
+    <string name="setting_desc_pref2">Recibirás una notificación de Kamleon con tu puntuación después de cada uso del urinario.</string>
+    <string name="setting_desc_pref3">Permite que Kamleon use los datos de ubicación para servicios personalizados, teniendo en cuenta tu privacidad.</string>
+
+    <string name="setting_deactivate">Eliminar mi cuenta</string>
+
+    <!-- Image Pick -->
+    <string name="image_pick_gallery">Elegir de la galería</string>
+    <string name="image_pick_camera">Hacer foto</string>
+    <string name="image_pick_remove">Quitar la foto actual</string>
+    <string name="image_pick_uploading">Subiendo foto</string>
+    <string name="setting_change_photo">Cambiar foto de perfil</string>
+
+    <!-- Pin -->
+    <string name="pin_new">NUEVO PIN</string>
+    <string name="pin_confirm">CONFIRMAR PIN</string>
+    <string name="pin_error_dontmatch">El nuevo PIN y su confirmación no coinciden</string>
+
+    <string name="pwd_error_title">Error</string>
+    <string name="pwd_error_dontmatch">La nueva contraseña y su confirmación no coinciden</string>
+    <string name="pwd_error_generic">Ha habido un error al actualizar la contraseña</string>
+
+    <!-- Change Pass -->
+    <string name="pwd_password">CONTRASEÑA ACTUAL</string>
+    <string name="pwd_new">NUEVA CONTRASEÑA</string>
+    <string name="pwd_confirm">CONFIRMAR CONTRASEÑA</string>
+
+    <!-- Tab -->
+    <string name="tab_home">INICIO</string>
+    <string name="tab_analytic">ANALÍTICAS</string>
+    <string name="tab_qr">ESCANEAR</string>
+
+    <!-- QR -->
+    <string name="qr_scan_now">¡ESCANEA AHORA!</string>
+
+    <!-- Graph -->
+    <string name="graph_header_item_daily">Diario</string>
+    <string name="graph_header_item_weekly">Semanal</string>
+    <string name="graph_header_item_monthly">Mensual</string>
+    <string name="graph_header_item_yearly">Anual</string>
+
+    <string name="graph_header_average">MEDIA</string>
+    <string name="graph_footer_streak">Racha</string>
+    <string name="graph_footer_limit">Límites</string>
+
+    <string name="graph_label_optimum">Óptimo</string>
+    <string name="graph_no_samples">No hay muestras válidas en este periodo</string>
+    <string name="graph_label_low_volume">Volumen bajo</string>
+    <string name="graph_chart_description">Gráfico de %1$s, %2$s. Media: %3$s%4$s.</string>
+    <string-array name="graph_day_names">
+        <item>Dom</item>
+        <item>Lun</item>
+        <item>Mar</item>
+        <item>Mié</item>
+        <item>Jue</item>
+        <item>Vie</item>
+        <item>Sáb</item>
+    </string-array>
+    <string-array name="graph_month_names">
+        <item>Ene</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Abr</item>
+        <item>May</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Ago</item>
+        <item>Sep</item>
+        <item>Oct</item>
+        <item>Nov</item>
+        <item>Dic</item>
+    </string-array>
+    <string name="graph_label_minimum">Mínimo</string>
+    <string name="graph_label_maximum">Máximo</string>
+
+    <!-- Invitation -->
+    <string name="invitations_title">Notificaciones</string>
+    <string name="invitations_empty">No tienes invitaciones.</string>
+    <string name="invitations_error">No hemos podido cargar tus invitaciones. Revisa la conexión e inténtalo de nuevo.</string>
+    <string name="invitations_previous">Invitaciones anteriores</string>
+    <string name="invitations_see_all">Ver todas las invitaciones anteriores</string>
+    <string name="invitation_text">%1$s te ha invitado a unirte a %2$s como %3$s</string>
+    <string name="invitation_text_no_entity">%1$s te ha invitado a ser %2$s</string>
+    <string name="invitation_accepted_text">Te has unido a %1$s como %2$s</string>
+    <string name="invitation_accepted_text_no_entity">Ahora eres %1$s</string>
+    <string name="invitation_someone">Alguien</string>
+    <string name="invitation_today">Hoy</string>
+    <string name="invitation_yesterday">Ayer</string>
+    <plurals name="invitation_days_ago">
+        <item quantity="one">Hace %d día</item>
+        <item quantity="many">Hace %d días</item>
+        <item quantity="other">Hace %d días</item>
+    </plurals>
+    <string name="invitation_expires_today">Caduca hoy</string>
+    <plurals name="invitation_expires_in">
+        <item quantity="one">Caduca en %d día</item>
+        <item quantity="many">Caduca en %d días</item>
+        <item quantity="other">Caduca en %d días</item>
+    </plurals>
+    <string name="invitation_expired">Caducada</string>
+    <string name="invitation_accepted">Aceptada</string>
+    <string name="invitation_declined_state">Rechazada</string>
+    <string name="invitation_privacy">Acepto la %1$s</string>
+    <string name="invitation_privacy_link">Política de privacidad</string>
+    <string name="invitation_accept">Aceptar</string>
+    <string name="invitation_decline">Rechazar</string>
+    <string name="invitation_dismiss">Descartar</string>
+    <string name="invitation_loading">Cargando…</string>
+    <string name="invitation_accepted_msg">Invitación aceptada</string>
+    <string name="invitation_declined">Invitación rechazada</string>
+    <string name="invitation_accept_failed">No se ha podido aceptar la invitación</string>
+    <string name="invitation_decline_failed">No se ha podido rechazar la invitación</string>
+    <string name="invitation_dismiss_failed">No se ha podido descartar la invitación</string>
+    <string name="invitation_no_longer_valid">Esta invitación ya no es válida.</string>
+    <string name="noti_channel_name">Nueva puntuación</string>
+    <string name="noti_channel_description">Tu puntuación Kamleon después de cada uso del urinario.</string>
+    <string name="noti_newmeasure_title">¡Nueva medida!</string>
+    <string name="noti_newmeasure_text">Puedes ver sus resultados en la app.</string>
+
+    <!--HomeScreen-->
+    <string name="home_metric_electrolytes">Electrolitos</string>
+    <string name="home_metric_volume">Volumen</string>
+    <string name="home_status_loading">Cargando tus datos…</string>
+    <string name="home_status_empty">Aún no hay muestras</string>
+    <string name="home_status_unavailable">Datos no disponibles</string>
+    <string name="home_profile_button">Perfil y ajustes</string>
+    <string name="home_notifications_button">Notificaciones</string>
+    <string name="home_notifications_button_new">Notificaciones, invitaciones nuevas</string>
+    <string name="home_score_description">Puntuación de hidratación %1$d%%</string>
+    <string name="home_empty_body">Escanea un código QR de Kamleon después de tu próxima muestra para ver aquí tu hidratación.</string>
+    <string name="home_empty_scan">Escanear QR</string>
+    <string name="home_unavailable_body">No hemos podido cargar tus muestras. Revisa la conexión e inténtalo de nuevo.</string>
+    <string name="home_last_sample_message_default">"última muestra"</string>
+    <string name="home_last_sample_message">"última muestra %1$s"</string>
+    <string name="sample_time_today">hoy a las %1$s</string>
+    <string name="sample_time_yesterday">ayer a las %1$s</string>
+    <string name="sample_time_weekday">el %1$s a las %2$s</string>
+
+    <!-- Analytics -->
+    <string name="analytic_severely_dehydrated">Muy deshidratado</string>
+    <string name="analytic_dehydrated">Deshidratado</string>
+    <string name="analytic_hydrated">Hidratado</string>
+    <string name="analytic_very_hydrated">Muy bien hidratado</string>
+
+    <string name="analytic_hydratation_optimal">La hidratación de tu última orina está en el nivel recomendado.</string>
+    <string name="analytic_hydratation_under">La hidratación de tu última orina está por debajo del nivel recomendado.</string>
+
+    <string name="analytic_elec_hypo">Hipotónico</string>
+    <string name="analytic_elec_normal">Equilibrado</string>
+    <string name="analytic_elec_hyper">Hipertónico</string>
+
+    <string name="analytic_elec_under">Tus niveles de electrolitos están por debajo del rango óptimo.</string>
+    <string name="analytic_elec_optimal">Tus niveles de electrolitos están dentro del rango óptimo.</string>
+    <string name="analytic_elec_above">Tus niveles de electrolitos están por encima del rango óptimo.</string>
+
+    <string name="analytic_volume_insuff_title">Insuficiente</string>
+    <string name="analytic_volume_low">Volumen insuficiente</string>
+    <string name="analytic_volume_medium">Medio</string>
+    <string name="analytic_volume_high">Volumen alto</string>
+
+    <string name="analytic_volume_insuff_desc">Tu muestra no tiene volumen suficiente para analizarse. El análisis podría no ser válido.</string>
+    <string name="analytic_volume_good">Tu muestra tiene buen volumen para analizarse.</string>
+
+    <string name="analytic_no_data">Sin datos</string>
+    <string name="analytic_metric_hydration">Hidratación</string>
+    <string name="analytic_metric_electrolytes">Electrolitos</string>
+    <string name="analytic_metric_volume">Volumen</string>
+    <plurals name="analytic_value_hydration">
+        <item quantity="one">%1$d por ciento</item>
+        <item quantity="many">%1$d por ciento</item>
+        <item quantity="other">%1$d por ciento</item>
+    </plurals>
+    <plurals name="analytic_value_electrolytes">
+        <item quantity="one">%1$d milisiemens por centímetro</item>
+        <item quantity="many">%1$d milisiemens por centímetro</item>
+        <item quantity="other">%1$d milisiemens por centímetro</item>
+    </plurals>
+    <plurals name="analytic_value_volume">
+        <item quantity="one">%1$d mililitro</item>
+        <item quantity="many">%1$d mililitros</item>
+        <item quantity="other">%1$d mililitros</item>
+    </plurals>
+    <string name="analytic_note_no_sample">Escanea el QR del S-Urinal después de tu próxima muestra para ver aquí tus métricas.</string>
+    <string name="analytic_note_imprecise">Esta muestra no tenía volumen suficiente para medir con precisión la hidratación y los electrolitos, así que solo se muestra su volumen.</string>
+
+    <!-- Dialog -->
+    <string name="dialog_saved_text">Tus cambios se han guardado correctamente</string>
+    <string name="dialog_ok">Aceptar</string>
+    <string name="dialog_cancel">CANCELAR</string>
+    <string name="dialog_logout_title">¿Cerrar sesión?</string>
+    <string name="dialog_logout_msg">Necesitarás tu email y tu contraseña para volver a iniciar sesión.</string>
+    <string name="dialog_logout_y">Cerrar sesión</string>
+    <string name="dialog_logout_n">Cancelar</string>
+    <string name="dialog_deactive_n">Cancelar</string>
+    <string name="dialog_reset_pwd_success_description">Has cambiado tu contraseña correctamente</string>
+    <string name="dialog_reset_pwd_error_title">Error</string>
+    <string name="dialog_reset_pin_success_description">Has cambiado tu PIN correctamente</string>
+    <string name="scan_hint">Escanea el código QR que aparece en el S-Urinal</string>
+    <string name="scan_not_kamleon">Este código QR no es de Kamleon</string>
+    <string name="scan_linking">Vinculando tu escaneo</string>
+    <string name="scan_invalid_title">Este código QR no se puede usar</string>
+    <string name="scan_invalid_message">El enlace está incompleto o ha caducado. Vuelve a escanear el código QR del S-Urinal.</string>
+    <string name="scan_again">Volver a escanear</string>
+    <string name="scan_torch_on">Encender la linterna</string>
+    <string name="scan_torch_off">Apagar la linterna</string>
+    <string name="scan_help">Cómo escanear</string>
+    <string name="scan_intro_message">Acerca el móvil al código QR de la pantalla del S-Urinal y mantén el código dentro del marco.</string>
+    <string name="scan_camera_denied_title">Se necesita acceso a la cámara</string>
+    <string name="scan_camera_denied_message">Kamleon usa la cámara solo para escanear el código QR del S-Urinal.</string>
+    <string name="scan_allow_camera">Permitir cámara</string>
+    <string name="scan_no_camera_title">No hay cámara disponible</string>
+    <string name="scan_no_camera_message">Para escanear hace falta una cámara, y este móvil no tiene ninguna que la app pueda usar.</string>
+    <string name="scan_camera_blocked_message">Kamleon usa la cámara solo para escanear el código QR del S-Urinal. Permítela en los ajustes de la app para escanear.</string>
+    <string name="dialog_scan_scanned">QR escaneado correctamente</string>
+    <string name="dialog_scan_scanned_message">Estás vinculado a este S-Urinal. Tus resultados aparecerán en la app cuando termine el análisis.</string>
+    <string name="dialog_scan_failed_title">No hemos podido vincular el código QR</string>
+    <string name="dialog_scan_failed_message">Revisa la conexión y vuelve a escanearlo.</string>
+    <string name="notifications_intro_activate">Activar</string>
+    <string name="notifications_intro_later">Ahora no</string>
+    <string name="dialog_policy_title">Política de privacidad</string>
+    <string name="dialog_policy_desc">Proteger tu privacidad es fundamental. Antes de usar la app, acepta la política. Para más información, consulta la <u>Política de privacidad</u></string>
+    <string name="dialog_policy_agree">Aceptar</string>
+    <string name="dialog_policy_disagree"><u>No acepto, cerrar sesión</u></string>
+    <string name="dialog_verify_title">Verifica tu email</string>
+    <string name="dialog_verify_desc">Hemos enviado un email a %1$s\n\nNecesitas verificar tu email para continuar. Si no has recibido el email de verificación, revisa la carpeta de spam o correo no deseado. También puedes pulsar el botón de reenviar para recibir otro email.</string>
+    <string name="dialog_verify_resend"><u>Reenviar email de verificación</u></string>
+
+    <!-- Error -->
+    <string name="error_login">Error al iniciar sesión</string>
+    <string name="error_camera_permission_denied">Permiso denegado</string>
+    <string name="error_start_camera">Error al iniciar la cámara</string>
+
+    <!-- Help -->
+    <string name="help_contact">CONTACTAR CON KAMLEON</string>
+    <string name="help_contact_subtitle">Ponte en contacto con Kamleon para soporte, consultas o comentarios.</string>
+    <string name="help_error_mail">No se ha encontrado ninguna app de correo</string>
+    <string name="support_email_subject">Soporte de la app Kamleon</string>
+    <string name="error_no_browser">No se ha encontrado ningún navegador para abrir esta página</string>
+    <string name="setting_version">Versión %1$s (%2$d)</string>
+
+</resources>

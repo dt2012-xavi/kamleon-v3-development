@@ -110,7 +110,7 @@ class GraphScreenTest {
         val description = composeRule.onNodeWithTag("graph_chart").fetchSemanticsNode()
             .config[androidx.compose.ui.semantics.SemanticsProperties.ContentDescription].single()
         val hydration = context.getString(R.string.analytic_metric_hydration)
-        assert(description.startsWith(hydration)) { description }
+        assert(description.contains(hydration)) { description }
         assert(description.contains("80")) { description }
     }
 

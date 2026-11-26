@@ -5,7 +5,9 @@ import com.dynatech2012.kamleonuserapp.extensions.dayOfWeekIndex
 import com.dynatech2012.kamleonuserapp.database.AveragesData
 import com.dynatech2012.kamleonuserapp.extensions.addDays
 import com.dynatech2012.kamleonuserapp.extensions.addMonths
-import com.dynatech2012.kamleonuserapp.extensions.formatDate
+import com.dynatech2012.kamleonuserapp.extensions.mediumDateText
+import com.dynatech2012.kamleonuserapp.extensions.shortMonthText
+import com.dynatech2012.kamleonuserapp.extensions.yearText
 import com.dynatech2012.kamleonuserapp.models.ElectrolyteLevel
 import com.dynatech2012.kamleonuserapp.models.HydrationLevel
 import java.util.Locale
@@ -18,7 +20,7 @@ fun KamleonGraphBarDrawData.barLabel(index: Int): String {
     return when (mode) {
         KamleonGraphViewMode.Daily -> names.hour(index)
         KamleonGraphViewMode.Weekly -> names.days[startDate.addDays(index).dayOfWeekIndex]
-        KamleonGraphViewMode.Monthly -> startDate.addDays(index).formatDate("dd MMM, yyyy")
+        KamleonGraphViewMode.Monthly -> startDate.addDays(index).mediumDateText()
         KamleonGraphViewMode.Yearly -> names.months[startDate.addMonths(index).monthIndex]
     }
 }
@@ -47,10 +49,10 @@ fun KamleonGraphBarDrawData.averageText(): String {
 
 /** The period the graph covers: a day, a range of days, of months or of years. */
 fun KamleonGraphBarDrawData.periodText(): String = when (mode) {
-    KamleonGraphViewMode.Daily -> date.formatDate("dd MMM, yyyy")
-    KamleonGraphViewMode.Weekly -> startDate().formatDate("dd MMM, yyyy") + " - " + endDate().formatDate("dd MMM, yyyy")
-    KamleonGraphViewMode.Monthly -> startDate().formatDate("MMM") + " - " + endDate().formatDate("MMM")
-    KamleonGraphViewMode.Yearly -> startDate().formatDate("yyyy") + " - " + endDate().formatDate("yyyy")
+    KamleonGraphViewMode.Daily -> date.mediumDateText()
+    KamleonGraphViewMode.Weekly -> startDate().mediumDateText() + " - " + endDate().mediumDateText()
+    KamleonGraphViewMode.Monthly -> startDate().shortMonthText() + " - " + endDate().shortMonthText()
+    KamleonGraphViewMode.Yearly -> startDate().yearText() + " - " + endDate().yearText()
 }
 
 /** The streak as "bars in the optimum range" over "bars with precise data". */

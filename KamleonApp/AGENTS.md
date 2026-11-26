@@ -6,9 +6,10 @@ Guia para trabajar en este proyecto con agentes de codigo. Aplica a todo el arbo
 
 - App Android multi-modulo: `:app`, `:datepicker` y `:wheelview`.
 - Paquete principal: `com.dynatech2012.kamleonuserapp`.
-- Stack principal: Kotlin, Android XML/ViewBinding, algunos `ComposeView`/Compose embebidos, Hilt, Firebase, Room, Navigation Component, CameraX, ML Kit y ZXing.
-- Java/Kotlin: casi todo es Kotlin; queda una interfaz Java en `app/src/main/java/com/dynatech2012/kamleonuserapp/camera/QRCodeFoundListener.java`.
-- SDK/JVM: `compileSdk 36`, `targetSdk 36`, Java/Kotlin JVM target 17.
+- Stack principal: Kotlin, fragments XML/ViewBinding que alojan pantallas Compose, Hilt, Firebase, Room, Navigation Component, CameraX y ML Kit.
+- Todo el codigo es Kotlin.
+- SDK/JVM: `minSdk 30`, `compileSdk 36`, `targetSdk 36`, Java/Kotlin JVM target 17. Hilt y Room usan KSP (no kapt).
+- Versiones de dependencias y plugins en `gradle/libs.versions.toml`.
 - Los modulos `datepicker` y `wheelview` son librerias locales basadas en Compose, con configuracion de publicacion Maven local en sus `build.gradle`.
 
 ## Comandos Habituales
@@ -42,15 +43,19 @@ Notas:
 
 ## Estructura Importante
 
-- `app/build.gradle`: configuracion principal de Android, flavors, Compose, Hilt, Firebase, Room, CameraX y ML Kit.
+- `app/build.gradle`: configuracion principal de Android, version (`versionCode`/`versionName`), flavors, firma y lint.
+- `app/lint-baseline.xml`: deuda de lint existente. Corrige los avisos nuevos en lugar de regenerarla para ocultarlos.
 - `app/src/main/AndroidManifest.xml`: permisos, `InitActivity`, `MainActivity`, app links `/scan`, `FileProvider` y `NotificationService`.
+- `docs/runbooks/`: build y manifest, release, logging, componentes Compose, codigos de error, CI de GitLab y politica de contrasenas.
 - `app/src/main/java/com/dynatech2012/kamleonuserapp/base`: `BaseActivity` y `BaseFragment` con ViewBinding e inicializacion `initView()`/`initEvent()`.
 - `app/src/main/java/com/dynatech2012/kamleonuserapp/activities`: arranque, deep links y flujo principal.
-- `app/src/main/java/com/dynatech2012/kamleonuserapp/fragments`: pantallas principales. La mayoria usan XML + ViewBinding.
+- `app/src/main/java/com/dynatech2012/kamleonuserapp/fragments`: pantallas principales. Cada `XxxFragment` aloja su `XxxScreen` Compose.
+- `app/src/main/java/com/dynatech2012/kamleonuserapp/views`: componentes Compose compartidos (`KamleonComponents.kt`, `KamleonSheet.kt`, `KamleonInputBox.kt`), hojas (sheets) y la cinta de entorno (`EnvironmentRibbon.kt`).
 - `app/src/main/java/com/dynatech2012/kamleonuserapp/viewmodels`: `AuthViewModel`, `MainViewModel`, `QrViewModel`, `ForgotPwdViewModel`.
 - `app/src/main/java/com/dynatech2012/kamleonuserapp/repositories`: acceso a Firebase Auth, Firestore, Realtime Database, Cloud Functions, storage interno y Room.
 - `app/src/main/java/com/dynatech2012/kamleonuserapp/database`: entidades/DAOs/bases Room para medidas y medias diarias/mensuales.
 - `app/src/main/res/navigation`: grafos `login_nav.xml`, `main_nav.xml` y `tab_nav.xml`.
+- `app/src/main/res/values/strings.xml` (ingles, por defecto), `values-es/` (castellano) y `values-ca/` (catalan).
 - `app/src/<flavor>/java/.../constants/UrlConstants.kt`: URLs por entorno.
 - `app/src/<flavor>/google-services.json`: configuracion Firebase por entorno.
 
@@ -62,6 +67,8 @@ Hay una dimension `environment` con estos flavors:
 - `development`: app name `Kamleon-DEV`, host `dev.kamleon.app`, suffix `-dev`.
 - `prod`: app name `Kamleon`, host `kamleon.app`.
 - `preProduction`: app name `Kamleon-PRE`, host `pre.kamleon.app`, suffix `-pre`.
+
+Cada flavor define tambien `BuildConfig.APP_LINK_HOST` y `BuildConfig.ENVIRONMENT_LABEL` (`INT`, `DEV`, `PRE`; vacio en prod), que muestra la cinta de entorno en la esquina superior derecha.
 
 Cuando cambies URLs legales, app links, Firebase o constantes de entorno, revisa todos los `UrlConstants.kt` y los `manifestPlaceholders` del flavor afectado.
 
@@ -76,8 +83,9 @@ Cuando cambies URLs legales, app links, Firebase o constantes de entorno, revisa
 - Se usa `Response<T>`/`ResponseNullable<T>` para estados de exito/error/loading.
 - Para eventos de un solo consumo se usa `Event<T>` y `observeEvent(...)`.
 - La navegacion se define en XML; al anadir destinos o acciones, actualizar el grafo correspondiente y usar IDs existentes cuando sea posible.
-- La UI principal sigue siendo XML/ViewBinding. Usa Compose solo donde ya existe un `ComposeView`, `AbstractComposeView` o en los modulos `datepicker`/`wheelview`, salvo que la tarea pida migrar.
-- Mantener constantes en `constants/` y strings visibles en `res/values/strings.xml`.
+- La UI nueva se escribe en Compose dentro de los fragments existentes, reutilizando los componentes de `views/`. Ver `docs/runbooks/compose-ui-components.md`.
+- Mantener constantes en `constants/`.
+- Todo texto visible va en `res/values/strings.xml` en ingles y con su traduccion en `values-es/strings.xml` y `values-ca/strings.xml`. Ningun string nuevo sin las tres versiones.
 
 ## Datos, Firebase y Persistencia
 
@@ -86,16 +94,14 @@ Cuando cambies URLs legales, app links, Firebase o constantes de entorno, revisa
 - `MeasuresRepository` sincroniza medidas desde Room y Firebase.
 - Room tiene tres bases separadas: `MeasureDatabase`, `AverageDailyMeasureDatabase`, `AverageMonthlyMeasureDatabase`.
 - Si cambias entidades Room, incrementa versiones y define migraciones si hace falta; no uses cambios destructivos sin confirmar.
-- No loguees credenciales, tokens, PINs, emails sensibles o payloads medicos. Hay logs existentes verbosos; no los repliques en codigo nuevo.
+- Logs con Timber, solo en builds debug. No loguees credenciales, tokens, PINs, emails, identificadores ni payloads medicos. Ver `docs/runbooks/android-logging.md`.
 
 ## QR, Deep Links y Permisos
 
 - `InitActivity` recibe app links `https://<host>/scan?unitId=...&sessionId=...` y pasa datos a `MainActivity`.
 - `MainActivity` sube el QR mediante `QrViewModel`.
-- Analizadores QR:
-  - `QRCodeImageAnalyzerMLKitKotlin`: flujo actual con ML Kit y `StateFlow<Response<String>>`.
-  - `QRCodeImageAnalyzerKotlin`: alternativa ZXing con callback Java.
-- El manifest declara permisos de camara, ubicacion coarse, notificaciones y almacenamiento legacy. Revisa compatibilidad Android 13+ al tocar permisos.
+- El escaner usa `camera/QrCodeAnalyzer.kt` (ML Kit). `viewmodels/ScanLink.kt` valida los enlaces y sus IDs contra `BuildConfig.APP_LINK_HOST`.
+- El manifest declara permisos de camara, notificaciones y estado de red. Revisa compatibilidad Android 13+ al tocar permisos.
 
 ## Estilo de Trabajo
 
