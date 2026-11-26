@@ -61,7 +61,11 @@ object AppModule {
     fun userRepositoryProvider(gate: NetworkGate): UserRepository = UserRepository(gate)
     @Provides
     @Singleton
-    fun firestoreRepositoryProvider(userRepository: UserRepository, gate: NetworkGate): FirestoreDataSource = FirestoreDataSource(userRepository, gate)
+    fun firestoreRepositoryProvider(
+        @ApplicationContext context: Context,
+        userRepository: UserRepository,
+        gate: NetworkGate
+    ): FirestoreDataSource = FirestoreDataSource(context, userRepository, gate)
 
     @Provides
     @Singleton

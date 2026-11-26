@@ -4,6 +4,7 @@ import android.app.Application
 import android.os.Build
 import com.dynatech2012.kamleonuserapp.BuildConfig
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.service.NotificationService
 import com.google.firebase.FirebaseApp
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.HiltAndroidApp
@@ -16,6 +17,8 @@ class MyApplication: Application() {
         super.onCreate()
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
         FirebaseApp.initializeApp(this)
+        // Before any push arrives, so Firebase's own notifications use it too.
+        NotificationService.createChannel(this)
         val packageInfo = packageManager.getPackageInfo(packageName, 0)
         val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             packageInfo.longVersionCode

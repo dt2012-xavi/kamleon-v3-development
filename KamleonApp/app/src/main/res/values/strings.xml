@@ -340,7 +340,8 @@
     <string name="invitation_decline_failed">Could not decline the invitation</string>
     <string name="invitation_dismiss_failed">Could not dismiss the invitation</string>
     <string name="invitation_no_longer_valid">This invitation is no longer valid.</string>
-    <string name="noti_channel_id">kamleonChannel</string>
+    <string name="noti_channel_name">New score</string>
+    <string name="noti_channel_description">Your Kamleon score after every urinal use.</string>
     <string name="noti_newmeasure_title">New measure!</string>
     <string name="noti_newmeasure_text">You can check its results in the app.</string>
 

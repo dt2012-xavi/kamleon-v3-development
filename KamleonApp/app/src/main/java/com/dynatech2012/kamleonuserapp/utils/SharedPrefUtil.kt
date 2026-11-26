@@ -8,7 +8,6 @@ import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_FIRST_
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_REALTIMEDAILY
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_REALTIMEMONTHLY
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_USER_EMAIL
-import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_USER_ID
 import com.dynatech2012.kamleonuserapp.constants.PreferenceConstants.PREF_USER_PASSWORD
 
 class SharedPrefUtil(private val mContext: Context) {
@@ -151,7 +150,6 @@ class SharedPrefUtil(private val mContext: Context) {
     fun removeUser() {
         removeKey(PREF_USER_EMAIL)
         removeKey(PREF_USER_PASSWORD)
-        removeKey(PREF_USER_ID)
         removeKey(PREF_DATEFIRESTORE)
         removeKey(PREF_REALTIMEDAILY)
         removeKey(PREF_REALTIMEMONTHLY)

@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.repositories
 
+import android.content.Context
 import android.net.Uri
 import com.dynatech2012.kamleonuserapp.constants.Constants
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants
@@ -8,6 +9,7 @@ import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.ORGANIZATIONS
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.TEAMS_COLLECTION
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_COLLECTION
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.USERS_TOKEN
+import com.google.firebase.installations.FirebaseInstallations
 import com.dynatech2012.kamleonuserapp.constants.FirebaseConstants.kANALYSIS_TYPE_URINE
 import com.dynatech2012.kamleonuserapp.database.MeasureData
 import com.dynatech2012.kamleonuserapp.models.CustomUser
@@ -22,6 +24,7 @@ import com.dynatech2012.kamleonuserapp.models.UserRoles
 import com.dynatech2012.kamleonuserapp.models.UserStatus
 import com.dynatech2012.kamleonuserapp.network.CallKind
 import com.dynatech2012.kamleonuserapp.network.NetworkGate
+import com.dynatech2012.kamleonuserapp.service.PushDevices
 import com.dynatech2012.kamleonuserapp.utils.DebugLog
 import com.google.firebase.Firebase
 
@@ -39,9 +42,11 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 import java.util.Date
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class FirestoreDataSource @Inject constructor(
+    @param:ApplicationContext private val appContext: Context,
     private val userRepository: UserRepository,
     private val gate: NetworkGate
 ) {
@@ -245,13 +250,17 @@ class FirestoreDataSource @Inject constructor(
 
     // Invitations
 
+    /**
+     * Registers this phone for pushes and saves it in the user's [PushDevices]. A later change of its
+     * installation ID arrives in NotificationService.onRegistered.
+     */
     suspend fun updateToken(): Response<Boolean> {
         val userId = uuid ?: return Response.Failure(Exception("User not logged in"))
         return gate.safeCall(CallKind.Action) {
-            // Get new FCM registration token
-            val token = FirebaseMessaging.getInstance().token.await()
-            DebugLog.d(TAG) { "Updating FCM registration token" }
-            db.collection(USERS_COLLECTION).document(userId).update(USERS_TOKEN, token).await()
+            FirebaseMessaging.getInstance().register().await()
+            val fid = FirebaseInstallations.getInstance().id.await()
+            DebugLog.d(TAG) { "Saving this device for pushes" }
+            PushDevices.save(appContext, userId, fid).await()
             true
         }
     }
@@ -259,7 +268,8 @@ class FirestoreDataSource @Inject constructor(
     suspend fun deleteToken(): Response<Boolean> {
         val userId = uuid ?: return Response.Failure(Exception("User not logged in"))
         return gate.safeCall(CallKind.Action) {
-            db.collection(USERS_COLLECTION).document(userId).update(USERS_TOKEN, "").await()
+            // Only this device stops getting pushes; the user's other devices keep theirs.
+            PushDevices.remove(userId, FirebaseInstallations.getInstance().id.await()).await()
             true
         }
     }

@@ -10,7 +10,6 @@ package com.dynatech2012.kamleonuserapp.constants
 object PreferenceConstants {
     const val PREF_USER_EMAIL = "email"
     const val PREF_USER_PASSWORD = "password"
-    const val PREF_USER_ID = "user_id"
     const val PREF_DATEFIRESTORE = "lastDateFirestoreChecked"
     const val PREF_REALTIMEDAILY = "lastDateRealtimeDailyChecked"
     const val PREF_REALTIMEMONTHLY = "lastDateRealtimeMonthlyChecked"
@@ -18,6 +17,8 @@ object PreferenceConstants {
     const val PREF_FIRST_LOGIN = "firstLogin"
     const val PREF_ACCEPTED_POLICY = "acceptedPolicy"
     const val PREF_NEW_MEASURE = "newMeasure"
+    /** The installation ID this phone last saved in the user's pushDevices, to replace it when it changes. */
+    const val PREF_PUSH_FID = "pushFid"
     /** Whether the scanner's how-to sheet has been shown once; after that it opens from its button. */
     const val PREF_SCAN_INTRO_SEEN = "scanIntroSeen"
     /** Whether the app already asked for the camera, to tell a refusal for good from a first time. */

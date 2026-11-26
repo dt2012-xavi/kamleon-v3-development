@@ -44,6 +44,11 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/channel_id" />
+        <!-- Pushes are addressed to the Firebase installation ID (saved as users/{uid}.fid), not to
+             the deprecated FCM registration token: register()/onRegistered() instead of getToken(). -->
+        <meta-data
+            android:name="firebase_messaging_installation_id_enabled"
+            android:value="true" />
         <!-- Both activities: portrait is a temporary constraint of the current UI.
              API 36 may ignore it on large screens: restore state and test resizing/rotation.
              Do not add configChanges to hide activity recreation.
