@@ -4,6 +4,7 @@ import android.app.Application
 import android.os.Build
 import com.dynatech2012.kamleonuserapp.BuildConfig
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
 import com.dynatech2012.kamleonuserapp.service.NotificationService
 import com.dynatech2012.kamleonuserapp.views.EnvironmentRibbon
 import com.google.firebase.FirebaseApp
@@ -21,6 +22,7 @@ class MyApplication: Application() {
         // Before any push arrives, so Firebase's own notifications use it too.
         NotificationService.createChannel(this)
         EnvironmentRibbon.install(this)
+        Analytics.init(this)
         val packageInfo = packageManager.getPackageInfo(packageName, 0)
         val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             packageInfo.longVersionCode

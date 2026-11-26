@@ -1,5 +1,7 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import com.dynatech2012.kamleonuserapp.analytics.AppScreen
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
 import android.Manifest
 import android.content.Intent
 import android.os.Build
@@ -72,6 +74,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
     }
     override fun initView() {
         DebugLog.d(TAG) { "init view" }
+        Analytics.screen(AppScreen.Account)
         binding.tvSettingVersion.text = getString(R.string.setting_version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
         binding.cvSettingBell.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         binding.cvSettingBell.setContent {

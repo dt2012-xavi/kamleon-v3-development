@@ -21,6 +21,9 @@ import com.dynatech2012.kamleonuserapp.security.PasswordPolicy
 import com.dynatech2012.kamleonuserapp.security.PasswordPolicyReason
 import com.dynatech2012.kamleonuserapp.security.PasswordPolicyResult
 import com.dynatech2012.kamleonuserapp.security.PasswordStrength
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
+import com.dynatech2012.kamleonuserapp.analytics.AnalyticsEvents
+import com.dynatech2012.kamleonuserapp.analytics.AnalyticsProps
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.google.firebase.firestore.Source
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -181,13 +184,21 @@ class AuthViewModel @Inject constructor(
                         )
                     if (registerResult.isSuccess && registerResult.dataValue != null) {
                         profileCreated = true
+                        authRepo.uuid?.let { Analytics.identify(it, email, recordLogin = false) }
+                        Analytics.track(
+                            AnalyticsEvents.SIGNUP_COMPLETED,
+                            mapOf("consentGiven" to true, "viaInvitation" to false)
+                        )
                         _uiState.postValue(2)
-                        if (authRepo.isEmailVerified) _uiState.postValue(3) else sendVerificationEmail()
+                        if (authRepo.isEmailVerified) _uiState.postValue(3) else sendVerificationEmail(VerificationContext.SIGNUP)
+                        Analytics.track(AnalyticsEvents.SIGNUP_STEP2_VIEWED)
                     } else {
+                        Analytics.track(AnalyticsEvents.SIGNUP_FAILED, AnalyticsProps.failureProps(analyticsErrorCode(registerResult.error)))
                         recoveringProfile = authRepo.checkLogged && authRepo.email == email
                         _uiState.postValue(-1)
                     }
                 } else {
+                    Analytics.track(AnalyticsEvents.SIGNUP_FAILED, AnalyticsProps.failureProps(analyticsErrorCode(authResult?.error)))
                     _uiState.postValue(
                         if (resumingProfile || authResult?.error is FirebaseAuthUserCollisionException) -7
                         else -1
@@ -269,6 +280,10 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val registerResult = firestoreRepo.createUserStep2(height, weight, gender)
             Timber.d("Registration profile update succeeded: %s", registerResult.isSuccess)
+            if (registerResult.isSuccess) {
+                val skipped = height == null && weight == null && gender == Gender.none
+                Analytics.track(AnalyticsEvents.SIGNUP_PROFILE_STEP_COMPLETED, mapOf("skipped" to skipped))
+            }
             _uiState.postValue(
                 if (!registerResult.isSuccess) -1
                 else if (authRepo.isEmailVerified) 7
@@ -277,16 +292,19 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun sendVerificationEmail() {
+    fun sendVerificationEmail(context: VerificationContext = VerificationContext.RESEND) {
         viewModelScope.launch(Dispatchers.IO) {
-            val sent = requestVerificationEmail() ?: return@launch
+            val sent = requestVerificationEmail(context) ?: return@launch
             _uiState.postValue(if (sent) 3 else -6)
         }
     }
 
     /** Asks for a new verification email: whether it was sent, or null when nobody is signed in. */
-    suspend fun requestVerificationEmail(): Boolean? = withContext(Dispatchers.IO) {
+    suspend fun requestVerificationEmail(
+        context: VerificationContext = VerificationContext.RESEND
+    ): Boolean? = withContext(Dispatchers.IO) {
         val userId = authRepo.uuid ?: return@withContext null
+        if (context == VerificationContext.RESEND) Analytics.track(AnalyticsEvents.VERIFICATION_RESEND_CLICKED)
         val emailAddress = authRepo.email ?: return@withContext null
         val username = if (!fName.isNullOrBlank() && !lName.isNullOrBlank()) {
             "$fName $lName"
@@ -297,6 +315,7 @@ class AuthViewModel @Inject constructor(
         Timber.d("Requesting verification email")
         val sent = cloudFuctions.sendVerificationEmail(userId, emailAddress, username).isSuccess
         Timber.d("Verification email request succeeded: %s", sent)
+        if (sent) Analytics.track(AnalyticsEvents.VERIFICATION_EMAIL_SENT, mapOf("context" to context.value))
         sent
     }
 
@@ -323,11 +342,13 @@ class AuthViewModel @Inject constructor(
             _uiState.postValue(-4)
             return
         }
+        Analytics.track(AnalyticsEvents.LOGIN_ATTEMPTED)
         viewModelScope.launch(Dispatchers.IO) {
             val authResult = authRepo.login(email, pass)
             if (authResult.isSuccess && authResult.dataValue != null) {
                 loadProfileAfterSignIn()
             } else if (authResult.isFailure) {
+                Analytics.track(AnalyticsEvents.LOGIN_FAILED, AnalyticsProps.failureProps(analyticsErrorCode(authResult.error)))
                 val kind = authErrorKindOf(authResult.error)
                 Timber.w("Login failed: %s", kind)
                 if (kind == AuthErrorKind.UserDisabled) {
@@ -350,6 +371,12 @@ class AuthViewModel @Inject constructor(
             is Response.Success -> {
                 fName = profile.data.name
                 lName = profile.data.lastName
+                if (!authRepo.isEmailVerified) {
+                    Analytics.track(AnalyticsEvents.LOGIN_BLOCKED_UNVERIFIED_EMAIL)
+                } else {
+                    authRepo.uuid?.let { Analytics.identify(it, authRepo.email) }
+                    Analytics.track(AnalyticsEvents.LOGIN_SUCCEEDED)
+                }
                 _uiState.postValue(
                     if (!authRepo.isEmailVerified) LoginState.EMAIL_NOT_VERIFIED
                     else if (profile.data.legal.privacyPolicyApp) 7
@@ -359,6 +386,9 @@ class AuthViewModel @Inject constructor(
             is Response.Failure -> {
                 val state = loginStateForProfileFailure(profile.exception)
                 Timber.w("Profile after sign-in not available: %s", state)
+                // As on the web: signed in, but there is no account to open ("permissions-empty").
+                val code = if (state == LoginState.PROFILE_RETRY) AnalyticsProps.errorCode(null, network = true) else "permissions-empty"
+                Analytics.track(AnalyticsEvents.LOGIN_FAILED, AnalyticsProps.failureProps(code))
                 if (state == LoginState.ACCOUNT_REJECTED) {
                     errorCodeOf(profile.exception).also { code ->
                         loginErrorCode = code
@@ -466,6 +496,9 @@ class AuthViewModel @Inject constructor(
             } else {
                 false
             }
+            if (emailRecheck && authenticated && verified) {
+                Analytics.track(AnalyticsEvents.EMAIL_VERIFIED, mapOf("viaInvitation" to false))
+            }
             // Before the state, so a screen that reacts to it (the policy sheet) is not overwritten.
             if (emailRecheck) {
                 emailRecheck = false
@@ -501,3 +534,6 @@ class AuthViewModel @Inject constructor(
         val TAG = AuthViewModel::class.simpleName
     }
 }
+
+/** Why a verification email is sent, as the `context` of Verification Email Sent. */
+enum class VerificationContext(val value: String) { SIGNUP("signup"), RESEND("resend") }

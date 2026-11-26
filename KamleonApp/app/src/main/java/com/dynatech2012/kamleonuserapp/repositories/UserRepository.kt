@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.repositories
 
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
 import timber.log.Timber
 import com.dynatech2012.kamleonuserapp.models.CustomUser
 import com.dynatech2012.kamleonuserapp.network.CallKind
@@ -58,6 +59,7 @@ class UserRepository(private val gate: NetworkGate) {
 
     suspend fun signOutSuspend() = suspendCoroutine<Unit> { continuation ->
         auth.signOut()
+        Analytics.reset()
         continuation.resume(Unit)
     }
 
@@ -67,6 +69,7 @@ class UserRepository(private val gate: NetworkGate) {
      */
     fun logout() {
         auth.signOut()
+        Analytics.reset()
         Timber.d("Firebase user signed out")
         // Best effort: the result is not used, and with no network it fails (reading task.result of a
         // failed task throws, which crashed the logout without a connection).

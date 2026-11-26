@@ -1,5 +1,7 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import com.dynatech2012.kamleonuserapp.analytics.AppScreen
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -189,6 +191,13 @@ class TabFragment : BaseFragment<ActivityTabBinding>() {
             2 -> binding.layoutTabQr.background = getDrawable(requireContext(), R.drawable.bg_tab_shape)
         }
         val scanning = tabIndex == 2
+        Analytics.screen(
+            when (tabIndex) {
+                1 -> AppScreen.MyDataOverview
+                2 -> AppScreen.QrScan
+                else -> AppScreen.Home
+            }
+        )
         tabBack.isEnabled = tabIndex != 0
         binding.layoutContentQR.visibility = if (scanning) View.VISIBLE else View.GONE
         binding.layoutScanControls.visibility = View.GONE

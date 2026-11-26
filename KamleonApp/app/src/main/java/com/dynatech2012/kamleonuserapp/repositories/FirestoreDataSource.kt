@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.repositories
 
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
 import android.content.Context
 import android.net.Uri
 import com.dynatech2012.kamleonuserapp.constants.Constants
@@ -123,6 +124,9 @@ class FirestoreDataSource @Inject constructor(
             val profile = snapshot.toObject<CustomUser>()
                 ?: throw IllegalStateException("User profile could not be parsed")
             user = profile
+            // A session Firebase restored was never "logged in": make sure the events are its user's.
+            Analytics.syncIdentity(userId, profile.email)
+            Analytics.syncProfile(userId, snapshot.data.orEmpty())
             DebugLog.d(TAG) { "User profile loaded" }
             profile
         }

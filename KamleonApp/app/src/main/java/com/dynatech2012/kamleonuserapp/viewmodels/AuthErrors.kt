@@ -4,6 +4,12 @@ import com.dynatech2012.kamleonuserapp.network.FailureKind
 import com.dynatech2012.kamleonuserapp.network.failureKindOf
 import com.dynatech2012.kamleonuserapp.repositories.UserProfileMissingException
 import com.google.firebase.FirebaseTooManyRequestsException
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
+import com.dynatech2012.kamleonuserapp.analytics.AnalyticsEvents
+import com.dynatech2012.kamleonuserapp.analytics.AnalyticsProps
+import com.dynatech2012.kamleonuserapp.repositories.ResponseNullable
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.functions.FirebaseFunctionsException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 
@@ -69,4 +75,22 @@ internal fun loginStateForProfileFailure(
     e is UserProfileMissingException -> LoginState.PROFILE_MISSING
     sessionRejected(e) -> LoginState.ACCOUNT_REJECTED
     else -> LoginState.PROFILE_RETRY
+}
+
+/** The error code analytics sends for a failed sign-in or registration: the web's codes, never a message. */
+internal fun analyticsErrorCode(e: Exception?): String = when {
+    e is FirebaseTooManyRequestsException -> AnalyticsProps.errorCode("ERROR_TOO_MANY_REQUESTS")
+    e is FirebaseAuthException -> AnalyticsProps.errorCode(e.errorCode)
+    e is FirebaseFunctionsException -> AnalyticsProps.errorCode(e.code.name)
+    e != null && failureKindOf(e) == FailureKind.Network -> AnalyticsProps.errorCode(null, network = true)
+    else -> AnalyticsProps.errorCode(null)
+}
+
+/** Forgot Password Requested, or Failed with its code, for a password reset request's [response]. */
+internal fun trackPasswordResetRequest(response: ResponseNullable<*>) {
+    if (response is ResponseNullable.Success) {
+        Analytics.track(AnalyticsEvents.FORGOT_PASSWORD_REQUESTED)
+    } else if (response is ResponseNullable.Failure) {
+        Analytics.track(AnalyticsEvents.FORGOT_PASSWORD_FAILED, mapOf("errorCode" to analyticsErrorCode(response.exception)))
+    }
 }

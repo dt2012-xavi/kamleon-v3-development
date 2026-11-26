@@ -1,5 +1,7 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import com.dynatech2012.kamleonuserapp.analytics.AnalyticsEvents
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -70,6 +72,7 @@ class LoginFragment : Fragment() {
                         findNavController().navigate(R.id.action_loginFragment_to_forgotPwdFragment)
                     },
                     onRegister = {
+                        Analytics.track(AnalyticsEvents.SIGNUP_STARTED)
                         findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
                     }
                 )

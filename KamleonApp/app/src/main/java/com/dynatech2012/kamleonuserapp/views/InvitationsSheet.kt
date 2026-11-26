@@ -1,5 +1,9 @@
 package com.dynatech2012.kamleonuserapp.views
 
+import com.dynatech2012.kamleonuserapp.models.InvitationRecord
+import com.dynatech2012.kamleonuserapp.analytics.AnalyticsProps
+import com.dynatech2012.kamleonuserapp.analytics.AnalyticsEvents
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -84,6 +88,9 @@ sealed interface InvitationsState {
  * dismissed once expired) and the ones accepted in the last days. Each card waits for its own answer;
  * closing the sheet marks the unseen ones as read.
  */
+/** The panel and the function it belongs to, in the web's analytics taxonomy. */
+private const val NOTIFICATIONS = "notifications"
+
 class InvitationsSheet : BottomSheetDialogFragment() {
     private val viewModel: MainViewModel by activityViewModels()
     private var state by mutableStateOf<InvitationsState>(InvitationsState.Loading)
@@ -110,9 +117,9 @@ class InvitationsSheet : BottomSheetDialogFragment() {
                         onShowAll = { showAll = true },
                         onAgree = { id, on -> agreed = if (on) agreed + id else agreed - id },
                         onOpenPolicy = ::openPolicy,
-                        onAccept = { answer(it, viewModel::acceptInvitation, R.string.invitation_accepted_msg, R.string.invitation_accept_failed) },
-                        onDecline = { answer(it, viewModel::declineInvitation, R.string.invitation_declined, R.string.invitation_decline_failed) },
-                        onDismiss = { answer(it, viewModel::dismissInvitation, null, R.string.invitation_dismiss_failed) },
+                        onAccept = { answer(it, viewModel::acceptInvitation, R.string.invitation_accepted_msg, R.string.invitation_accept_failed, AnalyticsEvents.INVITATION_ACCEPTED) },
+                        onDecline = { answer(it, viewModel::declineInvitation, R.string.invitation_declined, R.string.invitation_decline_failed, AnalyticsEvents.INVITATION_DECLINED) },
+                        onDismiss = { answer(it, viewModel::dismissInvitation, null, R.string.invitation_dismiss_failed, null) },
                         onRetry = { load(showSpinner = true) }
                     )
                 }
@@ -121,6 +128,7 @@ class InvitationsSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState == null) Analytics.drawerOpened(NOTIFICATIONS, NOTIFICATIONS)
         load(showSpinner = true)
     }
 
@@ -135,6 +143,7 @@ class InvitationsSheet : BottomSheetDialogFragment() {
             ?.filter { it.unread }
             ?.map { it.record.id }
             ?.let(viewModel::markInvitationsRead)
+        Analytics.drawerClosed()
         super.onDismiss(dialog)
     }
 
@@ -153,7 +162,9 @@ class InvitationsSheet : BottomSheetDialogFragment() {
         item: InvitationItem,
         call: suspend (String) -> Response<Unit>,
         @StringRes success: Int?,
-        @StringRes failure: Int
+        @StringRes failure: Int,
+        /** Invitation Accepted or Declined, sent when it worked; null for none. */
+        event: String?
     ) {
         val id = item.record.id
         if (id in busy) return
@@ -163,6 +174,8 @@ class InvitationsSheet : BottomSheetDialogFragment() {
             busy = busy - id
             when {
                 response is Response.Success -> {
+                    Analytics.drawerAction()
+                    event?.let { trackAnswer(it, item.record) }
                     success?.let { show(it) }
                     load(showSpinner = false)
                 }
@@ -173,6 +186,21 @@ class InvitationsSheet : BottomSheetDialogFragment() {
                 else -> show(failure)
             }
         }
+    }
+
+    private fun trackAnswer(event: String, invitation: InvitationRecord) {
+        Analytics.track(
+            event,
+            AnalyticsProps.invitationAnsweredProps(
+                invitationID = invitation.id,
+                role = invitation.userRole,
+                organizationID = invitation.organizationID,
+                centerID = invitation.centerID,
+                teamID = invitation.teamID,
+                dateSentSeconds = invitation.dateSent,
+                nowMs = System.currentTimeMillis(),
+            ) + mapOf("feature" to NOTIFICATIONS)
+        )
     }
 
     private fun show(@StringRes message: Int) {

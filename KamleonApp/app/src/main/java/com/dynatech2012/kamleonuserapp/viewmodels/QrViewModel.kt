@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.viewmodels
 
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
 import android.os.SystemClock
 import android.util.Size
 import androidx.camera.core.ImageAnalysis
@@ -69,10 +70,12 @@ class QrViewModel @Inject constructor(
 
     fun startAnalyzing() {
         gate.open = _linkState.value != ScanLinkState.Linking
+        if (gate.open) Analytics.qr?.scannerReady()
     }
 
     fun stopAnalyzing() {
         gate.open = false
+        Analytics.qr?.scannerLeft()
     }
 
     private fun onCodeRead(code: String) {
@@ -82,6 +85,7 @@ class QrViewModel @Inject constructor(
             is ScanGate.Decision.Link -> {
                 DebugLog.d(TAG) { "Kamleon scan link read; linking it" }
                 _scanRead.value = Event(Unit)
+                Analytics.qr?.scannerCodeRead()
                 link(decision.scan)
             }
         }
@@ -92,19 +96,24 @@ class QrViewModel @Inject constructor(
     val linkState: LiveData<ScanLinkState?> = _linkState
 
     /** Links a scan that arrived through an app link (the phone's own camera read the QR). */
-    fun linkFromAppLink(scan: QRResponse) = link(scan)
+    fun linkFromAppLink(scan: QRResponse) {
+        Analytics.qr?.cameraLinkDelivered()
+        link(scan)
+    }
 
     private fun link(scan: QRResponse) {
         if (_linkState.value == ScanLinkState.Linking) return
         _linkState.value = ScanLinkState.Linking
         viewModelScope.launch {
             val result = actionResultOf(firestoreDataSource.uploadQrId(scan))
+            Analytics.qr?.linked(result.success)
             _linkState.value = if (result.success) ScanLinkState.Linked else ScanLinkState.Failed(result.failure)
         }
     }
 
     /** An app link arrived that cannot be used: incomplete, or it expired while the user logged in. */
     fun appLinkInvalid() {
+        Analytics.qr?.cameraLinkInvalid()
         _linkState.value = ScanLinkState.Invalid
     }
 

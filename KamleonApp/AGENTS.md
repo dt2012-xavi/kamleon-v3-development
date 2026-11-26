@@ -96,6 +96,12 @@ Cuando cambies URLs legales, app links, Firebase o constantes de entorno, revisa
 - Si cambias entidades Room, incrementa versiones y define migraciones si hace falta; no uses cambios destructivos sin confirmar.
 - Logs con Timber, solo en builds debug. No loguees credenciales, tokens, PINs, emails, identificadores ni payloads medicos. Ver `docs/runbooks/android-logging.md`.
 
+## Analitica (Mixpanel)
+
+- `analytics/Analytics.kt` es la unica entrada: `Analytics.track(...)`, `screen(...)`, `qr`. Contrato compartido con la web; ver `docs/runbooks/analytics.md`.
+- Token y entorno por flavor (`BuildConfig.MIXPANEL_TOKEN`, `ANALYTICS_ENVIRONMENT`); `internal` no envia nada.
+- Solo IDs opacos y valores de listas cerradas: nunca nombres, emails, medidas ni el contenido de un QR.
+
 ## QR, Deep Links y Permisos
 
 - `InitActivity` recibe app links `https://<host>/scan?unitId=...&sessionId=...` y pasa datos a `MainActivity`.

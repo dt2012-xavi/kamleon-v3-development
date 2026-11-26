@@ -1,5 +1,8 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import com.dynatech2012.kamleonuserapp.analytics.Metric
+import com.dynatech2012.kamleonuserapp.analytics.AppScreen
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
 import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +30,7 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
     override fun initView() {
         // Read from the arguments, so the same graph comes back after the process is recreated.
         val graphType = graphTypeOf(arguments)
+        Analytics.screen(AppScreen.MetricDetail(metricOf(graphType)))
         binding.cvGraphScreen.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         binding.cvGraphScreen.setContent { GraphRoute(graphType) }
     }
@@ -70,6 +74,13 @@ class GraphicsFragment : BaseFragment<ActivityGraphicsBinding>() {
         fun argsFor(type: KamleonGraphDataType): Bundle = Bundle().apply { putString(ARG_GRAPH_TYPE, type.name) }
 
         /** The graph [args] ask for; hydration when they name none or an unknown one. */
+        /** The graph's metric, as analytics names it. */
+        fun metricOf(type: KamleonGraphDataType): Metric = when (type) {
+            KamleonGraphDataType.hydration -> Metric.HYDRATION
+            KamleonGraphDataType.electrolytes -> Metric.ELECTROLYTES
+            KamleonGraphDataType.volume -> Metric.VOLUME
+        }
+
         fun graphTypeOf(args: Bundle?): KamleonGraphDataType =
             KamleonGraphDataType.entries.firstOrNull { it.name == args?.getString(ARG_GRAPH_TYPE) }
                 ?: KamleonGraphDataType.hydration

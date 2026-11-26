@@ -106,6 +106,9 @@ android {
             manifestPlaceholders = [appLinkHost: appLinkHost]
             buildConfigField "String", "APP_LINK_HOST", "\"${appLinkHost}\""
             buildConfigField "String", "ENVIRONMENT_LABEL", "\"INT\""
+            // Mixpanel: the web's project for this environment (public ingestion token); empty = no analytics.
+            buildConfigField "String", "MIXPANEL_TOKEN", "\"\""
+            buildConfigField "String", "ANALYTICS_ENVIRONMENT", "\"int\""
         }
         development {
             dimension = "environment"
@@ -116,6 +119,9 @@ android {
             manifestPlaceholders = [appLinkHost: appLinkHost]
             buildConfigField "String", "APP_LINK_HOST", "\"${appLinkHost}\""
             buildConfigField "String", "ENVIRONMENT_LABEL", "\"DEV\""
+            // Mixpanel: the web's project for this environment (public ingestion token); empty = no analytics.
+            buildConfigField "String", "MIXPANEL_TOKEN", "\"d45a0ca1d2b3ac6040818522247d1564\""
+            buildConfigField "String", "ANALYTICS_ENVIRONMENT", "\"dev\""
         }
         prod {
             dimension = "environment"
@@ -128,6 +134,9 @@ android {
             manifestPlaceholders = [appLinkHost: appLinkHost]
             buildConfigField "String", "APP_LINK_HOST", "\"${appLinkHost}\""
             buildConfigField "String", "ENVIRONMENT_LABEL", "\"\""
+            // Mixpanel: the web's project for this environment (public ingestion token); empty = no analytics.
+            buildConfigField "String", "MIXPANEL_TOKEN", "\"8a40aa6dcac95e36702494c4a1f529dc\""
+            buildConfigField "String", "ANALYTICS_ENVIRONMENT", "\"prod\""
         }
         preProduction {
             dimension = "environment"
@@ -138,6 +147,9 @@ android {
             manifestPlaceholders = [appLinkHost: appLinkHost]
             buildConfigField "String", "APP_LINK_HOST", "\"${appLinkHost}\""
             buildConfigField "String", "ENVIRONMENT_LABEL", "\"PRE\""
+            // Mixpanel: the web's project for this environment (public ingestion token); empty = no analytics.
+            buildConfigField "String", "MIXPANEL_TOKEN", "\"6a8383a63ae2beb06045c0454320d9bd\""
+            buildConfigField "String", "ANALYTICS_ENVIRONMENT", "\"pre\""
         }
     }
     compileOptions {
@@ -228,6 +240,7 @@ dependencies {
     implementation libs.firebase.database
     implementation libs.firebase.functions
     implementation libs.firebase.crashlytics
+    implementation libs.mixpanel.android
 
     // Navigation
     implementation(libs.navigation.fragment.ktx)

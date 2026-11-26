@@ -29,6 +29,7 @@ class ForgotPwdViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val response = cloudFunctions.resetPwd(email)
             Timber.d("Password reset request completed: success=%s", response.isSuccess)
+            trackPasswordResetRequest(response)
             _resetPwdSuccess.postValue(actionResultOf(response))
         }
     }

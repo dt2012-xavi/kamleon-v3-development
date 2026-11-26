@@ -1,5 +1,7 @@
 package com.dynatech2012.kamleonuserapp.activities
 
+import com.google.firebase.auth.FirebaseAuth
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
 import com.dynatech2012.kamleonuserapp.BuildConfig
 import com.dynatech2012.kamleonuserapp.viewmodels.scanLinkFrom
 import android.Manifest
@@ -78,6 +80,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
 
     private fun handleIntent(intent: Intent) {
         val scan = scanLinkIn(intent) ?: return
+        trackCameraLink(scan)
         if (scan is ScanLinkIntent.Valid) {
             viewModel.pendingScan(scan.unitId, scan.sessionId)
             Timber.d("Scan link accepted for later delivery")
@@ -102,6 +105,14 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
         return ScanLinkIntent.Valid(scan.unitId, scan.sessionId)
     }
 
+    /** A QR attempt starts with every /scan link the phone's camera opens. */
+    private fun trackCameraLink(scan: ScanLinkIntent) {
+        Analytics.qr?.cameraLinkOpened(
+            valid = scan is ScanLinkIntent.Valid,
+            signedIn = FirebaseAuth.getInstance().currentUser != null
+        )
+    }
+
     /**
      * A scan link while the main screen is already open (so the user is signed in): hand it straight
      * to it, without the splash and the startup checks. Returns whether it did.
@@ -109,6 +120,7 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
     private fun forwardScanLinkToRunningMain(intent: Intent): Boolean {
         if (!MainActivity.isRunning) return false
         val scan = scanLinkIn(intent) ?: return false
+        trackCameraLink(scan)
         val mainIntent = Intent(this, MainActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             .setAction(Constants.SCAN_ACTION)
