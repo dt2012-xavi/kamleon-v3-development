@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import com.dynatech2012.kamleonuserapp.views.lockedWhile
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
@@ -145,6 +146,8 @@ fun OnboardingScreen(
                     .fillMaxWidth()
                     .padding(top = backTop + backSize)
                     .padding(horizontal = 36.dp, vertical = 20.dp)
+                    // What is being saved must stay what the picker shows.
+                    .lockedWhile(nextLoading)
             ) {
                 // The wheel pickers draw their labels with the default font; give them Circular.
                 ProvideTextStyle(TextStyle(fontFamily = MatTheme.fontFamily)) {

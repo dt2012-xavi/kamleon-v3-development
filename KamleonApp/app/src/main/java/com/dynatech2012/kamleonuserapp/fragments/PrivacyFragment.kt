@@ -1,13 +1,14 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
-import android.content.Intent
+import com.google.android.material.snackbar.Snackbar
+import com.dynatech2012.kamleonuserapp.views.settings.contactSupport
+import com.dynatech2012.kamleonuserapp.views.settings.openInAppBrowser
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
@@ -36,9 +37,15 @@ class PrivacyFragment : Fragment() {
                         Timber.d("Privacy consent accepted; opening onboarding")
                         findNavController().navigate(R.id.action_privacyFragment_to_onboardingFragment)
                     },
-                    onOpenUrl = { url -> startActivity(Intent(Intent.ACTION_VIEW, url.toUri())) },
-                    onEmail = { address ->
-                        startActivity(Intent(Intent.ACTION_SENDTO).apply { data = "mailto:$address".toUri() })
+                    onOpenUrl = { url ->
+                        if (!requireContext().openInAppBrowser(url)) {
+                            Snackbar.make(requireView(), R.string.error_no_browser, Snackbar.LENGTH_SHORT).show()
+                        }
+                    },
+                    onEmail = {
+                        if (!requireContext().contactSupport()) {
+                            Snackbar.make(requireView(), R.string.help_error_mail, Snackbar.LENGTH_SHORT).show()
+                        }
                     }
                 )
             }

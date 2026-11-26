@@ -151,6 +151,7 @@
     <!-- Settings -->
     <string name="setting_button_save">Save</string>
     <string name="setting_button_logout">Log out</string>
+    <string name="setting_logging_out">Logging out…</string>
 
     <string name="setting_label_acc_data">SIGN-IN &amp; SECURITY</string>
     <string name="setting_label_surname">SURNAME</string>

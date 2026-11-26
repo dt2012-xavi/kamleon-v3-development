@@ -162,6 +162,9 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
         // The sheet closes at once, so a second tap could start a second logout.
         if (loggingOut) return
         loggingOut = true
+        // Clearing the session can take a few seconds: say so, and take no second tap.
+        binding.btnLogout.isEnabled = false
+        binding.btnLogout.setText(R.string.setting_logging_out)
         // Observe with the activity, not the view: leaving this screen while the session and the
         // local data are being cleared must not cancel the redirect to the login.
         viewModel.logoutStatus.observe(requireActivity()) {
@@ -294,13 +297,22 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
      * goes back and the error is shown. The result is this screen's alone, so the PIN and password
      * screens never see it.
      */
+    private var savingNotifications = false
+
     private fun saveNotifications(on: Boolean) {
+        // One save at a time: a second flip while the first is on its way is undone.
+        if (savingNotifications) {
+            refreshNotificationSwitch()
+            return
+        }
+        savingNotifications = true
         val before = notificationsEnabledInProfile
         notificationsEnabledInProfile = on
         refreshNotificationSwitch()
         viewLifecycleOwner.lifecycleScope.launch {
             val response = // Only this entry: other notification settings in the profile stay as they are.
             viewModel.saveProfile(mapOf("notifications.analytics" to on))
+            savingNotifications = false
             if (!response.isSuccess) {
                 notificationsEnabledInProfile = before
                 refreshNotificationSwitch()

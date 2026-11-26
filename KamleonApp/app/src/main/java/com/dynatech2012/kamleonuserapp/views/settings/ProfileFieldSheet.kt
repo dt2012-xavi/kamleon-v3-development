@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.views.settings
 
+import com.dynatech2012.kamleonuserapp.views.lockedWhile
 import com.dynatech2012.kamleonuserapp.views.matchScreenStatusBar
 import android.graphics.Color
 import android.os.Bundle
@@ -161,13 +162,16 @@ fun ProfileFieldSheetContent(
         saving = saving,
         onSave = save
     ) {
-        when (field) {
-            ProfileField.NAME -> NameEditor(user, enabled = !saving, onChange = { pending = it }, onDone = save)
-            ProfileField.GENDER -> GenderEditor(user, onChange = { pending = it })
-            ProfileField.BIRTH -> BirthEditor(user, onChange = { pending = it })
-            ProfileField.HEIGHT -> HeightEditor(user, onChange = { pending = it })
-            ProfileField.WEIGHT -> WeightEditor(user, onChange = { pending = it })
-            ProfileField.PIN -> PinEditor(enabled = !saving, onChange = { pending = it }, onDone = save)
+        // Wheels and options are not text fields: they are held still while the save runs.
+        Box(Modifier.lockedWhile(saving)) {
+            when (field) {
+                ProfileField.NAME -> NameEditor(user, enabled = !saving, onChange = { pending = it }, onDone = save)
+                ProfileField.GENDER -> GenderEditor(user, onChange = { pending = it })
+                ProfileField.BIRTH -> BirthEditor(user, onChange = { pending = it })
+                ProfileField.HEIGHT -> HeightEditor(user, onChange = { pending = it })
+                ProfileField.WEIGHT -> WeightEditor(user, onChange = { pending = it })
+                ProfileField.PIN -> PinEditor(enabled = !saving, onChange = { pending = it }, onDone = save)
+            }
         }
     }
 }

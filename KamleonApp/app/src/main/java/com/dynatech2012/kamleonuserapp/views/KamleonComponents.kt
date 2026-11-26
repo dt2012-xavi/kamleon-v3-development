@@ -1,5 +1,7 @@
 package com.dynatech2012.kamleonuserapp.views
 
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.annotation.DimenRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
@@ -533,3 +535,15 @@ fun KamleonSwitchRow(prompt: String, action: String, onClick: () -> Unit, modifi
 
 /** This range moved inside a text of [length] characters, for a text that changed from outside. */
 private fun TextRange.coerceIn(length: Int) = TextRange(start.coerceIn(0, length), end.coerceIn(0, length))
+
+
+/**
+ * While [locked], taps and drags never reach this content (wheels, options, fields): what the
+ * screen shows stays what is being sent. Use it while the request the content belongs to runs.
+ */
+fun Modifier.lockedWhile(locked: Boolean): Modifier =
+    if (!locked) this else pointerInput(Unit) {
+        awaitPointerEventScope {
+            while (true) awaitPointerEvent(PointerEventPass.Initial).changes.forEach { it.consume() }
+        }
+    }

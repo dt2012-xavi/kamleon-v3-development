@@ -34,6 +34,9 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
+    /** Between "Resend" on the unverified-email sheet and the server's answer. */
+    private var resendingVerification by mutableStateOf(false)
+
     private val viewModel: AuthViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -59,7 +62,7 @@ class LoginFragment : Fragment() {
                     pendingScan = scanSavedAt != null && viewModel.hasPendingScan,
                     email = email,
                     password = password,
-                    isLoading = state == 1 || state == 6,
+                    isLoading = state == 1 || state == 6 || resendingVerification,
                     onEmailChange = { email = it },
                     onPasswordChange = { password = it },
                     onSignIn = { viewModel.login(email, password) },
@@ -72,7 +75,13 @@ class LoginFragment : Fragment() {
                 )
             }
         }
-        onKamleonSheetResult("login_verify") { if (it == SheetResult.SECONDARY) viewModel.sendVerificationEmail() }
+        onKamleonSheetResult("login_verify") {
+            if (it == SheetResult.SECONDARY) {
+                // The sheet closes at once: the login button spins until the email is sent or fails.
+                resendingVerification = true
+                viewModel.sendVerificationEmail()
+            }
+        }
         // Signed in, but the profile is refused: staying signed in would bring the user back here.
         onKamleonSheetResult("login_account_rejected") { if (it == SheetResult.PRIMARY) viewModel.logOut() }
         onKamleonSheetResult("login_profile_retry") {
@@ -113,6 +122,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun handleState(state: Int) {
+        if (state == 3 || state == -6) resendingVerification = false
         when (state) {
             in Int.MIN_VALUE..-1 -> {
                 showReadyDialog(state)
