@@ -136,6 +136,7 @@ fun LoginScreen(
                 imeAction = ImeAction.Next,
                 errorText = emailError,
                 focusRequester = emailFocus,
+                enabled = !isLoading,
                 testTag = "login_email"
             )
             KamleonTextField(
@@ -149,6 +150,7 @@ fun LoginScreen(
                 focusRequester = passwordFocus,
                 onImeAction = submit,
                 modifier = Modifier.padding(top = 12.dp),
+                enabled = !isLoading,
                 testTag = "login_password"
             )
             KamleonTextLink(

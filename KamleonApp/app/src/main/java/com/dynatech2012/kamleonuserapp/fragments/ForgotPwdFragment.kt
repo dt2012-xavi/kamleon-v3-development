@@ -27,6 +27,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ForgotPwdFragment : Fragment() {
     private val viewModel: ForgotPwdViewModel by viewModels()
+    /** Between pressing "Send login link" and the server's answer. */
+    private var sending by mutableStateOf(false)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,7 +46,10 @@ class ForgotPwdFragment : Fragment() {
                 ForgotPwdScreen(
                     email = email,
                     onEmailChange = { email = it },
-                    onSend = { viewModel.resetPwd(email) },
+                    onSend = {
+                        sending = true
+                        viewModel.resetPwd(email)
+                    },
                     onClose = {
                         findNavController().navigate(R.id.action_forgotPwdFragment_to_loginFragment)
                     },
@@ -52,23 +57,27 @@ class ForgotPwdFragment : Fragment() {
                         if (!requireContext().contactSupport()) {
                             Snackbar.make(requireView(), R.string.help_error_mail, Snackbar.LENGTH_SHORT).show()
                         }
-                    }
+                    },
+                    sending = sending
                 )
             }
         }
         viewModel.resetPwdSuccess.observe(viewLifecycleOwner) {
+            sending = false
             if (it.success) showSuccessDialog() else showErrorDialog(it.failure)
         }
     }
 
     private fun showSuccessDialog() {
-        Snackbar.make(requireView(), R.string.forgotpwd_sent, Snackbar.LENGTH_SHORT).show()
+        // The server answers the same whether the account exists or not, and sends at most one
+        // email a minute: say only what is certain.
+        Snackbar.make(requireView(), R.string.forgotpwd_sent_if_account, Snackbar.LENGTH_LONG).show()
     }
 
     private fun showErrorDialog(failure: Exception?) {
         // A connection problem is told the same everywhere; anything else keeps this screen's own text.
         val (title, message) = if (failure?.isConnectionProblem() == true) actionFailureText(failure)
-        else R.string.dialog_reset_pwd_error_title to R.string.dialog_reset_pwd_error_description
+        else R.string.dialog_reset_pwd_error_title to R.string.forgotpwd_send_error
         childFragmentManager.showKamleonSheet(
             "forgot_error",
             SheetSpec(

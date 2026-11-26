@@ -162,12 +162,12 @@ fun ProfileFieldSheetContent(
         onSave = save
     ) {
         when (field) {
-            ProfileField.NAME -> NameEditor(user, onChange = { pending = it }, onDone = save)
+            ProfileField.NAME -> NameEditor(user, enabled = !saving, onChange = { pending = it }, onDone = save)
             ProfileField.GENDER -> GenderEditor(user, onChange = { pending = it })
             ProfileField.BIRTH -> BirthEditor(user, onChange = { pending = it })
             ProfileField.HEIGHT -> HeightEditor(user, onChange = { pending = it })
             ProfileField.WEIGHT -> WeightEditor(user, onChange = { pending = it })
-            ProfileField.PIN -> PinEditor(onChange = { pending = it }, onDone = save)
+            ProfileField.PIN -> PinEditor(enabled = !saving, onChange = { pending = it }, onDone = save)
         }
     }
 }
@@ -183,7 +183,7 @@ private fun ProfileField.title() = when (this) {
 
 /** Name and surname; each must have something besides spaces. Done on the keyboard saves. */
 @Composable
-private fun NameEditor(user: CustomUser, onChange: (Map<String, Any>?) -> Unit, onDone: () -> Unit) {
+private fun NameEditor(user: CustomUser, enabled: Boolean, onChange: (Map<String, Any>?) -> Unit, onDone: () -> Unit) {
     var name by rememberSaveable { mutableStateOf(user.name) }
     var surname by rememberSaveable { mutableStateOf(user.lastName) }
     val focus = remember { FocusRequester() }
@@ -203,6 +203,7 @@ private fun NameEditor(user: CustomUser, onChange: (Map<String, Any>?) -> Unit, 
             capitalization = KeyboardCapitalization.Words,
             autoCorrect = false,
             focusRequester = focus,
+            enabled = enabled,
             testTag = "profile_sheet_name"
         )
         Spacer(Modifier.height(16.dp))
@@ -215,6 +216,7 @@ private fun NameEditor(user: CustomUser, onChange: (Map<String, Any>?) -> Unit, 
             autoCorrect = false,
             imeAction = ImeAction.Done,
             onImeAction = onDone,
+            enabled = enabled,
             testTag = "profile_sheet_surname"
         )
     }
@@ -225,7 +227,7 @@ private fun NameEditor(user: CustomUser, onChange: (Map<String, Any>?) -> Unit, 
  * holding the signed-in phone may set it.
  */
 @Composable
-private fun PinEditor(onChange: (Map<String, Any>?) -> Unit, onDone: () -> Unit) {
+private fun PinEditor(enabled: Boolean, onChange: (Map<String, Any>?) -> Unit, onDone: () -> Unit) {
     // PINs are deliberately kept out of saved instance state.
     var pin by remember { mutableStateOf("") }
     var confirm by remember { mutableStateOf("") }
@@ -244,6 +246,7 @@ private fun PinEditor(onChange: (Map<String, Any>?) -> Unit, onDone: () -> Unit)
             secure = true,
             keyboardType = KeyboardType.NumberPassword,
             focusRequester = focus,
+            enabled = enabled,
             testTag = "profile_sheet_pin"
         )
         Spacer(Modifier.height(16.dp))
@@ -257,6 +260,7 @@ private fun PinEditor(onChange: (Map<String, Any>?) -> Unit, onDone: () -> Unit)
             imeAction = ImeAction.Done,
             onImeAction = onDone,
             errorText = if (mismatch) stringResource(R.string.pin_error_dontmatch) else null,
+            enabled = enabled,
             testTag = "profile_sheet_pin_confirm"
         )
     }

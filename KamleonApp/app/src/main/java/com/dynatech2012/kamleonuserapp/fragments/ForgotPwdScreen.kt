@@ -53,7 +53,9 @@ fun ForgotPwdScreen(
     onEmailChange: (String) -> Unit,
     onSend: () -> Unit,
     onClose: () -> Unit,
-    onContactSupport: () -> Unit
+    onContactSupport: () -> Unit,
+    // The link is being requested: the button spins and does not take another tap.
+    sending: Boolean = false
 ) {
     val darkGrey = colorResource(R.color.kamleon_dark_grey)
     val grey60 = colorResource(R.color.kamleon_secondary_grey_60)
@@ -96,12 +98,14 @@ fun ForgotPwdScreen(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Done,
                 modifier = Modifier.padding(top = 52.dp),
+                enabled = !sending,
                 testTag = "forgot_email"
             )
             KamleonRoundButton(
                 text = stringResource(R.string.forgotpwd_send),
-                onClick = onSend,
+                onClick = { if (!sending) onSend() },
                 enabled = canSend,
+                loading = sending,
                 modifier = Modifier.padding(top = 16.dp),
                 testTag = "forgot_send"
             )

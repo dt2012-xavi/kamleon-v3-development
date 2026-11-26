@@ -1,5 +1,12 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Alignment
+import androidx.compose.material3.Text
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Row
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -46,7 +53,8 @@ import com.dynatech2012.kamleonuserapp.views.kamleonCaption
  * or invalid moves focus to the first offending field instead of failing silently, and Done on the
  * last field submits. [currentError] and [newError] are verdicts reported back by the ViewModel
  * (wrong current password, policy rejection); the caller clears them when the field changes.
- * [checking] shows the button spinner while the change runs.
+ * [checking] shows the button spinner while the change runs; [sendingReset] shows "Sending link…"
+ * in place of "Forgot password?" while the reset email is requested.
  */
 @Composable
 fun PasswordSheetContent(
@@ -61,7 +69,8 @@ fun PasswordSheetContent(
     onNewPasswordChange: (String) -> Unit,
     onConfirmPasswordChange: (String) -> Unit,
     onSave: () -> Unit,
-    onForgotPassword: () -> Unit
+    onForgotPassword: () -> Unit,
+    sendingReset: Boolean = false
 ) {
     var submitted by remember { mutableStateOf(false) }
     val currentFocus = remember { FocusRequester() }
@@ -101,7 +110,7 @@ fun PasswordSheetContent(
 
     SettingsSheetFrame(
         title = stringResource(R.string.profile_sheet_title_password),
-        saveEnabled = true,
+        saveEnabled = !sendingReset,
         saving = checking,
         onSave = submit,
         saveTestTag = "pwd_save"
@@ -127,19 +136,39 @@ fun PasswordSheetContent(
                 contentType = ContentType.Password,
                 errorText = fieldErrors.current?.let { stringResource(it) },
                 focusRequester = currentFocus,
+                enabled = !checking && !sendingReset,
                 testTag = "pwd_current"
             )
             // Right under the password it is about.
-            KamleonTextLink(
-                text = stringResource(R.string.login_forgot_pwd),
-                onClick = onForgotPassword,
-                style = kamleonCaption(),
-                color = colorResource(R.color.kamleon_secondary_grey_60),
-                pressedColor = colorResource(R.color.kamleon_secondary_grey_70),
-                underline = true,
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
-                modifier = Modifier.testTag("pwd_forgot")
-            )
+            if (sendingReset) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp).testTag("pwd_forgot_sending")
+                ) {
+                    CircularProgressIndicator(
+                        color = colorResource(R.color.kamleon_blue),
+                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(R.string.forgotpwd_sending),
+                        style = kamleonCaption(),
+                        color = colorResource(R.color.kamleon_secondary_grey_60)
+                    )
+                }
+            } else {
+                KamleonTextLink(
+                    text = stringResource(R.string.login_forgot_pwd),
+                    onClick = onForgotPassword,
+                    style = kamleonCaption(),
+                    color = colorResource(R.color.kamleon_secondary_grey_60),
+                    pressedColor = colorResource(R.color.kamleon_secondary_grey_70),
+                    underline = true,
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+                    modifier = Modifier.testTag("pwd_forgot")
+                )
+            }
             Spacer(Modifier.height(8.dp))
             FieldLabel(stringResource(R.string.pwd_new))
             KamleonTextField(
@@ -159,6 +188,7 @@ fun PasswordSheetContent(
                         modifier = Modifier.testTag("pwd_new_strength")
                     )
                 },
+                enabled = !checking && !sendingReset,
                 testTag = "pwd_new"
             )
             Spacer(Modifier.height(16.dp))
@@ -175,6 +205,7 @@ fun PasswordSheetContent(
                 focusRequester = confirmFocus,
                 imeAction = ImeAction.Done,
                 onImeAction = submit,
+                enabled = !checking && !sendingReset,
                 testTag = "pwd_confirm"
             )
         }

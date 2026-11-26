@@ -239,6 +239,7 @@ fun RegisterScreen(
                 contentType = ContentType.PersonFirstName,
                 errorText = fieldErrors.firstName?.let { stringResource(it) },
                 focusRequester = firstNameFocus,
+                enabled = !checking,
                 testTag = "register_first_name"
             )
             KamleonTextField(
@@ -253,6 +254,7 @@ fun RegisterScreen(
                 imeAction = if (recovering) ImeAction.Done else ImeAction.Next,
                 onImeAction = if (recovering) submit else null,
                 modifier = Modifier.padding(top = 12.dp),
+                enabled = !checking,
                 testTag = "register_last_name"
             )
             KamleonTextField(
@@ -262,7 +264,7 @@ fun RegisterScreen(
                 keyboardType = KeyboardType.Email,
                 autoCorrect = false,
                 contentType = ContentType.EmailAddress,
-                enabled = !recovering,
+                enabled = !checking && !recovering,
                 errorText = fieldErrors.email?.let { stringResource(it) },
                 focusRequester = emailFocus,
                 onFocusChange = { focused ->
@@ -290,6 +292,7 @@ fun RegisterScreen(
                         )
                     },
                     modifier = Modifier.padding(top = 12.dp),
+                    enabled = !checking,
                     testTag = "register_password"
                 )
                 KamleonTextField(
@@ -305,6 +308,7 @@ fun RegisterScreen(
                     focusRequester = repeatFocus,
                     onImeAction = submit,
                     modifier = Modifier.padding(top = 12.dp),
+                    enabled = !checking,
                     testTag = "register_repeat_password"
                 )
             }

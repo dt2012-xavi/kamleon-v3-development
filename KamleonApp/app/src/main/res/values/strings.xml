@@ -99,6 +99,8 @@
     <string name="forgotpwd_can_not_reset">Can\’t reset your password?</string>
     <string name="forgotpwd_contact">Contact Kamleon</string>
     <string name="forgotpwd_sent">We’ve sent you a link to get back into your account</string>
+    <string name="forgotpwd_sending">Sending link…</string>
+    <string name="forgotpwd_sent_if_account">If there’s an account with this email, you’ll get a link to get back into it.</string>
     <string name="forgotpwd_confirm_title">Reset your password?</string>
     <string name="forgotpwd_confirm_desc">We’ll send a link to %1$s to get back into your account.</string>
     <string name="forgotpwd_send_error">We couldn’t send the login link. Please try again.</string>
@@ -417,7 +419,6 @@
     <string name="dialog_deactive_n">Cancel</string>
     <string name="dialog_reset_pwd_success_description">You\’ve successfully changed your password</string>
     <string name="dialog_reset_pwd_error_title">Error</string>
-    <string name="dialog_reset_pwd_error_description">User not found</string>
     <string name="dialog_reset_pin_success_description">You\'ve successfully changed your PIN</string>
     <string name="scan_hint">Scan the QR code shown on the S-Urinal</string>
     <string name="scan_not_kamleon">This QR code isn’t from Kamleon</string>

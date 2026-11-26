@@ -49,6 +49,8 @@ class PasswordSheet : BottomSheetDialogFragment() {
     private var currentError by mutableStateOf<Int?>(null)
     private var newError by mutableStateOf<Int?>(null)
     private var busy by mutableStateOf(false)
+    /** The busy work is the reset email, shown by the link rather than by Save. */
+    private var sendingReset by mutableStateOf(false)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         ComposeView(requireContext()).apply {
@@ -71,7 +73,8 @@ class PasswordSheet : BottomSheetDialogFragment() {
                         confirmPassword = confirmPassword,
                         currentError = currentError,
                         newError = newError,
-                        checking = busy,
+                        checking = busy && !sendingReset,
+                        sendingReset = sendingReset,
                         passwordStrength = strength,
                         onCurrentPasswordChange = { currentPassword = it; currentError = null },
                         onNewPasswordChange = { newPassword = it; newError = null },
@@ -127,7 +130,10 @@ class PasswordSheet : BottomSheetDialogFragment() {
     }
 
     private fun sendReset() = run(R.string.forgotpwd_sent) {
-        val result = viewModel.sendPasswordReset() ?: return@run false
+        sendingReset = true
+        val result = viewModel.sendPasswordReset()
+        sendingReset = false
+        if (result == null) return@run false
         if (!result.success) showError(connectionOr(result.failure, getString(R.string.forgotpwd_send_error)))
         result.success
     }
