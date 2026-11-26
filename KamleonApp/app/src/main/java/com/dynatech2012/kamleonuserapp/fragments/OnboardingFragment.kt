@@ -141,6 +141,8 @@ class OnboardingFragment : Fragment() {
                 }
                 SheetResult.SECONDARY -> {
                     resendPending = true
+                    // The sheet closes at once: Next spins until it comes back (state 5) or fails (-6).
+                    nextLoading = true
                     viewModel.sendVerificationEmail()
                 }
                 SheetResult.TERTIARY, SheetResult.DISMISSED -> Unit
