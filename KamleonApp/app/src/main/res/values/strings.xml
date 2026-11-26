@@ -156,7 +156,7 @@
     <string name="setting_label_acc_data">SIGN-IN &amp; SECURITY</string>
     <string name="setting_label_surname">SURNAME</string>
     <string name="setting_label_name">NAME</string>
-    <string name="setting_label_email">E-MAIL</string>
+    <string name="setting_label_email">EMAIL</string>
     <string name="setting_label_password">PASSWORD</string>
     <string name="setting_label_pin">PIN</string>
     <string name="setting_label_info">HELP &amp; LEGAL</string>
@@ -414,7 +414,7 @@
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">CANCEL</string>
     <string name="dialog_logout_title">Log out?</string>
-    <string name="dialog_logout_msg">You’ll need your e-mail and password to log in again.</string>
+    <string name="dialog_logout_msg">You’ll need your email and password to log in again.</string>
     <string name="dialog_logout_y">Log out</string>
     <string name="dialog_logout_n">Cancel</string>
     <string name="dialog_deactive_n">Cancel</string>
@@ -447,9 +447,9 @@
     <string name="dialog_policy_desc">Protecting your privacy is crucial. Before using the app, kindly agree to the policy. For more details, refer to the <u>Privacy Policy</u></string>
     <string name="dialog_policy_agree">Agree</string>
     <string name="dialog_policy_disagree"><u>Disagree, log out</u></string>
-    <string name="dialog_verify_title">Verify your Email</string>
+    <string name="dialog_verify_title">Verify your email</string>
     <string name="dialog_verify_desc">We have sent an email to %1$s\n\nYou need to verify your email to continue. If you have not received the verification email, please check your "Spam" or "Bulk Email" folder. You can also click the resend button below to have another email sent to you.</string>
-    <string name="dialog_verify_resend"><u>Resend verification Email</u></string>
+    <string name="dialog_verify_resend"><u>Resend verification email</u></string>
 
     <!-- Error -->
     <string name="error_login">Error login</string>
