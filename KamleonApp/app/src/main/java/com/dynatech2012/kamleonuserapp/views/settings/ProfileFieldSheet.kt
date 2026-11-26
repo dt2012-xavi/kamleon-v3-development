@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.views.settings
 
+import com.dynatech2012.kamleonuserapp.views.matchScreenStatusBar
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -463,6 +464,7 @@ class ProfileFieldSheet : BottomSheetDialogFragment() {
  * rounded surface). Call from onStart.
  */
 fun BottomSheetDialogFragment.showExpanded(draggable: Boolean) {
+    matchScreenStatusBar()
     val sheetDialog = dialog as? BottomSheetDialog ?: return
     sheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
         ?.setBackgroundColor(Color.TRANSPARENT)

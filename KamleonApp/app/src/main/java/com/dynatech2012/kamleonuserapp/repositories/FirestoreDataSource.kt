@@ -296,11 +296,8 @@ class FirestoreDataSource @Inject constructor(
         }
     }
 
-    suspend fun uploadQrId(qrResponse: QRResponse?): Response<Boolean> {
+    suspend fun uploadQrId(qrResponse: QRResponse): Response<Boolean> {
         val userId = uuid ?: return Response.Failure(Exception("User not logged in"))
-        if (qrResponse == null) {
-            return Response.Failure(Exception("QR response is null"))
-        }
         // An action: with no network it fails at once (Firestore would queue the write and never answer).
         // A write that times out may still be applied later; it is a set() of the same document, so
         // repeating it is harmless.

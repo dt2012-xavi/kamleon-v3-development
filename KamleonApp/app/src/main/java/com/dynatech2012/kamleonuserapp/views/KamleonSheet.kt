@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.views
 
+import androidx.core.view.WindowCompat
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Matrix
@@ -325,6 +326,7 @@ class KamleonSheet : BottomSheetDialogFragment() {
 
     override fun onStart() {
         super.onStart()
+        matchScreenStatusBar()
         val sheetDialog = dialog as? BottomSheetDialog ?: return
         // The content draws its own rounded surface.
         sheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
@@ -413,4 +415,16 @@ fun FragmentActivity.onKamleonSheetResult(requestKey: String, onResult: (SheetRe
     supportFragmentManager.setFragmentResultListener(requestKey, this) { _, bundle ->
         onResult(bundle.toSheetResult())
     }
+}
+
+
+/**
+ * A sheet opens in its own window, which would take the theme's dark status bar icons: over a dark
+ * screen (the scanner) the clock and icons would vanish. It takes the screen's own appearance instead.
+ */
+fun BottomSheetDialogFragment.matchScreenStatusBar() {
+    val sheetWindow = dialog?.window ?: return
+    val screenWindow = activity?.window ?: return
+    val light = WindowCompat.getInsetsController(screenWindow, screenWindow.decorView).isAppearanceLightStatusBars
+    WindowCompat.getInsetsController(sheetWindow, sheetWindow.decorView).isAppearanceLightStatusBars = light
 }

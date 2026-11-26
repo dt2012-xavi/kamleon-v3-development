@@ -39,4 +39,17 @@ class ScanLinkTest {
             "https://dev.kamleon.app/scan?unitId=%ZZ&sessionId=2 with spaces",
         ).forEach { code -> assertNull("code: $code", scanLinkFrom(code, host)) }
     }
+
+    @Test
+    fun idsThatCannotNameAFirestoreDocumentAreIgnored() {
+        listOf(
+            "https://dev.kamleon.app/scan?unitId=a%2Fb&sessionId=2",
+            "https://dev.kamleon.app/scan?unitId=..&sessionId=2",
+            "https://dev.kamleon.app/scan?unitId=.&sessionId=2",
+            "https://dev.kamleon.app/scan?unitId=__x__&sessionId=2",
+            "https://dev.kamleon.app/scan?unitId=%20%20&sessionId=2",
+            "https://dev.kamleon.app/scan?unitId=1&sessionId=a%2Fb",
+            "https://dev.kamleon.app/scan?unitId=${"1".repeat(257)}&sessionId=2",
+        ).forEach { code -> assertNull("code: $code", scanLinkFrom(code, host)) }
+    }
 }

@@ -73,6 +73,7 @@ class ScanLinkSheet : BottomSheetDialogFragment() {
 
     override fun onStart() {
         super.onStart()
+        matchScreenStatusBar()
         val sheetDialog = dialog as? BottomSheetDialog ?: return
         // The content draws its own rounded surface and is always fully expanded, like KamleonSheet.
         sheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
