@@ -30,7 +30,7 @@ class ForgotPwdScreenTest {
                     onEmailChange = { email = it },
                     onSend = { sent = email },
                     onClose = {},
-                    onCreateAccount = {}
+                    onContactSupport = {}
                 )
             }
         }
@@ -43,9 +43,9 @@ class ForgotPwdScreenTest {
     }
 
     @Test
-    fun closeAndCreateAccountInvokeTheirCallbacks() {
+    fun closeAndContactInvokeTheirCallbacks() {
         var closed = 0
-        var created = 0
+        var contacted = 0
 
         composeRule.setContent {
             AppTheme(useDarkTheme = false) {
@@ -54,16 +54,16 @@ class ForgotPwdScreenTest {
                     onEmailChange = {},
                     onSend = {},
                     onClose = { closed++ },
-                    onCreateAccount = { created++ }
+                    onContactSupport = { contacted++ }
                 )
             }
         }
 
         composeRule.onNodeWithTag("forgot_close").performClick()
-        composeRule.onNodeWithTag("forgot_create_account").performClick()
+        composeRule.onNodeWithTag("forgot_contact").performClick()
         composeRule.runOnIdle {
             assertEquals(1, closed)
-            assertEquals(1, created)
+            assertEquals(1, contacted)
         }
     }
 }

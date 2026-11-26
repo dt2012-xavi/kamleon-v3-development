@@ -206,7 +206,7 @@ fun RegisterScreen(
         }
     ) {
         Column(
-            modifier = Modifier.padding(top = 90.dp).align(Alignment.CenterHorizontally),
+            modifier = Modifier.padding(top = 90.dp).padding(horizontal = 44.dp).align(Alignment.CenterHorizontally),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // img_logo.png is 274x209px in drawable-xxhdpi (3x) => 91.33x69.67dp.

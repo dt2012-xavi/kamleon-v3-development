@@ -43,7 +43,7 @@ import com.dynatech2012.kamleonuserapp.views.kamleonCaption
 import com.dynatech2012.kamleonuserapp.views.kamleonTitle
 
 /**
- * Compose version of `activity_forgot_pwd.xml`. Layout margins are the XML's literal values (90dp
+ * The "Trouble logging in?" screen. Layout margins are the old XML's literal values (90dp
  * header offset, 44dp side padding, 52dp before the input, ...); typography and the text field
  * come from the shared Kamleon components.
  */
@@ -53,7 +53,7 @@ fun ForgotPwdScreen(
     onEmailChange: (String) -> Unit,
     onSend: () -> Unit,
     onClose: () -> Unit,
-    onCreateAccount: () -> Unit
+    onContactSupport: () -> Unit
 ) {
     val darkGrey = colorResource(R.color.kamleon_dark_grey)
     val grey60 = colorResource(R.color.kamleon_secondary_grey_60)
@@ -114,30 +114,15 @@ fun ForgotPwdScreen(
                     style = kamleonCaption(),
                     color = grey60
                 )
-                // "OR" divider: two 1px (physical pixel) lines around the label.
-                val onePx = with(LocalDensity.current) { 1.toDp() }
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(Modifier.weight(1f).height(onePx).background(darkGrey))
-                    Box(Modifier.height(36.dp).padding(horizontal = 10.dp), contentAlignment = Alignment.Center) {
-                        Text(
-                            text = stringResource(R.string.forgotpwd_or),
-                            style = kamleonCaption(),
-                            color = grey60
-                        )
-                    }
-                    Box(Modifier.weight(1f).height(onePx).background(darkGrey))
-                }
+                // Someone who cannot get back in needs support, not a second account.
                 KamleonTextLink(
-                    text = stringResource(R.string.forgotpwd_create_new),
-                    onClick = onCreateAccount,
+                    text = stringResource(R.string.forgotpwd_contact),
+                    onClick = onContactSupport,
                     style = kamleonCaption(),
-                    color = grey60,
+                    color = colorResource(R.color.kamleon_blue),
                     pressedColor = colorResource(R.color.kamleon_secondary_grey_70),
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                    modifier = Modifier.testTag("forgot_create_account")
+                    modifier = Modifier.padding(top = 4.dp).testTag("forgot_contact")
                 )
             }
         }
@@ -175,7 +160,7 @@ private fun ForgotPwdScreenPreview() {
             onEmailChange = {},
             onSend = {},
             onClose = {},
-            onCreateAccount = {}
+            onContactSupport = {}
         )
     }
 }

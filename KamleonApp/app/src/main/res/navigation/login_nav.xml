@@ -44,15 +44,7 @@
     <fragment
         android:id="@+id/forgotPwdFragment"
         android:name="com.dynatech2012.kamleonuserapp.fragments.ForgotPwdFragment"
-        android:label="activity_forgot_pwd"
-        tools:layout="@layout/activity_forgot_pwd" >
-        <action
-            android:id="@+id/action_forgotPwdFragment_to_registerFragment"
-            app:destination="@id/registerFragment"
-            app:enterAnim="@anim/fade_in"
-            app:exitAnim="@anim/fade_hold"
-            app:popEnterAnim="@anim/fade_hold"
-            app:popExitAnim="@anim/fade_out" />
+        android:label="activity_forgot_pwd" >
         <action
             android:id="@+id/action_forgotPwdFragment_to_loginFragment"
             app:destination="@id/loginFragment"

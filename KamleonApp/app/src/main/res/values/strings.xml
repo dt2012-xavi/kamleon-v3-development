@@ -19,7 +19,7 @@
     <string name="login_title">Log in</string>
     <string name="login_desc">Enter your details to continue. If\nyou’ve forgotten, we’ll help you out.</string>
     <string name="login_desc_pending_scan">Log in to finish your scan. We’ll link the QR code you scanned to your account.</string>
-    <string name="login_btn_signin">Sign in</string>
+    <string name="login_btn_signin">Log in</string>
     <string name="auth_show_password">Show password</string>
     <string name="auth_hide_password">Hide password</string>
     <string name="login_alert_title_login_error">Invalid input.</string>
@@ -35,7 +35,7 @@
 
     <!-- Sign Up -->
     <string name="signup_title">Register</string>
-    <string name="signup_desc">Enter your details to have access\nto you analytics </string>
+    <string name="signup_desc">Enter your details to have access\nto your analytics</string>
     <string name="signup_btn_create_account">Create account</string>
     <string name="signup_have_account">Do you already have an account?</string>
     <string name="signup_login"><u>Log in</u></string>
@@ -97,8 +97,7 @@
     <string name="forgotpwd_desc">Enter your email and we’ll send you a link to get back into your account.</string>
     <string name="forgotpwd_send">Send login link</string>
     <string name="forgotpwd_can_not_reset">Can\’t reset your password?</string>
-    <string name="forgotpwd_create_new">Create new account</string>
-    <string name="forgotpwd_or">OR</string>
+    <string name="forgotpwd_contact">Contact Kamleon</string>
     <string name="forgotpwd_sent">We’ve sent you a link to get back into your account</string>
     <string name="forgotpwd_confirm_title">Reset your password?</string>
     <string name="forgotpwd_confirm_desc">We’ll send a link to %1$s to get back into your account.</string>

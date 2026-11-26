@@ -19,6 +19,7 @@ import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.viewmodels.ForgotPwdViewModel
 import com.dynatech2012.kamleonuserapp.views.SheetSpec
+import com.dynatech2012.kamleonuserapp.views.settings.contactSupport
 import com.dynatech2012.kamleonuserapp.views.showKamleonSheet
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,8 +48,10 @@ class ForgotPwdFragment : Fragment() {
                     onClose = {
                         findNavController().navigate(R.id.action_forgotPwdFragment_to_loginFragment)
                     },
-                    onCreateAccount = {
-                        findNavController().navigate(R.id.action_forgotPwdFragment_to_registerFragment)
+                    onContactSupport = {
+                        if (!requireContext().contactSupport()) {
+                            Snackbar.make(requireView(), R.string.help_error_mail, Snackbar.LENGTH_SHORT).show()
+                        }
                     }
                 )
             }
