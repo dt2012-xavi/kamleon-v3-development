@@ -44,8 +44,8 @@ android {
         applicationId = "com.dynatech2012.kamleonuserapp"
         minSdk = 30
         targetSdk = libs.versions.androidTargetSdk.get().toInteger()
-        versionCode = 2028
-        versionName = "1.0.15"
+        versionCode = 2029
+        versionName = "1.1.0"
 
         resValue "string", "app_version", "${versionName}"
 
@@ -101,6 +101,7 @@ android {
             def appLinkHost = "kamleon-v3-internal.vercel.app"
             manifestPlaceholders = [appLinkHost: appLinkHost]
             buildConfigField "String", "APP_LINK_HOST", "\"${appLinkHost}\""
+            buildConfigField "String", "ENVIRONMENT_LABEL", "\"INT\""
         }
         development {
             dimension = "environment"
@@ -110,6 +111,7 @@ android {
             def appLinkHost = "dev.kamleon.app"
             manifestPlaceholders = [appLinkHost: appLinkHost]
             buildConfigField "String", "APP_LINK_HOST", "\"${appLinkHost}\""
+            buildConfigField "String", "ENVIRONMENT_LABEL", "\"DEV\""
         }
         prod {
             dimension = "environment"
@@ -121,6 +123,7 @@ android {
             def appLinkHost = "kamleon.app"
             manifestPlaceholders = [appLinkHost: appLinkHost]
             buildConfigField "String", "APP_LINK_HOST", "\"${appLinkHost}\""
+            buildConfigField "String", "ENVIRONMENT_LABEL", "\"\""
         }
         preProduction {
             dimension = "environment"
@@ -130,6 +133,7 @@ android {
             def appLinkHost = "pre.kamleon.app"
             manifestPlaceholders = [appLinkHost: appLinkHost]
             buildConfigField "String", "APP_LINK_HOST", "\"${appLinkHost}\""
+            buildConfigField "String", "ENVIRONMENT_LABEL", "\"PRE\""
         }
     }
     compileOptions {
