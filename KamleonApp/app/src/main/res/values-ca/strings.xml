@@ -444,4 +444,6 @@
     <string name="error_no_browser">No s’ha trobat cap navegador per obrir aquesta pàgina</string>
     <string name="setting_version">Versió %1$s (%2$d)</string>
 
+    <!-- Not shown: the language the app is displayed in, sent to analytics as appLanguage (web's closed list: en, es, cat). -->
+    <string name="analytics_app_language">cat</string>
 </resources>

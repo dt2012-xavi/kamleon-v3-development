@@ -12,9 +12,11 @@ Implementa el contrato de la web `docs/superpowers/specs/2026-11-26-mixpanel-and
 | `internal` | sin token: no envía nada | `int` |
 
 - Región EU (`https://api-eu.mixpanel.com`), sin IP (`ip=0`) y sin eventos automáticos del SDK.
-- Super properties: `platform: app_android`, `appVersion` (`X.Y.Z` sin sufijo), `appVersionCode`, `definitionVersion: 1`, `environment`. Cada evento añade `localHour` y `localWeekday` (lunes = 0).
+- Super properties: `platform: app_android`, `appVersion` (`X.Y.Z` sin sufijo), `appVersionCode`, `definitionVersion: 1`, `environment` y `appLanguage` (`en` · `es` · `cat`: el idioma en el que se ve la app, leído de `R.string.analytics_app_language`; se vuelve a registrar si cambia el idioma del móvil con la app abierta).
+- El SDK añade solo el dispositivo y el sistema (`$os_version`, `$brand`, `$model`, pantalla…). No se envía país ni región. Cada evento añade `localHour` y `localWeekday` (lunes = 0).
 - Identidad: uid de Firebase. `identify` tras un login correcto (con `lastLoginAt` en el perfil) y al crear la cuenta (sin `lastLoginAt`). Una sesión que Firebase restaura se identifica al cargar el perfil, sin contar como login. Al cerrar sesión: `reset()` y se vuelven a registrar las super properties.
-- Perfil: `userTypes`, `userStatus`, `languageID`, `lastLoginAt`. Las cuentas `@devices.kamleon.com` no envían nada.
+- Perfil: `userTypes`, `userStatus`, `languageID`, `lastLoginAt`.
+- Cuentas `@devices.kamleon.com` (ya no se usan, pero se excluyen por si acaso): no queda nada registrado. En cuanto la app conoce la cuenta (el email escrito en el login o el registro, la sesión restaurada al arrancar o el perfil), hace *opt-out* en Mixpanel, que borra los eventos aún no enviados y queda guardado en el móvil hasta que esa cuenta cierra sesión; los intentos de acceso y de QR en curso se olvidan sin enviar nada. Lo único que puede haber salido antes es el `Auth Flow Started` anónimo de la pantalla de login, si ya se había enviado. Al salir, Mixpanel manda su propio evento `$opt_in`, sin nuestras super properties.
 
 ## Pantallas (`Page Viewed`)
 
@@ -67,4 +69,4 @@ Son los 14 eventos de la web, con sus mismas propiedades (`errorCode` y `errorLa
 
 ## Comprobar
 
-En un build `development`, abrir el proyecto dev de Mixpanel → Events (en vivo) y comprobar que cada evento lleva las cinco super properties. Un login correcto da `Auth Flow Started` → `Login Attempted` → `Login Succeeded` → `Auth Flow Completed`, con el mismo `flowInstanceId`. Para ver el envío en el móvil, activar temporalmente `setEnableLogging(true)` en `MixpanelSender` y filtrar Logcat por `MixpanelAPI`. No hay que commitear ese cambio.
+En un build `development`, abrir el proyecto dev de Mixpanel → Events (en vivo) y comprobar que cada evento lleva las seis super properties. Un login correcto da `Auth Flow Started` → `Login Attempted` → `Login Succeeded` → `Auth Flow Completed`, con el mismo `flowInstanceId`. Para ver el envío en el móvil, activar temporalmente `setEnableLogging(true)` en `MixpanelSender` y filtrar Logcat por `MixpanelAPI`. No hay que commitear ese cambio.

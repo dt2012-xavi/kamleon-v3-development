@@ -22,14 +22,24 @@ object AnalyticsProps {
 
     private val VERSION = Regex("""^\d+\.\d+\.\d+""")
 
-    /** The super properties of every event. [environment] is the flavor's (`dev`, `pre`, `prod`). */
-    fun superProps(versionName: String, versionCode: Int, environment: String): Map<String, Any> = mapOf(
+    /**
+     * The super properties of every event. [environment] is the flavor's (`dev`, `pre`, `prod`);
+     * [appLanguage] the language the app is displayed in.
+     */
+    fun superProps(versionName: String, versionCode: Int, environment: String, appLanguage: String): Map<String, Any> = mapOf(
         "platform" to PLATFORM,
         "appVersion" to appVersionOf(versionName),
         "appVersionCode" to versionCode,
         "definitionVersion" to DEFINITION_VERSION,
         "environment" to environment,
+        "appLanguage" to appLanguageOf(appLanguage),
     )
+
+    /** The web's closed list of app languages (as in Language Changed). */
+    val APP_LANGUAGES = setOf("en", "es", "cat")
+
+    /** [value] when it is on the list; otherwise English, the language the app falls back to. */
+    fun appLanguageOf(value: String): String = value.takeIf { it in APP_LANGUAGES } ?: "en"
 
     /** "1.1.0" from "1.1.0-dev": the dashboard only reads a strict `X.Y.Z`. */
     fun appVersionOf(versionName: String): String = VERSION.find(versionName)?.value ?: "0.0.0"

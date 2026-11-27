@@ -484,4 +484,6 @@
     <string name="switch_thumb_path_checked" translatable="false">M4,16 A12,12 0 0,1 16,4 H16 A12,12 0 0,1 16,28 H16 A12,12 0 0,1 4,16</string>
     <string name="switch_thumb_path_unchecked" translatable="false">M,16 A8,8 0 0,1 16,8 H16 A8,8 0 0,1 16,24 H16 A8,8 0 0,1 8,16</string>
 
+    <!-- Not shown: the language the app is displayed in, sent to analytics as appLanguage (web's closed list: en, es, cat). -->
+    <string name="analytics_app_language">en</string>
 </resources>

@@ -123,6 +123,9 @@ class AuthFlowTracker(
         sendAbandoned(attempt, exit, durationMs = now() - attempt.startedAt, switchedTo = switchedTo)
     }
 
+    /** Forgets the attempt in progress without sending anything (an excluded account). */
+    fun discard() = store.save(null)
+
     /** `flowInstanceId` of the attempt in progress, for the access events of the screens; empty without one. */
     fun instanceProps(): Map<String, Any> {
         val attempt = live() ?: return emptyMap()

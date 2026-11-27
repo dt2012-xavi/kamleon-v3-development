@@ -4,14 +4,21 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.dynatech2012.kamleonuserapp.BuildConfig
+import com.dynatech2012.kamleonuserapp.R
 import com.dynatech2012.kamleonuserapp.viewmodels.PENDING_SCAN_MAX_AGE_MS
+import com.google.firebase.auth.FirebaseAuth
 import java.util.Calendar
 import java.util.UUID
 
 /**
  * The app's analytics (Mixpanel), following the web's contract: same identity (the Firebase uid), same
  * event names and properties, plus `platform: app_android`. A build without a token (internal) sends
- * nothing, and nothing is sent about the S-Urinal device accounts.
+ * nothing.
+ *
+ * Nothing is recorded about the S-Urinal device accounts (`@devices.kamleon.com`, no longer used, but
+ * excluded in case one is): from the moment the app knows the account (the email typed in the login,
+ * the restored session at start, or the profile) Mixpanel is opted out, which also deletes the events
+ * not sent yet, and the opt-out is kept on the phone until that account logs out.
  *
  * [init] it once, in the Application. Every call is safe before that or without a token.
  */
@@ -19,7 +26,7 @@ object Analytics {
     private var sender: AnalyticsSender? = null
     private var superProps: Map<String, Any> = emptyMap()
 
-    /** The signed-in account is an S-Urinal device's: send nothing until it logs out. */
+    /** The account in use is an S-Urinal device's: send nothing until it logs out. */
     @Volatile
     private var excluded = false
     private var profileSignature: String? = null
@@ -32,17 +39,41 @@ object Analytics {
     fun init(context: Context) {
         val app = context.applicationContext
         val token = BuildConfig.MIXPANEL_TOKEN
-        superProps = AnalyticsProps.superProps(
-            BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, BuildConfig.ANALYTICS_ENVIRONMENT
-        )
+        superProps = superPropsFor(app)
         if (token.isNotBlank()) {
             sender = MixpanelSender(app, token).also { it.register(superProps) }
+        }
+        // Before the trackers below send anything left by the previous process.
+        val restoredEmail = runCatching { FirebaseAuth.getInstance().currentUser?.email }.getOrNull()
+        if (AnalyticsProps.isExcludedEmail(restoredEmail)) {
+            excludeAccount()
+        } else if (sender?.optedOut == true) {
+            // A device account was signed out while the app was not running: back to normal.
+            optBackIn()
         }
         qrFlow = QrFlowTracker(PrefsQrFlowStore(app), ::nowMs, { UUID.randomUUID().toString() }, ::track)
             .also { it.processStarted(PENDING_SCAN_MAX_AGE_MS) }
         authFlow = AuthFlowTracker(PrefsAuthFlowStore(app), ::nowMs, { UUID.randomUUID().toString() }, ::track)
             .also { it.processStarted() }
     }
+
+    /**
+     * The phone's language changed while the app runs: the events that follow carry the new
+     * `appLanguage`. Called from the Application's onConfigurationChanged.
+     */
+    @Synchronized
+    fun configurationChanged(context: Context) {
+        val props = superPropsFor(context.applicationContext)
+        if (props == superProps) return
+        superProps = props
+        sender?.register(props)
+    }
+
+    /** The language comes from a resource, so it is the one the app really shows (English when the phone's is not translated). */
+    private fun superPropsFor(context: Context) = AnalyticsProps.superProps(
+        BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE, BuildConfig.ANALYTICS_ENVIRONMENT,
+        context.getString(R.string.analytics_app_language),
+    )
 
     /** The QR process; null only before [init]. */
     val qr: QrFlowTracker? get() = qrFlow
@@ -72,9 +103,10 @@ object Analytics {
     @Synchronized
     fun identify(userId: String, email: String?, recordLogin: Boolean = true) {
         if (AnalyticsProps.isExcludedEmail(email)) {
-            excluded = true
+            excludeAccount()
             return
         }
+        includeAccount()
         val sender = sender ?: return
         sender.identify(userId)
         if (recordLogin) sender.setProfile(AnalyticsProps.loginProfileProps(nowMs()))
@@ -87,11 +119,46 @@ object Analytics {
     @Synchronized
     fun syncIdentity(userId: String, email: String?) {
         if (AnalyticsProps.isExcludedEmail(email)) {
-            excluded = true
+            excludeAccount()
             return
         }
+        includeAccount()
         val sender = sender ?: return
         if (sender.distinctId != userId) sender.identify(userId)
+    }
+
+    /** The email typed to log in or sign up: a device account is excluded before its first event. */
+    fun accountEntered(email: String?) {
+        if (AnalyticsProps.isExcludedEmail(email)) excludeAccount() else includeAccount()
+    }
+
+    @Synchronized
+    private fun excludeAccount() {
+        if (excluded && sender?.optedOut != false) return
+        excluded = true
+        // Attempts in progress are dropped without a word, so nothing about them is sent later.
+        authFlow?.discard()
+        qrFlow?.discard()
+        sender?.optOut()
+    }
+
+    /**
+     * Another account after an excluded one that never signed in (a failed login with a device
+     * email): sending resumes, anonymous until this account's login.
+     */
+    @Synchronized
+    private fun includeAccount() {
+        if (!excluded) return
+        excluded = false
+        val sender = sender ?: return
+        sender.reset()
+        if (sender.optedOut) optBackIn() else sender.register(superProps)
+    }
+
+    private fun optBackIn() {
+        val sender = sender ?: return
+        sender.optIn()
+        sender.register(superProps) // the opt-out cleared them
     }
 
     /** The profile from the user document; only written when it changed. */
@@ -109,12 +176,17 @@ object Analytics {
     /** Logging out: the next person on this phone starts anonymous. */
     @Synchronized
     fun reset() {
+        val wasExcluded = excluded
         excluded = false
         profileSignature = null
         screens.clear()
+        if (wasExcluded) {
+            authFlow?.discard()
+            qrFlow?.discard()
+        }
         val sender = sender ?: return
         sender.reset()
-        sender.register(superProps) // reset() clears the super properties too
+        if (sender.optedOut) optBackIn() else sender.register(superProps) // reset() clears the super properties too
     }
 
     // ---- Screens and panels ----

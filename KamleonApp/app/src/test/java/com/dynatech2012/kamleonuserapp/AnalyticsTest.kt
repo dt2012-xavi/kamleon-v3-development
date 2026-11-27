@@ -18,14 +18,17 @@ import java.util.TimeZone
 class AnalyticsPropsTest {
     @Test
     fun `super properties follow the web contract`() {
-        val props = AnalyticsProps.superProps("1.1.0-dev", 2029, "dev")
+        val props = AnalyticsProps.superProps("1.1.0-dev", 2029, "dev", "cat")
         assertEquals(
             mapOf(
                 "platform" to "app_android", "appVersion" to "1.1.0", "appVersionCode" to 2029,
-                "definitionVersion" to 1, "environment" to "dev",
+                "definitionVersion" to 1, "environment" to "dev", "appLanguage" to "cat",
             ),
             props
         )
+        // Only the web's closed list; anything else is English, the language the app falls back to.
+        assertEquals("es", AnalyticsProps.appLanguageOf("es"))
+        assertEquals("en", AnalyticsProps.appLanguageOf("fr"))
         assertEquals("1.1.0", AnalyticsProps.appVersionOf("1.1.0"))
     }
 
@@ -252,6 +255,16 @@ class QrFlowTrackerTest {
         now = 700_000
         tracker().processStarted(pendingMaxAgeMs = 600_000)
         assertEquals("abandoned", finished().last()["outcome"])
+    }
+
+    @Test
+    fun `an excluded account's QR attempt is forgotten without a word`() {
+        val qr = tracker()
+        qr.cameraLinkOpened(valid = true, signedIn = false)
+        qr.discard()
+        tracker().processStarted(pendingMaxAgeMs = 600_000)
+        assertTrue(finished().isEmpty())
+        assertNull(store.attempt)
     }
 
     @Test

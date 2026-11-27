@@ -11,7 +11,8 @@
 - La app Android envía eventos según el contrato desde la versión **1.1.0 (versionCode 2029+)**, ya en `development`.
 - Los intentos de acceso (`Auth Flow *` y `flowInstanceId`, §4.4) se añadieron el 2026-11-27 con los criterios acordados con la web. Llegan desde el siguiente build de dev; un build anterior envía los eventos de acceso sin `flowInstanceId`.
 - El dashboard **todavía no los lee**: todas las consultas exigen `platform === "web"`. No hay riesgo de que inflen las cifras web. Cuando se haga el §8, esto es lo que hay que saber.
-- No he comprobado en Mixpanel Live view que los eventos lleguen. Lo primero que conviene hacer es abrir el proyecto **dev** → Events y confirmar las cinco super properties (§6).
+- **Eventos de prueba ya enviados** a Mixpanel dev el 2026-11-27 entre las 18:16 y las 18:19 (hora del móvil), desde un Samsung (`$model = SM-A556B`), con respuesta `status: 1` de la API EU: 12 `Page Viewed`, 1 `QR Flow Started`, 1 `QR Flow Finished` (`cancelled`), 1 `Drawer Opened` y 1 `Drawer Closed` (`invitationsAccepted: 0`). Son de antes de `appLanguage`, así que no la llevan. Sin probar todavía: `Auth Flow *` (necesita cerrar sesión y volver a entrar) e `invitationsAccepted: 1` (necesita aceptar una invitación).
+- **Comprobación del 2026-11-27 (build `development`, `versionCode` 2029, `versionName` 1.1.0-dev; commit `14eea39` más `appLanguage` y la exclusión reforzada):** mirado en lo que envía el móvil (log del SDK) y en la respuesta de la API EU (`status: 1`). (1) Todos los eventos llevan las seis super properties, `localHour` y `localWeekday`. (3) `Drawer Closed` de notificaciones lleva `invitationsAccepted: 0` e `invitationsDeclined: 0`. (4) `QR Flow Finished` lleva `entry: in-app`, `outcome: cancelled` y el mismo `flowInstanceId` que su `QR Flow Started`. (2) Login real a las 18:57–18:58 (hora del móvil), enviado a las 18:58:38: `Auth Flow Started` (`signin`) → «Crear cuenta» da `Signup Started`, `Auth Flow Abandoned` (`switched-flow`, `switchedTo: signup`, `lastStep: null`) y `Auth Flow Started` (`signup`) → volver da `Auth Flow Abandoned` (`signup`, `switchedTo: signin`) y un `Auth Flow Started` (`signin`) nuevo → `Login Attempted`, `Login Failed` (`auth/wrong-password`), `Login Attempted`, `Login Succeeded` y `Auth Flow Completed` (`success`, `stepsCompleted: 0`), **los cinco con el mismo `flowInstanceId`**. Mixpanel añade además su evento interno `$identify` al entrar: no lleva `localHour`/`localWeekday` y el dashboard debe ignorarlo. El 2032 es un `versionCode` local sin commitear: los builds de `development` son 2029.
 
 ## 2. Conexión por entorno
 
@@ -29,13 +30,14 @@ Región EU, sin IP (`ip=0`) y sin eventos automáticos del SDK: **solo llegan lo
 - **Identidad:** `distinct_id` = uid de Firebase.
   - `identify` tras un login correcto y al crear la cuenta.
   - `reset()` al cerrar sesión, y se vuelven a registrar las super properties.
-  - Las cuentas `@devices.kamleon.com` no envían nada.
+  - Las cuentas `@devices.kamleon.com` ya no se usan, pero si alguna entrara no queda nada registrado: la app hace *opt-out* en Mixpanel en cuanto conoce la cuenta (email del login, sesión restaurada o perfil), lo que borra lo no enviado, y lo mantiene hasta que cierra sesión. Como mucho puede quedar un `Auth Flow Started` anónimo y suelto de la pantalla de login. Al cerrar sesión Mixpanel envía su evento `$opt_in` sin nuestras super properties: el dashboard debe ignorarlo (no lleva `platform`).
 - **Super properties:**
   - `platform: app_android`;
   - `appVersion` (`X.Y.Z` estricto, sin sufijo `-dev`/`-pre`);
   - `appVersionCode` (entero);
   - `definitionVersion: 1`;
-  - `environment`.
+  - `environment`;
+  - `appLanguage` (nuevo, §4.5): el idioma en el que se ve la app, `en` · `es` · `cat`.
 - **Por evento:** `localHour` y `localWeekday` (lunes = 0).
 - **Perfil (`people.set`):** `userTypes`, `userStatus`, `languageID` y `lastLoginAt`.
   - `lastLoginAt` va en ISO UTC con milisegundos y solo se escribe en el login, no en el registro ni al restaurar sesión.
@@ -135,6 +137,39 @@ Ninguno lleva `hasAccount` ni `viaEmailLink`, ni tampoco `attribution`, igual qu
 
 **Para comparar con la web:** en la app la sesión de Firebase se mantiene entre arranques y una sesión restaurada no abre un `signin`. Los ratios (éxito/intento, abandono, tiempo hasta el éxito) son comparables; los logins por persona no.
 
+### 4.5 Dispositivo, sistema e idioma
+
+**Lo añade el SDK de Mixpanel Android (8.12.1) a cada evento, sin código de la app.** Valores reales de un evento del Samsung de pruebas:
+
+| Propiedad | Tipo | Ejemplo | Cómo leerla |
+|---|---|---|---|
+| `$os` | texto | `Android` | Siempre `Android` en `app_android` |
+| `$os_version` | texto | `17` | Versión de Android (`Build.VERSION.RELEASE`). Puede traer menor (`14.1`): agrupar por la parte entera |
+| `$manufacturer` | texto | `samsung` | Fabricante, en minúsculas tal como lo da el móvil |
+| `$brand` | texto | `samsung` | Marca comercial; casi siempre igual al fabricante. Para "marca" usar esta |
+| `$model` | texto | `SM-A556B` | Código de modelo, no el nombre comercial (`SM-A556B` = Galaxy A55). Agrupar en top N + «otros» |
+| `$screen_width` / `$screen_height` | entero | `1080` / `2340` | Píxeles físicos, en vertical |
+| `$screen_dpi` | entero | `450` | Densidad |
+| `$app_version_string`, `$app_version` | texto | `1.1.0-dev` | **No usar**: lleva sufijo. Usar nuestra `appVersion` |
+| `$app_build_number`, `$app_release` | texto | `2029` | **No usar**: usar nuestra `appVersionCode` (entero) |
+| `$has_nfc`, `$has_telephone`, `$wifi` | booleano | `true` | Capacidades y red en el momento del evento |
+| `$bluetooth_version` | texto | `ble` | — |
+| `$carrier`, `$bluetooth_enabled`, `$google_play_services` | — | ausentes en el Samsung | El SDK solo las pone si las puede leer. **Ausente = desconocido**, no `false` |
+| `mp_lib`, `$lib_version` | texto | `android`, `8.12.1` | Librería; útil para depurar |
+| `$mp_session_id`, `$mp_session_seq_id`, `$mp_session_start_sec` | texto / entero | — | Sesiones propias del SDK. La web no tiene equivalente: no usarlas para comparar plataformas |
+
+El perfil de la persona (`people`) también guarda `$android_brand`, `$android_model`, `$android_os_version`, etc. del **último** móvil usado. Para estadísticas usar las de los eventos, que dicen el móvil de cada uso.
+
+No llevan datos personales. `$device_id` y `distinct_id` son identificadores opacos: no mostrarlos.
+
+**Lo añade la app: `appLanguage`** (super property, en todos los eventos desde este cambio).
+- Es el idioma **en el que se ve la app**, que sigue al del móvil: `es` y `cat` cuando el móvil está en castellano o catalán, y `en` en cualquier otro caso, porque es el idioma al que cae la app.
+- Usa la lista cerrada de `Language Changed` de la web (`en` · `es` · `cat`), no `ca`.
+- Si la persona cambia el idioma del móvil con la app abierta, los eventos siguientes ya llevan el nuevo.
+- No es lo mismo que `languageID` del perfil, que es el idioma guardado en la cuenta. Pueden no coincidir.
+
+**Lo que no se envía, a propósito:** país o región. El locale del móvil (`es-ES`, `ca-ES`) daría una geolocalización aproximada, y se decidió no geolocalizar (sin IP). Si se quiere, hay que decidirlo explícitamente con la web.
+
 ## 5. Diferencias que afectan al dashboard
 
 1. **Intentos de acceso:** la app los envía como la web, salvo el abandono `closed` (§4.4): llega con la hora del siguiente arranque y solo si el intento tiene 30 minutos o menos parado.
@@ -169,6 +204,14 @@ Ninguno lleva `hasAccount` ni `viaEmailLink`, ni tampoco `attribution`, igual qu
   - un intento sin `Completed` ni `Abandoned` no es un error: es un abandono no medido;
   - mostrar entre plataformas solo ratios (éxito/intento, abandono, tiempo hasta el éxito), nunca logins por persona, y avisar de que el abandono de la app es una cota inferior.
 - [ ] Recuperación: los `Forgot Password *` de la app solo salen del login; no hay que excluir nada de Ajustes.
+- [ ] Dispositivo, sistema e idioma (§4.5):
+  - leer de los eventos `$os_version` (agrupado por versión mayor), `$brand`, `$model` (top N + «otros») y `appLanguage`, y si se quiere `$screen_width`;
+  - contar **personas** (`distinct_id`) por cada valor, no eventos: así un usuario muy activo no pesa más;
+  - para el móvil de una persona en un periodo, usar el de su último evento del periodo;
+  - tratar como «desconocido» una propiedad ausente;
+  - versión de la app: `appVersion`/`appVersionCode`, nunca `$app_version_string` ni `$app_build_number`.
+- [ ] Web: registrar también `appLanguage` (`en` · `es` · `cat`, el idioma de la interfaz) como super property en `buildBaseSuperProps`, y actualizarla al cambiar de idioma. Sin eso, el idioma solo se puede comparar dentro de la app.
+- [ ] Web: comprobar qué propiedades automáticas manda `mixpanel-browser` en vuestro proyecto (sistema, navegador, pantalla) y elegir cuáles se comparan con las de la app. Solo `$os` y la pantalla tienen un equivalente razonable.
 - [ ] Decidir si "perfil activo" cuenta una vez por persona o por plataforma.
 - [ ] Subir la versión de caché de los resúmenes afectados.
 
@@ -177,7 +220,7 @@ Ninguno lleva `hasAccount` ni `viaEmailLink`, ni tampoco `attribution`, igual qu
 1. Instalar un build `development` de la app (1.1.0 o superior) e iniciar sesión con una cuenta de pruebas que no sea `@devices.kamleon.com`.
 2. En Mixpanel, proyecto **dev** → Events (en vivo), filtrar por `platform = app_android`.
 3. Recorrer Home → Analytics → una gráfica → QR → Ajustes, y abrir y cerrar las notificaciones.
-4. Comprobar que llegan los `Page Viewed` de §4.1, los `Drawer *` y un `QR Flow Started`/`Finished` (salir del escáner da `cancelled`), cada uno con las cinco super properties más `localHour` y `localWeekday`.
+4. Comprobar que llegan los `Page Viewed` de §4.1, los `Drawer *` y un `QR Flow Started`/`Finished` (salir del escáner da `cancelled`), cada uno con las super properties (incluida `appLanguage`), `localHour`, `localWeekday` y las propiedades de dispositivo de §4.5.
 5. Cerrar sesión y volver a entrar: tiene que aparecer `Auth Flow Started` → `Login Attempted` → `Login Succeeded` → `Auth Flow Completed` (`flow: signin`, `outcome: success`), todos con el mismo `flowInstanceId`, el mismo `distinct_id` (el uid) y el perfil con `lastLoginAt`.
 6. Con una contraseña incorrecta antes del login correcto: el `Login Failed` lleva el mismo `flowInstanceId` que el resto del intento.
 7. Desde el login, ir a «Crear cuenta»: `Auth Flow Abandoned` (`flow: signin`, `exitType: switched-flow`, `switchedTo: signup`) y un `Auth Flow Started` nuevo con `flow: signup`.

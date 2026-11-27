@@ -140,6 +140,17 @@ class AuthFlowTrackerTest {
     }
 
     @Test
+    fun `an excluded account's attempt is forgotten without a word`() {
+        val auth = tracker()
+        auth.enter(Flow.SIGNIN)
+        auth.discard()
+        assertNull(store.attempt)
+        tracker().processStarted() // nothing left for the next start either
+        assertEquals(emptyMap<String, Any>(), auth.instanceProps())
+        assertEquals(listOf(AnalyticsEvents.AUTH_FLOW_STARTED), names())
+    }
+
+    @Test
     fun `steps and results without an attempt send nothing`() {
         val auth = tracker()
         auth.completeStep(Steps.REQUEST)

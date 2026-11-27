@@ -1,6 +1,7 @@
 package com.dynatech2012.kamleonuserapp.application
 
 import android.app.Application
+import android.content.res.Configuration
 import android.os.Build
 import com.dynatech2012.kamleonuserapp.BuildConfig
 import com.dynatech2012.kamleonuserapp.R
@@ -14,6 +15,11 @@ import timber.log.Timber
 
 @HiltAndroidApp
 class MyApplication: Application() {
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        Analytics.configurationChanged(this)
+    }
 
     override fun onCreate() {
         super.onCreate()

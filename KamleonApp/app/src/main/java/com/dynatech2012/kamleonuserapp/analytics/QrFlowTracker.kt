@@ -123,6 +123,9 @@ class QrFlowTracker(
 
     fun linked(success: Boolean) = finish(if (success) Outcome.SUCCESS else Outcome.FAILED)
 
+    /** Forgets the attempt in progress without sending anything (an excluded account). */
+    fun discard() = store.save(null)
+
     /** A camera scan that cannot be used any more (it expired while the person logged in). */
     fun cameraLinkInvalid() = finish(Outcome.INVALID)
 

@@ -13,6 +13,10 @@ interface AnalyticsSender {
     fun identify(userId: String)
     fun setProfile(props: Map<String, Any>)
     fun reset()
+    /** Stops sending and deletes what was not sent yet; kept on the phone until [optIn]. */
+    fun optOut()
+    fun optIn()
+    val optedOut: Boolean
 }
 
 /**
@@ -36,6 +40,13 @@ class MixpanelSender(context: Context, token: String) : AnalyticsSender {
     override fun setProfile(props: Map<String, Any>) = mixpanel.people.set(json(props))
 
     override fun reset() = mixpanel.reset()
+
+    override fun optOut() = mixpanel.optOutTracking()
+
+    // Mixpanel tracks its own "$opt_in" event here, without our super properties: the dashboard ignores it.
+    override fun optIn() = mixpanel.optInTracking()
+
+    override val optedOut: Boolean get() = mixpanel.hasOptedOutTracking()
 
     private fun json(props: Map<String, Any>) = JSONObject().apply {
         props.forEach { (key, value) ->

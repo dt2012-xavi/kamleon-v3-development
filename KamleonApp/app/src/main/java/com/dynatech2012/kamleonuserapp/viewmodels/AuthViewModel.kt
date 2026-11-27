@@ -159,6 +159,7 @@ class AuthViewModel @Inject constructor(
 
     fun signup() {
         Timber.d("Registration requested")
+        Analytics.accountEntered(email)
         viewModelScope.launch(Dispatchers.IO) {
             if (email != null && fName != null && lName != null &&
                 (recoveringProfile || pass != null)) {
@@ -349,6 +350,8 @@ class AuthViewModel @Inject constructor(
             _uiState.postValue(-4)
             return
         }
+        // A device account is excluded before anything about this login is sent.
+        Analytics.accountEntered(email)
         // The attempt began when the login screen was shown; after a finished one, this starts the next.
         Analytics.auth?.enter(AuthFlowTracker.Flow.SIGNIN)
         Analytics.trackAuth(AnalyticsEvents.LOGIN_ATTEMPTED)
