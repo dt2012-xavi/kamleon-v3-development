@@ -2,6 +2,7 @@ package com.dynatech2012.kamleonuserapp.fragments
 
 import com.dynatech2012.kamleonuserapp.analytics.AnalyticsEvents
 import com.dynatech2012.kamleonuserapp.analytics.Analytics
+import com.dynatech2012.kamleonuserapp.analytics.AuthFlowTracker
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -47,6 +48,12 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View = ComposeView(requireContext()).apply {
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // As on the web, a sign-in attempt starts when the login screen is shown to someone signed out.
+        if (!viewModel.isSignedIn) Analytics.auth?.enter(AuthFlowTracker.Flow.SIGNIN)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -24,6 +24,7 @@ import com.dynatech2012.kamleonuserapp.security.PasswordStrength
 import com.dynatech2012.kamleonuserapp.analytics.Analytics
 import com.dynatech2012.kamleonuserapp.analytics.AnalyticsEvents
 import com.dynatech2012.kamleonuserapp.analytics.AnalyticsProps
+import com.dynatech2012.kamleonuserapp.analytics.AuthFlowTracker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.google.firebase.firestore.Source
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -185,20 +186,21 @@ class AuthViewModel @Inject constructor(
                     if (registerResult.isSuccess && registerResult.dataValue != null) {
                         profileCreated = true
                         authRepo.uuid?.let { Analytics.identify(it, email, recordLogin = false) }
-                        Analytics.track(
+                        Analytics.trackAuth(
                             AnalyticsEvents.SIGNUP_COMPLETED,
                             mapOf("consentGiven" to true, "viaInvitation" to false)
                         )
                         _uiState.postValue(2)
                         if (authRepo.isEmailVerified) _uiState.postValue(3) else sendVerificationEmail(VerificationContext.SIGNUP)
                         Analytics.track(AnalyticsEvents.SIGNUP_STEP2_VIEWED)
+                        Analytics.auth?.completeStep(AuthFlowTracker.Steps.ACCOUNT)
                     } else {
-                        Analytics.track(AnalyticsEvents.SIGNUP_FAILED, AnalyticsProps.failureProps(analyticsErrorCode(registerResult.error)))
+                        Analytics.trackAuth(AnalyticsEvents.SIGNUP_FAILED, AnalyticsProps.failureProps(analyticsErrorCode(registerResult.error)))
                         recoveringProfile = authRepo.checkLogged && authRepo.email == email
                         _uiState.postValue(-1)
                     }
                 } else {
-                    Analytics.track(AnalyticsEvents.SIGNUP_FAILED, AnalyticsProps.failureProps(analyticsErrorCode(authResult?.error)))
+                    Analytics.trackAuth(AnalyticsEvents.SIGNUP_FAILED, AnalyticsProps.failureProps(analyticsErrorCode(authResult?.error)))
                     _uiState.postValue(
                         if (resumingProfile || authResult?.error is FirebaseAuthUserCollisionException) -7
                         else -1
@@ -283,6 +285,8 @@ class AuthViewModel @Inject constructor(
             if (registerResult.isSuccess) {
                 val skipped = height == null && weight == null && gender == Gender.none
                 Analytics.track(AnalyticsEvents.SIGNUP_PROFILE_STEP_COMPLETED, mapOf("skipped" to skipped))
+                Analytics.auth?.completeStep(AuthFlowTracker.Steps.PROFILE)
+                Analytics.auth?.completeFlow(AuthFlowTracker.Outcome.SUCCESS)
             }
             _uiState.postValue(
                 if (!registerResult.isSuccess) -1
@@ -333,6 +337,9 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    /** A Firebase session is open (restored, or kept after a login blocked by an unverified email). */
+    val isSignedIn: Boolean get() = authRepo.checkLogged
+
     fun login(email: String, pass: String) {
         recoveringProfile = false
         profileCreated = false
@@ -342,13 +349,15 @@ class AuthViewModel @Inject constructor(
             _uiState.postValue(-4)
             return
         }
-        Analytics.track(AnalyticsEvents.LOGIN_ATTEMPTED)
+        // The attempt began when the login screen was shown; after a finished one, this starts the next.
+        Analytics.auth?.enter(AuthFlowTracker.Flow.SIGNIN)
+        Analytics.trackAuth(AnalyticsEvents.LOGIN_ATTEMPTED)
         viewModelScope.launch(Dispatchers.IO) {
             val authResult = authRepo.login(email, pass)
             if (authResult.isSuccess && authResult.dataValue != null) {
                 loadProfileAfterSignIn()
             } else if (authResult.isFailure) {
-                Analytics.track(AnalyticsEvents.LOGIN_FAILED, AnalyticsProps.failureProps(analyticsErrorCode(authResult.error)))
+                Analytics.trackAuth(AnalyticsEvents.LOGIN_FAILED, AnalyticsProps.failureProps(analyticsErrorCode(authResult.error)))
                 val kind = authErrorKindOf(authResult.error)
                 Timber.w("Login failed: %s", kind)
                 if (kind == AuthErrorKind.UserDisabled) {
@@ -372,10 +381,12 @@ class AuthViewModel @Inject constructor(
                 fName = profile.data.name
                 lName = profile.data.lastName
                 if (!authRepo.isEmailVerified) {
-                    Analytics.track(AnalyticsEvents.LOGIN_BLOCKED_UNVERIFIED_EMAIL)
+                    Analytics.trackAuth(AnalyticsEvents.LOGIN_BLOCKED_UNVERIFIED_EMAIL)
+                    Analytics.auth?.completeFlow(AuthFlowTracker.Outcome.ERROR)
                 } else {
                     authRepo.uuid?.let { Analytics.identify(it, authRepo.email) }
-                    Analytics.track(AnalyticsEvents.LOGIN_SUCCEEDED)
+                    Analytics.trackAuth(AnalyticsEvents.LOGIN_SUCCEEDED)
+                    Analytics.auth?.completeFlow(AuthFlowTracker.Outcome.SUCCESS)
                 }
                 _uiState.postValue(
                     if (!authRepo.isEmailVerified) LoginState.EMAIL_NOT_VERIFIED
@@ -388,7 +399,7 @@ class AuthViewModel @Inject constructor(
                 Timber.w("Profile after sign-in not available: %s", state)
                 // As on the web: signed in, but there is no account to open ("permissions-empty").
                 val code = if (state == LoginState.PROFILE_RETRY) AnalyticsProps.errorCode(null, network = true) else "permissions-empty"
-                Analytics.track(AnalyticsEvents.LOGIN_FAILED, AnalyticsProps.failureProps(code))
+                Analytics.trackAuth(AnalyticsEvents.LOGIN_FAILED, AnalyticsProps.failureProps(code))
                 if (state == LoginState.ACCOUNT_REJECTED) {
                     errorCodeOf(profile.exception).also { code ->
                         loginErrorCode = code

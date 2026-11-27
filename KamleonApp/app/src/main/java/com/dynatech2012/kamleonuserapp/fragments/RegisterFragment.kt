@@ -17,6 +17,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
+import com.dynatech2012.kamleonuserapp.analytics.AuthFlowTracker
 import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.security.PasswordStrength
 import com.dynatech2012.kamleonuserapp.viewmodels.AuthViewModel
@@ -49,6 +51,11 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View = ComposeView(requireContext()).apply {
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Analytics.auth?.enter(AuthFlowTracker.Flow.SIGNUP)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

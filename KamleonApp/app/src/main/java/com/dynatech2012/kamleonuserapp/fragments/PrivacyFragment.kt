@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
 import com.dynatech2012.kamleonuserapp.application.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -24,6 +25,12 @@ class PrivacyFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View = ComposeView(requireContext()).apply {
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Still the signup: an attempt left idle too long is dropped here, without starting another.
+        Analytics.auth?.keepAlive()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

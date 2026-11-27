@@ -27,6 +27,7 @@ object Analytics {
     val screens = ScreenTracker()
     private val drawer = DrawerSession(::nowMs)
     private var qrFlow: QrFlowTracker? = null
+    private var authFlow: AuthFlowTracker? = null
 
     fun init(context: Context) {
         val app = context.applicationContext
@@ -39,10 +40,23 @@ object Analytics {
         }
         qrFlow = QrFlowTracker(PrefsQrFlowStore(app), ::nowMs, { UUID.randomUUID().toString() }, ::track)
             .also { it.processStarted(PENDING_SCAN_MAX_AGE_MS) }
+        authFlow = AuthFlowTracker(PrefsAuthFlowStore(app), ::nowMs, { UUID.randomUUID().toString() }, ::track)
+            .also { it.processStarted() }
     }
 
     /** The QR process; null only before [init]. */
     val qr: QrFlowTracker? get() = qrFlow
+
+    /** The access attempts (signin, signup, forgot-password); null only before [init]. */
+    val auth: AuthFlowTracker? get() = authFlow
+
+    /**
+     * An access event of the screens (Login Attempted, Signup Failed…): the same event, plus the
+     * `flowInstanceId` of the attempt in progress, as the web's `trackAuthEvent`.
+     */
+    fun trackAuth(name: String, props: Map<String, Any> = emptyMap()) {
+        track(name, props + (authFlow?.instanceProps() ?: emptyMap()))
+    }
 
     fun track(name: String, props: Map<String, Any> = emptyMap()) {
         if (excluded) return
@@ -113,7 +127,7 @@ object Analytics {
         track(AnalyticsEvents.DRAWER_OPENED, drawer.open(name, screens.current, feature))
     }
 
-    fun drawerAction() = drawer.completedAction()
+    fun drawerAction(answer: DrawerSession.Answer? = null) = drawer.completedAction(answer)
 
     fun drawerClosed() {
         drawer.close()?.let { track(AnalyticsEvents.DRAWER_CLOSED, it) }
@@ -152,5 +166,56 @@ private class PrefsQrFlowStore(context: Context) : QrFlowTracker.Store {
         const val PENDING = "pendingSession"
         const val STARTED = "startedAt"
         const val STEPS = "steps"
+    }
+}
+
+/** The access attempt in progress, so that one left when the app is killed is reported at the next start. */
+private class PrefsAuthFlowStore(context: Context) : AuthFlowTracker.Store {
+    private val prefs: SharedPreferences = context.getSharedPreferences("analytics_auth_flow", Context.MODE_PRIVATE)
+    // Read on every access event: kept in memory, written through.
+    private var cached: AuthFlowTracker.Attempt? = read()
+
+    override fun load(): AuthFlowTracker.Attempt? = cached
+
+    override fun save(attempt: AuthFlowTracker.Attempt?) {
+        if (attempt == cached) return
+        cached = attempt
+        prefs.edit {
+            if (attempt == null) {
+                clear()
+            } else {
+                putString(ID, attempt.id)
+                putString(FLOW, attempt.flow.value)
+                putLong(STARTED, attempt.startedAt)
+                putLong(STEP_STARTED, attempt.stepStartedAt)
+                putLong(LAST_ACTIVE, attempt.lastActiveAt)
+                putInt(STEPS, attempt.stepsCompleted)
+                putString(LAST_STEP, attempt.lastStep)
+            }
+        }
+    }
+
+    private fun read(): AuthFlowTracker.Attempt? {
+        val id = prefs.getString(ID, null) ?: return null
+        val flow = AuthFlowTracker.Flow.entries.firstOrNull { it.value == prefs.getString(FLOW, null) } ?: return null
+        return AuthFlowTracker.Attempt(
+            id = id,
+            flow = flow,
+            startedAt = prefs.getLong(STARTED, 0),
+            stepStartedAt = prefs.getLong(STEP_STARTED, 0),
+            lastActiveAt = prefs.getLong(LAST_ACTIVE, 0),
+            stepsCompleted = prefs.getInt(STEPS, 0),
+            lastStep = prefs.getString(LAST_STEP, null),
+        )
+    }
+
+    private companion object {
+        const val ID = "id"
+        const val FLOW = "flow"
+        const val STARTED = "startedAt"
+        const val STEP_STARTED = "stepStartedAt"
+        const val LAST_ACTIVE = "lastActiveAt"
+        const val STEPS = "stepsCompleted"
+        const val LAST_STEP = "lastStep"
     }
 }

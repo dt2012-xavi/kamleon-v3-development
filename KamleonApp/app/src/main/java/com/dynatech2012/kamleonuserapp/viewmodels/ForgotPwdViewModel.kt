@@ -12,6 +12,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
+import com.dynatech2012.kamleonuserapp.analytics.AuthFlowTracker
 import javax.inject.Inject
 import timber.log.Timber
 
@@ -26,6 +28,8 @@ class ForgotPwdViewModel @Inject constructor(
     val resetPwdSuccess: LiveData<ActionResult> = _resetPwdSuccess
     fun resetPwd(email: String) {
         Timber.d("Password reset requested")
+        // After a link already sent, asking again is a new attempt.
+        Analytics.auth?.enter(AuthFlowTracker.Flow.FORGOT_PASSWORD)
         viewModelScope.launch(Dispatchers.IO) {
             val response = cloudFunctions.resetPwd(email)
             Timber.d("Password reset request completed: success=%s", response.isSuccess)

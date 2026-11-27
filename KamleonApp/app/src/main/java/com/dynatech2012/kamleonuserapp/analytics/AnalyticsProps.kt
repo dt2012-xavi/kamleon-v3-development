@@ -17,6 +17,9 @@ object AnalyticsProps {
     /** Accounts of the S-Urinal devices: nothing about them is sent. */
     const val EXCLUDED_EMAIL_DOMAIN = "@devices.kamleon.com"
 
+    /** A property sent as a JSON null, as the web does for a missing value (an event's map holds no nulls). */
+    object NULL
+
     private val VERSION = Regex("""^\d+\.\d+\.\d+""")
 
     /** The super properties of every event. [environment] is the flavor's (`dev`, `pre`, `prod`). */

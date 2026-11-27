@@ -16,6 +16,8 @@ import androidx.navigation.fragment.findNavController
 import com.dynatech2012.kamleonuserapp.network.actionFailureText
 import com.dynatech2012.kamleonuserapp.network.isConnectionProblem
 import com.dynatech2012.kamleonuserapp.R
+import com.dynatech2012.kamleonuserapp.analytics.Analytics
+import com.dynatech2012.kamleonuserapp.analytics.AuthFlowTracker
 import com.dynatech2012.kamleonuserapp.application.AppTheme
 import com.dynatech2012.kamleonuserapp.viewmodels.ForgotPwdViewModel
 import com.dynatech2012.kamleonuserapp.views.SheetSpec
@@ -36,6 +38,11 @@ class ForgotPwdFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View = ComposeView(requireContext()).apply {
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Analytics.auth?.enter(AuthFlowTracker.Flow.FORGOT_PASSWORD)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

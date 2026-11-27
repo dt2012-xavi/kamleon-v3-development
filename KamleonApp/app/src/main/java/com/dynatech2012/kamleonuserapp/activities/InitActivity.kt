@@ -2,6 +2,7 @@ package com.dynatech2012.kamleonuserapp.activities
 
 import com.google.firebase.auth.FirebaseAuth
 import com.dynatech2012.kamleonuserapp.analytics.Analytics
+import com.dynatech2012.kamleonuserapp.analytics.AuthFlowTracker
 import com.dynatech2012.kamleonuserapp.BuildConfig
 import com.dynatech2012.kamleonuserapp.viewmodels.scanLinkFrom
 import android.Manifest
@@ -290,6 +291,13 @@ class InitActivity : BaseActivity<ActivityInitBinding>() {
             // The user asked for this: try the server for real even if the monitor says there is no network.
             viewModel.checkLogin(trustMonitor = false)
         }
+    }
+
+    override fun onDestroy() {
+        // Leaving the access screens for good (Back out of the app) with an attempt unfinished. After a
+        // login or a signup the attempt is already over, so going to the main screen sends nothing.
+        if (isFinishing) Analytics.auth?.abandon(AuthFlowTracker.Exit.NAVIGATED)
+        super.onDestroy()
     }
 
     fun openMain() {

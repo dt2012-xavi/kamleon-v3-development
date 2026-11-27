@@ -144,6 +144,31 @@ class ScreenTrackerTest {
         session.open("notifications", null, "notifications")
         assertEquals("cancelled", session.close()!!["outcome"])
     }
+
+    @Test
+    fun `the notifications panel counts accepted and declined invitations, 0 included`() {
+        val session = DrawerSession { 0L }
+        session.open("notifications", AppScreen.Home, "notifications")
+        session.completedAction(DrawerSession.Answer.ACCEPTED)
+        session.completedAction(DrawerSession.Answer.DECLINED)
+        session.completedAction(DrawerSession.Answer.ACCEPTED)
+        session.completedAction() // dismissing an expired invitation: neither
+        val closed = session.close()!!
+        assertEquals("completed", closed["outcome"])
+        assertEquals(4, closed["attempts"])
+        assertEquals(2, closed["invitationsAccepted"])
+        assertEquals(1, closed["invitationsDeclined"])
+
+        // A new opening starts from 0, and 0 is sent.
+        session.open("notifications", AppScreen.Home, "notifications")
+        val nothing = session.close()!!
+        assertEquals(0, nothing["invitationsAccepted"])
+        assertEquals(0, nothing["invitationsDeclined"])
+
+        // Only the notifications panel has them.
+        session.open("other", AppScreen.Home, "other")
+        assertFalse(session.close()!!.containsKey("invitationsAccepted"))
+    }
 }
 
 class QrFlowTrackerTest {

@@ -38,7 +38,16 @@ class MixpanelSender(context: Context, token: String) : AnalyticsSender {
     override fun reset() = mixpanel.reset()
 
     private fun json(props: Map<String, Any>) = JSONObject().apply {
-        props.forEach { (key, value) -> put(key, if (value is List<*>) JSONArray(value) else value) }
+        props.forEach { (key, value) ->
+            put(
+                key,
+                when (value) {
+                    is List<*> -> JSONArray(value)
+                    AnalyticsProps.NULL -> JSONObject.NULL
+                    else -> value
+                }
+            )
+        }
     }
 
     companion object {

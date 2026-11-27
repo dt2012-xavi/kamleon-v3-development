@@ -55,17 +55,26 @@ class ScreenTracker {
 
 /**
  * One opening of a panel (the notifications sheet) = one Drawer Opened and one Drawer Closed, as on the
- * web: `completed` when the person did something in it, `cancelled` when they only looked.
+ * web: `completed` when the person did something in it, `cancelled` when they only looked. The
+ * notifications panel also counts the invitations accepted and declined while it was open (0 included),
+ * so the dashboard counts the app's answers as the web's.
  */
 class DrawerSession(private val now: () -> Long) {
     private var drawer: String? = null
     private var openedAt = 0L
     private var actions = 0
+    private var accepted = 0
+    private var declined = 0
+
+    /** How an invitation was answered; dismissing an expired one is neither. */
+    enum class Answer { ACCEPTED, DECLINED }
 
     fun open(drawer: String, screen: AppScreen?, feature: String): Map<String, Any> {
         this.drawer = drawer
         openedAt = now()
         actions = 0
+        accepted = 0
+        declined = 0
         return buildMap {
             put("drawer", drawer)
             screen?.let { put("section", it.section); it.view?.let { v -> put("view", v) } }
@@ -74,20 +83,36 @@ class DrawerSession(private val now: () -> Long) {
         }
     }
 
-    /** The person did the panel's main thing (accepted, declined or dismissed an invitation). */
-    fun completedAction() {
-        if (drawer != null) actions++
+    /** The person did the panel's main thing (accepted, declined or dismissed an invitation): [answer] says which. */
+    fun completedAction(answer: Answer? = null) {
+        if (drawer == null) return
+        actions++
+        when (answer) {
+            Answer.ACCEPTED -> accepted++
+            Answer.DECLINED -> declined++
+            null -> Unit
+        }
     }
 
     /** The Drawer Closed properties, or null when no panel is open. */
     fun close(): Map<String, Any>? {
         val open = drawer ?: return null
         drawer = null
-        return mapOf(
-            "drawer" to open,
-            "outcome" to if (actions > 0) "completed" else "cancelled",
-            "attempts" to actions,
-            "durationMs" to (now() - openedAt).coerceAtLeast(0),
-        ) + AnalyticsProps.PERSONAL
+        return buildMap {
+            put("drawer", open)
+            put("outcome", if (actions > 0) "completed" else "cancelled")
+            put("attempts", actions)
+            put("durationMs", (now() - openedAt).coerceAtLeast(0))
+            if (open == NOTIFICATIONS) {
+                put("invitationsAccepted", accepted)
+                put("invitationsDeclined", declined)
+            }
+            putAll(AnalyticsProps.PERSONAL)
+        }
+    }
+
+    companion object {
+        /** The notifications panel, the only one with invitation counters. */
+        const val NOTIFICATIONS = "notifications"
     }
 }

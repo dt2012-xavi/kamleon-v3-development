@@ -3,6 +3,7 @@ package com.dynatech2012.kamleonuserapp.views
 import com.dynatech2012.kamleonuserapp.models.InvitationRecord
 import com.dynatech2012.kamleonuserapp.analytics.AnalyticsProps
 import com.dynatech2012.kamleonuserapp.analytics.AnalyticsEvents
+import com.dynatech2012.kamleonuserapp.analytics.DrawerSession
 import com.dynatech2012.kamleonuserapp.analytics.Analytics
 import android.content.DialogInterface
 import android.os.Bundle
@@ -89,7 +90,7 @@ sealed interface InvitationsState {
  * closing the sheet marks the unseen ones as read.
  */
 /** The panel and the function it belongs to, in the web's analytics taxonomy. */
-private const val NOTIFICATIONS = "notifications"
+private const val NOTIFICATIONS = DrawerSession.NOTIFICATIONS
 
 class InvitationsSheet : BottomSheetDialogFragment() {
     private val viewModel: MainViewModel by activityViewModels()
@@ -178,7 +179,13 @@ class InvitationsSheet : BottomSheetDialogFragment() {
             val done = { busy = busy - id }
             when {
                 response is Response.Success -> {
-                    Analytics.drawerAction()
+                    Analytics.drawerAction(
+                        when (event) {
+                            AnalyticsEvents.INVITATION_ACCEPTED -> DrawerSession.Answer.ACCEPTED
+                            AnalyticsEvents.INVITATION_DECLINED -> DrawerSession.Answer.DECLINED
+                            else -> null // dismissing an expired invitation
+                        }
+                    )
                     event?.let { trackAnswer(it, item.record) }
                     success?.let { show(it) }
                     load(showSpinner = false, then = done)

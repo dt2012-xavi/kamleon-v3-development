@@ -7,6 +7,7 @@ import com.google.firebase.FirebaseTooManyRequestsException
 import com.dynatech2012.kamleonuserapp.analytics.Analytics
 import com.dynatech2012.kamleonuserapp.analytics.AnalyticsEvents
 import com.dynatech2012.kamleonuserapp.analytics.AnalyticsProps
+import com.dynatech2012.kamleonuserapp.analytics.AuthFlowTracker
 import com.dynatech2012.kamleonuserapp.repositories.ResponseNullable
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.functions.FirebaseFunctionsException
@@ -86,11 +87,17 @@ internal fun analyticsErrorCode(e: Exception?): String = when {
     else -> AnalyticsProps.errorCode(null)
 }
 
-/** Forgot Password Requested, or Failed with its code, for a password reset request's [response]. */
+/**
+ * Forgot Password Requested (which ends the forgot-password attempt), or Failed with its code, for the
+ * login's password reset request. Only from the login, as on the web: the link asked for from Settings
+ * is a signed-in change, not a recovery.
+ */
 internal fun trackPasswordResetRequest(response: ResponseNullable<*>) {
     if (response is ResponseNullable.Success) {
-        Analytics.track(AnalyticsEvents.FORGOT_PASSWORD_REQUESTED)
+        Analytics.trackAuth(AnalyticsEvents.FORGOT_PASSWORD_REQUESTED)
+        Analytics.auth?.completeStep(AuthFlowTracker.Steps.REQUEST)
+        Analytics.auth?.completeFlow(AuthFlowTracker.Outcome.SUCCESS)
     } else if (response is ResponseNullable.Failure) {
-        Analytics.track(AnalyticsEvents.FORGOT_PASSWORD_FAILED, mapOf("errorCode" to analyticsErrorCode(response.exception)))
+        Analytics.trackAuth(AnalyticsEvents.FORGOT_PASSWORD_FAILED, mapOf("errorCode" to analyticsErrorCode(response.exception)))
     }
 }

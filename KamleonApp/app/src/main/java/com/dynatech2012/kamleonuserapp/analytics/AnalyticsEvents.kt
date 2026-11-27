@@ -21,6 +21,12 @@ object AnalyticsEvents {
     const val FORGOT_PASSWORD_REQUESTED = "Forgot Password Requested"
     const val FORGOT_PASSWORD_FAILED = "Forgot Password Failed"
 
+    // Access attempts (web: lib/analytics/auth-flow-tracker.ts)
+    const val AUTH_FLOW_STARTED = "Auth Flow Started"
+    const val AUTH_STEP_COMPLETED = "Auth Step Completed"
+    const val AUTH_FLOW_COMPLETED = "Auth Flow Completed"
+    const val AUTH_FLOW_ABANDONED = "Auth Flow Abandoned"
+
     // Use
     const val PAGE_VIEWED = "Page Viewed"
     const val DRAWER_OPENED = "Drawer Opened"

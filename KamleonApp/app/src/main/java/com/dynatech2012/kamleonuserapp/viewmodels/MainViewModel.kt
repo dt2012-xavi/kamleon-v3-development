@@ -301,9 +301,8 @@ class MainViewModel @Inject constructor(
     /** Emails the signed-in user a link to reset the password; null when there is no e-mail. */
     suspend fun sendPasswordReset(): ActionResult? = withContext(Dispatchers.IO) {
         accountEmail?.let { email ->
-            val response = cloudFunctions.resetPwd(email)
-            trackPasswordResetRequest(response)
-            actionResultOf(response)
+            // Not tracked: Forgot Password events count recoveries from the login (agreed with the web).
+            actionResultOf(cloudFunctions.resetPwd(email))
         }
     }
 
