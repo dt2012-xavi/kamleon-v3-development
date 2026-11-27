@@ -1,21 +1,23 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# R8 rules for the app. Hilt, Room, Compose, Navigation, Firebase, ML Kit, CameraX and Mixpanel bring
+# their own; these cover what only the app knows.
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Firestore maps these classes by reflection, reading (toObject/toObjects) AND writing (set) them: R8 must
+# keep their names, fields, getters, setters and no-argument constructors, or a new account would be
+# written to Firestore with renamed fields. Add here any other class passed to toObject() or set().
+-keep class com.dynatech2012.kamleonuserapp.models.CustomUser { *; }
+-keep class com.dynatech2012.kamleonuserapp.models.KamleonLegal { *; }
+-keep class com.dynatech2012.kamleonuserapp.models.KamleonPermissions { *; }
+-keep class com.dynatech2012.kamleonuserapp.models.RawMeasureData { *; }
+# Their enums are written and read by constant name.
+-keep enum com.dynatech2012.kamleonuserapp.models.Gender { *; }
+-keep enum com.dynatech2012.kamleonuserapp.models.UserStatus { *; }
+-keep enum com.dynatech2012.kamleonuserapp.models.MeasureType { *; }
+-keep enum com.dynatech2012.kamleonuserapp.models.MeasurePrecision { *; }
+# Generic field types (Map<String, KamleonPermissions>) and @PropertyName are needed at runtime.
+-keepattributes Signature,*Annotation*,InnerClasses,EnclosingMethod
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
-
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Readable crash reports: Crashlytics deobfuscates with the mapping file the plugin uploads on release
+# builds; it needs the line numbers. Source file names are hidden.
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
+-keep public class * extends java.lang.Exception

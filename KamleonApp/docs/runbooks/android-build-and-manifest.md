@@ -31,7 +31,11 @@ El host entra mediante manifestPlaceholders.appLinkHost. Revisar también UrlCon
 
 La configuración de firma es local y opcional al configurar Gradle. La tarea validateProdReleaseSigning exige propiedades completas y un keystore legible para prodRelease; no obliga a tener secretos para desarrollar en debug. La firma efectiva depende de las reglas de precedencia de AGP y de la variante: no inferir el certificado usado solo del nombre del flavor. Seguir [android-release.md](android-release.md). No guardar ni imprimir contraseñas/certificados en esta guía.
 
-R8 está desactivado en release. Tener proguard-rules.pro declarado no significa que se esté minificando/ofuscando. Activarlo requiere una tarea propia con pruebas de la app release.
+R8 está activado en release (`minifyEnabled` y `shrinkResources`) para los cuatro flavors: reduce, optimiza y ofusca el código. Las reglas propias de la app están en `app/proguard-rules.pro`. Hilt, Room, Compose, Navigation, Firebase, ML Kit, CameraX y Mixpanel traen las suyas.
+
+- Firestore lee y escribe por reflexión `CustomUser`, `KamleonLegal`, `KamleonPermissions`, `RawMeasureData` y sus enums. Deben conservar sus nombres; si no, una cuenta nueva se escribiría en Firestore con los campos renombrados. Toda clase nueva que se pase a `toObject()`, `toObjects()` o `set()` necesita su regla `-keep`.
+- El plugin de Crashlytics sube el `mapping.txt` en cada build release (`uploadCrashlyticsMappingFile<Flavor>Release`) para desofuscar los crashes. El AAB también lo lleva para Play Console. En una build de prueba que no se vaya a publicar, se puede saltar con `-x uploadCrashlyticsMappingFile<Flavor>Release`.
+- Para probar una release en un móvil sin la clave de subida: alinear la APK con `zipalign` y firmarla con `~/.android/debug.keystore` usando `apksigner`. Al ser la misma firma que el build debug, se instala encima sin perder la sesión.
 
 ## Manifest: decisiones que se mantienen
 

@@ -86,9 +86,11 @@ android {
         }
     }
     buildTypes {
-        // R8 remains disabled: declaring ProGuard rules does not enable obfuscation/minification.
+        // R8 shrinks, optimizes and obfuscates release builds; app-specific keep rules (Firestore models)
+        // are in proguard-rules.pro. Crashlytics uploads the mapping file to deobfuscate crashes.
         release {
-            minifyEnabled = false
+            minifyEnabled = true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
