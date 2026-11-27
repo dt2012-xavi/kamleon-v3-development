@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import com.dynatech2012.kamleonuserapp.views.settings.label
 import com.dynatech2012.kamleonuserapp.views.settings.ProfileValues
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -68,7 +69,8 @@ class OnboardingFragment : Fragment() {
     // The same ranges as Settings' Personal data.
     private val heightValues = ProfileValues.HEIGHT_RANGE.map { "$it" }
     private val weightValues = ProfileValues.WEIGHT_RANGE.map { "$it" }
-    private val genderValues = Gender.values().map { it.raw }
+    /** The gender picker's labels, in the person's language; [selectedGender] keeps the raw value. */
+    private val genderValues: List<String> by lazy { Gender.entries.map { it.label(resources) } }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,11 +122,13 @@ class OnboardingFragment : Fragment() {
                     genderValues = genderValues,
                     selectedHeight = selectedHeight,
                     selectedWeight = selectedWeight,
-                    selectedGender = selectedGender,
+                    selectedGender = Gender.fromRaw(selectedGender).label(resources),
                     onBirthDateChange = { _, _, _, millis -> birthDate = PickerDate(millis) },
                     onHeightChange = { selectedHeight = it },
                     onWeightChange = { selectedWeight = it },
-                    onGenderChange = { selectedGender = it },
+                    onGenderChange = { label ->
+                        Gender.entries.firstOrNull { it.label(resources) == label }?.let { selectedGender = it.raw }
+                    },
                     onBack = ::onBack,
                     onNext = ::onNext,
                     onSkip = ::onSkip

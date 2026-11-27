@@ -1,5 +1,8 @@
 package com.dynatech2012.kamleonuserapp.views
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.Crossfade
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.annotation.DimenRes
@@ -354,8 +357,8 @@ fun KamleonTextField(
 
 /**
  * Primary pill button: filled teal, translucent when pressed, outlined when disabled. While
- * [loading] the label is replaced by a small spinner and the button is inert. With [destructive]
- * it is red instead of teal (confirming something that cannot be undone).
+ * [loading] it keeps its colour, the label fades into a small white spinner and the button is inert.
+ * With [destructive] it is red instead of teal (confirming something that cannot be undone).
  */
 @Composable
 fun KamleonRoundButton(
@@ -372,12 +375,16 @@ fun KamleonRoundButton(
     val active = enabled && !loading
     val shape = RoundedCornerShape(dimensionResource(R.dimen.round_blue_button_corner_radius))
     val grey40 = colorResource(R.color.kamleon_secondary_grey_40)
-    val container = when {
+    val target = when {
+        loading && destructive -> colorResource(R.color.kmln_red)
+        loading -> colorResource(R.color.kamleon_blue)
         !active -> Color.Transparent
         destructive -> colorResource(R.color.kmln_red).copy(alpha = if (pressed) 0.8f else 1f)
         pressed -> colorResource(R.color.kamleon_blue_pressed)
         else -> colorResource(R.color.kamleon_blue)
     }
+    val container by animateColorAsState(target, tween(BUTTON_FADE_MS), label = "buttonColor")
+    val outlined = !enabled && !loading
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -386,7 +393,7 @@ fun KamleonRoundButton(
             .clip(shape)
             .background(container)
             .then(
-                if (!active) Modifier.border(BorderStroke(1.dp, colorResource(R.color.kamleon_outline)), shape)
+                if (outlined) Modifier.border(BorderStroke(1.dp, colorResource(R.color.kamleon_outline)), shape)
                 else Modifier
             )
             .clickable(
@@ -398,21 +405,26 @@ fun KamleonRoundButton(
             )
             .then(if (testTag != null) Modifier.testTag(testTag) else Modifier)
     ) {
-        if (loading) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(16.dp),
-                color = grey40,
-                strokeWidth = 2.dp
-            )
-        } else {
-            Text(
-                text = text,
-                style = kamleonButtonText(),
-                color = if (active) colorResource(R.color.white) else grey40
-            )
+        Crossfade(targetState = loading, animationSpec = tween(BUTTON_FADE_MS), label = "buttonContent") { busy ->
+            if (busy) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(18.dp),
+                    color = colorResource(R.color.white),
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text(
+                    text = text,
+                    style = kamleonButtonText(),
+                    color = if (active) colorResource(R.color.white) else grey40
+                )
+            }
         }
     }
 }
+
+/** How long a button takes to swap its label and spinner, and its colour. */
+private const val BUTTON_FADE_MS = 150
 
 /** Thin linear progress bar (4dp, square ends): [progress] in 0..1, teal over a light track. */
 @Composable

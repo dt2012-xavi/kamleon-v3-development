@@ -108,7 +108,7 @@
     <!-- Privacy -->
     <string name="privacy_title">Privacy</string>
     <string name="privacy_item1">I agree to the Privacy Policy.*</string>
-    <string name="privacy_item2">I accept to the Terms and Conditions.*</string>
+    <string name="privacy_item2">I accept the Terms and Conditions.*</string>
     <string name="privacy_item3">I give my consent for the data controller to process my personal data, including physiological data, for the purpose of structuring and displaying them in the user profile. Please refer to the consent information*\n\n\nFor more information on the processing of personal data carried out by the data controller, please refer to the privacy policy.</string>
     <string name="privacy_note">*You can revoke your consent at any time by sending a message to <u>info@kamleon.com</u></string>
     <string name="privacy_button_next">Next</string>
@@ -451,7 +451,7 @@
     <string name="dialog_policy_agree">Agree</string>
     <string name="dialog_policy_disagree"><u>Disagree, log out</u></string>
     <string name="dialog_verify_title">Verify your email</string>
-    <string name="dialog_verify_desc">We have sent an email to %1$s\n\nYou need to verify your email to continue. If you have not received the verification email, please check your "Spam" or "Bulk Email" folder. You can also click the resend button below to have another email sent to you.</string>
+    <string name="dialog_verify_desc">We have sent an email to %1$s\n\nYou need to verify your email to continue. If you have not received the verification email, please check your "Spam" or "Bulk Email" folder. You can also tap the resend button below to have another email sent to you.</string>
     <string name="dialog_verify_resend"><u>Resend verification email</u></string>
 
     <!-- Error -->

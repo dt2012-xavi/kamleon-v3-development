@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.fragments
 
+import com.dynatech2012.kamleonuserapp.views.settings.label
 import com.dynatech2012.kamleonuserapp.analytics.AppScreen
 import com.dynatech2012.kamleonuserapp.analytics.Analytics
 import android.Manifest
@@ -238,7 +239,7 @@ class SettingFragment : BaseFragment<ActivitySettingBinding>(),
             getString(R.string.setting_display_name, userData.name, userData.lastName)
         binding.accMenuItemEmail.setValue(userData.email)
         binding.prefMenuItemName.setValue(getString(R.string.setting_display_name, userData.name, userData.lastName).trim())
-        binding.prefMenuItemGender.setValue(userData.gender.raw)
+        binding.prefMenuItemGender.setValue(userData.gender.label(resources))
         // The date as the phone's language writes it ("24 Nov 1992").
         binding.prefMenuItemBirth.setValue(
             userData.dateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()

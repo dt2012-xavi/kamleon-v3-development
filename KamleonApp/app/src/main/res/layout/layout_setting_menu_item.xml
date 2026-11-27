@@ -7,15 +7,19 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingHorizontal="@dimen/setting_item_padding_h"
-    android:layout_gravity="center"
-    android:gravity="center"
+    android:paddingVertical="6dp"
+    android:layout_gravity="center_vertical"
+    android:gravity="center_vertical"
     android:clipChildren="false"
     android:clipToPadding="false">
 
+    <!-- The label takes what the value leaves and wraps to a second line when it is long (some
+         languages need it); the value keeps its own width, up to a maximum, and ellipsizes past it. -->
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:layout_weight="1"
+        android:gravity="center_vertical|start"
         android:paddingHorizontal="4dp"
         android:id="@+id/tvLabel"
         android:textSize="@dimen/ts_14"
@@ -24,9 +28,9 @@
         android:textColor="@color/kamleon_secondary_grey_70"/>
 
     <TextView
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:maxWidth="@dimen/setting_item_value_max_width"
         android:textAlignment="textEnd"
         android:paddingHorizontal="4dp"
         android:id="@+id/tvValue"

@@ -1,7 +1,17 @@
 package com.dynatech2012.kamleonuserapp.views.settings
 
+import com.dynatech2012.kamleonuserapp.models.Gender
+import com.dynatech2012.kamleonuserapp.R
+import android.content.res.Resources
 import java.util.Locale
 import kotlin.math.roundToInt
+
+/**
+ * The gender as the person reads it, in their language. Firestore keeps [Gender.raw], in English;
+ * `onboard_gender_values` lists the labels in the order of [Gender.entries].
+ */
+fun Gender.label(resources: Resources): String =
+    resources.getStringArray(R.array.onboard_gender_values).getOrNull(ordinal) ?: raw
 
 /**
  * The fields of Settings edited in a profile sheet: Personal data (Name groups the name and the

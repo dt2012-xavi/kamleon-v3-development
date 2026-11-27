@@ -40,6 +40,8 @@ class RegisterFragment : Fragment() {
     // deliberately not saved in instance state, so they never outlive the process.
     private var password by mutableStateOf("")
     private var repeatPassword by mutableStateOf("")
+    /** The form passed and Privacy is fading in over this screen: the spinner stays meanwhile. */
+    private var leaving by mutableStateOf(false)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,6 +56,7 @@ class RegisterFragment : Fragment() {
         Timber.d("Registration form displayed")
         val recovering = viewModel.recoveringProfile
         error = null
+        leaving = false
 
         (view as ComposeView).setContent {
             var firstName by rememberSaveable { mutableStateOf("") }
@@ -80,7 +83,7 @@ class RegisterFragment : Fragment() {
                     repeatPassword = repeatPassword,
                     recovering = recovering,
                     error = error,
-                    checking = checking,
+                    checking = checking || leaving,
                     passwordStrength = strength,
                     onFirstNameChange = { firstName = it; error = null },
                     onLastNameChange = { lastName = it; error = null },
@@ -108,6 +111,7 @@ class RegisterFragment : Fragment() {
             when (it) {
                 6 -> {
                     error = null
+                    leaving = true
                     startPrivacy()
                 }
                 0, 1 -> error = R.string.signup_error_empty_fields

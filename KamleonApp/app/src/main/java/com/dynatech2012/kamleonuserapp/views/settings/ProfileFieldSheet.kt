@@ -1,5 +1,6 @@
 package com.dynatech2012.kamleonuserapp.views.settings
 
+import androidx.compose.ui.platform.LocalResources
 import com.dynatech2012.kamleonuserapp.views.lockedWhile
 import com.dynatech2012.kamleonuserapp.views.matchScreenStatusBar
 import android.graphics.Color
@@ -303,7 +304,7 @@ private fun GenderEditor(user: CustomUser, onChange: (Map<String, Any>?) -> Unit
                     .testTag("profile_sheet_gender_${gender.name}")
             ) {
                 Text(
-                    text = gender.raw,
+                    text = gender.label(LocalResources.current),
                     style = kamleonBody(),
                     color = colorResource(R.color.kamleon_dark_grey)
                 )
@@ -442,14 +443,16 @@ class ProfileFieldSheet : BottomSheetDialogFragment() {
         isCancelable = false
         viewLifecycleOwner.lifecycleScope.launch {
             val response = viewModel.saveProfile(fields)
-            saving = false
-            isCancelable = true
             if (response.isSuccess) {
+                // Saving stays on while the sheet slides away: otherwise Save comes back for the
+                // length of the animation.
                 val message = if (field == ProfileField.PIN) R.string.dialog_reset_pin_success_description
                 else R.string.dialog_saved_text
                 parentFragmentManager.setFragmentResult(RESULT_SAVED, Bundle().apply { putInt(RESULT_MESSAGE, message) })
                 dismissAllowingStateLoss()
             } else {
+                saving = false
+                isCancelable = true
                 showActionFailedSheet(response.error)
             }
         }

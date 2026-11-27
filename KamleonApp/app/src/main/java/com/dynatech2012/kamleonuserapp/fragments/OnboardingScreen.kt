@@ -214,7 +214,9 @@ fun OnboardingScreen(
                                     textSize = 28,
                                     textBold = true,
                                     darkModeEnabled = false,
-                                    valueWidth = 250,
+                                    // The width the step really has: a wider value would be clipped
+                                    // instead of shrunk to fit (long translations).
+                                    valueWidth = 220,
                                     onValueChanged = { value, _ -> onGenderChange(value) }
                                 )
                             }

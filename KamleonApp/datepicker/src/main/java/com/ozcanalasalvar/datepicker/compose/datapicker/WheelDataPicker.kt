@@ -1,5 +1,9 @@
 package com.ozcanalasalvar.datepicker.compose.datapicker
 
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -67,6 +71,18 @@ fun WheelDataPicker(
     }
 
     val fontSize = maxOf(13, minOf(29, textSize))
+    val measurer = rememberTextMeasurer()
+    val density = LocalDensity.current
+    // Measured with the style the values are drawn with (the app's font), with a small margin.
+    val baseStyle = LocalTextStyle.current
+    val fittedFontSize = remember(values, fontSize, valueWidth, textBold, baseStyle) {
+        val style = baseStyle.merge(
+            TextStyle(fontSize = fontSize.sp, fontWeight = if (textBold) FontWeight.Bold else FontWeight.Normal)
+        )
+        val widest = values.maxOfOrNull { measurer.measure(it, style, maxLines = 1, softWrap = false).size.width } ?: 0
+        val available = with(density) { valueWidth.dp.toPx() } * 0.95f
+        if (widest <= available) fontSize.toFloat() else maxOf(13f, fontSize * available / widest)
+    }
 
     LaunchedEffect(selectedValue, selectedDecimal) {
         if (showDecimal) {
@@ -111,12 +127,16 @@ fun WheelDataPicker(
                     selectedValue = values[it]
                 },
                 content = {
+                    // One line: when a value is too wide for the wheel (a translation), the whole wheel
+                    // uses a smaller size instead of wrapping it.
                     Text(
                         text = if (values.isNotEmpty()) values[it] else "",
 //                        textAlign = if (valueUnit.isEmpty()) TextAlign.Center else TextAlign.End,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.width(valueWidth.dp),
-                        fontSize = fontSize.sp,
+                        maxLines = 1,
+                        softWrap = false,
+                        fontSize = fittedFontSize.sp,
                         fontWeight = if (textBold) FontWeight.Bold else FontWeight.Normal,
                         color = if (darkModeEnabled) colorDarkTextPrimary else colorLightTextPrimary
                     )

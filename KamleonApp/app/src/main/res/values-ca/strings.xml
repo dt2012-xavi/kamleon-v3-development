@@ -146,7 +146,7 @@
     <string name="setting_label_acc_data">ACCÉS I SEGURETAT</string>
     <string name="setting_label_surname">COGNOMS</string>
     <string name="setting_label_name">NOM</string>
-    <string name="setting_label_email">CORREU ELECTRÒNIC</string>
+    <string name="setting_label_email">CORREU</string>
     <string name="setting_label_password">CONTRASENYA</string>
     <string name="setting_label_pin">PIN</string>
     <string name="setting_label_info">AJUDA I INFORMACIÓ LEGAL</string>

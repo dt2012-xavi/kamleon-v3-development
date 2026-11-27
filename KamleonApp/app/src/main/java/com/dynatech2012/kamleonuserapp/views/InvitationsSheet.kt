@@ -147,13 +147,15 @@ class InvitationsSheet : BottomSheetDialogFragment() {
         super.onDismiss(dialog)
     }
 
-    private fun load(showSpinner: Boolean) {
+    /** Reads the invitations again; [then] runs once the list on screen is the new one. */
+    private fun load(showSpinner: Boolean, then: () -> Unit = {}) {
         if (showSpinner) state = InvitationsState.Loading
         viewLifecycleOwner.lifecycleScope.launch {
             when (val response = viewModel.loadInvitations()) {
                 is Response.Success -> state = InvitationsState.Loaded(response.data)
                 else -> if (showSpinner) state = InvitationsState.Failed
             }
+            then()
         }
     }
 
@@ -171,19 +173,24 @@ class InvitationsSheet : BottomSheetDialogFragment() {
         busy = busy + id
         viewLifecycleOwner.lifecycleScope.launch {
             val response = call(id)
-            busy = busy - id
+            // When the invitation goes away, its button keeps spinning until the new list replaces
+            // it; otherwise it would come back for the length of the reload.
+            val done = { busy = busy - id }
             when {
                 response is Response.Success -> {
                     Analytics.drawerAction()
                     event?.let { trackAnswer(it, item.record) }
                     success?.let { show(it) }
-                    load(showSpinner = false)
+                    load(showSpinner = false, then = done)
                 }
                 (response as? Response.Failure)?.exception?.invitationError()?.noLongerValid == true -> {
                     show(R.string.invitation_no_longer_valid)
-                    load(showSpinner = false)
+                    load(showSpinner = false, then = done)
                 }
-                else -> show(failure)
+                else -> {
+                    done()
+                    show(failure)
+                }
             }
         }
     }

@@ -45,6 +45,8 @@
     <dimen name="setting_option_btn_padding_v">4dp</dimen>
 
     <dimen name="setting_menu_item_height">36dp</dimen>
+    <!-- Widest a Settings value gets before it ellipsizes (fits an email address). -->
+    <dimen name="setting_item_value_max_width">200dp</dimen>
     <dimen name="setting_category_padding">32dp</dimen>
     <dimen name="setting_category_content_padding">12dp</dimen>
 

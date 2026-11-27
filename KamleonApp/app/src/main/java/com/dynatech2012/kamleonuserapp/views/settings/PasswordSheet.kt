@@ -132,7 +132,8 @@ class PasswordSheet : BottomSheetDialogFragment() {
     private fun sendReset() = run(R.string.forgotpwd_sent) {
         sendingReset = true
         val result = viewModel.sendPasswordReset()
-        sendingReset = false
+        // Sent: "Sending link…" stays while the sheet slides away, so Save does not spin instead.
+        if (result?.success != true) sendingReset = false
         if (result == null) return@run false
         if (!result.success) showError(connectionOr(result.failure, getString(R.string.forgotpwd_send_error)))
         result.success
@@ -149,9 +150,12 @@ class PasswordSheet : BottomSheetDialogFragment() {
         isCancelable = false
         viewLifecycleOwner.lifecycleScope.launch {
             val done = action()
-            busy = false
-            isCancelable = true
-            if (done) {
+            if (!done) {
+                busy = false
+                isCancelable = true
+            } else {
+                // Busy stays on while the sheet slides away: otherwise Save comes back for the
+                // length of the animation.
                 parentFragmentManager.setFragmentResult(
                     ProfileFieldSheet.RESULT_SAVED,
                     Bundle().apply { putInt(ProfileFieldSheet.RESULT_MESSAGE, message) }

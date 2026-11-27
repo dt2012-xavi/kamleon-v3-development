@@ -64,7 +64,9 @@ class LoginFragment : Fragment() {
                     pendingScan = scanSavedAt != null && viewModel.hasPendingScan,
                     email = email,
                     password = password,
-                    isLoading = state == 1 || state == 6 || resendingVerification,
+                    // 7: signed in. The spinner stays while the main screen fades in over this one;
+                    // otherwise the button would come back for the length of the fade.
+                    isLoading = state == 1 || state == 6 || state == 7 || resendingVerification,
                     onEmailChange = { email = it },
                     onPasswordChange = { password = it },
                     onSignIn = { viewModel.login(email, password) },

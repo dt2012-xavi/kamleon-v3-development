@@ -157,7 +157,8 @@
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:id="@+id/prefMenuItemName"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_name"
@@ -172,7 +173,8 @@
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:id="@+id/prefMenuItemGender"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_user_gender"
@@ -187,7 +189,8 @@
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:id="@+id/prefMenuItemBirth"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_user_birthdate"
@@ -202,7 +205,8 @@
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:id="@+id/prefMenuItemHeight"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_user_height"
@@ -218,7 +222,8 @@
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:id="@+id/prefMenuItemWeight"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_user_weight"
@@ -256,7 +261,8 @@
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:id="@+id/sm_noti_switch"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/setting_menu_item_height"
                         app:settingRightArrow="false"
                         app:settingRightSwitch="true"
                         app:settingTypeLabel="@string/setting_label_new_score"
@@ -326,7 +332,8 @@
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:id="@+id/accMenuItemEmail"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/setting_menu_item_height"
                         app:settingRightArrow="false"
                         app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_email"
@@ -341,7 +348,8 @@
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:id="@+id/accMenuItemPwd"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_password"
@@ -356,7 +364,8 @@
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:id="@+id/accMenuItemPin"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_pin"
@@ -393,7 +402,8 @@
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:id="@+id/accMenuItemRoles"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_roles"
@@ -420,7 +430,8 @@
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:id="@+id/accMenuItemContact"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/help_contact"
@@ -448,7 +459,8 @@
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:id="@+id/accMenuItemDSP"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_dsp"
@@ -463,7 +475,8 @@
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:id="@+id/accMenuItemTOS"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_tos"
@@ -478,7 +491,8 @@
                     <com.dynatech2012.kamleonuserapp.views.SettingMenuItemView
                         android:id="@+id/accMenuItemPP"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_menu_item_height"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/setting_menu_item_height"
                         app:settingRightArrow="true"
                         app:settingRightSwitch="false"
                         app:settingTypeLabel="@string/setting_label_pp"
